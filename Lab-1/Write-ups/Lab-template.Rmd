@@ -1,2 +1,0 @@
-# Template for Lab 1: ARIMA models
-
