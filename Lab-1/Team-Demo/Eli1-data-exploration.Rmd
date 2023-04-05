@@ -1,0 +1,125 @@
+## Ruggerone & Irvine: Salmon in the North Pacific
+
+Load the data
+```{r}
+ruggerone_data <- readRDS(here::here("Lab-1", "Data_Images", "ruggerone_data.rds"))
+```
+
+![Figure 1. The approximate geographic locations of regional stock groups. Region 1, Washington State, including the Columbia River. Region 2, Southern British Columbia (BC) south of the central coast of British Columbia (\~51°N). . Region 3, Northern BC including central and northern British Columbia. Region 4, Southeast Alaska (AK) including the Yakutat coast. The Central Alaska region extends from the Bering River (\~60°N), near Prince William Sound in Region 5, westward to Unimak Island (\~166°W), thereby including Regions 5 through 8. Western Alaska includes Regions 9 through 12, i.e., all North American drainages flowing into the Bering Sea from Unimak Island to Kotzebue. Data for eastern and western Kamchatka (Regions 14 and 15) are separated from data for the Russian mainland and islands (called "Mainland & Islands" here, which includes the Okhotsk coast, Amur River, Primorye, Sakhalin and Kurile Islands, and relatively small runs to the Anadyr). Region 20, Japan, includes the islands of Hokkaido and Honshu. South Korea (Region 21) not shown.](Data_Images/NPacific_map.jpg){width="50%"}
+
+| region in data file    | desciption                  | regions in map    |
+|------------------------|-----------------------------|-------------------|
+| japan                  |  Japan & South Korea        | 20 and 21         |
+| m_i                    | Russian Mainland & Islands  | 13, 16, 17 18, 19 |
+| w_kam                  | Western Kamchatka           | 15                |
+| e_kam                  | Eastern Kamchatka           | 14                |
+| wak                    | Western Alaska              | 9, 10, 11, 12     |
+| s_pen                  | Southern Alaska Peninsula   | 8                 |
+| kod                    | Kodiak                      | 7                 |
+| ci                     | Cook Inlet                  | 6                 |
+| pws                    | Prince William Sound        | 5                 |
+| seak                   | Southeast Alaska            | 4                 |
+| nbc                    | Northern British Columbia   | 3                 |
+| sbc                    | Southern British Columbia   | 2                 |
+| wa                     | Washington State            | 1                 |
+| wc                     | West Coast USA              | mislabeled on map |
+| cak (not in data file) | Central Alaska              | 5, 6, 7, 8        |
+
+### Ruggerone and Irvine data
+
+```{r echo=FALSE}
+cat("colnames: ", colnames(ruggerone_data), "\n")
+cat("species: ", unique(ruggerone_data$species), "\n")
+cat("regions: ", unique(ruggerone_data$region), "\n")
+```
+
+### Some plots of the Ruggerone and Irvine data.
+
+```{r fig.cap="pink salmon by regions"}
+library(tidyverse)
+ruggerone_data %>% 
+  filter(species=="sockeye") %>% 
+  ggplot(aes(x=year, y=log(returns))) + 
+    geom_line() + 
+    ggtitle("sockeye salmon log abundance") +
+    facet_wrap(~region)
+```
+
+```{r fig.cap="total by species"}
+ruggerone_data %>% 
+  group_by(species, year) %>%
+  summarize(total = sum(returns, na.rm=TRUE)) %>%
+  ggplot(aes(x=year, y=log(total))) + 
+    geom_line() + 
+    ggtitle("log abundance by species") +
+    facet_wrap(~species)
+```
+
+### Some subsets of the data
+
+Here are some subsets of the data that you might want to use.
+
+Log total North Pacific pink, chum, sockeye
+```{r}
+subdata <- ruggerone_data %>% 
+  group_by(species, year) %>%
+  summarize(lntotal = log(sum(returns, na.rm=TRUE)))
+head(subdata)
+```
+
+Log North Pacific pink
+```{r}
+subdata <- ruggerone_data %>% 
+  filter(species == "pink") %>%
+ mutate(lnreturns = log(returns))
+head(subdata)
+```
+
+Total in some bigger areas
+```{r}
+subdata <- ruggerone_data %>% 
+  mutate(
+    area = case_match(
+      region, 
+      c("japan", "korea", "m_i", "e_kam", "w_kam") ~ "East_Asia",
+      c("wak", "s_pen", "kod", "ci", "pws", "seak") ~ "Alaska",
+      c("nbc", "sbc", "wa", "wc") ~ "WC",
+      .default = region
+    )) %>%
+  group_by(area, species, year) %>%
+  summarize(lntotal = log(sum(returns, na.rm=TRUE)))
+head(subdata)
+```
+
+## Example analysis
+
+Get one time series out of `ruggerone_data`
+```{r}
+dat <- ruggerone_data %>%
+  filter(region == "wak", species == "pink") %>%
+  mutate(lnreturns = log(returns)) %>%
+  select(year, lnreturns)
+head(dat)
+```
+
+Make a time series object and divide into train and test data.
+```{r}
+datts <- ts(dat$lnreturns, start=dat$year[1])
+train <- window(datts, 1952, 1971)
+test <- window(datts, 1972, 2001)
+```
+
+
+Fit a model with `auto.arima()` in the forecast package.
+```{r message=FALSE}
+library(forecast)
+mod <- auto.arima(train)
+mod
+```
+
+Plot a 30-year forecast against the test data.
+```{r}
+library(zoo)
+fr <- forecast(mod, h=30)
+autoplot(fr) + geom_point(aes(x=x, y=y), data=fortify(test))
+```
