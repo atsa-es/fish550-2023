@@ -1,10 +1,11 @@
 # Lab 1: ARIMA models
 
-Team member names:
+Team member names: Nick Chambers (SAFS), Liz Elmstrom (SAFS), Eric French (Civil), Maria Kuruvilla (QERM)
+
 
 # Data
 
-Choose some data that your group will work with.
+Bristol Bay Data. Discuss what part of the data set you will work with.
 
 # Question your team will address
 
@@ -21,7 +22,7 @@ Example, "Our team decided to compare the accuracy of forecasts using best fit A
 
 ## Initial plan
 
-Describe what you plan to do to address your question.
+Describe what you plan to do to address your question. Note this example is with Ruggerone & Irvine data but your team will use the Bristol Bay data.
 
 Example, "We will fit ARIMA models to 1960-1980 data on pink salmon in 2 regions in Alaska and 2 regions in E Asia. We will make 1981-1985  forecasts (5 year) and compare the accuracy of the forecasts to the actual values. We will measure accuracy with mean squared error. We will use the forecast package to fit the ARIMA models."
 

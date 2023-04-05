@@ -16,6 +16,13 @@ options(dplyr.summarise.inform = FALSE)
 
 For this lab you will use the material you have learned in the first 3 lectures to explore features of time series of salmon in the North Pacific (Alaska and E Asia). Then you will use ARIMA models to create forecasts and ask a research question with those forecasts.
 
+## Teams
+
+1. Bristol Bay Data: Nick Chambers (SAFS), Liz Elmstrom (SAFS), Eric French (Civil), Maria Kuruvilla (QERM)
+2. Bristol Bay Data: Lauren French (Marine Affairs), Grace Henry (SAFS), Dylan Hubl (ESRM)
+3. Ruggerone & Irvine Data: Miranda Mudge (Molecular & Cell Bio), Zoe Rand (QERM), Madison Shipley (SAFS), Emma Timmins-Schiffman (Genome Sci)
+4. Ruggerone & Irvine Data: Terrance Wang (SAFS), Josh Zahner (SAFS), Karl Veggerby (SAFS)
+
 ## References
 
 Holmes, E. E. (2020) Fisheries Catch Forecasting <https://fish-forecast.github.io/Fish-Forecast-Bookdown>
@@ -136,7 +143,7 @@ train <- window(datts, dat$year[1], dat$year[1]+9)
 test <- window(datts, dat$year[1]+10, dat$year[1]+10+9)
 ```
 
-## Salmon in the North Pacific
+## Ruggerone & Irvine: Salmon in the North Pacific
 
 The data set `Data_Images/ruggerone_data.rds` has total abundance of natural spawners (not hatchery) from 15 regions in the N Pacific. These are data provided with Ruggerone, G. and Irvine, J. 2018. Numbers and biomass of natural- and hatchery-origin Pink, Chum, and Sockeye Salmon in the North Pacific Ocean, 1925-2015. Marine and Coastal Fisheries: Dynamics, Management, and Ecosystem Science 10. DOI: [10.1002/mcf2.10023](https://afspubs.onlinelibrary.wiley.com/doi/10.1002/mcf2.10023). Open Access.
 

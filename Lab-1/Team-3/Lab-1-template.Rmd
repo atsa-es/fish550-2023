@@ -1,10 +1,11 @@
 # Lab 1: ARIMA models
 
-Team member names:
+Team member names: Miranda Mudge (Molecular & Cell Bio), Zoe Rand (QERM), Madison Shipley (SAFS), Emma Timmins-Schiffman (Genome Sci)
+
 
 # Data
 
-Choose some data that your group will work with.
+Ruggerone & Irvine Data. Discuss what part of the data set you will work with.
 
 # Question your team will address
 
