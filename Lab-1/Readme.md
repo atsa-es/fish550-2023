@@ -6,6 +6,17 @@
 
 The following steps only need to be done once for the course
 
+## RStudio instructions
+
+1. **Open RStudio**
+2. Click File > New Project and then Version Control > Git.
+3. Paste https://github.com/atsa-es/fish550-2023 into the url box and make sure the repo is being put someplace you can easily find.
+4. Click Create Project
+5. When you are ready to push changes to GitHub, click the Git tab, check the files to be committed, add a msg, click the push up arrow.
+6. When you want to pull changes from GitHub, go to the Git tab and click the down arrow.
+
+## GitHub Desktop instructions
+
 1. **Open GitHub Desktop** (download if necessary)
 2. Click File > Clone Repository... and then click the URL tab. Notice where the repo is being saved and change if needed/wanted.
 3. Paste https://github.com/atsa-es/fish550-2023 into the url box and click Clone
@@ -13,6 +24,7 @@ The following steps only need to be done once for the course
 5. Navigate to the repo directory that you cloned in step 5
 6. When you are ready to push changes to GitHub, go to GitHub Desktop, commit the changes and push to GitHub
 7. When you want to pull changes from GitHub, go to GitHub Desktop and click the pull button.
+
 
 # Collaborating on your write-up
 
