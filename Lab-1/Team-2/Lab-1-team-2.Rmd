@@ -1,6 +1,6 @@
 # Lab 1: ARIMA models
 
-Team member names: Lauren French (Marine Affairs), Grace Henry (SAFS), Dylan Hubl (ESRM)
+Team member names: Eric French (Civil), Dylan Hubl (ESRM), Miranda Mudge (Molecular & Cell Bio)
 
 # Data
 

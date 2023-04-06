@@ -1,6 +1,6 @@
 # Lab 1: ARIMA models
 
-Team member names: Nick Chambers (SAFS), Liz Elmstrom (SAFS), Eric French (Civil), Maria Kuruvilla (QERM)
+Team member names: Nick Chambers (SAFS), Liz Elmstrom (SAFS), Maria Kuruvilla (QERM)
 
 
 # Data

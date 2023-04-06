@@ -18,9 +18,9 @@ For this lab you will use the material you have learned in the first 3 lectures 
 
 ## Teams
 
-1. Bristol Bay Data: Nick Chambers (SAFS), Liz Elmstrom (SAFS), Eric French (Civil), Maria Kuruvilla (QERM)
-2. Bristol Bay Data: Lauren French (Marine Affairs), Grace Henry (SAFS), Dylan Hubl (ESRM)
-3. Ruggerone & Irvine Data: Miranda Mudge (Molecular & Cell Bio), Zoe Rand (QERM), Madison Shipley (SAFS), Emma Timmins-Schiffman (Genome Sci)
+1. Bristol Bay Data: Nick Chambers (SAFS), Liz Elmstrom (SAFS), Maria Kuruvilla (QERM)
+2. Bristol Bay Data: Eric French (Civil), Dylan Hubl (ESRM), Miranda Mudge (Molecular & Cell Bio)
+3. Ruggerone & Irvine Data: Zoe Rand (QERM), Madison Shipley (SAFS), Emma Timmins-Schiffman (Genome Sci)
 4. Ruggerone & Irvine Data: Terrance Wang (SAFS), Josh Zahner (SAFS), Karl Veggerby (SAFS)
 
 ## References
