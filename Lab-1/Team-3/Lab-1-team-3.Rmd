@@ -12,7 +12,7 @@ ALL THE DATA (probably not, but good to aim high)
 
 What will your team do with the data? You can do many things with the data. The only constraints are that you
 
--   fit ARIMA models (note you'll want to log the abundance data). You can fit other models in addition ot ARIMA if you want.
+-   fit ARIMA models (note you'll want to log the abundance data). You can fit other models in addition to ARIMA if you want.
 -   do diagnostics for ARIMA models
 -   make forecasts
 -   test how good your forecasts or compare forecasts (many options here)
@@ -23,7 +23,7 @@ Example, "Our team decided to compare the accuracy of forecasts using best fit A
 
 1)  WA regions has a lot of periodicity in pink returns (likely driven by two year cycle)
 
-2)  Chum and Sockeye have more stocastic characteristic in returns
+2)  Chum and Sockeye have more stochastic characteristic in returns
 
 3)  Something going on in Western Kam region
 
@@ -31,7 +31,10 @@ Example, "Our team decided to compare the accuracy of forecasts using best fit A
 
 ## Possible questions to explore with ARIMA model GROUP THREE
 
-1)  Compare the accuracy of forecasts using ARIMA models for the three species of salmon returns in total and by region. -stop data at 2013 to allow for two years of forecasting -Do conclusions change with different levels of forcast, 1, 2, 5 ?
+1)  Compare the accuracy of forecasts using ARIMA models for the three species of salmon returns in total and by region.
+    1.  Stop data at 2013 to allow for two years of forecasting
+
+    2.  Do conclusions change with different levels of forecast, 1, 2, 5 ?
 
 ## Notes
 
@@ -41,7 +44,11 @@ Training data exploration
 
 Start with total returns for each species
 
-Zoe: Chum Madi: Pink Emma: Sockeye
+Zoe: Chum
+
+Madi: Pink
+
+Emma: Sockeye
 
 # Method you will use
 
