@@ -7,6 +7,16 @@ Team member names: Nick Chambers (SAFS), Liz Elmstrom (SAFS), Maria Kuruvilla (Q
 
 Bristol Bay Data. Discuss what part of the data set you will work with.
 
+Read in the data
+```{r}
+BB_data <- readRDS(here::here("Lab-1", "Data_Images", "bristol_bay_data_plus_covariates.rds"))
+```
+
+Explore the data
+```{r}
+
+
+```
 # Question your team will address
 
 What will your team do with the data? You can do many things with the data. The only constraints are that you
