@@ -44,6 +44,21 @@ fit.final %>%
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
   xlab("")
 
+# Another approach is to use a cyclic covariate. 
+# We will cover this in 2 weeks
+# https://otexts.com/fpp2/complexseasonality.html
+fit <- auto.arima(train.sockeye, seasonal=FALSE, 
+                  xreg=fourier(train.sockeye, K=c(1)))
+fit %>%
+  forecast(xreg=fourier(test.sockeye, K=c(1), h=15)) %>%
+  autoplot() + 
+  geom_point(aes(x=x, y=y), data=fortify(test.sockeye)) +
+  # this stuff is to fix the x-axis back to years
+  scale_x_continuous(breaks = seq(1-2/7,10,5/7),
+                     labels = seq(1950,2015,5)) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  xlab("")
+
 # No seasonality
 train.sockeye<-window(sockeye.ts, start=1952, end=2000)
 test.sockeye<-window(sockeye.ts, start=2001, end=2015)
@@ -52,8 +67,3 @@ forecast::checkresiduals(fit.final)
 fit.final %>%
   forecast(h=15) %>%
   autoplot() + geom_point(aes(x=x, y=y), data=fortify(test.sockeye))
-
-# Note there is likely complex seasonality given the lifehistory
-# of sockeye
-# You might try the approaches here
-# https://otexts.com/fpp2/complexseasonality.html
