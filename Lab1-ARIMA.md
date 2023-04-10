@@ -1,12 +1,6 @@
----
-title: Lab 1: Forecasting with ARIMA models
-author: E Holmes
-date: March 22, 2023
-output: 
-  html_document:
-    code-folding: true
----
+# Lab 1: Forecasting with ARIMA models
 
+March 22, 2023
 
 
 For this lab you will use the material you have learned in the first 3 lectures to explore features of time series of salmon in the North Pacific (Alaska and E Asia). Then you will use ARIMA models to create forecasts and ask a research question with those forecasts.

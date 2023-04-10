@@ -36,6 +36,16 @@ Example, "We were able to do our plan fairly quickly, so after writing the basic
 
 Plot the data and discuss any obvious problems with stationarity from your visual test.
 
+```{r fig.cap="pink salmon by regions"}
+library(tidyverse)
+ruggerone_data %>% 
+  filter(species=="pink") %>% 
+  ggplot(aes(x=year, y=log(returns))) + 
+    geom_line() + 
+    ggtitle("sockeye salmon log abundance") +
+    facet_wrap(~region)
+```
+
 ## Use ACF and PACF
 
 Use the ACF and PACF plots to explore the time series. What did you learn? Also try decomposition.

@@ -2,21 +2,53 @@
 
 Team member names: Miranda Mudge (Molecular & Cell Bio), Zoe Rand (QERM), Madison Shipley (SAFS), Emma Timmins-Schiffman (Genome Sci)
 
-
 # Data
 
 Ruggerone & Irvine Data. Discuss what part of the data set you will work with.
+
+ALL THE DATA (probably not, but good to aim high)
 
 # Question your team will address
 
 What will your team do with the data? You can do many things with the data. The only constraints are that you
 
-* fit ARIMA models (note you'll want to log the abundance data). You can fit other models in addition ot ARIMA if you want.
-* do diagnostics for ARIMA models
-* make forecasts
-* test how good your forecasts or compare forecasts (many options here)
+-   fit ARIMA models (note you'll want to log the abundance data). You can fit other models in addition to ARIMA if you want.
+-   do diagnostics for ARIMA models
+-   make forecasts
+-   test how good your forecasts or compare forecasts (many options here)
 
 Example, "Our team decided to compare the accuracy of forecasts using best fit ARIMA models for pink salmon using 4 regions in the Ruggerone & Irvine data. Our question is whether forecast accuracy is different for different regions."
+
+## General Data Observation
+
+1)  WA regions has a lot of periodicity in pink returns (likely driven by two year cycle)
+
+2)  Chum and Sockeye have more stochastic characteristic in returns
+
+3)  Something going on in Western Kam region
+
+4)  Some regions show more stationary over time --explore this
+
+## Possible questions to explore with ARIMA model GROUP THREE
+
+1)  Compare the accuracy of forecasts using ARIMA models for the three species of salmon returns in total and by region.
+    1.  Stop data at 2013 to allow for two years of forecasting
+
+    2.  Do conclusions change with different levels of forecast, 1, 2, 5 ?
+
+## Notes
+
+Training data exploration
+
+## Work flow
+
+Start with total returns for each species
+
+Zoe: Chum
+
+Madi: Pink
+
+Emma: Sockeye
 
 # Method you will use
 
@@ -24,7 +56,7 @@ Example, "Our team decided to compare the accuracy of forecasts using best fit A
 
 Describe what you plan to do to address your question.
 
-Example, "We will fit ARIMA models to 1960-1980 data on pink salmon in 2 regions in Alaska and 2 regions in E Asia. We will make 1981-1985  forecasts (5 year) and compare the accuracy of the forecasts to the actual values. We will measure accuracy with mean squared error. We will use the forecast package to fit the ARIMA models."
+Example, "We will fit ARIMA models to 1960-1980 data on pink salmon in 2 regions in Alaska and 2 regions in E Asia. We will make 1981-1985 forecasts (5 year) and compare the accuracy of the forecasts to the actual values. We will measure accuracy with mean squared error. We will use the forecast package to fit the ARIMA models."
 
 ## What you actually did
 
@@ -51,4 +83,3 @@ Run tests and discuss any stationarity issues and how these were addressed.
 # Description of each team member's contributions
 
 Example: "All team members helped decide on the goal and ran the analyses for the individual regions. Team members 2 & 3 wrote most of the code for the analysis of the regions. Team member 4 researched approaches for measuring accuracy of forecasts in [Hyndman & Athanasopoulos[OTexts.com/fpp2] and team member 2 added code for that to the methods. Team member 4 also researched tests for stationarity and worked with team member 2 to code that up. Team member 1 worked on the plotting section of the report using and adapting code that team member 3 wrote. All team members helped edit the report and wrote the discussion together."
-

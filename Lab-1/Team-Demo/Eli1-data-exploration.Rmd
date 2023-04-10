@@ -38,7 +38,7 @@ cat("regions: ", unique(ruggerone_data$region), "\n")
 ```{r fig.cap="pink salmon by regions"}
 library(tidyverse)
 ruggerone_data %>% 
-  filter(species=="sockeye") %>% 
+  filter(species=="pink") %>% 
   ggplot(aes(x=year, y=log(returns))) + 
     geom_line() + 
     ggtitle("sockeye salmon log abundance") +
