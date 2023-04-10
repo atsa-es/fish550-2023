@@ -55,6 +55,7 @@ ruggerone_data = readRDS(rug_path)
 
 # get sockeye data per region
 sockeye_data=ruggerone_data %>% 
+  mutate(lnreturns=log(returns)) %>%
   filter(species=="sockeye" & !region %in% c("korea","japan")) # do not include NA or all 0 data
 
 # summarise data by area
@@ -74,7 +75,7 @@ subdata <- ruggerone_data %>%
 ## Plot the data
 ```{r}
 sockeye_data %>% 
-  ggplot(aes(x=year, y=log(returns))) + 
+  ggplot(aes(x=year, y=lnreturns)) + 
     geom_line() + 
     ggtitle("log abundance by region")+
     facet_wrap(~region,scales = "free")
@@ -90,6 +91,37 @@ subdata %>% filter(species=="sockeye")%>%
 Systematic changes in the mean are present in many of the stocks (e.g., nbc, w_kam, kod). There are a few increasing means and some random-walk-like ones. There is a strong linear trend in the ci, kod, and s_pen regions. Changes in the variance may also be present in a few stocks (e.g., wak, kod). 2-year periodic variations are possible in several regions (e.g., wak, sbc). 
 
 ## Use ACF and PACF
+```{r}
+library(forecast)
+# run ACF and PACF for each region, massage data into longer format for ggplotting
+sockeye_acf_pacf = sockeye_data %>% 
+  group_by(region) %>% 
+  summarise(list_acf=list(acf(lnreturns, plot=FALSE)),
+            list_pacf=list(pacf(lnreturns, plot=FALSE))) %>%
+  mutate(acf_lnreturns=purrr::map(list_acf, ~as.numeric(.x$acf)),
+         # add 1 to first value of PCF, one of the weird things Mark mentioned
+         pacf_lnreturns=purrr::map(list_pacf, ~as.numeric(c(0,.x$acf)))) %>% 
+  select(-c(list_acf,list_pacf)) %>% 
+  unnest(c(acf_lnreturns,pacf_lnreturns)) %>% 
+  group_by(region) %>% 
+  mutate(lag=row_number() - 1) %>%
+  pivot_longer(cols=c(acf_lnreturns,pacf_lnreturns),
+               values_to = "cf",
+               names_to = "cf_type")
+
+sockeye_ci = sockeye_data %>% 
+  group_by(region) %>% 
+  summarise(ci = qnorm((1 + 0.95)/2)/sqrt(n()))
+
+ggplot(sockeye_acf_pacf,aes(x=lag, y=cf, fill=cf_type)) +
+  geom_bar(stat="identity", position = 'dodge',width=1) +
+  geom_hline(yintercept = 0) +
+  geom_hline(data = sockeye_ci, aes(yintercept = -ci), color="blue", linetype="dotted") +
+  geom_hline(data = sockeye_ci, aes(yintercept = ci), color="blue", linetype="dotted") +
+  labs(x="Lag", y="ACF") +
+  facet_wrap(~region) + theme_bw()
+```
+A handful of regions (e.g., ci, seak) show ACF with a long tail and PACFs that cut off at 1-3 orders, which may indicate some autoregressive structure. Other regions (e.g., pws, m_i) have a sharp cut off with ACF and tailing PACFs, which may suggest a moving average structure. Some regions (s_pen,w_kam,kod) show long tails for both ACF and PACF, suggesting ARMA structure. A few regions show periodic trends (negative AR parameters) from their oscillating correlations factors. 
 
 Use the ACF and PACF plots to explore the time series. What did you learn? Also try decomposition.
 
