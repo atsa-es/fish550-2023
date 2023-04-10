@@ -1,3 +1,20 @@
+---
+title: Lab 1 Forecasting with ARIMA models
+author: Veggerby, Wang
+date: April 10, 2023
+output: 
+  html_document:
+    code-folding: true
+    toc: true
+    toc_float: true
+---
+
+```{r include=FALSE}
+library(tidyverse)
+library(here)
+options(dplyr.summarise.inform = FALSE)
+```
+
 # Lab 1: ARIMA models
 
 Team member names: Terrance Wang (SAFS), Josh Zahner (SAFS), Karl Veggerby (SAFS)
@@ -5,11 +22,11 @@ Team member names: Terrance Wang (SAFS), Josh Zahner (SAFS), Karl Veggerby (SAFS
 
 # Data
 
-Ruggerone & Irvine Data. Discuss what part of the data set you will work with.
+Ruggerone & Irvine Data. We will focus on sockeye salmon and all their 15 regional stocks in the North Pacific. 
 
 # Question your team will address
 
-What will your team do with the data? You can do many things with the data. The only constraints are that you
+What is the autoregressive structure for sockeye salmon? Is there a general autoregressive structure to describe all sockeye salmon regional stocks? Are there similarities and differences within and between the Eastern and Western North regional Pacific stocks? 
 
 * fit ARIMA models (note you'll want to log the abundance data). You can fit other models in addition ot ARIMA if you want.
 * do diagnostics for ARIMA models
@@ -20,21 +37,57 @@ Example, "Our team decided to compare the accuracy of forecasts using best fit A
 
 # Method you will use
 
+ARIMA for individual regional stock time series trends. ANOVA for comparing ARIMA parameters. 
+
 ## Initial plan
 
-Describe what you plan to do to address your question.
-
-Example, "We will fit ARIMA models to 1960-1980 data on pink salmon in 2 regions in Alaska and 2 regions in E Asia. We will make 1981-1985  forecasts (5 year) and compare the accuracy of the forecasts to the actual values. We will measure accuracy with mean squared error. We will use the forecast package to fit the ARIMA models."
+We will fit ARIMA models for each of the sockeye regional stocks with the Box Jenkins method, which includes selecting the model form, estimating the parameters, and diagnosing the model. We will then compare the parameters of the individual ARIMA model structure among regional stocks and larger regional aggregations through ANOVA. We w 
 
 ## What you actually did
 
 Example, "We were able to do our plan fairly quickly, so after writing the basic code, we divided up all 12 regions in Ruggerone & Irvine and each team member did 4 regions. We compared the accuracy of forecasts for different time periods using 20-years for training and 5-year forecasts each time. We compared the RMSE, MAE, and MAPE accuracy measures."
 
 # Diagnostics and preliminary exploration
+```{r}
+# read in data
+rug_path = file.path(here(), 'Lab-1','Data_Images','ruggerone_data.rds')
+ruggerone_data = readRDS(rug_path)
 
+# get sockeye data per region
+sockeye_data=ruggerone_data %>% 
+  filter(species=="sockeye" & !region %in% c("korea","japan")) # do not include NA or all 0 data
+
+# summarise data by area
+subdata <- ruggerone_data %>% 
+  mutate(
+    area = case_match(
+      region, 
+      c("japan", "korea", "m_i", "e_kam", "w_kam") ~ "East_Asia",
+      c("wak", "s_pen", "kod", "ci", "pws", "seak") ~ "Alaska",
+      c("nbc", "sbc", "wa", "wc") ~ "WC",
+      .default = region
+    )) %>%
+  group_by(area, species, year) %>%
+  summarize(lntotal = log(sum(returns, na.rm=TRUE)))
+
+    ```
 ## Plot the data
+```{r}
+sockeye_data %>% 
+  ggplot(aes(x=year, y=log(returns))) + 
+    geom_line() + 
+    ggtitle("log abundance by region")+
+    facet_wrap(~region,scales = "free")
 
-Plot the data and discuss any obvious problems with stationarity from your visual test.
+subdata %>% filter(species=="sockeye")%>%
+  ggplot(aes(x=year, y=lntotal)) + 
+    geom_line() + 
+    ggtitle("log abundance by region")+
+    facet_wrap(~area)
+
+```
+# Regional stocks 
+Systematic changes in the mean are present in many of the stocks (e.g., nbc, w_kam, kod). There are a few increasing means and some random-walk-like ones. There is a strong linear trend in the ci, kod, and s_pen regions. Changes in the variance may also be present in a few stocks (e.g., wak, kod). 2-year periodic variations are possible in several regions (e.g., wak, sbc). 
 
 ## Use ACF and PACF
 
