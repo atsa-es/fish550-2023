@@ -1,0 +1,133 @@
+# Lab 1: ARIMA models
+
+Team member names: Nick Chambers (SAFS), Liz Elmstrom (SAFS), Maria Kuruvilla (QERM)
+
+This is Liz's copy of the script to mess around with
+
+# Data
+
+Bristol Bay Data. Discuss what part of the data set you will work with.
+
+Read in the data
+```{r}
+bb_data <- readRDS(here::here("Lab-1", "Data_Images", "bristol_bay_data_plus_covariates.rds"))
+```
+The data you will most likely want are
+
+* `ret_yr` The year the spawners return to the spawning grounds
+* `ret` The returns (number of fish in 1000s)
+* `system` The river name
+* `age_group` The age_group
+* `forecast.adfw` The forecast from AK Fish and Wildlife
+* `forecast.fri` The forecast from UW Fisheries Research Institute
+* `env_*` are some covariates at the year the age group entered the ocean
+
+In the data file, the age group designation is "a.b" where "a" is number of years in freshwater and "b" is number of years in the ocean. The age of the spawners in then `a+b`.  
+
+
+
+The data
+
+```{r echo=FALSE}
+cat("colnames: ", colnames(BB_data), "\n")
+cat("system (river): ", unique(BB_data$system), "\n")
+cat("age groups: ", unique(BB_data$age_group), "\n")
+
+```
+
+Explore the data
+```{r fig.cap="total across all 4 ages"}
+bb_data %>% 
+  group_by(system, ret_yr) %>%
+  summarize(total = sum(ret, na.rm=TRUE)) %>%
+  ggplot(aes(x=ret_yr, y=log(total))) + 
+    geom_line() + 
+    ggtitle("log abundance by river") +
+    facet_wrap(~system)
+
+bb_data %>% 
+  group_by(system, ret_yr) %>%
+  summarize(total = sum(forecast.adfw, na.rm=TRUE)) %>%
+  ggplot(aes(x=ret_yr, y=log(total))) + 
+    geom_line() + 
+    ggtitle("ADFW log abundance by river") +
+    facet_wrap(~system)
+
+bb_data %>% 
+  group_by(system, ret_yr) %>%
+  summarize(total = sum(forecast.fri, na.rm=TRUE)) %>%
+  ggplot(aes(x=ret_yr, y=log(total))) + 
+    geom_line() + 
+    ggtitle("FRI log abundance by river") +
+    facet_wrap(~system)
+```
+# Question your team will address
+
+What will your team do with the data? You can do many things with the data. The only constraints are that you
+
+* fit ARIMA models (note you'll want to log the abundance data). You can fit other models in addition ot ARIMA if you want.
+* do diagnostics for ARIMA models
+* make forecasts
+* test how good your forecasts or compare forecasts (many options here)
+
+Example, "Our team decided to compare the accuracy of forecasts using best fit ARIMA models for pink salmon using 4 regions in the Ruggerone & Irvine data. Our question is whether forecast accuracy is different for different regions."
+
+## OUR QUESTION IS
+"Compare the accuracy of total abundance forecasts using ARIMA models for Bristol Bay sockeye rivers and compare to the AKFW and UW FRI forecasts."
+
+# Method you will use
+
+Start with one river and figure it out
+Fit ARIMA models
+Do Diagonstics 
+Make Forecasts
+Test accuracy
+
+## Initial plan
+
+Describe what you plan to do to address your question. Note this example is with Ruggerone & Irvine data but your team will use the Bristol Bay data.
+
+Example, "We will fit ARIMA models to 1960-1980 data on pink salmon in 2 regions in Alaska and 2 regions in E Asia. We will make 1981-1985  forecasts (5 year) and compare the accuracy of the forecasts to the actual values. We will measure accuracy with mean squared error. We will use the forecast package to fit the ARIMA models."
+
+Get one time series out of `bb_data`
+```{r}
+# dat <- bb_data %>%
+#   filter(system == "Egegik") %>%
+#   mutate(lnreturns = log(rets)) %>%
+#   select(year, lnreturns)
+# head(dat)
+
+subdata <- bb_data %>%
+  group_by(system, ret_yr) %>%
+  summarize(lntotal = log(sum(ret, na.rm=TRUE)))%>%
+  filter(system == "Egegik")
+  
+
+```
+
+## What you actually did
+
+Example, "We were able to do our plan fairly quickly, so after writing the basic code, we divided up all 12 regions in Ruggerone & Irvine and each team member did 4 regions. We compared the accuracy of forecasts for different time periods using 20-years for training and 5-year forecasts each time. We compared the RMSE, MAE, and MAPE accuracy measures."
+
+# Diagnostics and preliminary exploration
+
+## Plot the data
+
+Plot the data and discuss any obvious problems with stationarity from your visual test.
+
+## Use ACF and PACF
+
+Use the ACF and PACF plots to explore the time series. What did you learn? Also try decomposition.
+
+## Test for stationarity
+
+Run tests and discuss any stationarity issues and how these were addressed.
+
+# Results
+
+# Discussion
+
+# Description of each team member's contributions
+
+Example: "All team members helped decide on the goal and ran the analyses for the individual regions. Team members 2 & 3 wrote most of the code for the analysis of the regions. Team member 4 researched approaches for measuring accuracy of forecasts in [Hyndman & Athanasopoulos[OTexts.com/fpp2] and team member 2 added code for that to the methods. Team member 4 also researched tests for stationarity and worked with team member 2 to code that up. Team member 1 worked on the plotting section of the report using and adapting code that team member 3 wrote. All team members helped edit the report and wrote the discussion together."
+
