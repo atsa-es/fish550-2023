@@ -55,3 +55,75 @@ mod <- auto.arima(train, trace = TRUE)
 mod #picked a best model but a lot are within 2 AIC units of each other
 plot(forecast(mod)) 
 points(test) #just visually seems like there's an increase in the last few years that are not caught by the model
+
+
+
+
+# Update 4/12 Region and Forecast Level Differences -----------------------
+ruggerone_data %>% 
+  filter(species=="chum") %>% 
+  ggplot(aes(x=year, y=log(returns))) + 
+  geom_line() + 
+  ggtitle("chum salmon log abundance by region") +
+  facet_wrap(~region)
+
+
+#removing Korea Japan because there's no data
+ChumByRegion<-ruggerone_data %>%
+  filter(region != "japan") %>%
+  filter(region != "korea") %>%
+  group_by(species, region, year) %>%
+  summarize(total = sum(returns, na.rm=TRUE)) %>% 
+  mutate(lnreturns = log(total)) %>%
+  filter(species == "chum")
+head(ChumByRegion)
+
+#making sure all the regions cover all the years (or at least start and end)
+ChumByRegion %>% group_by(region) %>% summarise(startyear = min(year), endyear = max(year))
+#all start in 1952 and end in 2015
+
+#regions vector
+regions<-unique(ChumByRegion$region)
+#forecast levels
+forecastlevels<-c(5, 10, 20)
+#all combinations
+Allcombs<-expand_grid(regions, forecastlevels)
+
+#function
+FitModFunction<-function(reg, forelevel){
+  #filter region
+  Chumdat<-ChumByRegion %>% filter(region == reg)
+  #create time series
+  datts <- ts(Chumdat$lnreturns, start=Chumdat$year[1]) #this assumes the first year in data is the start of the time series (they are in order) 
+  cutoff<-2015-forelevel
+  train <- window(datts, 1952, cutoff)
+  test <- window(datts, cutoff+1, 2015)
+  
+  mod <- auto.arima(train)
+  mod
+  
+  res<-accuracy(forecast(mod, h=forelevel), test)[2,"MASE"] #test set MASE
+  
+  return(list(Fit = mod, MASE = res))
+}
+
+
+#loop through regions/levels
+RegionMods<-mapply(FitModFunction, Allcombs$regions, Allcombs$forecastlevels, SIMPLIFY = FALSE)
+
+head(RegionMods)
+RegionMASE<-sapply(RegionMods, function(x){y<-x$MASE})
+ResultsTable<-Allcombs %>% add_column(MASE = RegionMASE)
+ResultsTable
+
+#plot results
+ggplot(ResultsTable) + 
+  geom_bar(aes(x = regions, y = MASE, fill = as.factor(forecastlevels)), stat = "identity", position = "dodge") + 
+  geom_hline(aes(yintercept = 1), linetype = "dashed") + 
+  labs(fill = "Forecast Levels", x = "Region") + 
+  ggtitle("Chum")
+
+
+
+checkresiduals(test$Fit)
+str(RegionResults)
