@@ -1,3 +1,8 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
 # Lab 1: ARIMA models
 
 Team member names: Nick Chambers (SAFS), Liz Elmstrom (SAFS), Maria Kuruvilla (QERM)
@@ -5,20 +10,22 @@ Team member names: Nick Chambers (SAFS), Liz Elmstrom (SAFS), Maria Kuruvilla (Q
 
 # Data
 
-Bristol Bay Data. Discuss what part of the data set you will work with.
+We will use Bristol Bay Data. We want to use sockeye salmon returns for each river for each year.
 
 # Question your team will address
 
-What will your team do with the data? You can do many things with the data. The only constraints are that you
+Our team decided to compare the accuracy of forecasts using best fit ARIMA models for Sockeye salmon in different rivers in Bristol Bay data. Our question is whether forecast accuracy is different for different rivers.
+
+
+
+
+
+# Method you will use
 
 * fit ARIMA models (note you'll want to log the abundance data). You can fit other models in addition ot ARIMA if you want.
 * do diagnostics for ARIMA models
 * make forecasts
 * test how good your forecasts or compare forecasts (many options here)
-
-Example, "Our team decided to compare the accuracy of forecasts using best fit ARIMA models for pink salmon using 4 regions in the Ruggerone & Irvine data. Our question is whether forecast accuracy is different for different regions."
-
-# Method you will use
 
 ## Initial plan
 
@@ -31,18 +38,185 @@ Example, "We will fit ARIMA models to 1960-1980 data on pink salmon in 2 regions
 Example, "We were able to do our plan fairly quickly, so after writing the basic code, we divided up all 12 regions in Ruggerone & Irvine and each team member did 4 regions. We compared the accuracy of forecasts for different time periods using 20-years for training and 5-year forecasts each time. We compared the RMSE, MAE, and MAPE accuracy measures."
 
 # Diagnostics and preliminary exploration
+## Read the data
+```{r}
+bb_data <- readRDS(here::here("Lab-1", "Data_Images", 
+                              "bristol_bay_data_plus_covariates.rds"))
+head(bb_data)
+
+```
+## Checking out the unique data groups
+```{r echo=FALSE}
+cat("colnames: ", colnames(bb_data), "\n")
+cat("system (river): ", unique(bb_data$system), "\n")
+cat("age groups: ", unique(bb_data$age_group), "\n")
+
+```
+## Retrieving a subset of the data
+
+```{r}
+library(tidyverse)
+subdata <- bb_data %>%
+  group_by(system, ret_yr) %>%
+  summarize(lntotal = log(sum(ret, na.rm=TRUE)))%>%
+  filter(system == "Ugashik" || system == "Wood")
+head(subdata)
+```
+
 
 ## Plot the data
 
 Plot the data and discuss any obvious problems with stationarity from your visual test.
+```{r}
+plot1 <- ggplot(data = subdata, aes(x=ret_yr, y=lntotal)) + 
+  geom_line() + 
+  ggtitle("log abundance by river") +
+  facet_wrap(~system)
+plot1
+
+```
+
+It looks like there is a trend in Wood river log returns and maybe some negative autocorrelation. Variance in Ugashik seems to be higher until 1980 and lower afterwards.
+
 
 ## Use ACF and PACF
 
 Use the ACF and PACF plots to explore the time series. What did you learn? Also try decomposition.
 
+```{r}
+
+data_ts_Ugashik <- ts(subdata$lntotal[subdata$system == "Ugashik"],
+                      start=subdata$ret_yr[subdata$system == "Ugashik"][1])
+data_ts_Wood <- ts(subdata$lntotal[subdata$system == "Wood"],
+                      start=subdata$ret_yr[subdata$system == "Wood"][1])
+train_Ugashik <- window(data_ts_Ugashik, 1963, 2005)
+test_Ugashik <- window(data_ts_Ugashik, 2006, 2020)
+
+train_Wood <- window(data_ts_Wood, 1963, 2005)
+test_Wood <- window(data_ts_Wood, 2006, 2020)
+
+acf(data_ts_Ugashik)
+
+pacf(data_ts_Ugashik)
+
+acf(data_ts_Wood)
+
+pacf(data_ts_Wood)
+
+```
+
+The acf plots for both rivers are both slowly decaying and the pacf plots for both rivers show significants at various lags. In the Ugashik river lags 1, 4 and 7 are significant whereas in the Wood river, only lag 1 is significant. There might be AR1 structure in the ata from both rivers with some potentially higher order AR terms in Ugashik.
+
 ## Test for stationarity
 
 Run tests and discuss any stationarity issues and how these were addressed.
+
+```{r message=FALSE}
+library(forecast)
+mod_Ugashik <- auto.arima(data_ts_Ugashik)
+mod_Ugashik
+
+mod_Wood <- auto.arima(data_ts_Wood)
+mod_Wood
+```
+
+auto.arima suggests that ARIMA(0,1,0) fits Ugashik river data the best and ARIMA(1,1,1) fits the Wood river data the best.
+
+```{r message=FALSE}
+library(tseries)
+adf.test(data_ts_Ugashik, k = 0)
+
+
+
+kpss.test(data_ts_Ugashik, null =c("Level"))
+##Tests give different results
+## Ugashik data is probably NON stationary
+
+
+adf.test(data_ts_Wood, k = 0)
+
+
+
+kpss.test(data_ts_Wood, null =c("Trend"))
+#note that this gives different results depending on what null is
+
+#wood is stationary around trend
+
+
+
+```
+
+Wood river data is probably stationary around a trend, but tests give differnet results for Ugashik data. Ugashik data is probably non stationary.
+
+```{r}
+ndiffs(data_ts_Ugashik, test='kpss')
+
+ndiffs(data_ts_Ugashik, test='adf')
+
+
+```
+```{r}
+ndiffs(data_ts_Wood, test='kpss')
+
+ndiffs(data_ts_Wood, test='adf')
+```
+## Differencing the data
+```{r}
+Ugashik_diff <- diff(data_ts_Ugashik)
+Wood_diff <- diff(data_ts_Wood)
+
+plot.ts(Ugashik_diff)
+plot.ts(Wood_diff)
+
+```
+This looks pretty stationary.
+
+## Stationarity on differenced data
+
+```{r}
+adf.test(Ugashik_diff, k = 0)
+
+
+
+kpss.test(Ugashik_diff, null =c("Level"))
+
+```
+
+These results say Ugashik data is probably stationary.
+
+
+```{r}
+adf.test(Wood_diff, k = 0)
+
+
+
+kpss.test(Wood_diff, null =c("Level"))
+
+```
+These results say that Wood river data is also probably stationary.
+
+## Using auto.arima
+```{r message=FALSE}
+library(forecast)
+mod_Ugashik <- auto.arima(data_ts_Ugashik)
+mod_Ugashik
+
+mod_Wood <- auto.arima(data_ts_Wood)
+mod_Wood
+```
+```{r}
+library(zoo)
+fr <- forecast(mod_Ugashik, h=30)
+autoplot(fr) + geom_point(aes(x=x, y=y), data=fortify(test_Ugashik))
+checkresiduals(fr)
+```
+
+```{r}
+library(zoo)
+fr_Wood <- forecast(mod_Wood, h=30)
+autoplot(fr_Wood) + geom_point(aes(x=x, y=y), data=fortify(test_Wood))
+checkresiduals(fr_Wood)
+```
 
 # Results
 
