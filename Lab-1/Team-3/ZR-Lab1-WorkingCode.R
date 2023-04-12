@@ -84,12 +84,24 @@ ChumByRegion %>% group_by(region) %>% summarise(startyear = min(year), endyear =
 
 #regions vector
 regions<-unique(ChumByRegion$region)
+#regions key
+regionskey<-c("Cook Inlet", "E. Kamchatka", "Kodiak", "Russia", "N.British Columbia",
+              "Prince William Sound", "S. Alaska Pen.", "S. British Columbia", "SE Alaska", "W. Kamchatka", "Washington", "W. Alaska")
+names(regionskey)<-regions #for plotting
 #forecast levels
 forecastlevels<-c(5, 10, 20)
 #all combinations
 Allcombs<-expand_grid(regions, forecastlevels)
 
-#function
+#ACF and PACF
+ACFandPACF<-function(reg){
+  Chumdat<-ChumByRegion %>% filter(region == reg)
+  #create time series
+  datts <- ts(Chumdat$lnreturns, start=Chumdat$year[1])
+  return(list(a = acf(datts), p = pacf(datts)))
+}
+
+#function for ARIMA models
 FitModFunction<-function(reg, forelevel){
   #filter region
   Chumdat<-ChumByRegion %>% filter(region == reg)
@@ -109,21 +121,39 @@ FitModFunction<-function(reg, forelevel){
 
 
 #loop through regions/levels
+DiagPlots<-lapply(regions, ACFandPACF)
+names(DiagPlots)<-regions
+
+#ACF plots for each region
+par(mfrow=c(3,4))
+for(r in 1:length(regions)){
+  plot(DiagPlots[[r]][[1]], main = paste0("Region: ", regionskey[r]))
+}
+
+#PACF plots for each region
+par(mfrow=c(3,4))
+for(r in 1:length(regions)){
+  plot(DiagPlots[[r]][[2]], main = paste0("Region: ", regionskey[r]))
+}
+
+
 RegionMods<-mapply(FitModFunction, Allcombs$regions, Allcombs$forecastlevels, SIMPLIFY = FALSE)
 
 head(RegionMods)
+#getting MASE
 RegionMASE<-sapply(RegionMods, function(x){y<-x$MASE})
-ResultsTable<-Allcombs %>% add_column(MASE = RegionMASE)
+RegionBestMod<-sapply(RegionMods, function(x){y<-as.character(x$Fit)})
+#combine into tables
+ResultsTable<-Allcombs %>% add_column(Model = RegionBestMod, MASE = RegionMASE)
 ResultsTable
 
 #plot results
 ggplot(ResultsTable) + 
   geom_bar(aes(x = regions, y = MASE, fill = as.factor(forecastlevels)), stat = "identity", position = "dodge") + 
   geom_hline(aes(yintercept = 1), linetype = "dashed") + 
+  scale_x_discrete(labels = as_labeller(regionskey)) +
   labs(fill = "Forecast Levels", x = "Region") + 
-  ggtitle("Chum")
+  ggtitle("Chum") + theme_bw() + theme(axis.text.x=element_text(angle=-90, hjust = 0, vjust = 0.5 )
 
+#still need to check residuals and stationarity
 
-
-checkresiduals(test$Fit)
-str(RegionResults)
