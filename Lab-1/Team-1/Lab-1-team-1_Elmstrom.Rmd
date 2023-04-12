@@ -1,0 +1,182 @@
+# Lab 1: ARIMA models
+
+Team member names: Nick Chambers (SAFS), Liz Elmstrom (SAFS), Maria Kuruvilla (QERM)
+
+This is Liz's copy of the script to mess around with. Happy to combine to main document at any time. 
+
+# Data
+
+Bristol Bay Data. Discuss what part of the data set you will work with.
+
+Read in the data
+```{r}
+bb_data <- readRDS(here::here("Lab-1", "Data_Images", "bristol_bay_data_plus_covariates.rds"))
+```
+
+## Checking out the unique data groups
+```{r echo=FALSE}
+cat("colnames: ", colnames(BB_data), "\n")
+cat("system (river): ", unique(BB_data$system), "\n")
+cat("age groups: ", unique(BB_data$age_group), "\n")
+
+```
+
+## Explore the data
+```{r fig.cap="total across all 4 ages"}
+bb_data %>% 
+  group_by(system, ret_yr) %>%
+  summarize(total = sum(ret, na.rm=TRUE)) %>%
+  ggplot(aes(x=ret_yr, y=log(total))) + 
+    geom_line() + 
+    ggtitle("log abundance by river") +
+    facet_wrap(~system)
+
+bb_data %>% 
+  group_by(system, ret_yr) %>%
+  summarize(total = sum(forecast.adfw, na.rm=TRUE)) %>%
+  ggplot(aes(x=ret_yr, y=log(total))) + 
+    geom_line() + 
+    ggtitle("ADFW log abundance by river") +
+    facet_wrap(~system)
+
+bb_data %>% 
+  group_by(system, ret_yr) %>%
+  summarize(total = sum(forecast.fri, na.rm=TRUE)) %>%
+  ggplot(aes(x=ret_yr, y=log(total))) + 
+    geom_line() + 
+    ggtitle("FRI log abundance by river") +
+    facet_wrap(~system)
+```
+
+We will look at the total forecasts for each river system. 
+
+# Question your team will address
+
+What will your team do with the data? You can do many things with the data. The only constraints are that you
+
+* fit ARIMA models (note you'll want to log the abundance data). You can fit other models in addition ot ARIMA if you want.
+* do diagnostics for ARIMA models
+* make forecasts
+* test how good your forecasts or compare forecasts (many options here)
+
+Example, "Our team decided to compare the accuracy of forecasts using best fit ARIMA models for pink salmon using 4 regions in the Ruggerone & Irvine data. Our question is whether forecast accuracy is different for different regions."
+
+## OUR QUESTION IS
+"Compare the accuracy of total abundance forecasts using ARIMA models for Bristol Bay sockeye rivers and compare to the AKFW and UW FRI forecasts."
+
+# Method you will use
+
+Start with one river and figure it out
+Divide and conquer
+Fit ARIMA models
+Do Diagonstics 
+Make Forecasts
+Test accuracy
+
+## Initial plan (Eli's words)
+
+Describe what you plan to do to address your question. Note this example is with Ruggerone & Irvine data but your team will use the Bristol Bay data.
+
+Example, "We will fit ARIMA models to 1960-1980 data on pink salmon in 2 regions in Alaska and 2 regions in E Asia. We will make 1981-1985  forecasts (5 year) and compare the accuracy of the forecasts to the actual values. We will measure accuracy with mean squared error. We will use the forecast package to fit the ARIMA models."
+
+## What you actually did (Eli's words)
+
+Example, "We were able to do our plan fairly quickly, so after writing the basic code, we divided up all 12 regions in Ruggerone & Irvine and each team member did 4 regions. We compared the accuracy of forecasts for different time periods using 20-years for training and 5-year forecasts each time. We compared the RMSE, MAE, and MAPE accuracy measures."
+
+
+## Testing using the Egegik
+
+Get one time series out of `bb_data`
+```{r}
+# dat <- bb_data %>%
+#   filter(system == "Egegik") %>%
+#   mutate(lnreturns = log(rets)) %>%
+#   select(year, lnreturns)
+# head(dat)
+
+subdata <- bb_data %>%
+  group_by(system, ret_yr) %>%
+  summarize(lntotal = log(sum(ret, na.rm=TRUE)))%>%
+  filter(system == "Egegik")
+  
+```
+# Diagnostics and preliminary exploration
+
+## Plot the data
+
+Plot the data and discuss any obvious problems with stationarity from your visual test.
+```{r}
+plot.ts(subdata$lntotal)
+
+# Based on this plot, we hypothesized the data would be non-stationary
+```
+## Use ACF and PACF
+
+Use the ACF and PACF plots to explore the time series. What did you learn? Also try decomposition.
+
+```{r testing for corr}
+
+pacf(subdata$ret_yr)
+acf(subdata$ret_yr)
+
+
+```
+
+## Test for stationarity
+
+Run tests and discuss any stationarity issues and how these were addressed.
+
+```{r}
+library(tseries)
+adf.test(subdata$lntotal, k = 0)
+
+## NON stationary
+
+kpss.test(subdata$lntotal, null =c("Level", "Trend"))
+
+#Both tests say non-stationary for Egegik
+
+```
+
+
+## Testing for differencing 
+```{r}
+ndiffs(subdata$lntotal, test='kpss')
+
+ndiffs(subdata$lntotal, test='adf')
+```
+
+## Dividing the data into test and train
+Make a time series object and divide into train and test data.
+```{r}
+datts <- ts(subdata$lntotal, start=subdata$ret_yr[1])
+train <- window(datts, 1963, 1983)
+test <- window(datts, 1984, 2020)
+```
+
+
+Fit a model with `auto.arima()` in the forecast package.
+```{r message=FALSE}
+library(forecast)
+mod <- auto.arima(datts)
+mod
+
+
+```
+
+Plot a 30-year forecast against the test data.
+```{r}
+library(zoo)
+fr <- forecast(mod, h=30)
+autoplot(fr) + geom_point(aes(x=x, y=y), data=fortify(test))
+```
+
+
+# Results
+
+# Discussion
+
+# Description of each team member's contributions (Eli's words)
+
+Example: "All team members helped decide on the goal and ran the analyses for the individual regions. Team members 2 & 3 wrote most of the code for the analysis of the regions. Team member 4 researched approaches for measuring accuracy of forecasts in [Hyndman & Athanasopoulos[OTexts.com/fpp2] and team member 2 added code for that to the methods. Team member 4 also researched tests for stationarity and worked with team member 2 to code that up. Team member 1 worked on the plotting section of the report using and adapting code that team member 3 wrote. All team members helped edit the report and wrote the discussion together."
+

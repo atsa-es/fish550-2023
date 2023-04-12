@@ -55,6 +55,7 @@ ruggerone_data = readRDS(rug_path)
 
 # get sockeye data per region
 sockeye_data=ruggerone_data %>% 
+  mutate(lnreturns=log(returns)) %>%
   filter(species=="sockeye" & !region %in% c("korea","japan")) # do not include NA or all 0 data
 
 # summarise data by area
@@ -74,7 +75,7 @@ subdata <- ruggerone_data %>%
 ## Plot the data
 ```{r}
 sockeye_data %>% 
-  ggplot(aes(x=year, y=log(returns))) + 
+  ggplot(aes(x=year, y=lnreturns)) + 
     geom_line() + 
     ggtitle("log abundance by region")+
     facet_wrap(~region,scales = "free")
@@ -90,6 +91,37 @@ subdata %>% filter(species=="sockeye")%>%
 Systematic changes in the mean are present in many of the stocks (e.g., nbc, w_kam, kod). There are a few increasing means and some random-walk-like ones. There is a strong linear trend in the ci, kod, and s_pen regions. Changes in the variance may also be present in a few stocks (e.g., wak, kod). 2-year periodic variations are possible in several regions (e.g., wak, sbc). 
 
 ## Use ACF and PACF
+```{r}
+library(forecast)
+# run ACF and PACF for each region, massage data into longer format for ggplotting
+sockeye_acf_pacf = sockeye_data %>% 
+  group_by(region) %>% 
+  summarise(list_acf=list(acf(lnreturns, plot=FALSE)),
+            list_pacf=list(pacf(lnreturns, plot=FALSE))) %>%
+  mutate(acf_lnreturns=purrr::map(list_acf, ~as.numeric(.x$acf)),
+         # add 1 to first value of PCF, one of the weird things Mark mentioned
+         pacf_lnreturns=purrr::map(list_pacf, ~as.numeric(c(0,.x$acf)))) %>% 
+  select(-c(list_acf,list_pacf)) %>% 
+  unnest(c(acf_lnreturns,pacf_lnreturns)) %>% 
+  group_by(region) %>% 
+  mutate(lag=row_number() - 1) %>%
+  pivot_longer(cols=c(acf_lnreturns,pacf_lnreturns),
+               values_to = "cf",
+               names_to = "cf_type")
+
+sockeye_ci = sockeye_data %>% 
+  group_by(region) %>% 
+  summarise(ci = qnorm((1 + 0.95)/2)/sqrt(n()))
+
+ggplot(sockeye_acf_pacf,aes(x=lag, y=cf, fill=cf_type)) +
+  geom_bar(stat="identity", position = 'dodge',width=1) +
+  geom_hline(yintercept = 0) +
+  geom_hline(data = sockeye_ci, aes(yintercept = -ci), color="blue", linetype="dotted") +
+  geom_hline(data = sockeye_ci, aes(yintercept = ci), color="blue", linetype="dotted") +
+  labs(x="Lag", y="ACF") +
+  facet_wrap(~region) + theme_bw()
+```
+A handful of regions (e.g., ci, seak) show ACF with a long tail and PACFs that cut off at 1-3 orders, which may indicate some autoregressive structure. Other regions (e.g., pws, m_i) have a sharp cut off with ACF and tailing PACFs, which may suggest a moving average structure. Some regions (s_pen,w_kam,kod) show long tails for both ACF and PACF, suggesting ARMA structure. A few regions show periodic trends (negative AR parameters) from their oscillating correlations factors. 
 
 Use the ACF and PACF plots to explore the time series. What did you learn? Also try decomposition.
 
@@ -97,11 +129,71 @@ Use the ACF and PACF plots to explore the time series. What did you learn? Also 
 
 Run tests and discuss any stationarity issues and how these were addressed.
 
+Doing a visual inspection of sockeye in the three regions shows that the raw data do not appear to be stationary. The Alaska region could potencilly be moving around a linear trend, but unclear. East Asia clearly does not show stationarity. The West Coast data may be stationary, but the variance may be increasing over time. 
+
+```{r}
+library(tseries)
+
+subdata_sockeye<-subdata %>% filter(species=="sockeye")
+
+# can't get select to work here
+alaska_sockeye<-subdata_sockeye %>% 
+  filter(area=="Alaska") %>%
+  select(lntotal)
+
+# dickey fuller test for stationarity alaska
+alaska_sockeye_vec<-alaska_sockeye$lntotal
+
+adf.test(alaska_sockeye_vec)
+
+# do first difference to see if we can get to stationarity
+alaska_sockeye_vec_1diff<-diff(alaska_sockeye_vec)
+
+adf.test(alaska_sockeye_vec_1diff)
+# doing a first difference successful for Alaska
+
+
+# dickey fuller test for stationarity east asia
+asia_sockeye<-subdata_sockeye %>% 
+  filter(area=="East_Asia") %>%
+  select(lntotal)
+
+asia_sockeye_vec<-asia_sockeye$lntotal
+
+adf.test(asia_sockeye_vec)
+
+asia_sockeye_vec_1diff<-diff(asia_sockeye_vec)
+adf.test(asia_sockeye_vec_1diff)
+
+# dickey fuller test for stationarity west coast
+wc_sockeye<-subdata_sockeye %>% 
+  filter(area=="WC") %>%
+  select(lntotal)
+
+wc_sockeye_vec<-wc_sockeye$lntotal
+
+adf.test(wc_sockeye_vec)
+
+
+wc_sockeye_vec_1diff<-diff(wc_sockeye_vec)
+adf.test(wc_sockeye_vec_1diff)
+
+
+```
+
+All three regions do not appear to be stationary, they exhibit random walk characteristics, so will need to be modeled that way or differenced. 
+
+
 # Results
+
+A handful of regions (e.g., ci, seak) show ACF with a long tail and PACFs that cut off at 1-3 orders, which may indicate some autoregressive structure. Other regions (e.g., pws, m_i) have a sharp cut off with ACF and tailing PACFs, which may suggest a moving average structure. Some regions (s_pen,w_kam,kod) show long tails for both ACF and PACF, suggesting ARMA structure. A few regions show periodic trends (negative AR parameters) from their oscillating correlations factors. 
+
+Sockeye salmon in East Asia, Alaska, and the West Coast all appear to have random walk characteristics. Using a random walk style model, or differenced in order to use a Box Jenkins approach seems necessary. First differencing successfully removes the random walk characteristics for all three regions. 
 
 # Discussion
 
+
+
 # Description of each team member's contributions
 
-Example: "All team members helped decide on the goal and ran the analyses for the individual regions. Team members 2 & 3 wrote most of the code for the analysis of the regions. Team member 4 researched approaches for measuring accuracy of forecasts in [Hyndman & Athanasopoulos[OTexts.com/fpp2] and team member 2 added code for that to the methods. Team member 4 also researched tests for stationarity and worked with team member 2 to code that up. Team member 1 worked on the plotting section of the report using and adapting code that team member 3 wrote. All team members helped edit the report and wrote the discussion together."
-
+Terrance did most of it, Karl did stationarity section.
