@@ -146,6 +146,13 @@ alaska_sockeye_vec<-alaska_sockeye$lntotal
 
 adf.test(alaska_sockeye_vec)
 
+# do first difference to see if we can get to stationarity
+alaska_sockeye_vec_1diff<-diff(alaska_sockeye_vec)
+
+adf.test(alaska_sockeye_vec_1diff)
+# doing a first difference successful for Alaska
+
+
 # dickey fuller test for stationarity east asia
 asia_sockeye<-subdata_sockeye %>% 
   filter(area=="East_Asia") %>%
@@ -155,6 +162,8 @@ asia_sockeye_vec<-asia_sockeye$lntotal
 
 adf.test(asia_sockeye_vec)
 
+asia_sockeye_vec_1diff<-diff(asia_sockeye_vec)
+adf.test(asia_sockeye_vec_1diff)
 
 # dickey fuller test for stationarity west coast
 wc_sockeye<-subdata_sockeye %>% 
@@ -165,16 +174,21 @@ wc_sockeye_vec<-wc_sockeye$lntotal
 
 adf.test(wc_sockeye_vec)
 
+
+wc_sockeye_vec_1diff<-diff(wc_sockeye_vec)
+adf.test(wc_sockeye_vec_1diff)
+
+
 ```
 
-All three regions do not appear to be stationary, they exhibit random walk characteristics, so will need to be modeled that way.
+All three regions do not appear to be stationary, they exhibit random walk characteristics, so will need to be modeled that way or differenced. 
 
 
 # Results
 
 A handful of regions (e.g., ci, seak) show ACF with a long tail and PACFs that cut off at 1-3 orders, which may indicate some autoregressive structure. Other regions (e.g., pws, m_i) have a sharp cut off with ACF and tailing PACFs, which may suggest a moving average structure. Some regions (s_pen,w_kam,kod) show long tails for both ACF and PACF, suggesting ARMA structure. A few regions show periodic trends (negative AR parameters) from their oscillating correlations factors. 
 
-Sockeye salmon in East Asia, Alaska, and the West Coast all appear to have random walk characteristics. Using a random walk style model, or differenced in order to use a Box Jenkins approach. 
+Sockeye salmon in East Asia, Alaska, and the West Coast all appear to have random walk characteristics. Using a random walk style model, or differenced in order to use a Box Jenkins approach seems necessary. First differencing successfully removes the random walk characteristics for all three regions. 
 
 # Discussion
 
