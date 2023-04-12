@@ -129,11 +129,71 @@ Use the ACF and PACF plots to explore the time series. What did you learn? Also 
 
 Run tests and discuss any stationarity issues and how these were addressed.
 
+Doing a visual inspection of sockeye in the three regions shows that the raw data do not appear to be stationary. The Alaska region could potencilly be moving around a linear trend, but unclear. East Asia clearly does not show stationarity. The West Coast data may be stationary, but the variance may be increasing over time. 
+
+```{r}
+library(tseries)
+
+subdata_sockeye<-subdata %>% filter(species=="sockeye")
+
+# can't get select to work here
+alaska_sockeye<-subdata_sockeye %>% 
+  filter(area=="Alaska") %>%
+  select(lntotal)
+
+# dickey fuller test for stationarity alaska
+alaska_sockeye_vec<-alaska_sockeye$lntotal
+
+adf.test(alaska_sockeye_vec)
+
+# do first difference to see if we can get to stationarity
+alaska_sockeye_vec_1diff<-diff(alaska_sockeye_vec)
+
+adf.test(alaska_sockeye_vec_1diff)
+# doing a first difference successful for Alaska
+
+
+# dickey fuller test for stationarity east asia
+asia_sockeye<-subdata_sockeye %>% 
+  filter(area=="East_Asia") %>%
+  select(lntotal)
+
+asia_sockeye_vec<-asia_sockeye$lntotal
+
+adf.test(asia_sockeye_vec)
+
+asia_sockeye_vec_1diff<-diff(asia_sockeye_vec)
+adf.test(asia_sockeye_vec_1diff)
+
+# dickey fuller test for stationarity west coast
+wc_sockeye<-subdata_sockeye %>% 
+  filter(area=="WC") %>%
+  select(lntotal)
+
+wc_sockeye_vec<-wc_sockeye$lntotal
+
+adf.test(wc_sockeye_vec)
+
+
+wc_sockeye_vec_1diff<-diff(wc_sockeye_vec)
+adf.test(wc_sockeye_vec_1diff)
+
+
+```
+
+All three regions do not appear to be stationary, they exhibit random walk characteristics, so will need to be modeled that way or differenced. 
+
+
 # Results
+
+A handful of regions (e.g., ci, seak) show ACF with a long tail and PACFs that cut off at 1-3 orders, which may indicate some autoregressive structure. Other regions (e.g., pws, m_i) have a sharp cut off with ACF and tailing PACFs, which may suggest a moving average structure. Some regions (s_pen,w_kam,kod) show long tails for both ACF and PACF, suggesting ARMA structure. A few regions show periodic trends (negative AR parameters) from their oscillating correlations factors. 
+
+Sockeye salmon in East Asia, Alaska, and the West Coast all appear to have random walk characteristics. Using a random walk style model, or differenced in order to use a Box Jenkins approach seems necessary. First differencing successfully removes the random walk characteristics for all three regions. 
 
 # Discussion
 
+
+
 # Description of each team member's contributions
 
-Example: "All team members helped decide on the goal and ran the analyses for the individual regions. Team members 2 & 3 wrote most of the code for the analysis of the regions. Team member 4 researched approaches for measuring accuracy of forecasts in [Hyndman & Athanasopoulos[OTexts.com/fpp2] and team member 2 added code for that to the methods. Team member 4 also researched tests for stationarity and worked with team member 2 to code that up. Team member 1 worked on the plotting section of the report using and adapting code that team member 3 wrote. All team members helped edit the report and wrote the discussion together."
-
+Terrance did most of it, Karl did stationarity section.
