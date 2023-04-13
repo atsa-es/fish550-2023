@@ -44,7 +44,7 @@ Explore the data
 ```
 
 
-# DIAGNOSTICS AND PRELIMARY EXPLORATION
+# DIAGNOSTICS AND PRELIMARY EXPLORATION (LIZ)
 
 ## Plot the data
 
@@ -54,7 +54,7 @@ Plot the data and discuss any obvious problems with stationarity from your visua
 
 ```
 
-## Use ACF and PACF
+## Use ACF and PACF (MARIA)
 
 Use the ACF and PACF plots to explore the time series. What did you learn? Also try decomposition.
 
@@ -62,7 +62,7 @@ Use the ACF and PACF plots to explore the time series. What did you learn? Also 
 
 ```
 
-## Test for stationarity
+## Test for stationarity (NICK)
 
 Run tests and discuss any stationarity issues and how these were addressed.
 
@@ -72,25 +72,30 @@ Run tests and discuss any stationarity issues and how these were addressed.
 
 # MODELING AND RESULTS
 
-## Dividing the data into test and train
+## Dividing the data into test and train (MARIA)
 
 ```{r}
 
 ```
 
-## Fit ARIMA models
+## Fit ARIMA models (MARIA)
 Fit a model with `auto.arima()` in the forecast package.
 
 ```{r}
 
 ```
 
-## Check accuracy
+## Plot forecasts (LIZ)
 ```{r}
 
 ```
 
-## Check residuals
+## Check accuracy (NICK)
+```{r}
+
+```
+
+## Check residuals (NICK)
 
 ```{r}
 
