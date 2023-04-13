@@ -185,6 +185,33 @@ forecast::ndiffs(wc_sockeye_vec)
 
 ```
 
+```{r}
+stock_arima = data.frame(matrix(ncol = 6))
+names = c("stock", "area", "species","p","d","q")
+colnames(stock_arima) = names
+sock_stocks = unique(sockeye_data$region)
+
+for (i in 1:length(sock_stocks)){
+# subset data to each region
+stock=sock_stocks[i]
+stock_data = sockeye_data%>% filter(region==stock)
+datts = ts(stock_data$lnreturns, start=stock_data$year[1])
+
+# arima tests 
+mod = auto.arima(datts)
+mod$coef
+arima_order = arimaorder(mod)
+
+# save all this data
+stock_arima[i,c("p","d","q")] = arima_order
+stock_arima[i,c(names(mod$coef))] = mod$coef
+stock_arima[i,c("stock")] = stock
+
+}
+# fill in NAs with 0s
+stock_arima %>% mutate_if(is.numeric, ~replace_na(., 0))
+
+```
 
 
 
