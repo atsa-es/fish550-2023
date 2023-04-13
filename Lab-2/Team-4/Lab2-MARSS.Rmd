@@ -38,7 +38,7 @@ esu
 ```
 
 ```{r echo=FALSE, out.width="50%", fig.cap="Figure from ESA recovery plan for Lower Columbia River Coho salmon, Lower Columbia River Chinook salmon, Columbia River Chum salmon, and Lower Columbia River steelhead. 2013. NMFS NW Region.  https://repository.library.noaa.gov/view/noaa/16002"}
-knitr::include_graphics("Data_Images/LCR-chinook-regions.png")
+knitr::include_graphics("C:/GitHub/fish550-2023/Lab-2/Data_Images/LCR-chinook-regions.png")
 ```
 
 ### Data structure
@@ -168,7 +168,7 @@ load(here::here("Lab-2", "Data_Images", "columbia-river.rda"))
 Wrangle the data.
 ```{r}
 library(dplyr)
-esuname <- esu[2]
+esuname <- esu[1]
 
 dat <- columbia.river %>% 
   subset(esu_dps == esuname) %>% # get only this ESU
@@ -185,7 +185,7 @@ dat[is.na(dat)] <- NA
 Clean up the row names
 ```{r}
 tmp <- rownames(dat)
-tmp <- stringr::str_replace(tmp, "Steelhead [(]Upper Columbia River DPS[)]", "")
+tmp <- stringr::str_replace(tmp, "Steelhead [(]Middle Columbia River DPS[)]", "")
 tmp <- stringr::str_replace(tmp, "River - summer", "")
 tmp <- stringr::str_trim(tmp)
 rownames(dat) <- tmp
