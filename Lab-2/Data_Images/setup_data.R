@@ -7,7 +7,7 @@ esuname <- rCAX:::caxesu[i]
 a <- rcax_hli("NOSA", type="colnames")
 tab <- rcax_hli("NOSA", flist = list(esu_dps = esuname))
 # find the pops with no data and remove
-tab <- tab %>% subset(datastatus == "Final" & bestvalue=="Yes")
+tab <- tab %>% subset((datastatus == "Final" | datastatus == "Reviewed") & bestvalue=="Yes")
 if(i == 17 | i == 20) tab$value <- tab$tsaij else tab$value <- tab$tsaej
 aa <- tab %>% group_by(esapopname, run) %>% summarize(n = sum(value!= "" & value!="0" & majorpopgroup != ""))
 bad <- aa[which(aa$n==0),]
@@ -25,9 +25,10 @@ df <- df %>%
 # Deal with pops with multiple data
 if(any(aa$n)){
   cat(aa$esapopname[aa$n], "has duplicated years\n")
-  df <- df %>%
-    group_by(species, esu_dps, majorpopgroup, esapopname, commonpopname, run, spawningyear) %>%
-    summarize(value = mean(value, na.rm = TRUE))
+  df <- df %>% ungroup() %>%
+    group_by(species, esu_dps, majorpopgroup, esapopname, run, spawningyear) %>%
+    summarize(value = mean(value, na.rm = TRUE,
+              commonpopname = commonpopname[1]))
 }
 if(i == 17 | i == 20) df$value_type <- "tsaij" else df$value_type <- "tsaej"
 columbia.river <- bind_rows(columbia.river, df)
