@@ -7,14 +7,20 @@ esuname <- rCAX:::caxesu[i]
 a <- rcax_hli("NOSA", type="colnames")
 tab <- rcax_hli("NOSA", flist = list(esu_dps = esuname))
 # find the pops with no data and remove
-tab <- tab %>% subset((datastatus == "Final" | datastatus == "Reviewed") & bestvalue=="Yes")
+tab <- tab %>% 
+  subset((datastatus == "Final" | datastatus == "Reviewed") & bestvalue=="Yes")
 if(i == 17 | i == 20) tab$value <- tab$tsaij else tab$value <- tab$tsaej
-aa <- tab %>% group_by(esapopname, run) %>% summarize(n = sum(value!= "" & value!="0" & majorpopgroup != ""))
+aa <- tab %>% 
+  group_by(esapopname, run) %>% 
+  summarize(n = sum(value!= "" & value!="0" & majorpopgroup != ""))
 bad <- aa[which(aa$n==0),]
-aa <- tab %>% group_by(esapopname, run) %>% summarize(n = any(duplicated(spawningyear)))
+aa <- tab %>% 
+  group_by(esapopname, run) %>% 
+  summarize(n = any(duplicated(spawningyear)))
 df <- tab %>% 
   subset(!(esapopname %in% bad$esapopname & run %in% bad$run)) %>%
   mutate(value = as.numeric(value))
+
 # get the min and max years in data
 years <- min(df$spawningyear[!is.na(df$value)]):max(df$spawningyear[!is.na(df$value)])
 # fill out the missing years with NAs
@@ -22,6 +28,7 @@ df <- df %>%
   select(species, esu_dps, majorpopgroup, esapopname, commonpopname, spawningyear, value, run) %>% 
   group_by(species, esu_dps, majorpopgroup, esapopname, commonpopname, run) %>% 
   complete(spawningyear=years, fill=list(value=NA))
+
 # Deal with pops with multiple data
 if(any(aa$n)){
   cat(aa$esapopname[aa$n], "has duplicated years\n")
