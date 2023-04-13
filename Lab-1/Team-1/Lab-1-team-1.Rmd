@@ -2,21 +2,6 @@
 
 Team member names: Nick Chambers (SAFS), Liz Elmstrom (SAFS), Maria Kuruvilla (QERM)
 
-
-# Data
-
-Bristol Bay Data. Discuss what part of the data set you will work with.
-
-Read in the data
-```{r}
-BB_data <- readRDS(here::here("Lab-1", "Data_Images", "bristol_bay_data_plus_covariates.rds"))
-```
-
-Explore the data
-```{r}
-
-
-```
 # Question your team will address
 
 What will your team do with the data? You can do many things with the data. The only constraints are that you
@@ -40,23 +25,78 @@ Example, "We will fit ARIMA models to 1960-1980 data on pink salmon in 2 regions
 
 Example, "We were able to do our plan fairly quickly, so after writing the basic code, we divided up all 12 regions in Ruggerone & Irvine and each team member did 4 regions. We compared the accuracy of forecasts for different time periods using 20-years for training and 5-year forecasts each time. We compared the RMSE, MAE, and MAPE accuracy measures."
 
-# Diagnostics and preliminary exploration
+
+# START CODING
+
+## Read in data and packages
+
+Bristol Bay Data. Discuss what part of the data set you will work with.
+
+Read in the data and packages
+```{r}
+BB_data <- readRDS(here::here("Lab-1", "Data_Images", "bristol_bay_data_plus_covariates.rds"))
+```
+
+Explore the data 
+```{r}
+
+
+```
+
+
+# DIAGNOSTICS AND PRELIMARY EXPLORATION
 
 ## Plot the data
 
 Plot the data and discuss any obvious problems with stationarity from your visual test.
 
+```{r}
+
+```
+
 ## Use ACF and PACF
 
 Use the ACF and PACF plots to explore the time series. What did you learn? Also try decomposition.
+
+```{r}
+
+```
 
 ## Test for stationarity
 
 Run tests and discuss any stationarity issues and how these were addressed.
 
-# Results
+```{r}
 
-# Discussion
+```
+
+# MODELING AND RESULTS
+
+## Dividing the data into test and train
+
+```{r}
+
+```
+
+## Fit ARIMA models
+Fit a model with `auto.arima()` in the forecast package.
+
+```{r}
+
+```
+
+## Check accuracy
+```{r}
+
+```
+
+## Check residuals
+
+```{r}
+
+```
+
+# DISCUSSION
 
 # Description of each team member's contributions
 
