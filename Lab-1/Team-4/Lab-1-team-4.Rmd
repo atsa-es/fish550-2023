@@ -132,6 +132,7 @@ Run tests and discuss any stationarity issues and how these were addressed.
 Doing a visual inspection of sockeye in the three regions shows that the raw data do not appear to be stationary. The Alaska region could potencilly be moving around a linear trend, but unclear. East Asia clearly does not show stationarity. The West Coast data may be stationary, but the variance may be increasing over time. 
 
 ```{r}
+# stationarity tests
 library(tseries)
 
 subdata_sockeye<-subdata %>% filter(species=="sockeye")
@@ -178,17 +179,84 @@ adf.test(wc_sockeye_vec)
 wc_sockeye_vec_1diff<-diff(wc_sockeye_vec)
 adf.test(wc_sockeye_vec_1diff)
 
+# confirm with forcast 
+forecast::ndiffs(asia_sockeye_vec)
+forecast::ndiffs(asia_sockeye_vec)
+forecast::ndiffs(wc_sockeye_vec)
 
 ```
 
-All three regions do not appear to be stationary, they exhibit random walk characteristics, so will need to be modeled that way or differenced. 
+```{r}
+# make a data frame to fill in values for each stock
+stock_arima = data.frame(matrix(ncol = 5))
+names = c("region", "species","p","d","q")
+colnames(stock_arima) = names
+sock_stocks = unique(sockeye_data$region)
+
+# loop through each stock and auto arima and save outputs
+for (i in 1:length(sock_stocks)){
+# subset data to each region
+stock=sock_stocks[i]
+stock_data = sockeye_data%>% filter(region==stock)
+datts = ts(stock_data$lnreturns, start=stock_data$year[1])
+
+# arima tests 
+mod = auto.arima(datts)
+mod$coef
+arima_order = arimaorder(mod)
+
+# save all this data
+stock_arima[i,c("p","d","q")] = arima_order
+stock_arima[i,c(names(mod$coef))] = mod$coef
+stock_arima[i,c("region")] = stock
+
+}
+
+stock_arima_area = stock_arima %>% 
+  # fill in NAs with 0s
+  mutate_if(is.numeric, ~replace_na(., 0)) %>% 
+  # add area
+  mutate(
+    area = case_match(
+      region, 
+      c("japan", "korea", "m_i", "e_kam", "w_kam") ~ "East_Asia",
+      c("wak", "s_pen", "kod", "ci", "pws", "seak") ~ "Alaska",
+      c("nbc", "sbc", "wa", "wc") ~ "WC",
+      .default = region),
+    species = "sockeye")
+
+# make into long format for ggplotting
+stock_gg_long = stock_arima_area %>% 
+  pivot_longer(-c(region,species,area), names_to = "parameter", values_to = "param_est")
+
+# General ARIMA structure
+stock_gg_long %>% filter(parameter %in% c("p","d","q")) %>%
+  ggplot(aes(x=param_est,fill=area)) + geom_bar() +
+  facet_wrap(vars(parameter),ncol=1) + theme_bw()
+
+# Autoregressive plot
+stock_gg_long %>% filter(parameter %in% c("ar1","ar2")) %>%
+  ggplot(aes(x=param_est,y=area,color=area)) + geom_boxplot() +
+  geom_jitter()+
+  facet_wrap(vars(parameter),ncol=1, scales = "free")+ theme_bw()
+
+# Moving average plot
+stock_gg_long %>% filter(parameter %in% c("ma1","ma2")) %>%
+  ggplot(aes(x=param_est,y=area,color=area)) + geom_boxplot() +
+  geom_jitter()+
+  facet_wrap(vars(parameter),ncol=1, scales = "free")+ theme_bw()
+
+```
+
 
 
 # Results
 
 A handful of regions (e.g., ci, seak) show ACF with a long tail and PACFs that cut off at 1-3 orders, which may indicate some autoregressive structure. Other regions (e.g., pws, m_i) have a sharp cut off with ACF and tailing PACFs, which may suggest a moving average structure. Some regions (s_pen,w_kam,kod) show long tails for both ACF and PACF, suggesting ARMA structure. A few regions show periodic trends (negative AR parameters) from their oscillating correlations factors. 
 
-Sockeye salmon in East Asia, Alaska, and the West Coast all appear to have random walk characteristics. Using a random walk style model, or differenced in order to use a Box Jenkins approach seems necessary. First differencing successfully removes the random walk characteristics for all three regions. 
+Sockeye salmon in East Asia and Alaska appear to have random walk characteristics. Using a random walk style model, or differenced in order to use a Box Jenkins approach seems necessary. First differencing successfully removes the random walk characteristics for all three regions. West coast sockeye do not appear to need differencing, while manually doing differencing and a dickey fuller test initially appeared to suggest differencing, the forcast package indicated that this population group did not actually need differencing.  
+
+The best fit ARIMA models for AK regions all predict first difference. AK shows no area-wide consensus on the order of the autoregressive part, but strongly supports a first order of the moving average part. ARIMA models for the West Coast regions have evidence for no differencing and a first order on the autoregressive part. WC regions are inconsistent on the predicted order number of the moving area part. 
 
 # Discussion
 

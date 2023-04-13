@@ -4,9 +4,9 @@
 #################################################################
 
 # We will fit this model
-# x(t)=x(t-1)+u+w(t), w(t)~N(0,q)
+# x(t)=x(t-1)+u+w(t), w(t)~N(mean=0, variance=q)
 # x(0) = x0
-# y(t) = x(t) + v(t), v(t)~N(0,r)
+# y(t) = x(t) + v(t), v(t)~N(mean=0, variance=r)
 
 library(MARSS)
 
@@ -14,11 +14,11 @@ library(MARSS)
 # Notice that the code is the same as the x equation
 x0 <- 1
 u <- 0.5
-q <- .1
-r <- .2
+q <- 0.1
+r <- 0.2
 n <- 50
 t <- 1:n
-x <- x0 + u + rnorm(1, 0, sqrt(q))
+x <- x0 + u + rnorm(1, 0, sqrt(q)) # x at t=1
 for (i in 2:n) x[i] <- x[i - 1] + u + rnorm(1, 0, sqrt(q))
 plot(x, xlim = c(1, n), type = "l")
 
@@ -35,7 +35,7 @@ mod.list <- list(
   Q = matrix("q"),
   Z = matrix(1),
   A = matrix(0),
-  R = matrix("r"),
+  R = matrix("FOOBAR"),
   tinitx = 0
 )
 
