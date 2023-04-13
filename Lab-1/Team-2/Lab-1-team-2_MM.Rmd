@@ -1,0 +1,201 @@
+---
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+# Lab 1: ARIMA models
+
+Team member names: Eric French (Civil), Dylan Hubl (ESRM), Miranda Mudge
+(Molecular & Cell Bio)
+
+# Data
+
+Bristol Bay Data.
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(forecast)
+library(zoo)
+```
+
+Read in the data
+
+```{r}
+bb_data <- readRDS(here::here("Lab-1", "Data_Images", "bristol_bay_data_plus_covariates.rds"))
+```
+
+Explore the data
+
+```{r}
+bb_data_reduced <- bb_data[,c('ret_yr', 'ret', 'system', 'age_group', 
+                              'forecast.adfw', "forecast.fri", 
+                              'env_pdo', 'env_sst', 'env_slp', 'env_upstr')]
+#str(BB_data_reduced)
+
+```
+
+We will need to remove NA value to avoid dip in 1.3 data...
+
+# Data of interest for our question
+
+```{r}
+region = "Ugashik"
+
+bb_data %>% 
+  filter(system==region) %>% 
+  filter(age_group== 1.3 | age_group==2.2) %>% 
+  ggplot(aes(x=ret_yr, y=log(ret))) + 
+    geom_line() + 
+    ggtitle("Log abundance by age group in Ugashik") +
+    facet_wrap(~age_group)
+```
+
+# Interested in log totals grouped by different times spent in fresh water vs ocean water for 4 year old fish in Ugashik region.
+
+Get one time series (ret_yr==2.2 or 1.3) and split into train and test.
+Each with 10 years. Ran models for both age groups using same code below
+by changing age variable below.
+
+```{r}
+age = 1.3
+
+dat <- bb_data %>%
+  filter(system==region) %>%
+  filter(age_group == age) %>%
+  mutate(lnreturns = log(ret), #returns same values as code above
+         year = ret_yr) %>%
+  select(year, lnreturns)
+
+datts <- ts(dat$lnreturns, start=dat$year[1])
+
+train <- window(datts, 1963, 2010) # range 1963 - 2010
+test <- window(datts, 2011, 2020) # range 2011 - 2020
+```
+
+## Visualize the time series
+
+```{r}
+plot.ts(datts, ylab = "Log abundance") #plot time series for ret_yr
+```
+
+Data for 2 yr freshwater-2 yr ocean water fish show variance around a
+mean of 5, suggesting differencing will be necessary to achieve
+stationarity.
+
+## Data exploration through differencing
+
+```{r}
+
+datts_diff <- diff(datts, differences = 1)
+plot(datts_diff, ylab = "Log abundance first differenced")
+
+```
+
+First differencing the data centers the variance around zero - indicates
+an AR(1) model would be appropriate.
+
+## ACF
+
+Tails off slowly -\> indicates AR(1) model Multiple lags significant
+with potential seasonality...going to ignore for this assignment by
+recommendation of Eli
+
+```{r}
+acf(datts)
+```
+
+## PACF
+
+Cuts off after lag 1 -\> indicates AR(1) model
+
+```{r}
+pacf(datts)
+```
+
+## Decomposition
+
+When attempting decomposition, error: time series has no or less than 2
+periods. Suggests the time series has no seasonality, or not enough
+seasonality to be measured.
+
+```{r}
+datts_decomp <- decompose(datts)
+```
+
+# Model selection
+
+Select yrs 1963-2010 to train model starting with ret_yr
+
+```{r}
+dat_model <- auto.arima(train)
+dat_model
+```
+
+### Results for ret_yr 2.2
+
+Series: train ARIMA(1,0,0) with non-zero mean
+
+Coefficients: ar1 mean 0.4545 5.9958 s.e. 0.1268 0.3373
+
+sigma\^2 = 1.753: log likelihood = -80.67 AIC=167.34 AICc=167.88
+BIC=172.95
+
+ARIMA model results from train data for ret_yr 2.2 fish in Bristol Bay
+consistent with results of ACF and PACF tests suggesting AR(1). First
+differencing the time series object returned the mean to zero, but
+auto.arima suggests 0 differencing and that data has non-zero mean.
+
+### Results for ret_yr 1.3
+
+Series: train ARIMA(0,1,1)
+
+Coefficients: ma1 -0.7305 s.e. 0.1400
+
+sigma\^2 = 18.34: log likelihood = -134.93 AIC=273.86 AICc=274.13
+BIC=277.56
+
+ARIMA model results from train data for ret_yr 1.3 fish in Bristol Bay
+very different from ret_yr 2.2 despite both being 4 yr old fish. Ret_yr
+1.3 inconsistent with results of ACF and PACF tests suggesting AR(1).
+First differencing the time series object returned the mean to zero, and
+auto.arima agrees first differencing the data is the best approach for
+model.
+
+## Fit the model to train data
+
+```{r}
+fit <- forecast::auto.arima(train)
+```
+
+## Test the accuracy of the model using forecast
+
+```{r}
+fr <- accuracy(forecast(fit, h=10), test)
+autoplot(fr) + geom_point(aes(x=x, y=y), data=fortify(test))
+```
+
+### Results for 2.2 fish in Ugashik
+
+```         
+                   ME     RMSE       MAE       MPE     MAPE      MASE        ACF1 Theil's U
+```
+
+Training set -0.001068187 1.295973 1.0706311 -6.326379 21.04040
+0.8937811 -0.01828833 NA Test set -0.314622455 1.051713 0.7971697
+-9.454614 16.49798 0.6654909 0.31998321 0.9446332
+
+### Results for 1.3 fish in Ugashik
+
+```         
+                 ME      RMSE       MAE       MPE      MAPE      MASE        ACF1 Theil's U
+```
+
+Training set 0.1861463 4.1924404 2.0115438 7.247855 40.584446 0.9675341
+0.007029462 NA Test set -0.2848240 0.6145452 0.3903876 -4.698664
+6.086718 0.1877728 0.098332425 0.810348
+
+```{r}
+
+```
