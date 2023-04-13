@@ -1,6 +1,6 @@
 # Getting Started
 
-* Read the background at [Lab1-ARIMA](https://atsa-es.github.io/atsa/Labs/Week%202/Lab1-ARIMA-2023.html)
+* Read the background at [Lab2-MARSS](https://atsa-es.github.io/atsa/Labs/Week%203/CR lab/Lab2-MARSS.html)
 
 # Set up your Fish 550 repository on your computer
 
