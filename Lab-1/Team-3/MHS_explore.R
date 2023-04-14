@@ -3,11 +3,90 @@
 library(tidyverse)
 library(forecast)
 
+#Autoregressive integrated moving average (ARIMA) model process 
+
+# A. ARIMA(p,d,q) Model Selection
+#   1) Evaluate Stationarity
+#   2) Fix any issues and select a differencing level (d)
+#   3) Selection of the AR level (p)
+#   4) Selection of the MA level (q)
+
+# B. Parameter Estimation
+# C. Model Checking 
+#   1)Test model residuals for normality (or other distribution assumptions)
+#   2) Test model residuals for temporal correlation
+
 #Code for testing accuracy with training and test data 
 #Read data in
 ruggerone_data <- readRDS("C:/GitHub/fish550-2023/Lab-1/Data_Images/ruggerone_data.rds")
+
 #Filter by species (Pink)
-dat <- ruggerone_data %>%  filter(species=="pink" & region=="ci") %>% mutate(log.returns = log(returns)) %>% select(year, log.returns)
+dat <- ruggerone_data %>%  
+  filter(species=="pink" & region=="ci") %>% 
+  mutate(log.returns = log(returns)) %>% 
+  select(year, log.returns)
+
+#ID years 
+unique(dat$year) #1952 start year, 2015 end year
+
+#Plot by region
+ruggerone_data %>% 
+  filter(species=="pink") %>% 
+  ggplot(aes(x=year, y=log(returns))) + 
+  geom_line() + 
+  ggtitle("pink salmon log abundance by region") +
+  facet_wrap(~region)
+
+#Note, no data in Korea 
+
+PinkByRegion<-ruggerone_data %>%
+  filter(region != "korea") %>%
+  group_by(species, region, year) %>%
+  summarize(total = sum(returns, na.rm=TRUE)) %>% 
+  mutate(lnreturns = log(total)) %>%
+  filter(species == "pink")%>% 
+  print(n=10)
+
+#check to see if start and end years are all the same 
+PinkByRegion %>% group_by(region) %>% summarise(startyear = min(year), endyear = max(year))
+
+#ID Stationarity 
+
+#All data 
+
+pink.dat<-subset(ruggerone_data, species=='pink')
+
+pink.dat %>%
+  group_by(year) %>%
+  summarize(total = sum(returns, na.rm=T)) %>%
+  ggplot(aes(x=year, y=log(total))) +
+  geom_line() +
+  ylab('Log (Returns)') +
+  xlab('Year')
+
+total.pink<-pink.dat %>%
+  group_by(year) %>%
+  summarize(lntotal=log(sum(returns, na.rm=T)))
+
+pink.ts<-ts(total.pink$lntotal, 
+            start=total.pink$year[1])
+plot(diff(pink.ts)) #something odd happened between 1990 and 2005
+acf(diff(pink.ts)) #ruh roh, ACF correlation for entire series 
+#By region
+
+
+
+
+
+
+#ACF and PACF 
+
+#ARIMA model
+
+# Update 4/12 Region and Forecast Level Differences -----------------------
+
+
+
 #Create a time series 
 dat <- ts(dat$log.returns, start=dat$year[1])
 #Training window
