@@ -101,6 +101,30 @@ ACFandPACF<-function(reg){
   return(list(a = acf(datts), p = pacf(datts)))
 }
 
+
+Chumdat<-ChumByRegion %>% filter(region == reg)
+#create time series
+datts <- ts(Chumdat$lnreturns, start=Chumdat$year[1])
+trace <- capture.output({
+  # assign so it doesn't pollute the output
+  model <- auto.arima(datts, trace = TRUE)
+})
+con    <- textConnection(trace)
+models <- read.table(con, sep=":")
+close(con)
+
+BestMods<-models%>% filter(row_number() != nrow(models)) %>% mutate(AIC = replace(V2, V2 == "Inf", 99999), AIC = as.numeric(AIC), DeltaAIC = AIC-min(AIC)) %>% filter(DeltaAIC <= 2.0)
+for(i in 1:nrow(BestMods)){
+  BestMods$Mod[i]<-strsplit(strsplit(strsplit(BestMods$V1[i], "[(]")[[1]][2], "[)]")[[1]][1],"[,]")
+  BestMods$npar[i]<-sum(as.numeric(BestMods$Mod[i][[1]][c(1,3)]))
+  if(strsplit(strsplit(BestMods$V1[i], "[(]")[[1]][2], "[)]")[[1]][2] == " with drift         "){
+    BestMods$npar[i] = BestMods$npar[i] + 1
+  }
+}
+
+BestMods$Mod
+BestMods$npar
+
 #function for ARIMA models
 FitModFunction<-function(reg, forelevel){
   #filter region
@@ -112,12 +136,40 @@ FitModFunction<-function(reg, forelevel){
   test <- window(datts, cutoff+1, 2015)
   
   mod <- auto.arima(train)
-  mod
   
-  res<-accuracy(forecast(mod, h=forelevel), test)[2,"MASE"] #test set MASE
+  #testing to be sure that this is the best model (is the best mode the simplest if it is within 2 AIC values?)
+  trace <- capture.output({
+    # assign so it doesn't pollute the output
+    model <- auto.arima(datts, trace = TRUE)
+  })
+  con    <- textConnection(trace)
+  models <- read.table(con, sep=":")
+  close(con)
   
-  return(list(Fit = mod, MASE = res))
+  #getting the "best models" that are within 2 AIC units
+  BestMods<-models%>% filter(row_number() != nrow(models)) %>% mutate(AIC = replace(V2, V2 == "Inf", 99999), AIC = as.numeric(AIC), DeltaAIC = AIC-min(AIC)) %>% filter(DeltaAIC <= 2.0)
+  for(i in 1:nrow(BestMods)){
+    BestMods$Mod[i]<-strsplit(strsplit(strsplit(BestMods$V1[i], "[(]")[[1]][2], "[)]")[[1]][1],"[,]")
+    BestMods$npar[i]<-sum(as.numeric(BestMods$Mod[i][[1]][c(1,3)]))
+    if(strsplit(strsplit(BestMods$V1[i], "[(]")[[1]][2], "[)]")[[1]][2] == " with drift         "){
+      BestMods$npar[i] = BestMods$npar[i] + 1
+    }
+  }
+  
+  New<-BestMods %>% filter(npar == min(npar))
+  if(0 %in% New$DeltaAIC){
+      #auto arima picked the best model
+      res<-accuracy(forecast(mod, h=forelevel), test)[2,"MASE"] #test set MASE
+  }else{
+      #of the models with the fewest parameters, pick the lowest AIC
+      newmod<-New %>% filter(AIC == min(AIC)) %>% select(Mod)
+      mod<-Arima(train, order = as.numeric(strsplit(newmod$Mod[[1]], "[,]")), include.constant = TRUE)
+      res<-accuracy(forecast(mod, h=forelevel), test)[2,"MASE"] #test set MASE
+    }
+
+  return(list(Fit = mod, MASE = res, Bm = BestMods)) #include best mods for testing to see that it's doing what I want
 }
+
 
 
 #loop through regions/levels
@@ -153,7 +205,26 @@ ggplot(ResultsTable) +
   geom_hline(aes(yintercept = 1), linetype = "dashed") + 
   scale_x_discrete(labels = as_labeller(regionskey)) +
   labs(fill = "Forecast Levels", x = "Region") + 
-  ggtitle("Chum") + theme_bw() + theme(axis.text.x=element_text(angle=-90, hjust = 0, vjust = 0.5 )
+  ggtitle("Chum") + theme_bw() + theme(axis.text.x=element_text(angle=-90, hjust = 0, vjust = 0.5 ))
 
-#still need to check residuals and stationarity
 
+
+#get stationarity results
+
+Ndiff<-sapply(RegionBestMod, function(x){
+  a<-strsplit(strsplit(strsplit(x, "[(]")[[1]][2], "[)]")[[1]][1],"[,]")
+  return(a[[1]][2])}
+)
+
+tibble(Ndiff = Ndiff, region = Allcombs$regions, level = Allcombs$forecastlevels) %>%
+  ggplot() + geom_bar(aes(x = region, y = Ndiff, fill = as.factor(level)), stat = "identity", position = "dodge") +
+  scale_x_discrete(labels = as_labeller(regionskey)) +
+  labs(fill = "Forecast Levels", x = "Region", y = "Number of Differences") + 
+  ggtitle("Number of differences to achieve stationarity (Chum)") + theme_bw() + theme(axis.text.x=element_text(angle=-90, hjust = 0, vjust = 0.5 ))
+
+
+#checking residuals
+for(i in 1:36){
+  print(i)
+  print(checkresiduals(RegionModsChum[[i]]$Fit))
+}
