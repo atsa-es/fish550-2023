@@ -200,9 +200,9 @@ Make a time series object and divide into train and test data.
 ## Egegik
 e.datts <- ts(eg$lntotal, start=eg$ret_yr[1])
 ## Differencing Egegik by 1
-diff1dat <- diff(e.datts)
-e.train <- window(diff1dat, 1963, 1993)
-e.test <- window(diff1dat, 1994, 2020)
+#diff1dat <- diff(e.datts)
+e.train <- window(e.datts, 1963, 1993)
+e.test <- window(e.datts, 1984, 2020)
 
 ## Igushik
 i.datts <- ts(ig$lntotal, start=eg$ret_yr[1])
@@ -210,9 +210,9 @@ i.train <- window(i.datts, 1963, 1993)
 i.test <- window(i.datts, 1994, 2020)
 
 ## Kvichak
-kv.datts <- ts(kv$lntotal, start=eg$ret_yr[1])
-kv.train <- window(kv.datts, 1963, 1993)
-kv.test <- window(kv.datts, 1994, 2020)
+kv.datts <- ts(kv$lntotal, start=eg$ret_yr[1]) ## Changed the train and test data timing 
+kv.train <- window(kv.datts, 1963, 2003)
+kv.test <- window(kv.datts, 2004, 2020)
 
 ```
 
@@ -229,10 +229,32 @@ mod.ig
 mod.kv <- auto.arima(kv.train)
 mod.kv
 
+### Notes from Eli, testing with data from the Kvichak. (auto.arima chose a 0,0,1 model)
+
+# Chosing our own arima structure. This is how we would write it if we just wanted a single model with a specified structure. 
+fit = Arima(kv.train, order = c(2,1,0))# just a random example of how its written, didn't chose the order for any reason
+
+# For loop to test multiple models and find their accuracy
+mod.list <- list(c(0,0,1), c(1,0,1), c(2,0,1))## List of mods to test. First option is what auto.arima chose
+fits <- list()# list to store the model fits in 
+err.list <- list(0) # list for accuracy data
+for(i in 1:3){
+  fits[[i]] <- Arima(kv.train, order = mod.list[[i]])# loops through list, fits model, and stores in 'fits'
+  err.list[[i]] <- accuracy(forecast(fits[[i]], h =10), kv.test) # puts accuracy data into list
+}
+
+fits
+err.list
+
+# Testing plot with the last ARIMA model (2,0,1)
+fr.test <- forecast(fits[[3]], h=20)
+autoplot(fr.test) + geom_point(aes(x=x, y=y), data=fortify(kv.test))+
+  geom_point(aes(x=ret_yr, y=lntotal), data = kv_fri_fore, col='red')
+
 ```
 
 
-Plot a 30-year forecast against the test data.
+Plot a 5-year and 10-year forecast against the test data.
 ```{r}
 
 fri_fore <- bb_data %>%
@@ -241,19 +263,19 @@ fri_fore <- bb_data %>%
 
 eg_fri_fore <- fri_fore %>% filter(system %in% 'Egegik')
 
-fr <- forecast(mod.eg, h=30)
+fr <- forecast(mod.eg, h=5)
 autoplot(fr) + geom_point(aes(x=x, y=y), data=fortify(e.test))+
   geom_point(aes(x=ret_yr, y=lntotal), data = eg_fri_fore, col='red')
 
 ## How to un-difference to compare to forecasted data?
 
 ig_fri_fore <- fri_fore %>% filter(system %in% 'Igushik')
-i.fr <- forecast(mod.ig, h=30)
+i.fr <- forecast(mod.ig, h=5)
 autoplot(i.fr) + geom_point(aes(x=x, y=y), data=fortify(i.test))+
   geom_point(aes(x=ret_yr, y=lntotal), data = ig_fri_fore, col = "red")
 
 kv_fri_fore <- fri_fore %>% filter(system %in% 'Kvichak')
-k.fr <- forecast(mod.kv, h=30)
+k.fr <- forecast(mod.kv, h=5)
 autoplot(k.fr) + geom_point(aes(x=x, y=y), data=fortify(kv.test))+
   geom_point(aes(x=ret_yr, y=lntotal), data = kv_fri_fore, col = "red")
 

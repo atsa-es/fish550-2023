@@ -1,0 +1,483 @@
+---
+title: "Emma-ZR-Lab-1-draft"
+author: "Emma T-S, Zoe R"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, warning = FALSE, error=FALSE, }
+library(tidyverse)
+library(forecast)
+library(here)
+```
+
+# Team Members
+
+Team member names: Zoe Rand (QERM), Madison Shipley (SAFS), Emma Timmins-Schiffman (Genome Sci)
+
+# Data
+
+We chose to work with all data to compare ability of the ARIMA models to forecast across different patterns of population dynamics and different sizes of training data sets.
+
+```{r}
+#reading in data
+ruggerone_data <- readRDS(here::here("Lab-1", "Data_Images", "ruggerone_data.rds"))
+```
+
+# Question your team will address
+
+1.  If we approached these data as stock managers, how confident could we be in projected return data 5, 10, or 20 years into the future?
+2.  What types of population patterns are ARIMA models best suited for?
+3.  Is one species or region "easier" to forecast than others?
+
+# Initial plan
+
+For each species we will subset by region and test for stationarity. Then for forecast levels of 5, 10, and 20 years for each region, we will run auto-arima. We will look at forecasts and accuracy using RMSE to determine what level of for asting could be appropriate when considering management utility.
+
+We will pick a couple of regions for each species to demonstrate ACF and PACF, and look through model results for any residuals.
+
+# What we actually did
+
+It was harder to compare models across species and regions than we assumed. We created functions to help streamline this process. Also after researching forecast accuracy metrics, we decided to use MASE as a metric instead of RMSE. It was difficult to decipher why some regions were more easily forecasted and others returned unreliable results.
+
+## Sockeye: Combined Regions
+
+Subset and format the data to analyze just sockeye.
+
+```{r, warning = FALSE}
+SockByRegion<-ruggerone_data %>%
+  filter(region != "japan") %>%
+  filter(region != "korea") %>%
+  group_by(species, region, year) %>%
+  summarize(total = sum(returns, na.rm=TRUE)) %>% 
+  mutate(lnreturns = log(total)) %>%
+  filter(species == "sockeye")
+```
+
+Create a time series object and train the data on the first 59 years of data; forecast the last 5 years.
+
+```{r}
+sockeye.ts<-ts(SockByRegion$lnreturns, start=SockByRegion$year[1])
+
+train.sockeye<-window(sockeye.ts, start=1952, end=2010)
+test.sockeye<-window(sockeye.ts, start=2011, end=2015)
+```
+
+Assess the ACF and PACF of the training data set.
+
+```{r echo=F}
+acf(train.sockeye)
+pacf(train.sockeye)
+```
+
+Look at the options for fitting an ARIMA to the data and then choose a final model. The best model for both of these is ARIMA(0,1,2); however, a comparison with other models suggests that ARIMA(1,1,1) is also a good fit with AIC within 0.3 of the ARIMA(0,1,2). The full dataset requires differencing (d=1).
+
+```{r}
+fit <- forecast::auto.arima(train.sockeye, trace=T)
+fit.final<-forecast::auto.arima(train.sockeye, approximation = F, stepwise = F)
+```
+
+Plot the 5 year forecast for the last part of the dataset compared to the actual data. The real data are represented by the black dots; the forecast is represented by the black line.
+
+```{r echo=F}
+fit.final %>%
+  forecast(h=5) %>%
+  autoplot() + geom_point(aes(x=x, y=y), data=fortify(test.sockeye))
+```
+
+## Assess how well forecasting performs for sockeye returns by region
+
+Create objects needed for plotting.
+
+```{r}
+regions<-unique(SockByRegion$region)
+regionskey<-c("Cook Inlet", "E. Kamchatka", "Kodiak", "Russia", "N.British Columbia",
+              "Prince William Sound", "S. Alaska Pen.", "S. British Columbia", "SE Alaska", "W. Kamchatka", "Washington", "W. Alaska")
+names(regionskey)<-regions
+forecastlevels<-c(5, 10, 20)
+Allcombs<-expand_grid(regions, forecastlevels)
+```
+
+Plot ACF and PACF for each region.
+
+```{r results='hide'}
+ACFandPACF<-function(reg){
+  Sockdat<-SockByRegion %>% filter(region == reg)
+  #create time series
+  datts <- ts(Sockdat$lnreturns, start=Sockdat$year[1])
+  return(list(a = acf(datts, plot = FALSE), p = pacf(datts, plot = FALSE)))
+}
+```
+
+```{r}
+DiagPlots<-lapply(regions, ACFandPACF)
+names(DiagPlots)<-regions
+```
+
+ACF plots
+
+```{r echo=F}
+par(mfrow=c(3,4))
+for(r in 1:length(regions)){
+  plot(DiagPlots[[r]][[1]], main = paste0("Region: ", regionskey[r]))
+}
+```
+
+PACF plots
+
+```{r echo=F}
+par(mfrow=c(3,4))
+for(r in 1:length(regions)){
+  plot(DiagPlots[[r]][[2]], main = paste0("Region: ", regionskey[r]))
+}
+```
+
+Fit ARIMA models to each region.
+
+```{r}
+FitModFunction<-function(reg, forelevel){
+  #filter region
+  Sockdat<-SockByRegion %>% filter(region == reg)
+  #create time series
+  datts <- ts(Sockdat$lnreturns, start=Sockdat$year[1]) #this assumes the first year in data is the start of the time series (they are in order) 
+  cutoff<-2015-forelevel
+  train <- window(datts, 1952, cutoff)
+  test <- window(datts, cutoff+1, 2015)
+  
+  mod <- auto.arima(train)
+  mod
+  
+  res<-accuracy(forecast(mod, h=forelevel), test)[2,"MASE"] #test set MASE
+  
+  return(list(Fit = mod, MASE = res))
+}
+
+RegionModsSock<-mapply(FitModFunction, Allcombs$regions, Allcombs$forecastlevels, SIMPLIFY = FALSE)
+
+```
+
+Extract MASE for comparisons of models across regions.
+
+```{r}
+RegionMASESock<-sapply(RegionModsSock, function(x){y<-x$MASE})
+RegionBestModSock<-sapply(RegionModsSock, function(x){y<-as.character(x$Fit)})
+
+ResultsTableSock<-Allcombs %>% add_column(Model = RegionBestModSock, MASE = RegionMASESock)
+```
+
+How well does auto.arima do in choosing a model? Is it different from what we would choose looking at ACF and PACF? For Cook Inlet, auto.arima selected ARIMA(4,1,1), but PACF has a significant lag at 6 and ACF trails off.
+
+```{r}
+sock.ci<-subset(SockByRegion, region=='ci')
+ci.ts<-ts(sock.ci$lnreturns, start=sock.ci$year[1])
+forecast::ndiffs(ci.ts, test='adf')
+forecast::ndiffs(ci.ts, test='kpss')
+
+train.ci5<-window(ci.ts, start=1952, end=2010)
+test.ci5<-window(ci.ts, start=2011, end=2015)
+ci.final5<-forecast::auto.arima(train.ci5, approximation = F, stepwise = F)
+accuracy(forecast(ci.final5, h=5), test.ci5)
+#MASE is just above 1
+
+acf(train.ci5)
+pacf(train.ci5)
+
+#select ARIMA (6,1,0)
+fit.ci2 <- Arima(train.ci5, order=c(6,1,0), include.mean=TRUE)
+accuracy(forecast(fit, h=5), test.ci5)
+#MASE is very high for the test set.
+```
+
+Here are the plots comparing the two models for Cook Inlet. The plots look very similar, but the forecast differs a bit for the last 2 years.
+
+```{r echo=F}
+ci.final5 %>%
+  forecast(h=5) %>%
+  autoplot() + geom_point(aes(x=x, y=y), data=fortify(test.ci5))
+
+fit.ci2 %>%
+  forecast(h=5) %>%
+  autoplot() + geom_point(aes(x=x, y=y), data=fortify(test.ci5))
+```
+
+## Chum: Regional
+
+Looking at data:
+
+```{r, echo = FALSE}
+ruggerone_data %>% 
+  filter(species=="chum") %>% 
+  ggplot(aes(x=year, y=log(returns))) + 
+  geom_line() + 
+  ggtitle("chum salmon log abundance by region") +
+  facet_wrap(~region)
+```
+
+Getting a subset of the data (removing regions with no data):
+
+```{r}
+#removing Korea Japan because there's no data
+ChumByRegion<-ruggerone_data %>%
+  filter(region != "japan") %>%
+  filter(region != "korea") %>%
+  group_by(species, region, year) %>%
+  summarize(total = sum(returns, na.rm=TRUE)) %>% 
+  mutate(lnreturns = log(total)) %>%
+  filter(species == "chum")
+head(ChumByRegion)
+```
+
+```{r}
+#making sure all the regions cover all the years (or at least start and end)
+ChumByRegion %>% group_by(region) %>% summarise(startyear = min(year), endyear = max(year))
+#all start in 1952 and end in 2015
+```
+
+Creating tibble to loop through:
+
+```{r}
+#regions vector
+regions<-unique(ChumByRegion$region)
+#regions key
+regionskey<-c("Cook Inlet", "E. Kamchatka", "Kodiak", "Russia", "N.British Columbia",
+              "Prince William Sound", "S. Alaska Pen.", "S. British Columbia", "SE Alaska", "W. Kamchatka", "Washington", "W. Alaska")
+names(regionskey)<-regions #for plotting
+#forecast levels
+forecastlevels<-c(5, 10, 20)
+#all combinations
+Allcombs<-expand_grid(regions, forecastlevels)
+
+```
+
+Function for ACF and PACF
+
+```{r}
+#ACF and PACF
+ACFandPACF<-function(reg){
+  Chumdat<-ChumByRegion %>% filter(region == reg)
+  #create time series
+  datts <- ts(Chumdat$lnreturns, start=Chumdat$year[1])
+  return(list(a = acf(datts, plot = FALSE), p = pacf(datts, plot = FALSE)))
+}
+#loop through regions/levels
+DiagPlots<-lapply(regions, ACFandPACF)
+names(DiagPlots)<-regions
+```
+
+```{r}
+#ACF plots for each region
+par(mfrow=c(3,4))
+for(r in 1:length(regions)){
+  plot(DiagPlots[[r]][[1]], main = paste0("Region: ", regionskey[r]))
+}
+
+#PACF plots for each region
+par(mfrow=c(3,4))
+for(r in 1:length(regions)){
+  plot(DiagPlots[[r]][[2]], main = paste0("Region: ", regionskey[r]))
+}
+```
+
+```{r}
+#function for ARIMA models
+FitModFunction<-function(reg, forelevel){
+  #This function takes a region and forecast level, subsets the data according to these parameters, then sets up the time series object, and the test and train sets. It uses auto.arima to find the "best" model and then this is checked by comparing other models with DeltaAICc < 2 and the number of parameters. If auto.arima picked a the model with the lowest AIC and the fewest parameters, it forecasts using this model and checks forecast accuracy with MASE. If not, it refits the model using Arima and the simpler model, and then checks forecast accuracy with this.
+  #filter region
+  Chumdat<-ChumByRegion %>% filter(region == reg)
+  #create time series
+  datts <- ts(Chumdat$lnreturns, start=Chumdat$year[1]) #this assumes the first year in data is the start of the time series (they are in order) 
+  cutoff<-2015-forelevel
+  train <- window(datts, 1952, cutoff)
+  test <- window(datts, cutoff+1, 2015)
+  
+  mod <- auto.arima(train)
+  
+  #testing to be sure that this is the best model (is the best mode the simplest if it is within 2 AIC values?)
+  trace <- capture.output({
+    # assign so it doesn't pollute the output
+    model <- auto.arima(datts, trace = TRUE)
+  })
+  con    <- textConnection(trace)
+  models <- read.table(con, sep=":")
+  close(con)
+  
+  #getting the "best models" that are within 2 AIC units
+  BestMods<-models%>% filter(row_number() != nrow(models)) %>% mutate(AIC = replace(V2, V2 == "Inf", 99999), AIC = as.numeric(AIC), DeltaAIC = AIC-min(AIC)) %>% filter(DeltaAIC <= 2.0)
+  for(i in 1:nrow(BestMods)){
+    BestMods$Mod[i]<-strsplit(strsplit(strsplit(BestMods$V1[i], "[(]")[[1]][2], "[)]")[[1]][1],"[,]")
+    BestMods$npar[i]<-sum(as.numeric(BestMods$Mod[i][[1]][c(1,3)]))
+    if(strsplit(strsplit(BestMods$V1[i], "[(]")[[1]][2], "[)]")[[1]][2] == " with drift         "){
+      BestMods$npar[i] = BestMods$npar[i] + 1
+    }
+  }
+  
+  New<-BestMods %>% filter(npar == min(npar))
+  if(0 %in% New$DeltaAIC){
+      #auto arima picked the best model
+      res<-accuracy(forecast(mod, h=forelevel), test)[2,"MASE"] #test set MASE
+  }else{
+      #of the models with the fewest parameters, pick the lowest AIC
+      newmod<-New %>% filter(AIC == min(AIC)) %>% select(Mod)
+      mod<-Arima(train, order = as.numeric(strsplit(newmod$Mod[[1]], "[,]")), include.constant = TRUE)
+      res<-accuracy(forecast(mod, h=forelevel), test)[2,"MASE"] #test set MASE
+    }
+
+  return(list(Fit = mod, MASE = res, Bm = BestMods)) #include best mods for testing to see that it's doing what I want
+}
+
+```
+
+```{r}
+RegionModsChum<-mapply(FitModFunction, Allcombs$regions, Allcombs$forecastlevels, SIMPLIFY = FALSE)
+```
+
+```{r}
+RegionMASEChum<-sapply(RegionModsChum, function(x){y<-x$MASE})
+RegionBestModChum<-sapply(RegionModsChum, function(x){y<-as.character(x$Fit)})
+#combine into tables
+ResultsTableChum<-Allcombs %>% add_column(Model = RegionBestModChum, MASE = RegionMASEChum)
+knitr::kable(head(ResultsTableChum))
+```
+
+## Pink: Combined Regions
+
+## Pink: Regional
+
+
+
+# Results
+
+### Sockeye:
+
+Plot MASE for three different forecast periods - 5, 10, and 20 years - across all regions. MASE \< 1 is a "good" value.
+
+```{r echo=F}
+ggplot(ResultsTableSock) + 
+  geom_bar(aes(x = regions, y = MASE, fill = as.factor(forecastlevels)), stat = "identity", position = "dodge") + 
+  geom_hline(aes(yintercept = 1), linetype = "dashed") + 
+  scale_x_discrete(labels = as_labeller(regionskey)) +
+  labs(fill = "Forecast Levels", x = "Region") + 
+  ggtitle("Sockeye") + theme_bw() + theme(axis.text.x=element_text(angle=-90, hjust = 0, vjust = 0.5 ))
+
+
+```
+
+None of the ARIMA models performed well for the forecasts of 20 years of data. Below is a comparison of the three lengths of forecasted data for South British Columbia where MASE was below 1 for the 5 year forecast but \>1 for the 10 and 20 year forecasts.
+
+```{r}
+sock.sbc<-subset(SockByRegion, region=='sbc')
+sbc.ts<-ts(sock.sbc$lnreturns, start=sock.sbc$year[1])
+#create training and test datasets for the 5, 10, and 20 year forecasts
+train.sbc5<-window(sbc.ts, start=1952, end=2010)
+test.sbc5<-window(sbc.ts, start=2011, end=2015)
+sbc.final5<-forecast::auto.arima(train.sbc5, approximation = F, stepwise = F)
+
+train.sbc10<-window(sbc.ts, start=1952, end=2005)
+test.sbc10<-window(sbc.ts, start=2006, end=2015)
+sbc.final10<-forecast::auto.arima(train.sbc10, approximation = F, stepwise = F)
+
+train.sbc20<-window(sbc.ts, start=1952, end=1995)
+test.sbc20<-window(sbc.ts, start=1996, end=2015)
+sbc.final20<-forecast::auto.arima(train.sbc20, approximation = F, stepwise = F)
+```
+
+Here are plots of the three forecast scenarios for sockeye in South British Columbia.
+
+```{r echo=F}
+sbc.final5 %>%
+  forecast(h=5) %>%
+  autoplot() + geom_point(aes(x=x, y=y), data=fortify(test.sbc5))
+
+sbc.final10 %>%
+  forecast(h=10) %>%
+  autoplot() + geom_point(aes(x=x, y=y), data=fortify(test.sbc10))
+
+sbc.final20 %>%
+  forecast(h=20) %>%
+  autoplot() + geom_point(aes(x=x, y=y), data=fortify(test.sbc20))
+```
+
+## Chum:
+
+```{r}
+ggplot(ResultsTableChum) + 
+  geom_bar(aes(x = regions, y = MASE, fill = as.factor(forecastlevels)), stat = "identity", position = "dodge") + 
+  geom_hline(aes(yintercept = 1), linetype = "dashed") + 
+  scale_x_discrete(labels = as_labeller(regionskey)) +
+  labs(fill = "Forecast Levels", x = "Region") + 
+  ggtitle("Chum") + theme_bw() + theme(axis.text.x=element_text(angle=-90, hjust = 0, vjust = 0.5 ))
+
+```
+
+Many of the 5 and 10 year forecasts for Chum seem to perform well across regions. Models fit to data in Russia do the worst at forecasting in that region. Additionally, forecasts are poor across the different numbers of years tested in E. Kamachatka, SE Alaska and W. Kamachatka.
+
+20 year forecast for Kodiak:
+
+```{r}
+chum.kod<-subset(ChumByRegion, region=='kod')
+chum.ts<-ts(chum.kod$lnreturns, start=chum.kod$year[1])
+#test datasets for plotting
+test.kod20<-window(chum.ts, start=1996, end=2015)
+forecast(RegionModsChum[[9]]$Fit, h = 20) %>% autoplot() + geom_point(aes(x=x, y=y), data=fortify(test.kod20))
+```
+
+10 year forecast for Russia:
+
+```{r}
+chum.russ<-subset(ChumByRegion, region=='m_i')
+chum.ts<-ts(chum.russ$lnreturns, start=chum.russ$year[1])
+#test datasets for plotting
+test.russ10<-window(chum.ts, start=2006, end=2015)
+forecast(RegionModsChum[[11]]$Fit, h = 10) %>% autoplot() + geom_point(aes(x=x, y=y), data=fortify(test.russ10))
+```
+
+It looks like returns really increase at the end of the time series in this region, which is likely why ARIMA models don't forecast this well.
+
+Looking at stationarity:
+
+```{r}
+Ndiff<-sapply(RegionBestModChum, function(x){
+  a<-strsplit(strsplit(strsplit(x, "[(]")[[1]][2], "[)]")[[1]][1],"[,]")
+  return(a[[1]][2])}
+)
+
+tibble(Ndiff = Ndiff, region = Allcombs$regions, level = Allcombs$forecastlevels) %>%
+  ggplot() + geom_bar(aes(x = region, y = Ndiff, fill = as.factor(level)), stat = "identity", position = "dodge") +
+  scale_x_discrete(labels = as_labeller(regionskey)) +
+  labs(fill = "Forecast Levels", x = "Region", y = "Number of Differences") + 
+  ggtitle("Number of differences to achieve stationarity (Chum)") + theme_bw() + theme(axis.text.x=element_text(angle=-90, hjust = 0, vjust = 0.5 ))
+
+```
+
+For Chum, time series for 5 of the regions were stationary (using tests from auto.arima) and 7 required 1 difference to be stationary.
+
+There was significant autocorrelation (based on Ljung-Box test) in 4 of the regional models for Chum:
+
+```{r}
+ac_mods_chum<-c(26, 27, 31, 32) #indexes of models with autocorrelated residuals
+for(i in 1:length(ac_mods_chum)){
+  print(paste(regionskey[ResultsTableChum$regions[ac_mods_chum[i]]], ResultsTableChum$forecastlevels[ac_mods_chum[i]]))
+  checkresiduals(RegionModsChum[[ac_mods_chum[i]]]$Fit)
+}
+```
+
+This suggests that ARIMA models may not be the best fit in this instance.
+
+### Pink:
+
+
+
+
+# Discussion
+
+Comparing the models across the three forecasts for SBC underlines that the data chosen for a forecast matters. Not only is the estimated ARIMA a better fit for a shorter forecast (and is trained on more data), but the training data for the model for the 20 year forecast is not stationary so the ARIMA parameters are very different from the parameters estimated for the 5 and 10 year forecasts. Six regions had at least one forecast with a well performing model (MASE \< 1); however, six regions did not have MASE \< 1 for even the 5 year forecast model. None of the 20 year forecasts resulted in MASE \< 1. This suggests that our data are so stochastic that it is difficult to forecast more than 5 years into the future. Another hypothesis could be that the training data set isn't long enough to generate a good model for the 20 year forecast, but from looking at the data I think the large inter-year variability in returns makes it difficult to fit an accurate model. In general, the models that fit the data better (lower MASE) tended to include differencing and were more likely to have higher order parameters.
+
+Models fit to Chum do better than models fit to Sockeye (SOMEONE WITH FISH KNOWLEDGE KNOW WHY??)
+
+# Description of each team member's contributions
+
+All team members helped decide on the goal and ran the analyses for the individual species and all regions. All team members wrote the code and created the results for one species. ZR researched approaches for measuring accuracy of forecasts and created functions to run the ARIMA models over multiple regions and select the best model (even if it was different than selected by auto.arima). ETS and MS modified this code to work with their own species. All team members helped write and edit the report.
