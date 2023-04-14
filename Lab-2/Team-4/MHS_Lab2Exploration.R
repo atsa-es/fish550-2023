@@ -1,0 +1,57 @@
+
+library(tidyverse)
+options(dplyr.summarise.inform = FALSE)
+
+
+load(here::here("Lab-2", "Data_Images", "columbia-river.rda"))
+
+esu <- unique(columbia.river$esu_dps)
+esu
+
+
+plotesu <- function(esuname){
+  df <- columbia.river %>% subset(esu_dps %in% esuname)
+  ggplot(df, aes(x=spawningyear, y=log(value), color=majorpopgroup)) + 
+    geom_point(size=0.2, na.rm = TRUE) + 
+    theme(strip.text.x = element_text(size = 3)) +
+    theme(axis.text.x = element_text(size = 5, angle = 90)) +
+    facet_wrap(~esapopname) +
+    ggtitle(paste0(esuname, collapse="\n"))
+}
+
+
+#Test adding a comment
+
+plotesu(esu[1])
+
+
+esuname <- esu[1]
+
+dat <- columbia.river %>% 
+  subset(esu_dps == esuname) %>% # get only this ESU
+  mutate(log.spawner = log(value)) %>% # create a column called log.spawner
+  select(esapopname, spawningyear, log.spawner) %>% # get just the columns that I need
+  pivot_wider(names_from = "esapopname", values_from = "log.spawner") %>% 
+  column_to_rownames(var = "spawningyear") %>% # make the years rownames
+  as.matrix() %>% # turn into a matrix with year down the rows
+  t() # make time across the columns
+# MARSS complains if I don't do this
+dat[is.na(dat)] <- NA
+
+
+tmp <- rownames(dat)
+tmp <- stringr::str_replace(tmp, "Steelhead [(]Middle Columbia River DPS[)]", "")
+tmp <- stringr::str_replace(tmp, "River - summer", "")
+tmp <- stringr::str_trim(tmp)
+rownames(dat) <- tmp
+
+mod.list1 <- list(
+  U = "unequal",
+  R = "diagonal and equal",
+  Q = "unconstrained"
+)
+
+library(MARSS)
+fit1 <- MARSS(dat, model=mod.list1, method="BFGS")
+
+#1. Create estimates of spawner abundance for all missing years and provide estimates of the decline from the historical abundance.
