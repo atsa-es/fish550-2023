@@ -131,4 +131,6 @@ ggplot(ResultsTable) +
   scale_x_discrete(labels = as_labeller(regionskey)) +
   labs(fill = "Forecast Levels", x = "Region") + 
   ggtitle("Sockeye") + theme_bw() + theme(axis.text.x=element_text(angle=-90, hjust = 0, vjust = 0.5 ))
+
+#choose examples for different MASE cases
                                        

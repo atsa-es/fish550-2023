@@ -71,7 +71,7 @@ ACF1 Theils U
 Training set -0.00179341        NA
 Test set      0.30234708 0.9239656
 
-#plot forecast
+#plot forecast all fish
 fit.final %>%
   forecast(h=5) %>%
   autoplot() + geom_point(aes(x=x, y=y), data=fortify(test.sockeye))
