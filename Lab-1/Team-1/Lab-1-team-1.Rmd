@@ -1,6 +1,22 @@
-# Lab 1: ARIMA models
+---
+title: Lab 1 Forecasting with ARIMA models
+author: Nick Chambers (SAFS), Liz Elmstrom (SAFS), Maria Kuruvilla (QERM)
+date: March 22, 2023
+output: 
+  html_document:
+    code-folding: true
+    toc: true
+    toc_float: true
+---
 
-Team member names: Nick Chambers (SAFS), Liz Elmstrom (SAFS), Maria Kuruvilla (QERM)
+```{r include=FALSE}
+library(tidyverse)
+library(tseries)
+library(forecast)
+library(zoo)
+
+options(dplyr.summarise.inform = FALSE)
+```
 
 # Question your team will address
 
@@ -10,8 +26,6 @@ What will your team do with the data? You can do many things with the data. The 
 * do diagnostics for ARIMA models
 * make forecasts
 * test how good your forecasts or compare forecasts (many options here)
-
-Example, "Our team decided to compare the accuracy of forecasts using best fit ARIMA models for pink salmon using 4 regions in the Ruggerone & Irvine data. Our question is whether forecast accuracy is different for different regions."
 
 # Method you will use
 
@@ -25,24 +39,52 @@ Example, "We will fit ARIMA models to 1960-1980 data on pink salmon in 2 regions
 
 Example, "We were able to do our plan fairly quickly, so after writing the basic code, we divided up all 12 regions in Ruggerone & Irvine and each team member did 4 regions. We compared the accuracy of forecasts for different time periods using 20-years for training and 5-year forecasts each time. We compared the RMSE, MAE, and MAPE accuracy measures."
 
-
 # START CODING
 
-## Read in data and packages
+## Read in and explore data (LIZ)
 
 Bristol Bay Data. Discuss what part of the data set you will work with.
 
-Read in the data and packages
+Read in the data 
 ```{r}
-BB_data <- readRDS(here::here("Lab-1", "Data_Images", "bristol_bay_data_plus_covariates.rds"))
+
+bb_data <- readRDS(here::here("Lab-1", "Data_Images", "bristol_bay_data_plus_covariates.rds"))
+
+cat("colnames: ", colnames(bb_data), "\n")
+cat("system (river): ", unique(bb_data$system), "\n")
+cat("age groups: ", unique(bb_data$age_group), "\n")
+
 ```
 
 Explore the data 
 ```{r}
+bb_data %>% 
+  group_by(system, ret_yr) %>%
+  summarize(total = sum(ret, na.rm=TRUE)) %>%
+  ggplot(aes(x=ret_yr, y=log(total))) + 
+    geom_line() + 
+    ggtitle("log abundance by river") +
+    facet_wrap(~system)
 
+bb_data %>%
+  group_by(system, ret_yr) %>%
+  summarize(total = sum(forecast.adfw, na.rm=TRUE)) %>%
+  ggplot(aes(x=ret_yr, y=log(total))) +
+    geom_line() +
+    ggtitle("ADFW log abundance by river") +
+    facet_wrap(~system)
+
+bb_data %>% 
+  group_by(system, ret_yr) %>%
+  summarize(total = sum(forecast.fri, na.rm=TRUE)) %>%
+  ggplot(aes(x=ret_yr, y=log(total))) + 
+    geom_line() + 
+    ggtitle("FRI log abundance by river") +
+    facet_wrap(~system)
 
 ```
 
+Based on this, we chose XXX insert three rivers XXXX to explore 1) total abundance, 2) compare ARIMA forecasts/accuracy, and 3) visually compare to these forecasts to forecasts from UW Fisheries Research Institute. 
 
 # DIAGNOSTICS AND PRELIMARY EXPLORATION (LIZ)
 
@@ -52,7 +94,24 @@ Plot the data and discuss any obvious problems with stationarity from your visua
 
 ```{r}
 
+#Sum and log returns for each river and year
+lndata <- bb_data %>%
+  group_by(system, ret_yr) %>%
+  summarize(lntotal = log(sum(ret, na.rm=TRUE)))
+
+# Choosing sites CHANGE THIS BASED ON WHAT WE PICK
+our_rivers <- filter(lndata, system %in% c("Egegik","Igushik", 'Kvichak'))
+
+# Plotting three rivers
+our_rivers %>% 
+  ggplot(aes(x=ret_yr, y=lntotal)) + 
+    geom_line() + 
+    ggtitle("log abundance by river") +
+    facet_wrap(~system)+theme_bw()
+
 ```
+
+Based on these plots, we hypothesize that data will be non-stationary for XXX, and stationary for XXX. 
 
 ## Use ACF and PACF (MARIA)
 
@@ -67,6 +126,27 @@ Use the ACF and PACF plots to explore the time series. What did you learn? Also 
 Run tests and discuss any stationarity issues and how these were addressed.
 
 ```{r}
+
+```
+
+## Difference tests (LIZ)
+
+```{r}
+
+# CHANGE NAMES ONCE RIVERS ARE CHOSEN
+
+eg <- filter(lndata, system %in% c("Egegik"))
+ndiffs(eg$lntotal, test='kpss')
+ndiffs(eg$lntotal, test='adf')
+
+## testing the others in case
+ig <- filter(lndata, system %in% c("Igushik"))
+ndiffs(ig$lntotal, test='kpss')
+ndiffs(ig$lntotal, test='adf')
+
+kv <- filter(lndata, system %in% c("Kvichak"))
+ndiffs(kv$lntotal, test='kpss')
+ndiffs(kv$lntotal, test='adf')
 
 ```
 
@@ -87,6 +167,27 @@ Fit a model with `auto.arima()` in the forecast package.
 
 ## Plot forecasts (LIZ)
 ```{r}
+
+# CHANGE NAMES ONCE RIVERS ARE CHOSEN
+
+fri_fore <- bb_data %>%
+  group_by(system, ret_yr) %>%
+  summarize(lntotal = log(sum(forecast.fri, na.rm=TRUE)))
+
+eg_fri_fore <- fri_fore %>% filter(system %in% 'Egegik')
+fr <- forecast(mod.eg, h=5)
+autoplot(fr) + geom_point(aes(x=x, y=y), data=fortify(e.test))+
+  geom_point(aes(x=ret_yr, y=lntotal), data = eg_fri_fore, col='red')
+
+ig_fri_fore <- fri_fore %>% filter(system %in% 'Igushik')
+i.fr <- forecast(mod.ig, h=5)
+autoplot(i.fr) + geom_point(aes(x=x, y=y), data=fortify(i.test))+
+  geom_point(aes(x=ret_yr, y=lntotal), data = ig_fri_fore, col = "red")
+
+kv_fri_fore <- fri_fore %>% filter(system %in% 'Kvichak')
+k.fr <- forecast(mod.kv, h=5)
+autoplot(k.fr) + geom_point(aes(x=x, y=y), data=fortify(kv.test))+
+  geom_point(aes(x=ret_yr, y=lntotal), data = kv_fri_fore, col = "red")
 
 ```
 
