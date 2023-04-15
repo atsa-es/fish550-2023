@@ -78,13 +78,13 @@ Look at the options for fitting an ARIMA to the data and then choose a final mod
 
 ```{r}
 fit <- forecast::auto.arima(train.sockeye, trace=T)
-fit.final<-forecast::auto.arima(train.sockeye, approximation = F, stepwise = F)
+fit.final.sock<-forecast::auto.arima(train.sockeye, approximation = F, stepwise = F)
 ```
 
 Plot the 5 year forecast for the last part of the dataset compared to the actual data. The real data are represented by the black dots; the forecast is represented by the black line.
 
 ```{r echo=F}
-fit.final %>%
+fit.final.sock %>%
   forecast(h=5) %>%
   autoplot() + geom_point(aes(x=x, y=y), data=fortify(test.sockeye))
 ```
@@ -149,13 +149,39 @@ FitModFunction<-function(reg, forelevel){
   test <- window(datts, cutoff+1, 2015)
   
   mod <- auto.arima(train)
-  mod
   
-  res<-accuracy(forecast(mod, h=forelevel), test)[2,"MASE"] #test set MASE
+  #testing to be sure that this is the best model (is the best mode the simplest if it is within 2 AIC values?)
+  trace <- capture.output({
+    # assign so it doesn't pollute the output
+    model <- auto.arima(datts, trace = TRUE)
+  })
+  con    <- textConnection(trace)
+  models <- read.table(con, sep=":")
+  close(con)
   
-  return(list(Fit = mod, MASE = res))
-}
+  #getting the "best models" that are within 2 AIC units
+  BestMods<-models%>% filter(row_number() != nrow(models)) %>% mutate(AIC = replace(V2, V2 == "Inf", 99999), AIC = as.numeric(AIC), DeltaAIC = AIC-min(AIC)) %>% filter(DeltaAIC <= 2.0)
+  for(i in 1:nrow(BestMods)){
+    BestMods$Mod[i]<-strsplit(strsplit(strsplit(BestMods$V1[i], "[(]")[[1]][2], "[)]")[[1]][1],"[,]")
+    BestMods$npar[i]<-sum(as.numeric(BestMods$Mod[i][[1]][c(1,3)]))
+    if(strsplit(strsplit(BestMods$V1[i], "[(]")[[1]][2], "[)]")[[1]][2] == " with drift         "){
+      BestMods$npar[i] = BestMods$npar[i] + 1
+    }
+  }
+  
+  New<-BestMods %>% filter(npar == min(npar))
+  if(0 %in% New$DeltaAIC){
+      #auto arima picked the best model
+      res<-accuracy(forecast(mod, h=forelevel), test)[2,"MASE"] #test set MASE
+  }else{
+      #of the models with the fewest parameters, pick the lowest AIC
+      newmod<-New %>% filter(AIC == min(AIC)) %>% select(Mod)
+      mod<-Arima(train, order = as.numeric(strsplit(newmod$Mod[[1]], "[,]")), include.constant = TRUE)
+      res<-accuracy(forecast(mod, h=forelevel), test)[2,"MASE"] #test set MASE
+    }
 
+  return(list(Fit = mod, MASE = res, Bm = BestMods)) #include best mods for testing to see that it's doing what I want
+}
 RegionModsSock<-mapply(FitModFunction, Allcombs$regions, Allcombs$forecastlevels, SIMPLIFY = FALSE)
 
 ```
@@ -401,6 +427,23 @@ sbc.final20 %>%
   autoplot() + geom_point(aes(x=x, y=y), data=fortify(test.sbc20))
 ```
 
+Looking at stationarity:
+```{r}
+Ndiff<-sapply(RegionBestModChum, function(x){
+  a<-strsplit(strsplit(strsplit(x, "[(]")[[1]][2], "[)]")[[1]][1],"[,]")
+  return(a[[1]][2])}
+)
+
+tibble(Ndiff = Ndiff, region = Allcombs$regions, level = Allcombs$forecastlevels) %>%
+  ggplot() + geom_bar(aes(x = region, y = Ndiff, fill = as.factor(level)), stat = "identity", position = "dodge") +
+  scale_x_discrete(labels = as_labeller(regionskey)) +
+  labs(fill = "Forecast Levels", x = "Region", y = "Number of Differences") + 
+  ggtitle("Number of differences to achieve stationarity (Chum)") + theme_bw() + theme(axis.text.x=element_text(angle=-90, hjust = 0, vjust = 0.5 ))
+```
+For Sockeye, 6 regions required differencing for all of the three subsets of the data (3 forecasting levels). Two regions required differencing for one subset of the data; four regions were stationary at any level of subsetting.
+
+None of the regional models for the 5-year forecast had autocorrelation in the residuals based on the results of the Ljung-Box test (p-value > 0.05). 
+
 ## Chum:
 
 ```{r}
@@ -474,9 +517,11 @@ This suggests that ARIMA models may not be the best fit in this instance.
 
 # Discussion
 
-Comparing the models across the three forecasts for SBC underlines that the data chosen for a forecast matters. Not only is the estimated ARIMA a better fit for a shorter forecast (and is trained on more data), but the training data for the model for the 20 year forecast is not stationary so the ARIMA parameters are very different from the parameters estimated for the 5 and 10 year forecasts. Six regions had at least one forecast with a well performing model (MASE \< 1); however, six regions did not have MASE \< 1 for even the 5 year forecast model. None of the 20 year forecasts resulted in MASE \< 1. This suggests that our data are so stochastic that it is difficult to forecast more than 5 years into the future. Another hypothesis could be that the training data set isn't long enough to generate a good model for the 20 year forecast, but from looking at the data I think the large inter-year variability in returns makes it difficult to fit an accurate model. In general, the models that fit the data better (lower MASE) tended to include differencing and were more likely to have higher order parameters.
+Comparing the models across the three forecasts for SBC underlines that the data chosen for a forecast matters. Not only is the estimated ARIMA a better fit for a shorter forecast (and is trained on more data), but the training data for the model for the 20 year forecast is not stationary so the ARIMA parameters are very different from the parameters estimated for the 5 and 10 year forecasts. 
 
-Models fit to Chum do better than models fit to Sockeye (SOMEONE WITH FISH KNOWLEDGE KNOW WHY??)
+For sockeye, six regions had at least one forecast with a well performing model (MASE \< 1); however, six regions did not have MASE \< 1 for even the 5 year forecast model. None of the 20 year forecasts resulted in MASE \< 1. This suggests that our data are so stochastic that it is difficult to forecast more than 5 years into the future. Another hypothesis could be that the training data set isn't long enough to generate a good model for the 20 year forecast, but from looking at the data we think the large inter-year variability in returns makes it difficult to fit an accurate model. In general, the models that fit the data better (lower MASE) tended to include differencing and were more likely to have higher order parameters.
+
+Models fit to Chum do better than models fit to Sockeye. There may be something about the patterns of chum population fluctuations that are more amenable to being modeled with ARIMA.
 
 # Description of each team member's contributions
 
