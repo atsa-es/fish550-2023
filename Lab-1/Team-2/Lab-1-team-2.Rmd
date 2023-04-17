@@ -4,41 +4,112 @@ Team member names: Eric French (Civil), Dylan Hubl (ESRM), Miranda Mudge (Molecu
 
 # Data
 
-Bristol Bay Data. Discuss what part of the data set you will work with.
+WE will be working with the Bristol Bay data set. Our focus will be on 4-year-old Sockeye in the Wood, Kvichak, and Ugashik regions.
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(forecast)
+library(zoo)
+
+bb_data <- readRDS(here::here("Lab-1", "Data_Images", "bristol_bay_data_plus_covariates.rds"))
+bb_data$log_ret <- log(bb_data$ret)
+bb_data$full_age <- bb_data$fw_age + bb_data$o_age
+```
 
 # Question your team will address
 
-What will your team do with the data? You can do many things with the data. The only constraints are that you
+Our group decided to compare how accurate the forecasts of best fit ARIMA models were for the populations of 4 year old salmon (1.3 and 2.2 age groups) were in the Wood, Kvichak, and Ugashik regions of the Bristol Bay data. Our questions were the following:
 
--   fit ARIMA models (note you'll want to log the abundance data). You can fit other models in addition ot ARIMA if you want.
--   do diagnostics for ARIMA models
--   make forecasts
--   test how good your forecasts or compare forecasts (many options here)
+1.  What kind of ARIMA model best fits the population in each chosen region and age group of sockeye salmon?
 
-Example, "Our team decided to compare the accuracy of forecasts using best fit ARIMA models for pink salmon using 4 regions in the Ruggerone & Irvine data. Our question is whether forecast accuracy is different for different regions."
+2.  Which populations of salmon can be better forecast using ARIMA modeling? Those that have spent 2 years in the ocean or 3?
+
+3.  Is there regional variation in the population changes of 4-year-old salmon?
 
 # Method you will use
 
 ## Initial plan
 
-Describe what you plan to do to address your question. Note this example is with Ruggerone & Irvine data but your team will use the Bristol Bay data.
-
-Fit ARIMA Models to 1960-2010 data on 4 yr old fish in the Wood and Ugashik systems. Then forecast to 2020. Split up the 1.3 and 2.2 age groups and compare. Measure one-step-ahead accuracy of training data and accuracy of forecast. We will measure accuracy by the comparing the RMS error of each model.
-
-Example, "We will fit ARIMA models to 1960-1980 data on pink salmon in 2 regions in Alaska and 2 regions in E Asia. We will make 1981-1985 forecasts (5 year) and compare the accuracy of the forecasts to the actual values. We will measure accuracy with mean squared error. We will use the forecast package to fit the ARIMA models."
+Using the forcast package, we plan to fit ARIMA models to the 1960-2010 data on 4 yr old fish in the Wood and Ugashik systems. Then forecast to 2020. We will then split up the 1.3 and 2.2 age groups and compare. We will measure accuracy by the comparing the RMS error of each model.
 
 ## What you actually did
 
-Example, "We were able to do our plan fairly quickly, so after writing the basic code, we divided up all 12 regions in Ruggerone & Irvine and each team member did 4 regions. We compared the accuracy of forecasts for different time periods using 20-years for training and 5-year forecasts each time. We compared the RMSE, MAE, and MAPE accuracy measures."
+We were able to enact our plan with a few modifications. Instead of modeling all the 4 year old salmon together, we separated and compared them by age group from the outset. Additionally, we added the Kvichak region to our analysis. We noticed there was an outlier in the data for the 1yr freshwater and 3yr ocean fish in the Ugashik region, so we fit a second model to the data starting at the year 1980 and compared its forecast to the original model's.
 
 # Diagnostics and preliminary exploration
 
 ## Plot the data
+```{r}
+# Miranda's Code
+age1.3 = 1.3
+age2.2 = 2.2
+
+dat_1.3 <- bb_data %>%
+  filter(system==region) %>%
+  filter(age_group == age1.3) %>%
+  mutate(lnreturns = log(ret), #returns same values as code above
+         year = ret_yr) %>%
+  select(year, lnreturns) 
+
+dat_2.2 <- bb_data %>%
+  filter(system==region) %>%
+  filter(age_group == age2.2) %>%
+  mutate(lnreturns = log(ret), #returns same values as code above
+         year = ret_yr) %>%
+  select(year, lnreturns)
+
+
+datts_1.3 <- ts(dat_1.3$lnreturns, start=dat_1.3$year[1]) # time series 1.3 fish 
+datts_1.3_out <- window(datts_1.3, start=1980, end = 2020) # time series 1.3 fish 
+datts_2.2 <- ts(dat_2.2$lnreturns, start=dat_2.2$year[1]) # time series 2.2 fish
+
+plot.ts(datts_1.3, ylab = "Log abundance", main = "Time series of fish: 1 year freshwater, 3 years ocean") 
+plot.ts(datts_1.3_out, ylab = "Log abundance", main = "Time series of fish: 1 year freshwater, 3 years ocean") 
+plot.ts(datts_2.2, ylab = "Log abundance", main = "Time series of fish: 2 year freshwater, 2 years ocean") 
+
+#Dylan's Code
+wood_dt <- bb_data[(bb_data$system == rivers[2]) & (bb_data$full_age == 4),]
+unique(wood_dt$o_age)
+#split the dataframe by years in the ocean
+wood3 <- wood_dt[wood_dt$o_age==3,]
+wood2 <- wood_dt[wood_dt$o_age==2,]
+
+#make them time series
+wood3.ts <- ts(wood3$log_ret, start = 1963, frequency = 1)
+wood2.ts <- ts(wood2$log_ret, start = 1963, frequency = 1)
+
+#check the plot
+plot.ts(wood2.ts, ylab = "log(counted fish x1000)", main ="4 year old sockeye returning to Wood River\nthat spent 2 years in Ocean" )
+#looks like it could potentially be stationary
+plot.ts(wood3.ts, ylab = "log(fish counted x1000)", main ="4 year old sockeye returning to Wood River\nthat spent 3 years in Ocean" )
+#looks like there is a positive trend to the data: not stationary, or could be stationary around a trend
+
+Kvichak_dt <- bb_data[(bb_data$system == rivers[4]) & (bb_data$full_age == 4),]
+unique(Kvichak_dt$o_age)
+kvi.3 <- Kvichak_dt[Kvichak_dt$o_age == 3,]
+kvi.2 <- Kvichak_dt[Kvichak_dt$o_age == 2,]
+
+#make the ts
+kvi.3.ts <- ts(kvi.3$log_ret, start = 1963, end = 2020)
+kvi.2.ts <- ts(kvi.2$log_ret, start = 1963, end = 2020)
+
+#plots
+layout(layout_mat_2)
+plot(kvi.2.ts, ylab = "log(fish counted x1000)", main = "4 year old sockey returning to Kvichak River\nthat spent 2 years in Ocean" )
+#looks fairly stationary to me
+plot(kvi.3.ts, ylab = "log(fish counted x1000)", main = "4 year old sockeye returning to Kvichak River\nthat spent 3 years in Ocean" )
+#one huge spike downward at start otherwise variance looks similar througout. maybe stationary around a trend if the initial spike doesn't ruin it
+```
 
 Plot the data and discuss any obvious problems with stationarity from your visual test.
 
 ## Use ACF and PACF
-
+```{r}
+acf(datts_1.3)
+acf(datts_1.3_out, na.action = na.pass) # allows na value
+acf(datts_2.2)
+```
 Use the ACF and PACF plots to explore the time series. What did you learn? Also try decomposition.
 
 ## Test for stationarity
