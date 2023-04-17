@@ -20,23 +20,11 @@ library(forecast)
 library(zoo)
 ```
 
-Read in the data
+# Read in the data
 
 ```{r}
 bb_data <- readRDS(here::here("Lab-1", "Data_Images", "bristol_bay_data_plus_covariates.rds"))
 ```
-
-Explore the data
-
-```{r}
-bb_data_reduced <- bb_data[,c('ret_yr', 'ret', 'system', 'age_group', 
-                              'forecast.adfw', "forecast.fri", 
-                              'env_pdo', 'env_sst', 'env_slp', 'env_upstr')]
-#str(BB_data_reduced)
-
-```
-
-We will need to remove NA value to avoid dip in 1.3 data...
 
 # Data of interest for our question
 
@@ -52,76 +40,163 @@ bb_data %>%
     facet_wrap(~age_group)
 ```
 
+We may need to remove NA value to avoid dip in 1.3 data...
+
 # Interested in log totals grouped by different times spent in fresh water vs ocean water for 4 year old fish in Ugashik region.
 
 Get one time series (ret_yr==2.2 or 1.3) and split into train and test.
 Each with 10 years. Ran models for both age groups using same code below
 by changing age variable below.
 
-```{r}
-age = 1.3
+## Subset and plot time series
 
-dat <- bb_data %>%
+1.3 = 1 year freshwater, 3 years ocean 2.2 = 2 year freshwater, 3 years
+ocean
+
+```{r}
+age1.3 = 1.3
+age2.2 = 2.2
+
+dat_1.3 <- bb_data %>%
   filter(system==region) %>%
-  filter(age_group == age) %>%
+  filter(age_group == age1.3) %>%
+  mutate(lnreturns = log(ret), #returns same values as code above
+         year = ret_yr) %>%
+  select(year, lnreturns) 
+
+dat_2.2 <- bb_data %>%
+  filter(system==region) %>%
+  filter(age_group == age2.2) %>%
   mutate(lnreturns = log(ret), #returns same values as code above
          year = ret_yr) %>%
   select(year, lnreturns)
 
-datts <- ts(dat$lnreturns, start=dat$year[1])
 
-train <- window(datts, 1963, 2010) # range 1963 - 2010
-test <- window(datts, 2011, 2020) # range 2011 - 2020
+datts_1.3 <- ts(dat_1.3$lnreturns, start=dat_1.3$year[1]) # time series 1.3 fish 
+datts_1.3_out <- window(datts_1.3, start=1980, end = 2020) # time series 1.3 fish 
+datts_2.2 <- ts(dat_2.2$lnreturns, start=dat_2.2$year[1]) # time series 2.2 fish
+
+plot.ts(datts_1.3, ylab = "Log abundance", main = "Time series of fish: 1 year freshwater, 3 years ocean") 
+plot.ts(datts_1.3_out, ylab = "Log abundance", main = "Time series of fish: 1 year freshwater, 3 years ocean") 
+plot.ts(datts_2.2, ylab = "Log abundance", main = "Time series of fish: 2 year freshwater, 2 years ocean") 
 ```
 
-## Visualize the time series
+Note that after looking at 1.3 data, went back to experiment with how
+removing outlier value would affect data and overall model for 1.3 fish.
+After removing negative value, the time series for 1 year fresh water -
+3 year ocean water fish looks very different.
 
-```{r}
-plot.ts(datts, ylab = "Log abundance") #plot time series for ret_yr
-```
-
-Data for 2 yr freshwater-2 yr ocean water fish show variance around a
-mean of 5, suggesting differencing will be necessary to achieve
-stationarity.
+Data for 1 yr freshwater-3 yr ocean water fish show variance around a
+mean of 5. Removal of outlier shows higher variance prior to 1980 with a
+rise in log abundance after. Data for 2 yr freshwater-2 yr ocean water
+fish show variance around a mean of 5. This suggests differencing may be
+necessary to achieve stationarity.
 
 ## Data exploration through differencing
 
 ```{r}
+datts_diff_1.3 <- diff(datts_1.3, differences = 1)
+datts_diff_1.3_out <- diff(datts_1.3_out, differences = 1)
+datts_diff_2.2 <- diff(datts_2.2, differences = 1)
 
-datts_diff <- diff(datts, differences = 1)
-plot(datts_diff, ylab = "Log abundance first differenced")
+plot(datts_diff_1.3, ylab = "Log abundance", main = "Time series, first differenced: 1 year freshwater, 3 years ocean")
+plot(datts_diff_1.3_out, ylab = "Log abundance", main = "Time series, first differenced: 1 year freshwater, 3 years ocean, outlier removed")
+plot(datts_diff_2.2, ylab = "Log abundance", main = "Time series, first differenced: 2 year freshwater, 2 years ocean")
 
 ```
 
-First differencing the data centers the variance around zero - indicates
-an AR(1) model would be appropriate.
+1 year fresh water - 3 year ocean water: First differencing the data
+centers the variance around zero. Originally non-zero mean.
+
+2 year fresh water - 2 year ocean water:
 
 ## ACF
 
-Tails off slowly -\> indicates AR(1) model Multiple lags significant
-with potential seasonality...going to ignore for this assignment by
-recommendation of Eli
+1 year fresh water - 3 year ocean water: Tails off slowly which
+indicates AR(1) model Multiple lags significant with potential
+seasonality...going to ignore for this assignment by recommendation of
+Eli
 
 ```{r}
-acf(datts)
+acf(datts_1.3)
+acf(datts_1.3_out, na.action = na.pass) # allows na value
+acf(datts_2.2)
 ```
 
 ## PACF
 
-Cuts off after lag 1 -\> indicates AR(1) model
+1 year fresh water - 3 year ocean water:Cuts off after lag 1 which
+indicates AR(1) model
 
 ```{r}
-pacf(datts)
+pacf(datts_1.3)
+pacf(datts_1.3_out,na.action = na.pass)
+pacf(datts_2.2)
 ```
 
 ## Decomposition
 
 When attempting decomposition, error: time series has no or less than 2
-periods. Suggests the time series has no seasonality, or not enough
-seasonality to be measured.
+periods. Suggests the time series has no seasonality, or not
+enoughseasonality to be measured.
 
 ```{r}
-datts_decomp <- decompose(datts)
+datts_decomp <- decompose(datts_2.2)
+```
+
+## Testing for stationarity
+
+## 1.3 fish
+
+1 year fresh water - 3 year ocean water: - Dickey-Fuller = -3.1174, Lag
+order = 3, p-value = 0.1236, alternative hypothesis: stationary -- The
+null hypothesis for both this test is that the data are non-stationary,
+we want to reject but p-value too high. Test suggests alternative
+hypothesis: stationary
+
+-   KPSS Level = 0.54744, Truncation lag parameter = 3, p-value =
+    0.03098 -- The p-value is less than 0.05. The null hypothesis of
+    stationarity around a level is rejected.
+
+-   KPSS Trend = 0.075997, Truncation lag parameter = 3, p-value = 0.1
+    -- The null hypothesis of stationarity around a trend is not
+    rejected.This confirms the above test that the data is stationary
+    around a trend.
+
+```{r}
+tseries::adf.test(datts_1.3) 
+tseries::kpss.test(datts_1.3, null = "Level") 
+tseries::kpss.test(datts_1.3, null = "Trend") 
+```
+
+## 1.3 fish, outlier removed
+
+-   Dickey-Fuller = -3.4337, Lag order = 3, p-value = 0.06582 -- The
+    null hypothesis for both this test is that the data are
+    non-stationary, we want to reject, that is confirmed here suggesting
+    data are stationary.
+
+-   KPSS Level = 0.26391, Truncation lag parameter = 3, p-value = 0.1 --
+    The p-value is greater than 0.05. The null hypothesis of
+    stationarity around a level is not rejected, data stationary
+
+-   KPSS Trend = 0.065518, Truncation lag parameter = 3, p-value = 0.1
+    -- The null hypothesis of stationarity around a trend is not
+    rejected. This confirms the above test that the data is stationary
+    around a trend.
+
+```{r}
+tseries::adf.test(datts_1.3_out) 
+tseries::kpss.test(datts_1.3_out, null = "Level") 
+tseries::kpss.test(datts_1.3_out, null = "Trend") 
+```
+
+## 2.2 fish
+
+```{r}
+tseries::adf.test(datts_2.2) 
+tseries::kpss.test(datts_2.2, null = "Level") 
+tseries::kpss.test(datts_2.2, null = "Trend") 
 ```
 
 # Model selection
@@ -129,11 +204,74 @@ datts_decomp <- decompose(datts)
 Select yrs 1963-2010 to train model starting with ret_yr
 
 ```{r}
-dat_model <- auto.arima(train)
-dat_model
+# Make dataframes for testing models later
+train_1.3 <- window(datts_1.3, 1963, 2010) # range 1963 - 2010
+test_1.3 <- window(datts_1.3, 2011, 2020) # range 2011 - 2020
+
+train_1.3_out <- window(datts_1.3_out, 1980, 2010) # range 1963 - 2010
+test_1.3_out <- window(datts_1.3_out, 2011, 2020) # range 2011 - 2020
+
+train_2.2 <- window(datts_2.2, 1963, 2010) # range 1963 - 2010
+test_2.2 <- window(datts_2.2, 2011, 2020) # range 2011 - 2020
 ```
 
-### Results for ret_yr 2.2
+# Train the models
+
+```{r}
+model_1.3 <- auto.arima(train_1.3)
+model_1.3
+
+model_1.3_out <- auto.arima(train_1.3_out)
+model_1.3_out
+
+model_2.2 <- auto.arima(train_2.2)
+model_2.2
+```
+
+### Printed results for ret_yr 1.3
+
+Series: train ARIMA(0,1,1)
+
+Coefficients: ma1 -0.7305 s.e. 0.1400
+
+sigma\^2 = 18.34: log likelihood = -134.93 AIC=273.86 AICc=274.13
+BIC=277.56
+
+Series: train_1.3 ARIMA(2,1,2)
+
+Coefficients: ar1 ar2 ma1 ma2 0.6167 -0.9676 -0.8030 0.8451 s.e. 0.0500
+0.0341 0.1359 0.1212
+
+sigma\^2 = 1.161: log likelihood = -68.56 AIC=147.11 AICc=148.58
+BIC=156.36
+
+ARIMA model results from train data for ret_yr 1.3 fish in Bristol Bay
+very different from ret_yr 2.2 despite both being 4 yr old fish. Ret_yr
+1.3 inconsistent with results of ACF and PACF tests suggesting AR(1).
+First differencing the time series object returned the mean to zero, and
+auto.arima agrees first differencing the data is the best approach for
+model.
+
+Unfortunately, this is totally different from the stationarity tests
+which suggest that that the data is stationary and the AICc is huge
+which suggests this is not the best model for this data. Below is the
+better model.
+
+### Printed results for ret_yr 1.3 outlier removed
+
+Series: train_1.3_out ARIMA(2,0,0) with non-zero mean
+
+Coefficients: ar1 ar2 mean 0.3818 -0.5662 6.9256 s.e. 0.1506 0.1451
+0.0890
+
+sigma\^2 = 0.365: log likelihood = -27.2 AIC=62.41 AICc=63.94 BIC=68.14
+
+By focusing on years without the outlier value, the model changed to
+ARIMA (2,0,0) and the AICc is much lower, suggesting this model is the
+better fit for the data. For the 1 year freshwater - 3 year ocean fish
+we will proceed with this model.
+
+### Printed results for ret_yr 2.2
 
 Series: train ARIMA(1,0,0) with non-zero mean
 
@@ -147,55 +285,61 @@ consistent with results of ACF and PACF tests suggesting AR(1). First
 differencing the time series object returned the mean to zero, but
 auto.arima suggests 0 differencing and that data has non-zero mean.
 
-### Results for ret_yr 1.3
-
-Series: train ARIMA(0,1,1)
-
-Coefficients: ma1 -0.7305 s.e. 0.1400
-
-sigma\^2 = 18.34: log likelihood = -134.93 AIC=273.86 AICc=274.13
-BIC=277.56
-
-ARIMA model results from train data for ret_yr 1.3 fish in Bristol Bay
-very different from ret_yr 2.2 despite both being 4 yr old fish. Ret_yr
-1.3 inconsistent with results of ACF and PACF tests suggesting AR(1).
-First differencing the time series object returned the mean to zero, and
-auto.arima agrees first differencing the data is the best approach for
-model.
-
-## Fit the model to train data
-
-```{r}
-fit <- forecast::auto.arima(train)
-```
-
 ## Test the accuracy of the model using forecast
 
+Decided to test the model for 1 year freshwater, 3 year ocean fish using
+data trained on 1980-2010 because the AICc was much better.
+
 ```{r}
-fr <- accuracy(forecast(fit, h=10), test)
-autoplot(fr) + geom_point(aes(x=x, y=y), data=fortify(test))
+fit_1.3 <- auto.arima(train_1.3_out) #fit the model
+fc_1.3 <- forecast(fit_1.3, h=10)
+
+fr_1.3 <- accuracy(forecast(fit_1.3, h=10), test_1.3_out) #test accuracy
+
+plot.ts(datts_1.3) # check fit
+lines(fitted(fit_1.3), col="red") #model seems to fit well
+
+forecast::checkresiduals(fit_1.3) # looks better than 1.3 trained on 1960-2010
+
+autoplot(fc_1.3) + 
+  geom_point(aes(x=x, y=y), data=fortify(test_1.3_out)) 
+```
+
+### Results for 1.3 fish in Ugashik
+
+The model itself seems to fit the data well based on the visual fit and
+the residuals.
+
+The model forecast centers around the mean of the train data, predicting
+that 2010 will drop which fits the first few actual data points well,
+but doesn't do as good of a job of predicting that the data from
+2015-2020 look closer to the more recent years than further out (prior
+to 2005). Data are included in the confidence interval though which is
+great.
+
+```{r}
+fit_2.2 <- auto.arima(train_2.2) #fit the model
+fc_2.2 <- forecast(fit_2.2, h=10)
+
+fr_2.2 <- accuracy(forecast(fit_2.2, h=10), test_2.2) #test accuracy
+
+plot.ts(datts_2.2) # check fit
+lines(fitted(fit_2.2), col="red") #model seems to fit well, follows overall trend as it changes
+
+forecast::checkresiduals(fit_2.2) 
+
+autoplot(fc_2.2) + 
+  geom_point(aes(x=x, y=y), data=fortify(test_2.2)) 
 ```
 
 ### Results for 2.2 fish in Ugashik
 
-```         
-                   ME     RMSE       MAE       MPE     MAPE      MASE        ACF1 Theil's U
-```
+The model fits the timeseries train data pretty well, matching the
+overall change in curve. The residuals show the ACF plot has 1
+significant lag reflecting the ARIMA (1,0,0) model, the histogram is
+fairly centered as expected, and model fails to reject Ljung-Box test.
 
-Training set -0.001068187 1.295973 1.0706311 -6.326379 21.04040
-0.8937811 -0.01828833 NA Test set -0.314622455 1.051713 0.7971697
--9.454614 16.49798 0.6654909 0.31998321 0.9446332
-
-### Results for 1.3 fish in Ugashik
-
-```         
-                 ME      RMSE       MAE       MPE      MAPE      MASE        ACF1 Theil's U
-```
-
-Training set 0.1861463 4.1924404 2.0115438 7.247855 40.584446 0.9675341
-0.007029462 NA Test set -0.2848240 0.6145452 0.3903876 -4.698664
-6.086718 0.1877728 0.098332425 0.810348
-
-```{r}
-
-```
+Model forecast doesn't look great. The forecast flatlines while the real
+data from 2011-2020 have much higher variance. This reflects the high
+AICc from the model. But the data are contained within the predicted
+confidence interval which is good.

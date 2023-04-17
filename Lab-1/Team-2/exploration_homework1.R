@@ -240,7 +240,7 @@ accuracy(pred.kvi2, test.kvi.2)
 #prediction performance
 
 train.kvi.3 <- window(kvi.3.ts, start= 1963, end=2010)
-test.kvi.3 <- window(kvi.3.ts, start= 2011, end= 2020)
+test.kvi.3 <- window(kvi.3.ts, start= 2011, end= 2020) 
 fit.train.k3 <- forecast::auto.arima(train.kvi.3)
 #chooses same exact model as the full dataset model
 pred.kvi3 <- forecast(fit.train.k3, h=10)
