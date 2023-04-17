@@ -1,0 +1,351 @@
+---
+title: Lab 1 Forecasting with ARIMA models
+author: Veggerby, Wang
+date: April 10, 2023
+output: 
+  html_document:
+    code-folding: true
+    toc: true
+    toc_float: true
+---
+
+```{r include=FALSE}
+library(tidyverse)
+library(here)
+library(tseries)
+library(knitr)
+options(dplyr.summarise.inform = FALSE)
+```
+
+# Lab 1: ARIMA models
+
+Team member names: Terrance Wang (SAFS), Karl Veggerby (SAFS)
+
+
+# Data
+
+Ruggerone & Irvine Data. We will focus on sockeye salmon and all their 15 regional stocks in the North Pacific. 
+
+# Question your team will address
+
+1. What is the autoregressive structure for sockeye salmon? Is there a general autoregressive structure to describe all sockeye salmon regional stocks? Are there similarities and differences within and among North American West Coast, Alaska, and East Asian sockeye stocks? 
+
+2. Do different summarizing approaches of fitting ARIMA confirm the answers for the above questions?
+
+# Method you will use
+
+1. Fit ARIMA models for individual regional stocks and summed area stocks. Compare ARIMA structures and parameters of all regions and of larger areas. Compare results between the individual regional stocks and summed area stocks.
+
+### Initial plan
+
+1. We will fit ARIMA models for each of the sockeye regional stocks with the Box Jenkins method, which includes selecting the model form, estimating the parameters, and diagnosing the model. We will then compare the parameters of the individual ARIMA model structure among regional stocks and larger area aggregations with summary statistics and plots.  
+
+2. We will also fit ARIMA models for each of the 3 areas by summing a scaled time series of each of the regions. We will then compare these area-wide ARIMA models to the summary of regional models. 
+
+### What you actually did
+
+1. The first step of the plan was relatively straightforward. The interpretation of each regional ARIMA model and comparing them within and among areas was not statistically rigorous, but hopefully still informative. 
+
+2. The second step of our initial plan was difficult to defend. Comparing and interpreting results among ARIMA models at different spatial scales did not seem statistically kosher, but we still proceeded anyways. 
+
+# Diagnostics and preliminary exploration
+### Massage the data
+```{r}
+# read in data
+rug_path = file.path(here(), 'Lab-1','Data_Images','ruggerone_data.rds')
+ruggerone_data = readRDS(rug_path)
+
+# get sockeye data per region
+sockeye_data=ruggerone_data %>% 
+  group_by(region) %>% 
+  # scale data so all regions have equal weighting
+  mutate(returns_scale = scale(returns, center = FALSE),
+    lnreturns=log(returns_scale)) %>%
+  # do not include NA or all 0 data
+  filter(species=="sockeye" & !region %in% c("korea","japan")) %>%
+    mutate(
+    area = case_match(
+      region, 
+      c("japan", "korea", "m_i", "e_kam", "w_kam") ~ "East_Asia",
+      c("wak", "s_pen", "kod", "ci", "pws", "seak") ~ "Alaska",
+      c("nbc", "sbc", "wa", "wc") ~ "WC",
+      .default = region
+    ))
+    ```
+### Plot the data
+```{r}
+sockeye_data %>% 
+  ggplot(aes(x=year, y=lnreturns)) + 
+    geom_line() + 
+    ggtitle("log abundance by region")+
+    facet_wrap(~region,scales = "free") + theme_bw()
+
+sockeye_data_area_sum = sockeye_data %>% group_by(area,year) %>%
+  summarize(lntotal = log(sum(returns_scale, na.rm=TRUE))) 
+
+sockeye_data_area_sum %>% 
+    ggplot(aes(x=year, y=lntotal)) + 
+    geom_line() + 
+    ggtitle("log abundance by area")+
+    facet_wrap(~area)+ theme_bw()
+
+```
+
+At the regional level, systematic changes in the mean are present in many of the stocks (e.g., nbc, w_kam, kod). There are a few increasing means and some random-walk-like ones. There is a strong linear trend in the ci, kod, and s_pen regions. Changes in the variance may also be present in a few stocks (e.g., wak, kod). 4-year period cycles are possible in several regions (e.g., wak, sbc). 
+
+At the area-wide level, Alaska, East Asia, and NA West Coast all exhibit systematic changes. There are some similarities among areas. Alaska and NA West Coast share periodic variations. Alaska and East Asia both have increasing regional stocks. There also differences among areas, such as the decreasing trend and increasing variance in the West Coast regional stocks.
+
+From these plots, we interpret that there is likely non-stationarity at both the regional and area-wide scale, and proceed with our analysis.  
+
+### Use ACF and PACF
+```{r}
+library(forecast)
+# run ACF and PACF for each region, massage data into longer format for ggplotting
+sockeye_acf_pacf = sockeye_data %>% 
+  group_by(region) %>% 
+  summarise(list_acf=list(acf(lnreturns, plot=FALSE)),
+            list_pacf=list(pacf(lnreturns, plot=FALSE))) %>%
+  mutate(acf_lnreturns=purrr::map(list_acf, ~as.numeric(.x$acf)),
+         # add 1 to first value of PCF, one of the weird things Mark mentioned
+         pacf_lnreturns=purrr::map(list_pacf, ~as.numeric(c(0,.x$acf)))) %>% 
+  select(-c(list_acf,list_pacf)) %>% 
+  unnest(c(acf_lnreturns,pacf_lnreturns)) %>% 
+  group_by(region) %>% 
+  mutate(lag=row_number() - 1) %>%
+  pivot_longer(cols=c(acf_lnreturns,pacf_lnreturns),
+               values_to = "cf",
+               names_to = "cf_type")
+
+sockeye_ci = sockeye_data %>% 
+  group_by(region) %>% 
+  summarise(ci = qnorm((1 + 0.95)/2)/sqrt(n()))
+
+ggplot(sockeye_acf_pacf,aes(x=lag, y=cf, fill=cf_type)) +
+  geom_bar(stat="identity", position = 'dodge',width=1) +
+  geom_hline(yintercept = 0) +
+  geom_hline(data = sockeye_ci, aes(yintercept = -ci), color="blue", linetype="dotted") +
+  geom_hline(data = sockeye_ci, aes(yintercept = ci), color="blue", linetype="dotted") +
+  labs(x="Lag", y="ACF") +
+  facet_wrap(~region) + theme_bw()
+```
+A handful of regions (e.g., ci, seak) show ACF with a long tail and PACFs that cut off at 1-3 orders, which may indicate some autoregressive structure. Other regions (e.g., pws, m_i) have a sharp cut off with ACF and tailing PACFs, which may suggest a moving average structure. Some regions (s_pen,w_kam,kod) show long tails for both ACF and PACF, suggesting ARMA structure. A few regions show periodic trends (negative AR parameters) from their oscillating correlations factors. 
+
+### Test for stationarity
+
+We ran stationarity tests at the area-wide level for simplicity. 
+
+```{r, warning=FALSE, message=FALSE}
+# stationarity tests
+# subdata_sockeye<-subdata %>% filter(species=="sockeye")
+
+# can't get select to work here
+alaska_sockeye<-sockeye_data_area_sum %>% 
+  filter(area=="Alaska") %>%
+  select(lntotal)
+
+# dickey fuller test for stationarity alaska
+alaska_sockeye_vec<-alaska_sockeye$lntotal
+
+ak_adf = adf.test(alaska_sockeye_vec)
+
+# do first difference to see if we can get to stationarity
+alaska_sockeye_vec_1diff<-diff(alaska_sockeye_vec)
+
+ak_adf_d1 = adf.test(alaska_sockeye_vec_1diff)
+# doing a first difference successful for Alaska
+
+
+# dickey fuller test for stationarity east asia
+asia_sockeye<-sockeye_data_area_sum %>% 
+  filter(area=="East_Asia") %>%
+  select(lntotal)
+
+asia_sockeye_vec<-asia_sockeye$lntotal
+
+ea_adf = adf.test(asia_sockeye_vec)
+
+asia_sockeye_vec_1diff<-diff(asia_sockeye_vec)
+ea_adf_d1 = adf.test(asia_sockeye_vec_1diff)
+
+# dickey fuller test for stationarity west coast
+wc_sockeye<-sockeye_data_area_sum %>% 
+  filter(area=="WC") %>%
+  select(lntotal)
+
+wc_sockeye_vec<-wc_sockeye$lntotal
+
+wc_adf = adf.test(wc_sockeye_vec)
+
+wc_sockeye_vec_1diff<-diff(wc_sockeye_vec)
+wc_adf_d1 = adf.test(wc_sockeye_vec_1diff)
+
+# confirm with forcast 
+ak_nd = forecast::ndiffs(alaska_sockeye_vec)
+ea_nd = forecast::ndiffs(asia_sockeye_vec)
+wc_nd = forecast::ndiffs(wc_sockeye_vec)
+
+adf_tbl = data.frame(Region=c("AK","E_Asia","US_WC"), 
+           DF_Test_diff0_p = c(ak_adf$p.value,ea_adf$p.value,wc_adf$p.value), 
+           DF_Test_diff1_p = c(ak_adf_d1$p.value,ea_adf_d1$p.value,wc_adf_d1$p.value), 
+           N_pred_diffs = c(ak_nd,ea_nd,wc_nd))
+
+kable(adf_tbl)
+
+```
+
+The Dickey-Fuller tests for each of the 3 areas do not reject the null hypothesis that the data is non-stationary. Differencing all 3 areas by 1 order makes the sockeye abundance stationary, suggesting random walk characteristics. The unit root tests of estimated order of differencing confirms the D-F tests for Alaska and East Asia, but not NA West Coast. The NA West Coast does have a non-moving mean, which partly explains the difference between D-F test and unit root test. 
+
+Altogether, the abundance plots, ACF and PCF plots, and stationarity tests demonstrate that the abundances of the regional stocks can be explained by some combination of auto-regressive, differencing, and moving average components. For this reason, we proceed forward with fitting ARIMA models to each of the regional stocks. 
+
+# Results
+
+## Regional ARIMA models
+
+We fit ARIMA models to each individual regional stock and report the fits and diagnostics in the table below. 
+```{r,results='hide',fig.show='hide'}
+# make a data frame to fill in values for each stock
+stock_arima = data.frame(matrix(ncol = 4))
+names = c("region","p","d","q")
+colnames(stock_arima) = names
+sock_stocks = unique(sockeye_data$region)
+
+# loop through each stock and auto arima and save outputs
+for (i in 1:length(sock_stocks)){
+# subset data to each region
+stock=sock_stocks[i]
+stock_data = sockeye_data%>% filter(region==stock)
+datts = ts(stock_data$lnreturns, start=stock_data$year[1])
+
+# arima tests 
+mod = auto.arima(datts)
+mod$coef
+arima_order = arimaorder(mod)
+
+# look at model resids
+resid = checkresiduals(mod,plot=F)
+
+# save all this data
+stock_arima[i,c("p","d","q")] = arima_order
+stock_arima[i,c(names(mod$coef))] = mod$coef
+stock_arima[i,c("region")] = stock
+stock_arima[i,c("resid_p")] = resid$p.value
+
+}
+
+stock_arima_area = stock_arima %>% 
+  # fill in NAs with 0s
+  mutate_if(is.numeric, ~replace_na(., 0)) %>% 
+  # add area
+  mutate(
+    area = case_match(
+      region, 
+      c("japan", "korea", "m_i", "e_kam", "w_kam") ~ "East_Asia",
+      c("wak", "s_pen", "kod", "ci", "pws", "seak") ~ "Alaska",
+      c("nbc", "sbc", "wa", "wc") ~ "WC",
+      .default = region)) 
+```
+```{r}
+kable(stock_arima_area%>% select(area,region, p, d, q,ar1,ar2,ma1,ma2,resid_p)%>%arrange(area),
+      caption = "ARIMA fitting results and residual diagnostics for all sockeye regions")
+```
+
+The best fitting ARIMA models show a wide diversity of structure. Similarities and differences within and among areas will be discussed in more detail in the next section. Residuals are generally stationary, meaning acceptable ARIMA fits, with a few exceptions (e.g., kod, sbc). Below, the example of w_kam shows that residuals show signs of stationarity like a stable mean, normal distribution of values, and little autocorrelation. Though there is some temporal pattern in the variance. 
+
+```{r,message = FALSE,fig.cap = "Example of residual diagnostics of one of the regions"}
+resid = checkresiduals(mod,plot=T)
+```
+
+```{r,fig.cap = c("ARIMA structure by area","AR parameters by area","MA parameters by area")}
+# make into long format for ggplotting
+stock_gg_long = stock_arima_area %>% 
+  pivot_longer(-c(region,area), names_to = "parameter", values_to = "param_est")
+
+# General ARIMA structure
+stock_gg_long %>% filter(parameter %in% c("p","d","q")) %>%
+  ggplot(aes(x=param_est,fill=area)) + geom_bar() +
+  facet_wrap(vars(parameter),ncol=1) + theme_bw()
+
+# Autoregressive plot
+stock_gg_long %>% filter(parameter %in% c("ar1","ar2")) %>%
+  ggplot(aes(x=param_est,y=area,color=area)) + geom_boxplot(outlier.shape = NA) +
+  geom_jitter()+
+  facet_wrap(vars(parameter),ncol=1, scales = "free")+ theme_bw()
+
+# Moving average plot
+stock_gg_long %>% filter(parameter %in% c("ma1","ma2")) %>%
+  ggplot(aes(x=param_est,y=area,color=area)) + geom_boxplot(outlier.shape = NA) +
+  geom_jitter()+
+  facet_wrap(vars(parameter),ncol=1, scales = "free")+ theme_bw()
+
+```
+
+### Comparing regional ARIMA models within and among area
+The ARIMA structure for all sockeye stocks (ignoring area) do not show a clear pattern in AR, differencing, and MA. A slight majority of stocks support first order AR, differencing, and MA. When we look closer at the parameter values, there is a small tendency for sockeye to have positive AR1 values and negative MA1 values. This suggests sockeye populations are loosely related to the previous time step and deviate around the general trajectory with a 2 year period. 
+
+Alaska shows a consistent ARIMA pattern for all of its regions. The best fit ARIMA models for AK regions all predict first difference. AK strongly supports a first order of the moving average part. Additionally, all AK regions have negative MA1 values. There is some substructure of ARIMA properties within AK. AK shows no area-wide consensus on the order of the autoregressive part, but  Looking more closely at the autoregressive parameter values of Alaska regions, we see only positive AR1 values for the regions with at least 1 order of AR (wak,ci,pws). Wak, ci, and pws populations tend to be more related to the previous year than other AK regions are. 
+
+West Coast regions do not have a consensus on ARIMA structure, with an exception of 0 differencing. AR1 and MA1 parameters range from negative to positive. This inconclusiveness is partly explained by the low sample size (n=3). East Asia regions are also inconsistent on the predicted order number of the moving average and autoregressive components. With only 3 East Asia regions with data, it is difficult to construe any pattern.
+
+## Area ARIMA models
+
+We fit ARIMA models to each area stock (scaled, summed, and logged) and report the fits and diagnostics in the table below.
+
+```{r,results='hide',fig.show='hide'}
+
+sockeye_data_area_sum
+
+area_arima = data.frame(matrix(ncol = 4))
+names = c("region","p","d","q")
+colnames(area_arima) = names
+sock_area = unique(sockeye_data_area_sum$area)
+
+# loop through each area and auto arima and save outputs
+for (i in 1:length(sock_area)){
+# subset data to each region
+area_tmp=sock_area[i]
+stock_data = sockeye_data_area_sum%>% filter(area==area_tmp)
+datts = ts(stock_data$lntotal, start=sockeye_data_area_sum$year[1])
+
+# arima tests 
+mod = auto.arima(datts)
+mod$coef
+arima_order = arimaorder(mod)
+
+# look at model resids
+resid = checkresiduals(mod,plot=F)
+
+# save all this data
+area_arima[i,c("p","d","q")] = arima_order
+area_arima[i,c(names(mod$coef))] = mod$coef
+area_arima[i,c("area")] = area_tmp
+area_arima[i,c("resid_p")] = resid$p.value
+
+}
+
+area_arima=area_arima %>% 
+  # fill in NAs with 0s
+  mutate_if(is.numeric, ~replace_na(., 0))
+
+````
+
+````{r}
+kable(area_arima%>% select(area, p, d, q,ar1,ar2,ma1,ma2,resid_p)%>%arrange(area),
+      caption = "ARIMA fitting results and residual diagnostics for summed scaled sockeye areas")
+````
+
+### Comparing regional ARIMA models to area ARIMA models
+
+The area-wide ARIMA structures did not match their regional counterparts. The best fitting AK ARIMA model was a 2 order AR and MA and 1 order difference structure, which contrasts with the <2 order AR and 1 order MA of the summarized ARIMA structure of the regional stocks. The East Asia ARIMA model has some semblance to the regional E Asia stocks, but this is inconclusive because of the low sample size. West Coast model had no ARIMA structure which does not to capture the non-stationarity of some NA WC regional stocks. 
+
+
+# Discussion
+Overall, the sockeye stocks population trajectories are clearly not stationary. All regions benefit from ARIMA models to understand their underlying temporal dynamics. There is no unifying ARIMA structure that can reliably describe all sockeye populations. This is unsurprising because of the wide spectrum of biological and environmental forces that impact sockeye across its species range. Scattered across the North Pacific are 3 sockeye ecotypes (kokanee, lake, sea/river) that often occur together in the same watershed. Some regions, such as Southern British Columbia, also undergo more human disturbance than other more "pristine" regions, such as Western Alaska. 
+
+Alaska regional stocks seem to share similar temporal dynamics and this is especially true for wak, ci, and pws stocks. We do not what the  mechanisms for the shared pattern of these 3 stocks, which are not spatially adjacent to each other. We did not detect reliably, representative ARIMA structures for both the West Coast and East Asia stocks. The low sample size of 3 for both areas is a likely reason for the inconclusiveness.
+
+Interestingly, the area-wide ARIMA structures did not confirm the area-summarized regional ARIMA ones. Summing the scaled totals by area seems to wash away the temporal dynamics within each region and do not describe the general ARIMA structure and diversity of structures within areas. A next step would explore the potential area-wide ARIMA model candidates for each area since we looked only at the best fitting ones. 
+
+
+# Description of each team member's contributions
+
+Terrance did most of it, Karl did stationarity section.
