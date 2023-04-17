@@ -27,6 +27,14 @@ What will your team do with the data? You can do many things with the data. The 
 * make forecasts
 * test how good your forecasts or compare forecasts (many options here)
 
+We will look at the total forecasts for each river system. 
+
+"Compare the accuracy of total abundance forecasts using ARIMA models for Bristol Bay sockeye rivers and compare to the AKFW and UW FRI forecasts."
+
+Could also test accuracy based on training data length... 
+
+"Compare the forecasts of total North Pacific pink and chum using 5, 10, 15, and 20 years of training data. Does forecast accuracy increase with more training data?"
+
 # Method you will use
 
 ## Initial plan
@@ -84,7 +92,7 @@ bb_data %>%
 
 ```
 
-Based on this, we chose XXX insert three rivers XXXX to explore 1) total abundance, 2) compare ARIMA forecasts/accuracy, and 3) visually compare to these forecasts to forecasts from UW Fisheries Research Institute. 
+Based on this, we chose to explore 1) total abundance, 2) compare ARIMA forecasts/accuracy, and 3) visually compare to these forecasts to forecasts from UW Fisheries Research Institute. 
 
 # DIAGNOSTICS AND PRELIMARY EXPLORATION (LIZ)
 
@@ -100,8 +108,7 @@ lndata <- bb_data %>%
   summarize(lntotal = log(sum(ret, na.rm=TRUE)))
 
 # Choosing sites CHANGE THIS BASED ON WHAT WE PICK
-our_rivers <- filter(lndata, system %in% c("Egegik","Igushik", 
-                                           'Kvichak', 'Wood', 'Nushagak'))
+our_rivers <- filter(lndata, system %in% c('Kvichak', 'Wood', 'Nushagak'))
 
 # Plotting three rivers
 our_rivers %>% 
@@ -112,7 +119,7 @@ our_rivers %>%
 
 ```
 
-Based on these plots, we hypothesize that data will be non-stationary for XXX, and stationary for Wood around a trend. 
+Based on these plots, we hypothesize that data will be non-stationary for the Kvichak and stationary for the Nushagak and the Wood around a trend. 
 
 ## Use ACF and PACF (MARIA)
 
@@ -167,27 +174,20 @@ Run tests and discuss any stationarity issues and how these were addressed.
 
 ```{r}
 
-# CHANGE NAMES ONCE RIVERS ARE CHOSEN
-
-eg <- filter(lndata, system %in% c("Egegik"))
-ndiffs(eg$lntotal, test='kpss')
-ndiffs(eg$lntotal, test='adf')
-
-## testing the others in case
-ig <- filter(lndata, system %in% c("Igushik"))
-ndiffs(ig$lntotal, test='kpss')
-ndiffs(ig$lntotal, test='adf')
-
 kv <- filter(lndata, system %in% c("Kvichak"))
 ndiffs(kv$lntotal, test='kpss')
 ndiffs(kv$lntotal, test='adf')
 
+nu <- filter(lndata, system %in% c("Nushagak"))
+ndiffs(nu$lntotal, test='kpss')
+ndiffs(nu$lntotal, test='adf')
 
 wo <- filter(lndata, system %in% c("Wood"))
 ndiffs(wo$lntotal, test='kpss')
 ndiffs(wo$lntotal, test='adf')
 
 ```
+The Kvichak does not need differencing. The Nushagak and the Wood should be differenced by 1. 
 
 # MODELING AND RESULTS
 
@@ -200,21 +200,21 @@ data_ts_Wood <- ts(our_rivers$lntotal[our_rivers$system == "Wood"],
                       start=our_rivers$ret_yr[our_rivers$system == "Wood"][1])
 
 train_Wood <- window(data_ts_Wood, 1963, 2015)
-test_Wood <- window(data_ts_Wood, 2015, 2020)
+test_Wood <- window(data_ts_Wood, 2016, 2020)
 
 data_ts_Kv <- ts(our_rivers$lntotal[our_rivers$system == "Kvichak"],
                       start=our_rivers$ret_yr[our_rivers$system == "Kvichak"][1])
 
 
 train_Kv <- window(data_ts_Kv, 1963, 2015)
-test_Kv <- window(data_ts_Kv, 2015, 2020)
+test_Kv <- window(data_ts_Kv, 2016, 2020)
 
 
 data_ts_Nu <- ts(our_rivers$lntotal[our_rivers$system == "Nushagak"],
                       start=our_rivers$ret_yr[our_rivers$system == "Nushagak"][1])
 
 train_Nu <- window(data_ts_Nu, 1963, 2015)
-test_Nu <- window(data_ts_Nu, 2015, 2020)
+test_Nu <- window(data_ts_Nu, 2016, 2020)
 
 ```
 
@@ -223,42 +223,88 @@ Fit a model with `auto.arima()` in the forecast package.
 
 ```{r}
 
-mod_Wood <- auto.arima(data_ts_Wood)
-mod_Wood
-
-mod_Kv <- auto.arima(data_ts_Kv)
+mod_Kv <- auto.arima(train_Kv)
 mod_Kv
 
-mod_Nu <- auto.arima(data_ts_Nu)
+mod_Nu <- auto.arima(train_Nu)
 mod_Nu
+
+mod_Wood <- auto.arima(train_Wood)
+mod_Wood
 #mod_Wood <- auto.arima(data_ts_Wood)
 ```
 
-## Plot forecasts (LIZ)
-```{r}
+## Plot forecasts from auto.arima (LIZ)
 
-# CHANGE NAMES ONCE RIVERS ARE CHOSEN
+```{r}
 
 fri_fore <- bb_data %>%
   group_by(system, ret_yr) %>%
-  summarize(lntotal = log(sum(forecast.fri, na.rm=TRUE)))
-
-eg_fri_fore <- fri_fore %>% filter(system %in% 'Egegik')
-fr <- forecast(mod.eg, h=5)
-autoplot(fr) + geom_point(aes(x=x, y=y), data=fortify(e.test))+
-  geom_point(aes(x=ret_yr, y=lntotal), data = eg_fri_fore, col='red')
-
-ig_fri_fore <- fri_fore %>% filter(system %in% 'Igushik')
-i.fr <- forecast(mod.ig, h=5)
-autoplot(i.fr) + geom_point(aes(x=x, y=y), data=fortify(i.test))+
-  geom_point(aes(x=ret_yr, y=lntotal), data = ig_fri_fore, col = "red")
+  summarize(lntotal = log(sum(forecast.fri, na.rm=TRUE)))%>%
+  filter(ret_yr %in% 2015:2020)
 
 kv_fri_fore <- fri_fore %>% filter(system %in% 'Kvichak')
-k.fr <- forecast(mod.kv, h=5)
-autoplot(k.fr) + geom_point(aes(x=x, y=y), data=fortify(kv.test))+
+kv_fr <- forecast(mod_Kv, h=5)
+autoplot(kv_fr) + geom_point(aes(x=x, y=y), data=fortify(test_Kv))+
   geom_point(aes(x=ret_yr, y=lntotal), data = kv_fri_fore, col = "red")
 
+nu_fri_fore <- fri_fore %>% filter(system %in% 'Nushagak')
+nu_fr <- forecast(mod_Nu, h=5)
+autoplot(nu_fr) + geom_point(aes(x=x, y=y), data=fortify(test_Nu))+
+  geom_point(aes(x=ret_yr, y=lntotal), data = nu_fri_fore, col='red')
+
+wo_fri_fore <- fri_fore %>% filter(system %in% 'Wood')
+wo_fr <- forecast(mod_Wood, h=5)
+autoplot(wo_fr) + geom_point(aes(x=x, y=y), data=fortify(test_Wood))+
+  geom_point(aes(x=ret_yr, y=lntotal), data = wo_fri_fore, col = "red")
+
 ```
+## Chosing our own ARIMA structure 
+
+Here we play around with different ARIMA structures. We tested the three top models for the Kvichak. For the Nushagak and the Wood, we tested the two top models, plus the best model with an added drift component. 
+
+NICK- this loop originally contained a list of accuracy results as well, but I deleted it since your section is below. Just an FYI. 
+
+```{r}
+# Chosing our own arima structure in a for loop. Probably a cleaner way to do this. 
+
+kv_mod_list <- list(c(0,0,1), c(1,0,1), c(0,0,2))## List of mods to test. First option is what auto.arima chose
+kv_fits <- kv_fore <- kv_plots <- list()# lists to store things in
+
+nu_mod_list <- list(c(0,1,1), c(0,1,1), c(1,1,1))
+nu_fits <- nu_fore <- nu_plots <- list()
+
+wo_mod_list <- list(c(0,1,1), c(0,1,1), c(1,1,1))
+wo_fits <- wo_fore <- wo_plots <- list()
+
+drift <- list(FALSE, TRUE, FALSE)## adding drift
+
+for(i in 1:3){
+  #Kvichak
+  kv_fits[[i]] <- Arima(train_Kv, order = kv_mod_list[[i]])# loops through list, fits model, and stores in 'fits'
+  kv_fore[[i]] <- forecast(kv_fits[[i]], h=5) # forecasts
+  kv_plots[[i]] <- (autoplot(kv_fore[[i]]) + geom_point(aes(x=x, y=y), data=fortify(test_Kv))+ #forecast plots
+          geom_point(aes(x=ret_yr, y=lntotal), data = kv_fri_fore, col = "red"))
+  #Nushagak
+  nu_fits[[i]] <- Arima(train_Nu, order = nu_mod_list[[i]], include.drift = drift[[i]])
+  nu_fore[[i]] <- forecast(nu_fits[[i]], h=5)
+  nu_plots[[i]] <- (autoplot(nu_fore[[i]]) + geom_point(aes(x=x, y=y), data=fortify(test_Nu))+ #forecast plots
+          geom_point(aes(x=ret_yr, y=lntotal), data = nu_fri_fore, col = "red"))
+  #Wood
+  wo_fits[[i]] <- Arima(train_Wood, order = wo_mod_list[[i]], include.drift = drift[[i]])
+  wo_fore[[i]] <- forecast(wo_fits[[i]], h=5)
+  wo_plots[[i]] <- (autoplot(wo_fore[[i]]) + geom_point(aes(x=x, y=y), data=fortify(test_Wood))+
+          geom_point(aes(x=ret_yr, y=lntotal), data = wo_fri_fore, col = "red"))
+}
+library(ggpubr)
+ggarrange(plotlist = kv_plots, ncol = 2, nrow =2)
+ggarrange(plotlist = nu_plots, ncol = 2, nrow =2)
+ggarrange(plotlist = wo_plots, ncol = 2, nrow =2)
+
+```
+Based on these plots we might decide to alter our model selection for the Nushagak and the Wood and change our chosen model to ARIMA(0,1,1) *with drift*. 
+
+We also could change our model for the Kvichak, although the model chosen by auto.arima (ARIMA(0,0,1)) behaves essentially the same as the other top models.
 
 ## Check accuracy (NICK)
 ```{r}
