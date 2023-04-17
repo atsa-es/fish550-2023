@@ -100,7 +100,8 @@ lndata <- bb_data %>%
   summarize(lntotal = log(sum(ret, na.rm=TRUE)))
 
 # Choosing sites CHANGE THIS BASED ON WHAT WE PICK
-our_rivers <- filter(lndata, system %in% c("Egegik","Igushik", 'Kvichak'))
+our_rivers <- filter(lndata, system %in% c("Egegik","Igushik", 
+                                           'Kvichak', 'Wood', 'Nushagak'))
 
 # Plotting three rivers
 our_rivers %>% 
@@ -111,7 +112,7 @@ our_rivers %>%
 
 ```
 
-Based on these plots, we hypothesize that data will be non-stationary for XXX, and stationary for XXX. 
+Based on these plots, we hypothesize that data will be non-stationary for XXX, and stationary for Wood around a trend. 
 
 ## Use ACF and PACF (MARIA)
 
@@ -119,7 +120,40 @@ Use the ACF and PACF plots to explore the time series. What did you learn? Also 
 
 ```{r}
 
+
+data_ts_Kv <- ts(our_rivers$lntotal[our_rivers$system == "Kvichak"],
+                      start=our_rivers$ret_yr[our_rivers$system == "Kvichak"][1])
+
+data_ts_Wood <- ts(our_rivers$lntotal[our_rivers$system == "Wood"],
+                      start=our_rivers$ret_yr[our_rivers$system == "Wood"][1])
+
+data_ts_Nu <- ts(our_rivers$lntotal[our_rivers$system == "Nushagak"],
+                      start=our_rivers$ret_yr[our_rivers$system == "Nushagak"][1])
+
+
+
+acf(data_ts_Wood)
+
+pacf(data_ts_Wood)
+
+
+
+acf(data_ts_Kv)
+
+pacf(data_ts_Kv)
+
+
+acf(data_ts_Nu)
+
+pacf(data_ts_Nu)
+
 ```
+
+The acf plots for Wood river is slowly decaying and the pacf plot shows significance at lag 1. There might be AR1 structure in the data.
+
+The pacf plots for Kvichak river is slowly decaying and the pacf plot shows significance at lags 1,2,4, and 6. There might be MA structure in the data.
+
+The acf plots for Nushagak river is slowly decaying and the pacf plot shows significance at lags 1 and 6. There might be AR structure in the data.
 
 ## Test for stationarity (NICK)
 
@@ -148,6 +182,11 @@ kv <- filter(lndata, system %in% c("Kvichak"))
 ndiffs(kv$lntotal, test='kpss')
 ndiffs(kv$lntotal, test='adf')
 
+
+wo <- filter(lndata, system %in% c("Wood"))
+ndiffs(wo$lntotal, test='kpss')
+ndiffs(wo$lntotal, test='adf')
+
 ```
 
 # MODELING AND RESULTS
@@ -156,6 +195,27 @@ ndiffs(kv$lntotal, test='adf')
 
 ```{r}
 
+
+data_ts_Wood <- ts(our_rivers$lntotal[our_rivers$system == "Wood"],
+                      start=our_rivers$ret_yr[our_rivers$system == "Wood"][1])
+
+train_Wood <- window(data_ts_Wood, 1963, 2015)
+test_Wood <- window(data_ts_Wood, 2015, 2020)
+
+data_ts_Kv <- ts(our_rivers$lntotal[our_rivers$system == "Kvichak"],
+                      start=our_rivers$ret_yr[our_rivers$system == "Kvichak"][1])
+
+
+train_Kv <- window(data_ts_Kv, 1963, 2015)
+test_Kv <- window(data_ts_Kv, 2015, 2020)
+
+
+data_ts_Nu <- ts(our_rivers$lntotal[our_rivers$system == "Nushagak"],
+                      start=our_rivers$ret_yr[our_rivers$system == "Nushagak"][1])
+
+train_Nu <- window(data_ts_Nu, 1963, 2015)
+test_Nu <- window(data_ts_Nu, 2015, 2020)
+
 ```
 
 ## Fit ARIMA models (MARIA)
@@ -163,6 +223,15 @@ Fit a model with `auto.arima()` in the forecast package.
 
 ```{r}
 
+mod_Wood <- auto.arima(data_ts_Wood)
+mod_Wood
+
+mod_Kv <- auto.arima(data_ts_Kv)
+mod_Kv
+
+mod_Nu <- auto.arima(data_ts_Nu)
+mod_Nu
+#mod_Wood <- auto.arima(data_ts_Wood)
 ```
 
 ## Plot forecasts (LIZ)
