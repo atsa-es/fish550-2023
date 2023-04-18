@@ -22,30 +22,36 @@ options(dplyr.summarise.inform = FALSE)
 
 What will your team do with the data? You can do many things with the data. The only constraints are that you
 
-* fit ARIMA models (note you'll want to log the abundance data). You can fit other models in addition ot ARIMA if you want.
-* do diagnostics for ARIMA models
-* make forecasts
-* test how good your forecasts or compare forecasts (many options here)
+<!-- * fit ARIMA models (note you'll want to log the abundance data). You can fit other models in addition ot ARIMA if you want. -->
+<!-- * do diagnostics for ARIMA models -->
+<!-- * make forecasts -->
+<!-- * test how good your forecasts or compare forecasts (many options here) -->
 
-We will look at the total forecasts for each river system. 
+<!-- We will look at the total forecasts for each river system.  -->
 
-"Compare the accuracy of total abundance forecasts using ARIMA models for Bristol Bay sockeye rivers and compare to the AKFW and UW FRI forecasts."
+<!-- "Compare the accuracy of total abundance forecasts using ARIMA models for Bristol Bay sockeye rivers and compare to the AKFW and UW FRI forecasts." -->
 
-Could also test accuracy based on training data length... 
+<!-- Could also test accuracy based on training data length...  -->
 
-"Compare the forecasts of total North Pacific pink and chum using 5, 10, 15, and 20 years of training data. Does forecast accuracy increase with more training data?"
+<!-- "Compare the forecasts of total North Pacific pink and chum using 5, 10, 15, and 20 years of training data. Does forecast accuracy increase with more training data?" -->
+
+We will fit multiple ARIMA models to the Bristol Bay sockeye data and compare forecasts among these models (using RMSE) and visually compare the forecasts against the FRI forecast. 
 
 # Method you will use
 
 ## Initial plan
 
-Describe what you plan to do to address your question. Note this example is with Ruggerone & Irvine data but your team will use the Bristol Bay data.
+<!-- Describe what you plan to do to address your question. Note this example is with Ruggerone & Irvine data but your team will use the Bristol Bay data. -->
 
-Example, "We will fit ARIMA models to 1960-1980 data on pink salmon in 2 regions in Alaska and 2 regions in E Asia. We will make 1981-1985  forecasts (5 year) and compare the accuracy of the forecasts to the actual values. We will measure accuracy with mean squared error. We will use the forecast package to fit the ARIMA models."
+<!-- Example, "We will fit ARIMA models to 1960-1980 data on pink salmon in 2 regions in Alaska and 2 regions in E Asia. We will make 1981-1985  forecasts (5 year) and compare the accuracy of the forecasts to the actual values. We will measure accuracy with mean squared error. We will use the forecast package to fit the ARIMA models." -->
+
+We divided the rivers among the team members to do the initial exploratory analysis and testing for stationarity. We also tried forecasting for all rivers using the best model sugested by auto.arima.
 
 ## What you actually did
 
-Example, "We were able to do our plan fairly quickly, so after writing the basic code, we divided up all 12 regions in Ruggerone & Irvine and each team member did 4 regions. We compared the accuracy of forecasts for different time periods using 20-years for training and 5-year forecasts each time. We compared the RMSE, MAE, and MAPE accuracy measures."
+<!-- Example, "We were able to do our plan fairly quickly, so after writing the basic code, we divided up all 12 regions in Ruggerone & Irvine and each team member did 4 regions. We compared the accuracy of forecasts for different time periods using 20-years for training and 5-year forecasts each time. We compared the RMSE, MAE, and MAPE accuracy measures." -->
+
+We finally chose three rivers to work with - Kvichak, Wood and Nugashak. We split the data into training data (1963-2015) and testing data (2016-2020). In addition to forecasting with the model suggested by auto.arima, we forecasted for multiple ARIMA models with varying orders to compare the accuracy of the forecasts. We used RMSE to compare the accuracies. We also plotted the FRI forecast to visually compare the model forecast to the FRI forecast. 
 
 # START CODING
 

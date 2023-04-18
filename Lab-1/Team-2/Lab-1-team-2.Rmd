@@ -4,7 +4,7 @@ Team member names: Eric French (Civil), Dylan Hubl (ESRM), Miranda Mudge (Molecu
 
 # Data
 
-WE will be working with the Bristol Bay data set. Our focus will be on 4-year-old Sockeye in the Wood, Kvichak, and Ugashik regions.
+We will be working with the Bristol Bay data set. Our focus will be on 4-year-old Sockeye in the Wood, Kvichak, and Ugashik regions.
 
 ```{r}
 library(tidyverse)
