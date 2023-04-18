@@ -70,10 +70,13 @@ Ugashik_1.3.ts <- ts(Ugashik_1.3$log_ret, start=Ugashik_1.3$year[1]) # time seri
 Ugashik_1.3.ts_out <- window(Ugashik_1.3.ts, start=1980, end = 2020) # time series 1.3 fish starting from 1980 
 Ugashik_2.2.ts <- ts(Ugashik_2.2$log_ret, start=Ugashik_2.2$year[1]) # time series 2.2 fish
 
-plot.ts(Ugashik_1.3.ts, ylab = "Log abundance", main = "Time series of sockeye: 1 year in freshwater, 3 years in ocean") 
-plot.ts(Ugashik_1.3.ts_out, ylab = "Log abundance", main = "Time series of sockeye: 1 year in freshwater, 3 years in ocean") 
-plot.ts(Ugashik_2.2.ts, ylab = "Log abundance", main = "Time series of sockeye: 2 years in freshwater, 2 years in ocean") 
+plot.ts(Ugashik_1.3.ts, ylab = "Log abundance", main = "Sockeye: 1 yr freshwater, 3 yrs ocean") 
+plot.ts(Ugashik_1.3.ts_out, ylab = "Log abundance", main = "Sockeye: 1 yr freshwater, 3 yrs ocean") 
+plot.ts(Ugashik_2.2.ts, ylab = "Log abundance", main = "Sockeye: 2 yrs freshwater, 2 yrs ocean") 
 ```
+Uvashik:
+
+Upon observing the 1.3 time series, there is a clear outlier value at 1977. To remove the negative value, we re-plotted the data starting at 1980 instead of 1967. The new time series seems to show variance around a mean of 7. The 2.2 group appears to show variance around a mean of 5. Differencing the data will likely show stationarity
 
 ### Wood Region
 
@@ -89,12 +92,15 @@ Wood_1.3.ts <- ts(Wood_1.3$log_ret, start = 1963, frequency = 1)
 Wood_2.2.ts <- ts(Wood_2.2$log_ret, start = 1963, frequency = 1)
 
 #check the plot
-plot.ts(Wood_1.3.ts, ylab = "log Abundance", main ="Time series of sockeye: 1 year in freshwater, 3 years in ocean" )
+plot.ts(Wood_1.3.ts, ylab = "log Abundance", main ="Sockeye: 1 year in freshwater, 3 years in ocean" )
 #looks like there is a positive trend to the data: not stationary, or could be stationary around a trend
-plot.ts(Wood_2.2.ts, ylab = "log Abundance", main ="Time series of sockeye: 2 years in freshwater, 2 years in ocean" )
+plot.ts(Wood_2.2.ts, ylab = "log Abundance", main ="Sockeye: 2 years in freshwater, 2 years in ocean" )
 #looks like it could potentially be stationary
 
 ```
+Wood: 
+
+The 1.3 age group appears to have a positive trend, so it is likely not stationary. It could be stationary around a trend. The 2.2 age group does not seem to have any trends, and could be stationary around a mean of 4.
 
 ### Kvichak Region
 
@@ -109,18 +115,15 @@ Kvichak_1.3.ts <- ts(Kvichak_1.3$log_ret, start = 1963, end = 2020)
 Kvichak_2.2.ts <- ts(Kvichak_2.2$log_ret, start = 1963, end = 2020)
 
 #plots
-plot(Kvichak_1.3.ts, ylab = "log Abundance", main = "Time series of sockeye: 1 year in freshwater, 3 years in ocean" )
+plot(Kvichak_1.3.ts, ylab = "log Abundance", main = "Sockeye: 1 year in freshwater, 3 years in ocean" )
 
-plot(Kvichak_2.2.ts, ylab = "log Abundance", main = "Time series of sockeye: 2 years in freshwater, 2 years in ocean" )
+plot(Kvichak_2.2.ts, ylab = "log Abundance", main = "Sockeye: 2 years in freshwater, 2 years in ocean" )
 
 
 ```
+Kvichak: 
 
-Uvashik: Upon observing the 1.3 time series, there is a clear outlier value at 1977. To remove the negative value, we re-plotted the data starting at 1980 instead of 1967. The new time series seems to show variance around a mean of 7. The 2.2 group appears to show variance around a mean of 5. Differencing the data will likely show stationarity
-
-Wood: The 1.3 age group appears to have a positive trend, so it is likely not stationary. It could be stationary around a trend. The 2.2 age group does not seem to have any trends, and could be stationary around a mean of 4.
-
-Kvichak: There is another negative outlier in the 1.3 age group, otherwise the data appears to be stationary around a mean of 7. We will have to see how much influence the outlier has on the ARIMA model. The 2.2 age group does not show any obvious trends and seems to be stationary around a mean of 7.
+There is another negative outlier in the 1.3 age group, otherwise the data appears to be stationary around a mean of 7. We will have to see how much influence the outlier has on the ARIMA model. The 2.2 age group does not show any obvious trends and seems to be stationary around a mean of 7.
 
 ## ACF and PACF,
 
@@ -144,6 +147,13 @@ layout(layout_matrix_1)                   #setting up how the plots will display
 acf(Ugashik_2.2.ts)
 pacf(Ugashik_2.2.ts)
 ```
+Ugashik:
+
+The ACF plot of the full 1.3 age group tails off slowly, which indicates an AR() model. There lag also shows potential seasonality, which we will ignore by recommendation of Eli. The PACF cuts off at 1, which further reinforces idea that this is an AR(1) model.
+
+The truncated 1.3 group shows significance at a lag of 2 for both the ACF and PACF. This may be some kind of ARMA model
+
+The 2.2 age group has an ACF that shows significance at lags 1, 4, 5, and 16. This may indicate seasonality, which again we will ignore in this experiment. The PACF cuts off a one so this may be an AR(1) model with a nonzero mean.
 
 ### Wood
 
@@ -163,6 +173,11 @@ acf(Wood_2.2.ts)
 pacf(Wood_2.2.ts)
 #no significant lags in either plot. This is white noise, no autocorrelation. expecting ARIMA(0,0,0)
 ```
+Wood:
+
+ACF for the 1.3 data seems to cut off at 2. It also shows significance at lags of 5 and 10 which may indicate seasonality. The PACF appears to slowly taper off. This is likely an MA() model with a positive trend
+
+The 2.2 age group does not show significance in either plot, so this is most likely white noise.
 
 ### Kvichak
 
@@ -187,28 +202,13 @@ acf(Kvichak_2.2.ts)
 pacf(Kvichak_2.2.ts)
 #neither shows any clear lag or decay signs. maybe an combined ARMA model
 ```
-
-Ugashik:
-
-The ACF plot of the full 1.3 age group tails off slowly, which indicates an AR() model. There lag also shows potential seasonality, which we will ignore by recommendation of Eli. The PACF cuts off at 1, which further reinforces idea that this is an AR(1) model.
-
-The truncated 1.3 group shows significance at a lag of 2 for both the ACF and PACF. This may be some kind of ARMA model
-
-The 2.2 age group has an ACF that shows significance at lags 1, 4, 5, and 16. This may indicate seasonality, which again we will ignore in this experiment. The PACF cuts off a one so this may be an AR(1) model with a nonzero mean.
-
-Wood:
-
-ACF for the 1.3 data seems to cut off at 2. It also shows significance at lags of 5 and 10 which may indicate seasonality. The PACF appears to slowly taper off. This is likely an MA() model with a positive trend
-
-The 2.2 age group does not show significance in either plot, so this is most likely white noise.
-
 Kvichak:
 
 The ACF and PACF for the 1.3 shows no significance so we took the first difference and tried again. The new ACF cuts of and 1 and the PACF seems to slowly taper. This data may be an ARIMA(0,1,1).
 
 The 2.2 group does not show any patterns that line up with an AR or MA model. It may be an ARMA model of some sort.
 
-## Test for stationarity
+## Testing for Stationarity
 
 ### Ugashik
 
@@ -217,6 +217,8 @@ The 2.2 group does not show any patterns that line up with an AR or MA model. It
 tseries::adf.test(Ugashik_1.3.ts) 
 tseries::kpss.test(Ugashik_1.3.ts, null = "Level") 
 tseries::kpss.test(Ugashik_1.3.ts, null = "Trend") 
+datts_diff_1.3 <- diff(Ugashik_1.3.ts, differences = 1)
+datts_diff_1.3_out <- diff(Ugashik_1.3.ts_out, differences = 1)
 plot(datts_diff_1.3, ylab = "Log abundance", main = "Time series, first differenced: 1 year freshwater, 3 years ocean")
 plot(datts_diff_1.3_out, ylab = "Log abundance", main = "Time series, first differenced: 1 year freshwater, 3 years ocean, outlier removed")
 ```
@@ -225,10 +227,10 @@ plot(datts_diff_1.3_out, ylab = "Log abundance", main = "Time series, first diff
 tseries::adf.test(Ugashik_2.2.ts) 
 tseries::kpss.test(Ugashik_2.2.ts, null = "Level") 
 tseries::kpss.test(Ugashik_2.2.ts, null = "Trend")
-plot(datts_diff_2.2, ylab = "Log abundance", main = "Time series, first differenced: 2 year freshwater, 2 years ocean")
-datts_diff_1.3 <- diff(Ugashik_1.3.ts, differences = 1)
-datts_diff_1.3_out <- diff(Ugashik_1.3.ts_out, differences = 1)
 datts_diff_2.2 <- diff(Ugashik_2.2.ts, differences = 1)
+plot(datts_diff_2.2, ylab = "Log abundance", main = "Time series, first differenced: 2 years freshwater, 2 years ocean")
+
+
 
 ```
 
@@ -239,7 +241,7 @@ datts_diff_2.2 <- diff(Ugashik_2.2.ts, differences = 1)
 #Wood_1.3.ts testing
 #run tests for stationarity
 tseries::adf.test(Wood_1.3.ts)                  # fails to reject: Non-stationary
-#tseries::adf.test(Wood_1.3.ts,k = 0)            #forced it to test AR(1) it does reject: Stationary. So conflicts with the test above
+tseries::adf.test(Wood_1.3.ts,k = 0)            #forced it to test AR(1) it does reject: Stationary. So conflicts with the test above
 tseries::kpss.test(Wood_1.3.ts, null = "Level") #not sure this test makes sense, visually there is a trend in the data. opposite null hypothesis for kpss it rejects: Non-stationary
 tseries::kpss.test(Wood_1.3.ts, null = "Trend") #this tested to see if data is stationary around a trend
 # just barely rejects stationarity: meaning it is non-stationary
@@ -252,7 +254,7 @@ forecast::ndiffs(Wood_1.3.ts, test = "adf")     # 0 differences needed, again di
 ```{r}
 #Wood_2.2.ts testing
 tseries::adf.test(Wood_2.2.ts)                  # Rejects: stationary
-#tseries::adf.test(Wood_2.2.ts,k = 0)            #forced it to test AR(1) it does reject: Stationary
+tseries::adf.test(Wood_2.2.ts,k = 0)            #forced it to test AR(1) it does reject: Stationary
 tseries::kpss.test(Wood_2.2.ts, null = "Level") #opposite null hypothesis for kpss it fails to reject: Stationary
 tseries::kpss.test(Wood_2.2.ts, null = "Trend") #not sure that this test makes sense (talked to Mark about this he said it can still be good to check as the trend could be very subtle), visually data does not appear to have a trend.it fails to reject: stationary
 #Wood_2.2 has full agreement on stationairity from all tests used. Very likely is stationary and will not require differencing
@@ -266,7 +268,7 @@ forecast::ndiffs(Wood_2.2.ts, test = "adf")     # 0 needed. Agrees with the unit
 ```{r}
 #test stationairity Kvichak_1.3
 tseries::adf.test(Kvichak_1.3.ts)                  #  Rejects just barely: stationary
-#tseries::adf.test(Kvichak_1.3.ts,k = 0)            #forced it to test AR(1) it does reject: Stationary.
+tseries::adf.test(Kvichak_1.3.ts,k = 0)            #forced it to test AR(1) it does reject: Stationary.
 tseries::kpss.test(Kvichak_1.3.ts, null = "Level") #opposite null hypothesis for kpss it  rejects: non-Stationary
 tseries::kpss.test(Kvichak_1.3.ts, null = "Trend") #.it rejects:non- stationary
 cat("\n")
@@ -279,7 +281,7 @@ forecast::ndiffs(Kvichak_1.3.ts, test = "adf")     #0 needed. again disagreement
 #test stationairity Kvichak_2.2
 tseries::adf.test(Kvichak_2.2.ts) # fails to Reject: non-stationary
 cat("\n")
-#tseries::adf.test(Kvichak_2.2.ts,k = 0)            #forced it to test AR(1) it does reject: Stationary. disagreement between them
+tseries::adf.test(Kvichak_2.2.ts,k = 0)            #forced it to test AR(1) it does reject: Stationary. disagreement between them
 tseries::kpss.test(Kvichak_2.2.ts, null = "Level") #opposite null hypothesis for kpss it fails to reject: Stationary
 cat("\n\n")
 tseries::kpss.test(Kvichak_2.2.ts, null = "Trend")
@@ -494,7 +496,7 @@ accuracy(pred.kvi2, test.Kvichak_2.2)
 
 # Discussion
 
-****Pull together results from two files
+\*\*\*\*Pull together results from two files
 
 # Description of each team member's contributions
 
