@@ -109,10 +109,10 @@ Kvichak_1.3.ts <- ts(Kvichak_1.3$log_ret, start = 1963, end = 2020)
 Kvichak_2.2.ts <- ts(Kvichak_2.2$log_ret, start = 1963, end = 2020)
 
 #plots
-plot(Kvichak_1.3.ts, ylab = "log(fish counted x1000)", main = "Time series of sockeye: 1 year in freshwater, 3 years in ocean" )
-#one huge spike downward at start otherwise variance looks similar througout. maybe stationary around a trend if the initial spike doesn't ruin it
+plot(Kvichak_1.3.ts, ylab = "log Abundance", main = "Time series of sockeye: 1 year in freshwater, 3 years in ocean" )
+
 plot(Kvichak_2.2.ts, ylab = "log Abundance", main = "Time series of sockeye: 2 years in freshwater, 2 years in ocean" )
-#looks fairly stationary to me
+
 
 ```
 
@@ -194,7 +194,7 @@ The ACF plot of the full 1.3 age group tails off slowly, which indicates an AR()
 
 The truncated 1.3 group shows significance at a lag of 2 for both the ACF and PACF. This may be some kind of ARMA model
 
-The 2.2 age group has an ACF that shows significance at lags 2, 4, 5, and 16. This may indicate seasonality, which again we will ignore in this experiment. The PACF cuts off a one so this may be an AR(1) model with a nonzero mean.
+The 2.2 age group has an ACF that shows significance at lags 1, 4, 5, and 16. This may indicate seasonality, which again we will ignore in this experiment. The PACF cuts off a one so this may be an AR(1) model with a nonzero mean.
 
 Wood:
 
@@ -210,7 +210,7 @@ The 2.2 group does not show any patterns that line up with an AR or MA model. It
 
 ## Test for stationarity
 
-## Ugashik
+### Ugashik
 
 ```{r}
 #Miranda's Code
@@ -232,7 +232,7 @@ datts_diff_2.2 <- diff(Ugashik_2.2.ts, differences = 1)
 
 ```
 
-# Wood
+### Wood
 
 ```{r}
 #Dylan's Code
@@ -261,7 +261,7 @@ forecast::ndiffs(Wood_2.2.ts, test = "kpss")    # 0 needed
 forecast::ndiffs(Wood_2.2.ts, test = "adf")     # 0 needed. Agrees with the unit root tests above that found stationairity of the data
 ```
 
-#Kvichak
+### Kvichak
 
 ```{r}
 #test stationairity Kvichak_1.3
@@ -269,7 +269,7 @@ tseries::adf.test(Kvichak_1.3.ts)                  #  Rejects just barely: stati
 #tseries::adf.test(Kvichak_1.3.ts,k = 0)            #forced it to test AR(1) it does reject: Stationary.
 tseries::kpss.test(Kvichak_1.3.ts, null = "Level") #opposite null hypothesis for kpss it  rejects: non-Stationary
 tseries::kpss.test(Kvichak_1.3.ts, null = "Trend") #.it rejects:non- stationary
-
+cat("\n")
 forecast::ndiffs(Kvichak_1.3.ts, test = "kpss")    # 1 needed
 forecast::ndiffs(Kvichak_1.3.ts, test = "adf")     #0 needed. again disagreement. likely will be differenced by auto.arima()
 #there is disagreement from adf and kpss, may require differencing
@@ -277,10 +277,13 @@ forecast::ndiffs(Kvichak_1.3.ts, test = "adf")     #0 needed. again disagreement
 
 ```{r}
 #test stationairity Kvichak_2.2
-tseries::adf.test(Kvichak_2.2.ts)                  # fails to Reject: non-stationary
+tseries::adf.test(Kvichak_2.2.ts) # fails to Reject: non-stationary
+cat("\n")
 #tseries::adf.test(Kvichak_2.2.ts,k = 0)            #forced it to test AR(1) it does reject: Stationary. disagreement between them
 tseries::kpss.test(Kvichak_2.2.ts, null = "Level") #opposite null hypothesis for kpss it fails to reject: Stationary
-tseries::kpss.test(Kvichak_2.2.ts, null = "Trend") #not sure that this test makes sense (talked to Mark about this he said it can still be good to check as the trend could be very subtle), visually data does not appear to have a trend.it fails to reject: stationary
+cat("\n\n")
+tseries::kpss.test(Kvichak_2.2.ts, null = "Trend")
+cat("\n\n")#not sure that this test makes sense (talked to Mark about this he said it can still be good to check as the trend could be very subtle), visually data does not appear to have a trend.it fails to reject: stationary
 #there is disagreement from adf and kpss, may require differencing
 
 forecast::ndiffs(Kvichak_2.2.ts, test = "kpss")    # 0 needed
@@ -289,11 +292,9 @@ forecast::ndiffs(Kvichak_2.2.ts, test = "adf")     # 0 needed. So I am expecting
 
 Run tests and discuss any stationarity issues and how these were addressed.
 
-##Fitting entire datasets with auto.arima, will add back if needed
-
 ## Fit Models to the training data
 
-## Ugashik
+### Ugashik
 
 ```{r}
 # Make dataframes for testing models later
@@ -308,15 +309,16 @@ test_Ugashik_2.2 <- window(Ugashik_2.2.ts, 2011, 2020) # range 2011 - 2020
 
 model_Ugashik_1.3 <- auto.arima(train_Ugashik_1.3)
 model_Ugashik_1.3
+cat("\n\n")
 
 model_Ugashik_1.3_out <- auto.arima(train_Ugashik_1.3_out)
 model_Ugashik_1.3_out
-
+cat("\n\n")
 model_Ugashik_2.2 <- auto.arima(train_Ugashik_2.2)
 model_Ugashik_2.2
 ```
 
-## Wood
+### Wood
 
 ```{r}
 #Dylan's Code, need to speak on auto.arima model results
@@ -325,6 +327,7 @@ train.Wood_1.3 <- window(Wood_1.3.ts, start = 1963, end = 2010)
 test.Wood_1.3 <- window(Wood_1.3.ts, start = 2011, end = 2020)
 fit.Wood_1.3 <- auto.arima(train.Wood_1.3)
 fit.Wood_1.3
+cat("\n\n")
 
 train.Wood_2.2 <- window(Wood_2.2.ts, start = 1963, end = 2010)
 test.Wood_2.2 <- window(Wood_2.2.ts, start = 2011, end = 2020)
@@ -332,7 +335,7 @@ fit.Wood_2.2 <- auto.arima(train.Wood_2.2)
 fit.Wood_2.2
 ```
 
-## Kvichak
+### Kvichak
 
 ```{r}
 #train and test predictions
@@ -340,7 +343,7 @@ train.Kvichak_1.3 <- window(Kvichak_1.3.ts, start= 1963, end=2010)
 test.Kvichak_1.3 <- window(Kvichak_1.3.ts, start= 2011, end= 2020) 
 fit.Kvichak_1.3 <- forecast::auto.arima(train.Kvichak_1.3)
 fit.Kvichak_1.3
-
+cat("\n\n")
 train.Kvichak_2.2 <- window(Kvichak_2.2.ts, start= 1963, end=2010)
 test.Kvichak_2.2 <- window(Kvichak_2.2.ts, start= 2011, end= 2020)
 fit.Kvichak_2.2 <- forecast::auto.arima(train.Kvichak_2.2)
@@ -349,47 +352,23 @@ fit.Kvichak_2.2
 
 ### Printed results for ret_yr 1.3
 
-Series: train ARIMA(0,1,1)
-
-Coefficients: ma1 -0.7305 s.e. 0.1400
-
-sigma\^2 = 18.34: log likelihood = -134.93 AIC=273.86 AICc=274.13 BIC=277.56
-
-Series: train_Ugashik_1.3 ARIMA(2,1,2)
-
-Coefficients: ar1 ar2 ma1 ma2 0.6167 -0.9676 -0.8030 0.8451 s.e. 0.0500 0.0341 0.1359 0.1212
-
-sigma\^2 = 1.161: log likelihood = -68.56 AIC=147.11 AICc=148.58 BIC=156.36
-
 ARIMA model results from train data for ret_yr 1.3 fish in Bristol Bay very different from ret_yr 2.2 despite both being 4 yr old fish. Ret_yr 1.3 inconsistent with results of ACF and PACF tests suggesting AR(1). First differencing the time series object returned the mean to zero, and auto.arima agrees first differencing the data is the best approach for model.
 
 Unfortunately, this is totally different from the stationarity tests which suggest that that the data is stationary and the AICc is huge which suggests this is not the best model for this data. Below is the better model.
 
 ### Printed results for ret_yr 1.3 outlier removed
 
-Series: train_Ugashik_1.3_out ARIMA(2,0,0) with non-zero mean
-
-Coefficients: ar1 ar2 mean 0.3818 -0.5662 6.9256 s.e. 0.1506 0.1451 0.0890
-
-sigma\^2 = 0.365: log likelihood = -27.2 AIC=62.41 AICc=63.94 BIC=68.14
-
 By focusing on years without the outlier value, the model changed to ARIMA (2,0,0) and the AICc is much lower, suggesting this model is the better fit for the data. For the 1 year freshwater - 3 year ocean fish we will proceed with this model.
 
 ### Printed results for ret_yr 2.2
-
-Series: train ARIMA(1,0,0) with non-zero mean
-
-Coefficients: ar1 mean 0.4545 5.9958 s.e. 0.1268 0.3373
-
-sigma\^2 = 1.753: log likelihood = -80.67 AIC=167.34 AICc=167.88 BIC=172.95
 
 ARIMA model results from train data for ret_yr 2.2 fish in Bristol Bay consistent with results of ACF and PACF tests suggesting AR(1). First differencing the time series object returned the mean to zero, but auto.arima suggests 0 differencing and that data has non-zero mean.
 
 # Results
 
-Plotting Best Fit Results
+## Plotting Best Fit Results and Determining Model Accuracy
 
-Ugashik 1.3, Starting from 1980
+### Ugashik 1.3, Starting from 1980
 
 ```{r}
 #Miranda's Code
@@ -412,7 +391,7 @@ The model itself seems to fit the data well based on the visual fit and the resi
 
 The model forecast centers around the mean of the train data, predicting that 2010 will drop which fits the first few actual data points well, but doesn't do as good of a job of predicting that the data from 2015-2020 look closer to the more recent years than further out (prior to 2005). Data are included in the confidence interval though which is great.
 
-Ugashik 2.2
+### Ugashik 2.2
 
 ```{r}
 fc_2.2 <- forecast(model_Ugashik_2.2, h=10)
@@ -431,7 +410,7 @@ The model fits the timeseries train data pretty well, matching the overall chang
 
 Model forecast doesn't look great. The forecast flatlines while the real data from 2011-2020 have much higher variance. This reflects the high AICc from the model. But the data are contained within the predicted confidence interval which is good.
 
-Wood 1.3
+### Wood 1.3
 
 ```{r}
 pred.Wood_1.3 <- forecast(fit.Wood_1.3, h = 10)
@@ -459,7 +438,7 @@ accuracy(forecast(fit.Wood_1.3, h = 10), test.Wood_1.3)
 #two years in both freshwater and the ocean.
 ```
 
-Wood 2.2
+### Wood 2.2
 
 ```{r}
 pred.Wood_2.2 <- forecast(fit.Wood_2.2, h = 10)
@@ -477,7 +456,7 @@ accuracy(forecast(fit.Wood_2.2, h = 10), test.Wood_2.2)
 #test data. So we have RMSE = 0.731
 ```
 
-Kvichak 1.3
+### Kvichak 1.3
 
 ```{r}
 #chooses same exact model as the full dataset model
@@ -496,7 +475,7 @@ accuracy(pred.kvi3, test.Kvichak_1.3)
 #predicted.
 ```
 
-Kvichak 2.2
+### Kvichak 2.2
 
 ```{r}
 pred.kvi2 <- forecast(fit.Kvichak_2.2, h=10)
@@ -515,8 +494,8 @@ accuracy(pred.kvi2, test.Kvichak_2.2)
 
 # Discussion
 
-Pull together results from two files
+****Pull together results from two files
 
 # Description of each team member's contributions
 
-Example: "All team members helped decide on the goal and ran the analyses for the individual regions. Team members 2 & 3 wrote most of the code for the analysis of the regions. Team member 4 researched approaches for measuring accuracy of forecasts in [Hyndman & Athanasopoulos[OTexts.com/fpp2] and team member 2 added code for that to the methods. Team member 4 also researched tests for stationarity and worked with team member 2 to code that up. Team member 1 worked on the plotting section of the report using and adapting code that team member 3 wrote. All team members helped edit the report and wrote the discussion together."
+Dylan wrote the code for the Wood and Kvichak regions, Miranda wrote the code for the Ugashik region, and Eric put it together for the report.
