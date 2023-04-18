@@ -144,13 +144,13 @@ naknek_fri_fore <- fri_fore %>% filter(system %in% 'Naknek') #just the Naknek
 nush_fri_fore <- fri_fore %>% filter(system %in% 'Nushagak') #and the Nush
 ```
 
-Fit a model with `auto.arima()` in the forecast package.
+Fit several models with `auto.arima()` in the forecast package.
 ```{r message=FALSE}
 
-mod.naknek <- auto.arima(nak.train)
+mod.naknek <- auto.arima(nak.train, trace = TRUE)
 mod.naknek
 
-mod.nush <- auto.arima(nush.train)
+mod.nush <- auto.arima(nush.train, trace = TRUE)
 mod.nush
 
 
@@ -161,10 +161,10 @@ mod.nush
 
 # For loop to test multiple models and find their accuracy
 #(0,1,1) is model chosen by auto arima
-mod.list <- list(c(5,0,2), c(4,0,2), c(5,0,2))## List of mods to test.
+mod.list <- list(c(5,0,1), c(4,0,1), c(5,0,2))## List of mods to test.
 
 # the predictions become flatter with a 1 in the difference position
-# hte predictions become more variable with a larger number in the AR and MA positions
+# the predictions become more variable with a larger number in the AR and MA positions
 
 fits <- list()# list to store the model fits in
 err.list <- list(0) # list for accuracy data
@@ -176,7 +176,7 @@ for(i in 1:3){
 fits
 err.list
 
-# Testing plot with the last ARIMA model (2,0,1)
+# Testing plot for the three ARIMA models tested
 nush.test.1 <- forecast(fits[[1]], h=20)
 nush.test.2 <- forecast(fits[[2]], h=20)
 nush.test.3 <- forecast(fits[[3]], h=20)
@@ -243,9 +243,28 @@ forecast::checkresiduals(nush.fr.2, plot = FALSE)
 
 #These both produce p values less than .05 suggesting that some autocorrelation is still present for a (0,1,1) ARIMA model. 
 
+# check for different (x,x,x) models
+for(i in 1:3){
+  forecast::checkresiduals(fits[[i]]) 
+}
+
+for(i in 1:3){
+  forecast::checkresiduals(fits[[i]], plot = FALSE) 
+}
+#the two ARIMA(5,x,x) models are not significantly auto correlated while the ARIMA(4,x,x) model still is significant at the .05 level 
 
 ```
 
+```{r}
+## Testing the accuracy of the model
+
+accuracy(mod.eg) # fit within the train data
+accuracy(forecast(mod.eg, h=5), e.test) # comparison of a forecast (5 year) to the test data (5 year)
+
+err.list #list from the looping code above with custom (x,x,x) models
+
+
+```
 
 # Question your team will address
 
@@ -283,7 +302,7 @@ Use the ACF and PACF plots to explore the time series. What did you learn?
 ###### Also try decomposition #####
 
 ```{r}
-# codevfrom lecture 1 example
+# code from lecture 1 example
 
 par(mai = c(0.9,0.9,0.1,0.1), omi = c(0,0,0,0))
 plot.ts(datts.egegik)
