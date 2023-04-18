@@ -328,18 +328,21 @@ Before this decision, below we check the accuracies and the residuals for each o
 #lists from forecast::accuracy for each river
 names(kv_err_list) <- c("Kvichak (0,0,1)", "Kvichak (1,0,1) drift", "Kvichak (0,0,2)")
 kv_err_list
-#model 1 - (0,0,1), model 2 - (1,0,1) model 3 - (0,0,2)
+kv_RMSE <- matrix(data =c(kv_err_list[[1]][4],kv_err_list[[2]][4],kv_err_list[[3]][4]))
+
+#best model is model 1 - (0,0,1) with non zero mean
 
 names(nu_err_list) <- c("Nushagak (0,1,1)", "Nushagak (0,1,1) drift", "Nushagak (1,1,1)")
 nu_err_list
-nu_RMSE <- matrix()
-#model 1 - (0,1,1), model 2 - (0,1,1)drift model 3 - (1,1,1)
+nu_RMSE <- matrix(data =c(nu_err_list[[1]][4],nu_err_list[[2]][4],nu_err_list[[3]][4]))
+
+# best model is model 1 - (0,1,1)
 
 names(wo_err_list) <- c("Wood (0,1,1)", "Wood (0,1,1) drift", "Wood (1,1,1)")
 wo_err_list
-#model 1 - (0,1,1), model 2 - (0,1,1) drift, model 3 - (1,1,1)
+wo_RMSE <- matrix(data =c(wo_err_list[[1]][4],wo_err_list[[2]][4],wo_err_list[[3]][4]))
 
-#The tested models produce very similar errors between models within river systems
+#best model is model 2 - (0,1,1) with drift
 
 ```
 Best model is the one with the lowest RMSE.
@@ -350,61 +353,48 @@ We chose the model with the lower RMSE moving forward.
 
 ```{r}
 #kvichak
-for(i in 1:3){
-forecast::checkresiduals(kv_fore[[i]]) # plots the residuals, acf and histogram
-}
+#select model 1
+forecast::checkresiduals(kv_fore[[1]]) # plots the residuals, acf and histogram
 
-for(i in 1:3){
-forecast::checkresiduals(kv_fore[[i]], plot = FALSE) #runs the Ljung- Box test
-}
+forecast::checkresiduals(kv_fore[[1]], plot = FALSE) #runs the Ljung- Box test
 
 #The null hypothesis for this test is no autocorrelation. We do not want to reject the null.
 #we fail to reject the null if p>.05
 
  ### Kvichak Results ###
 #p-value for ARIMA(0,0,1) with non zero mean is .00141 so we reject the null
-#p-value for ARIMA(1,0,1) with non zero mean is .0008 so we reject the null
-#p-value for ARIMA(0,0,2) with non zero mean is .0014 wo we reject the null
 
 #Nushagak
-for(i in 1:3){
-forecast::checkresiduals(nu_fore[[i]]) 
-}
+#select model 1
+forecast::checkresiduals(nu_fore[[1]]) 
 
-for(i in 1:3){
-forecast::checkresiduals(nu_fore[[i]], plot = FALSE) 
-}
+forecast::checkresiduals(nu_fore[[1]], plot = FALSE) 
 
-### Results ###
+### Nushagak Results ###
 #p-value for ARIMA(0,1,1) is .032 so we reject the null
-#p-value for ARIMA(0,1,1) drift is .031 so we reject the null
-#p-value for ARIMA(1,1,1) is .036 so we reject the null
 
 #Wood
-for(i in 1:3){
-forecast::checkresiduals(wo_fore[[i]]) 
-}
+#Select model 2
+forecast::checkresiduals(wo_fore[[2]]) 
 
-for(i in 1:3){
-forecast::checkresiduals(wo_fore[[i]], plot = FALSE) 
-}
-### Results ###
-#p-value for ARIMA(0,1,1) is .25 so we fail to reject the null
+forecast::checkresiduals(wo_fore[[2]], plot = FALSE) 
+
+### Wood Results ###
 #p-value for ARIMA(0,1,1) drift is .23 so we fail to reject the null
-#p-value for ARIMA(1,1,1) is .23 so we fail to reject the null
-
 
 ```
 
-The residuals for the Kvichak River are significantly auto-correlated even though only two lags show significance on the correlogram. 
+The residuals for the Kvichak River are significantly auto-correlated even though only two lags show significance on the correlogram. The Nushagak also has significantly auto correlated residuals and only the Wood passes the Ljung-Box test for having non auto correlated residuals. 
+
+The best models for each river were selected derived by choosing the model with the lowest RMSE value. The best model for the Kvichak was an ARIMA(0,0,1) with non zero mean, the best model for the Nushagak was ARIMA(0,1,1) and the best model for the Wood was ARIMA(0,1,1) with drift. 
 
 # DISCUSSION
 
-The ARIMA models tested produced reasonable estimates for roughly one to three years but tended to miss long term trends in the data. This was especially true for the Wood and Nushagak which had sharp upward trends after 2015 but the best model selected by auto.arima predicted a flat trajectory. A model with drift produced a somewhat better visual fit to the data but resulted in underestimates of the run size in all years during the forecasting period. The three models selected for the Kvichak produced a much better visual fit to the data than in the other two rivers. This may be because the run size in the Kvichak has remained relatively stable without the obvious increasing trend visible in the other two rivers. 
+The ARIMA models tested produced reasonable estimates for roughly one to three years but tended to miss long term trends in the data. This was especially true for the Wood and Nushagak which had sharp upward trends in abundance after 2015 that our forecasts did not predict. For the Wood River the auto.arima function chose a model without drift as the best fit, however when we compared the three best models using the accuracy function a model with drift ws chosen based on its lower RMSE value. This model with drift produced a somewhat better visual fit to the data but still resulted in underestimates of the run size in all years during the forecasting period. The model selected for the Kvichak produced a much better visual fit to the data than in the other two rivers. This may be because the run size in the Kvichak has remained relatively stable without the obvious increasing trend visible in the other two rivers. 
 
-The FRI forecasts were better than those generated by our ARIMA models in the Wood and Nushagak Rivers yet still under predicted the actual run size in most years. Our models for the Kvichak were much closer to both the FRI forecasts and actual run sizes yet similar to the other rivers were lower than the FRI forecasts and underpredicted the actual run sizes. 
+The FRI forecasts were better than those generated by our ARIMA models in the Wood and Nushagak Rivers yet still under predicted the actual run size in most years. Our models for the Kvichak were much closer to both the FRI forecasts and actual run sizes, yet similar to the other rivers were lower than the FRI forecasts and under predicted the actual run sizes. 
 
-The autocorrelation present in the residuals for the Kvichak indicates that some structure still exists in the data which is not explained by our models. While few lags are significant there appears to be a repeating pattern like a sinusoidal wave in the correlogram for the three models tested. A similar pattern may be present in the Nushagak but it is less apparent in the correlogram, however the Nushagak residuals still show significant autocorrelation. The Wood river has no significant autocorrelation in the residuals and there appears to be the least amount of structure present in the correlogram of any of the rivers tested. This suggests that the ARIMA model is a better fit to the Wood River system, which is a surprising result as the Kvichak has the best visual fit of the three systems tested. 
+The autocorrelation present in the residuals for the Kvichak indicates that some structure still exists in the data which is not explained by our models. While few lags are significant there appears to be a repeating sinusoidal pattern in the correlogram for the three models tested. A similar pattern may be present in the Nushagak but it is less apparent in the correlogram, however the Nushagak residuals still show significant autocorrelation. The Wood river has no significant autocorrelation in the residuals and there appears to be the least amount of structure present in the correlogram of any of the rivers tested. This suggests that the ARIMA model may be a better fit to the Wood River system, which is a surprising result as the Kvichak has the best visual fit of the three systems tested. 
 
 # Description of each team member's contributions
 
