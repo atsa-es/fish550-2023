@@ -34,11 +34,12 @@ We will fit ARIMA models to each region and age group and compare the model stru
 
 ## Initial plan
 
-Using the forecast package, we plan to fit ARIMA models to the 1960-2010 data on 4 yr old fish in the Wood and Ugashik systems. Then forecast to 2020. We will separate the fish spent by time in freshwater and time in the ocean. These age groups are labeled 1.3 (1 year in freshwater, 3 years in the ocean) and 2.2 (2 years in freshwater, 2 years in the ocean). We will measure accuracy by the comparing the RMS error of each model.
+Using the forecast package, we plan to fit ARIMA models to the 1960-2010 data on 4 yr old fish in the Wood and Ugashik systems. Then forecast to 2020. We will separate the fish by time spent in freshwater and time in the ocean. These age groups are labeled 1.3 (1 year in freshwater, 3 years in the ocean) and 2.2 (2 years in freshwater, 2 years in the ocean). We will measure accuracy by the comparing the RMS error of each model.
 
 ## What you actually did
 
-We were able to enact our plan with a few modifications. Instead of modeling all the 4 year old salmon together, we separated and compared them by age group from the outset. Additionally, we added the Kvichak region to our analysis. We noticed there was an outlier in the data for the 1.3 age group in the Ugashik region, so we fit a second model to the data starting at the year 1980 and compared its forecast to the original model's.
+We were able to enact our plan with a few modifications. Instead of modeling all the 4 year old salmon together, we separated and compared them by age group from the outset. Additionally, we added the Kvichak region to our analysis. 
+We also examined the accuracy of the forecast if we removed the years prior to 1980 from the training data for the 1.3 age group in the Ugashik river. We did this as there was increased varaince in the observed data if we included 1960 - 1980. We thought that removing the variance may improve the accuracy of the forecast, so we fit a second model to the data starting at the year 1980 and compared its forecast to the original model's.
 
 # Diagnostics and preliminary exploration
 
@@ -190,7 +191,7 @@ pacf(Kvichak_2.2.ts)
 
 Ugashik:
 
-The ACF plot of the full 1.3 age group tails off slowly, which indicates an AR() model. There lag also shows potential seasonality, which we will ignore by recommendation of Eli. The PACF cuts off at 1, which further reinforces idea that this is an AR(1) model.
+The ACF plot of the full 1.3 age group tails off slowly, which indicates an AR() model. The lag also shows potential seasonality, which we will ignore by recommendation of Eli. The PACF cuts off at 1, which further reinforces idea that this is an AR(1) model.
 
 The truncated 1.3 group shows significance at a lag of 2 for both the ACF and PACF. This may be some kind of ARMA model
 
@@ -217,19 +218,20 @@ The 2.2 group does not show any patterns that line up with an AR or MA model. It
 tseries::adf.test(Ugashik_1.3.ts) 
 tseries::kpss.test(Ugashik_1.3.ts, null = "Level") 
 tseries::kpss.test(Ugashik_1.3.ts, null = "Trend") 
-plot(datts_diff_1.3, ylab = "Log abundance", main = "Time series, first differenced: 1 year freshwater, 3 years ocean")
-plot(datts_diff_1.3_out, ylab = "Log abundance", main = "Time series, first differenced: 1 year freshwater, 3 years ocean, outlier removed")
+
 ```
 
 ```{r}
 tseries::adf.test(Ugashik_2.2.ts) 
 tseries::kpss.test(Ugashik_2.2.ts, null = "Level") 
 tseries::kpss.test(Ugashik_2.2.ts, null = "Trend")
-plot(datts_diff_2.2, ylab = "Log abundance", main = "Time series, first differenced: 2 year freshwater, 2 years ocean")
+
 datts_diff_1.3 <- diff(Ugashik_1.3.ts, differences = 1)
 datts_diff_1.3_out <- diff(Ugashik_1.3.ts_out, differences = 1)
 datts_diff_2.2 <- diff(Ugashik_2.2.ts, differences = 1)
-
+plot(datts_diff_2.2, ylab = "Log abundance", main = "Time series, first differenced: 2 year freshwater, 2 years ocean")
+plot(datts_diff_1.3, ylab = "Log abundance", main = "Time series, first differenced: 1 year freshwater, 3 years ocean")
+plot(datts_diff_1.3_out, ylab = "Log abundance", main = "Time series, first differenced: 1 year freshwater, 3 years ocean, outlier removed")
 ```
 
 ### Wood
