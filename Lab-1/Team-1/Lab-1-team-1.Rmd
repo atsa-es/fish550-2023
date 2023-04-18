@@ -332,6 +332,7 @@ kv_err_list
 
 names(nu_err_list) <- c("Nushagak (0,1,1)", "Nushagak (0,1,1) drift", "Nushagak (1,1,1)")
 nu_err_list
+nu_RMSE <- matrix()
 #model 1 - (0,1,1), model 2 - (0,1,1)drift model 3 - (1,1,1)
 
 names(wo_err_list) <- c("Wood (0,1,1)", "Wood (0,1,1) drift", "Wood (1,1,1)")
@@ -341,8 +342,11 @@ wo_err_list
 #The tested models produce very similar errors between models within river systems
 
 ```
+Best model is the one with the lowest RMSE.
 
 ## Check residuals (NICK)
+
+We chose the model with the lower RMSE moving forward. 
 
 ```{r}
 #kvichak
