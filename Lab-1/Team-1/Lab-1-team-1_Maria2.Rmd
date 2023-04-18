@@ -1,0 +1,196 @@
+---
+title: "Lab-1-team-1_Maria2.Rmd"
+author: "Maria Kuruvilla"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r include=FALSE}
+library(tidyverse)
+library(tseries)
+library(forecast)
+library(zoo)
+
+
+options(dplyr.summarise.inform = FALSE)
+```
+
+
+## Wood River
+
+
+## Read the data
+```{r}
+bb_data <- readRDS(here::here("Lab-1", "Data_Images", 
+                              "bristol_bay_data_plus_covariates.rds"))
+head(bb_data)
+
+subdata <- bb_data %>%
+  group_by(system, ret_yr) %>%
+  summarize(lntotal = log(sum(ret, na.rm=TRUE)))%>%
+  filter(system == "Wood")
+head(subdata)
+
+```
+
+
+
+## Plot the data
+
+Plot the data and discuss any obvious problems with stationarity from your visual test.
+```{r, echo = FALSE}
+plot1 <- ggplot(data = subdata, aes(x=ret_yr, y=lntotal)) + 
+  geom_line() + 
+  ggtitle("log abundance by river") +
+  facet_wrap(~system)
+plot1
+
+```
+
+
+It looks like there is a trend in Wood river log returns and maybe some negative autocorrelation.
+
+
+## Use ACF and PACF
+
+Use the ACF and PACF plots to explore the time series. What did you learn? Also try decomposition.
+
+```{r}
+
+
+data_ts_Wood <- ts(subdata$lntotal[subdata$system == "Wood"],
+                      start=subdata$ret_yr[subdata$system == "Wood"][1])
+
+train_Wood <- window(data_ts_Wood, 1963, 2005)
+test_Wood <- window(data_ts_Wood, 2006, 2020)
+
+
+acf(data_ts_Wood)
+
+pacf(data_ts_Wood)
+
+```
+
+
+The acf plots for Wood river is slowly decaying and the pacf plot shows significance at lab 1. There might be AR1 structure in the data.
+
+```{r message=FALSE}
+mod_Wood <- auto.arima(data_ts_Wood)
+mod_Wood
+```
+
+
+
+
+```{r message=FALSE}
+
+
+adf.test(data_ts_Wood, k = 0)
+
+
+
+kpss.test(data_ts_Wood, null =c("Trend"))
+#note that this gives different results depending on what null is
+
+#wood is stationary around trend
+
+
+
+```
+
+Wood river data is probably stationary around a trend.
+
+```{r}
+ndiffs(data_ts_Wood, test='kpss')
+
+ndiffs(data_ts_Wood, test='adf')
+```
+
+
+## Differencing the data
+```{r}
+
+Wood_diff <- diff(data_ts_Wood)
+
+plot.ts(Wood_diff)
+
+```
+
+This looks pretty stationary.
+
+
+## Stationarity on differenced data
+
+
+
+```{r}
+adf.test(Wood_diff, k = 0)
+
+
+
+kpss.test(Wood_diff, null =c("Level"))
+
+```
+
+These results say that Wood river data is also probably stationary.
+
+
+
+```{r}
+
+train_Wood <- window(data_ts_Wood, 1963, 2015)
+test_Wood <- window(data_ts_Wood, 2015, 2020)
+mod_Wood_train <- auto.arima(train_Wood)
+mod_Wood_train
+### Notes from Eli, testing with data from the Wood. (auto.arima chose a 0,1,1 model)
+
+# Chosing our own arima structure. This is how we would write it if we just wanted a single model with a specified structure. 
+#fit = Arima(train_Wood, order = c(2,1,0))# just a random example of how its written, didn't chose the order for any reason
+
+# For loop to test multiple models and find their accuracy
+mod.list <- list(c(0,1,1), c(1,1,1), c(2,1,1), c(1,0,1))## List of mods to test. First option is what auto.arima chose
+fits <- list()# list to store the model fits in 
+err.list <- list(0) # list for accuracy data
+for(i in 1:4){
+  fits[[i]] <- Arima(train_Wood, order = mod.list[[i]])# loops through list, fits model, and stores in 'fits'
+  err.list[[i]] <- accuracy(forecast(fits[[i]], h =5), test_Wood) # puts accuracy data into list
+}
+
+fits
+err.list
+
+```
+
+
+## Plot forecasts
+
+```{r}
+# Testing plot with the last ARIMA model (2,0,1)
+
+
+# fr.test <- forecast(fits[[3]], h=30)
+# autoplot(fr.test) + geom_point(aes(x=x, y=y), data=fortify(test_Wood))+
+#   geom_point(aes(x=ret_yr, y=lntotal), data = subdata, col='red')
+
+# testing all models
+
+plots <- list()
+for(i in 1:4){
+  fr.test <- forecast(fits[[i]], h=20)
+  plots[[i]] <- autoplot(fr.test) + geom_point(aes(x=x, y=y), data=fortify(test_Wood))+
+  geom_point(aes(x=ret_yr, y=lntotal), data = subdata, col='red')
+  
+plots[[i]]
+}
+
+plots[[1]]
+plots[[2]]
+plots[[3]]
+plots[[4]]
+```
+
+

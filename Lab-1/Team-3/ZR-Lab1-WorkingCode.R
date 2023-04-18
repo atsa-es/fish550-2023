@@ -5,8 +5,8 @@ library(forecast)
 library(here)
 
 # Reading In Data ---------------------------------------------------------
-ruggerone_data <- readRDS(here::here("Lab-1", "Data_Images", "ruggerone_data.rds"))
-
+#ruggerone_data <- readRDS(here::here("Lab-1", "Data_Images", "ruggerone_data.rds"))
+ruggerone_data <- readRDS("C:/GitHub/fish550-2023/Lab-1/Data_Images/ruggerone_data.rds")
 #Exploratory plots
 ruggerone_data %>% 
   filter(species=="chum") %>% 
@@ -153,7 +153,7 @@ ggplot(ResultsTable) +
   geom_hline(aes(yintercept = 1), linetype = "dashed") + 
   scale_x_discrete(labels = as_labeller(regionskey)) +
   labs(fill = "Forecast Levels", x = "Region") + 
-  ggtitle("Chum") + theme_bw() + theme(axis.text.x=element_text(angle=-90, hjust = 0, vjust = 0.5 )
+  ggtitle("Chum") + theme_bw() + theme(axis.text.x=element_text(angle=-90, hjust = 0, vjust = 0.5 ))
 
 #still need to check residuals and stationarity
 

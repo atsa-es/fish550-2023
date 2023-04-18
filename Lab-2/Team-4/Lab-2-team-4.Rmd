@@ -1,0 +1,101 @@
+# Lab 2: MARSS models
+
+Team member names: Dylan Hubl (Env & Forest Sci) and Madison Heller-Shipley (SAFS) 
+
+# Data
+
+Describe what data set you will work with and any subsetting you decided on. For example, you may have decided to look only at a section of the ESU that your team was assigned.
+
+Load the data.
+
+```{r}
+load(here::here("Lab-2", "Data_Images", "columbia-river.rda"))
+```
+
+Wrangle the data.
+
+**Add your wrangling code here**
+
+```{r}
+
+knitr::include_graphics("C:/GitHub/fish550-2023/Lab-2/Team-4/Middle Columbia River sockeye.png")
+
+```
+
+# General Questions
+
+Each group has the same general tasks, but you will adapt them as you work on the data.
+
+1.  Create estimates of spawner abundance for all missing years and provide estimates of the decline from the historical abundance.
+
+2.  Evaluate support for the major population groups. Are the populations in the groups more correlated than outside the groups?
+
+3.  Evaluate the evidence of cycling in the data. *We will talk about how to do this on the Tuesday after lab.*
+
+## Notes from Class
+
+LOG POPULATION DATA
+
+Play around with different methods to fill in missing value and look how assmptions impact your estimates of historical population size where data are limited. (These will probably be not great estimates).
+
+Make some assumptions about underlying population structure. This can help you fill in missing data areas.
+
+Adult run timing (when they're coming into fresh water, look at run timing--any correlation?)
+
+John Day Data set spans the entire time period, and we will look at the appropriatness of drawing inference from these data to fill in other missing values. 
+
+    Johm Day lower 
+
+# Methods
+
+Address the following in your methods
+
+-   Describe your assumptions about the x and how the data time series are related to x.
+
+    -   How are the x and y (data) related? 1 x for 1 y or will you assume 1 x for all y or 1 x for each major population group? How will you choose?
+    -   What will you assume about the U for the x's?
+    -   What will you assume about the Q matrix?
+
+-   Write out your assumptions as different models **in matrix form**, fit each and then compare these with AIC or AICc.
+
+-   Do your estimates differ depending on the assumptions you make about the structure of the data, i.e. you assumptions about the x's, Q, and U.
+
+### Tips
+
+**Simplify**
+
+If your ESU has many populations, start with a smaller set of 4-7 populations.
+
+**Assumptions**
+
+You can assume that `R="diagonal and equal"` and `A="scaling"`. Assume that "historical" means the earliest years available for your group.
+
+**States**
+
+Your abundance estimate is the "x" or "state" estimates. You can get this from. Underlying fits:
+
+    fit$states
+
+or
+
+    tsSmooth(fit)
+
+where `fit` is from `fit <- MARSS()`
+
+**plotting**
+
+Estimate of the mean of the spawner counts based on your x model.
+
+    autoplot(fit, plot.type="fitted.ytT")
+
+**diagnostics**
+
+    autoplot(fit, plot.type="residuals")
+
+# Results
+
+# Discussion
+
+# Description of each team member's contributions
+
+Example: "All team members helped decide on the goal and ran the analyses for the individual regions. Team members 2 & 3 wrote most of the code for the analysis of the regions. Team member 4 researched approaches for measuring accuracy of forecasts in [Hyndman & Athanasopoulos[OTexts.com/fpp2] and team member 2 added code for that to the methods. Team member 4 also researched tests for stationarity and worked with team member 2 to code that up. Team member 1 worked on the plotting section of the report using and adapting code that team member 3 wrote. All team members helped edit the report and wrote the discussion together."
