@@ -1,0 +1,345 @@
+# Lab 1: ARIMA models
+
+Team member names: Nick Chambers (SAFS), Liz Elmstrom (SAFS), Maria Kuruvilla (QERM)
+
+
+# Data
+
+Bristol Bay Data. Discuss what part of the data set you will work with.
+
+Read in the data
+```{r, echo=FALSE}
+library(tseries)
+library(forecast)
+library(ggplot2)
+library(tidyverse)
+library(zoo)
+
+bb_data <- readRDS(here::here("Lab-1", "Data_Images", "bristol_bay_data_plus_covariates.rds"))
+```
+
+## Testing using the Naknek and Nushagak
+
+Get total abundance per river out of `bb_data`
+```{r}
+
+#Sum and log returns for each river and year
+lndata <- bb_data %>%
+  group_by(system, ret_yr) %>%
+  summarize(lntotal = log(sum(ret, na.rm=TRUE)))
+
+# Grabs all years
+my_rivers <- filter(lndata, system %in% c("Nushagak","Naknek"))
+  
+```
+# Diagnostics and preliminary exploration
+
+## Plot the data
+
+
+Plot the data and discuss any obvious problems with stationarity from your visual test.
+```{r}
+
+# Plotting three rivers
+my_rivers %>% 
+  ggplot(aes(x=ret_yr, y=lntotal)) + 
+    geom_line() + 
+    ggtitle("log abundance by river") +
+    facet_wrap(~system)+theme_bw()
+
+# Neither the Naknek nor the Nushagak looks stationary, both have strong increasing trends
+```
+
+
+## Use ACF and PACF
+
+Use the ACF and PACF plots to explore the time series. What did you learn? Also try decomposition.
+
+```{r testing for corr}
+
+River <- unique(my_rivers$system)
+par(mfrow=c(1,2))
+for(i in 1:length(River)){
+  sub<-subset(my_rivers,my_rivers$system==River[i])
+  
+  acf_plots <- acf(sub$lntotal, plot = FALSE)
+  plot(acf_plots, main = River[i])
+  
+  pacf_plots <- pacf(sub$lntotal, plot = FALSE)
+  plot(pacf_plots, main = River[i])
+}
+
+```
+
+## Test for stationarity
+
+Run tests and discuss any stationarity issues and how these were addressed.
+```{r stationarity tests}
+
+adf.list <- kpss.list <- list()
+p.vals <- kp.vals <-  vector()
+
+for(i in 1:length(River)){
+  sub<-subset(my_rivers,my_rivers$system==River[i])
+  
+  adf.list[[i]] <- adf.test(sub$lntotal, k = 0)
+  kpss.list[[i]] <- kpss.test(sub$lntotal, null = "Trend")
+  
+  p.vals[i] <- adf.list[[i]]$p.value
+  kp.vals[i] <- kpss.list[[i]]$p.value
+}
+names(p.vals) <- names(kp.vals) <- River
+p.vals # Should be less than .05
+kp.vals # Should be greater than .05
+
+```
+For the ADF test, we want to REJECT the null hypothesis, so we want a p-value less than 0.05
+For the KPSS test, we want to ACCEPT the null hypothesis, so we want a p-value greater than 0.05
+
+We reject the null for both the Naknek and Nushagak for the augmented Dickey Fuller and accept the null for the KPSS - so these time series appear stationary
+
+## Testing for differencing
+
+Running the code for differencing even though both rivers appear statioinary
+
+```{r}
+
+## testing the others in case
+naknek <- filter(lndata, system %in% c("Naknek"))
+ndiffs(naknek$lntotal, test='kpss')
+ndiffs(naknek$lntotal, test='adf')
+
+nush <- filter(lndata, system %in% c("Nushagak"))
+ndiffs(nush$lntotal, test='kpss')
+ndiffs(nush$lntotal, test='adf')
+
+```
+
+## Dividing the data into test and train
+
+Make a time series object and divide into train and test data.
+```{r}
+
+## Naknek
+nak.datts <- ts(naknek$lntotal, start=naknek$ret_yr[1])
+nak.train <- window(nak.datts, 1963, 2010)
+nak.test <- window(nak.datts, 1986, 2020)
+
+## Nushagak
+nush.datts <- ts(nush$lntotal, start=nush$ret_yr[1])
+nush.train <- window(nush.datts, 1963, 2010)
+nush.test <- window(nush.datts, 1986, 2020)
+
+```
+
+
+#get the forecast data
+```{r}
+fri_fore <- bb_data %>%
+  group_by(system, ret_yr) %>%
+  summarize(lntotal = log(sum(forecast.fri, na.rm=TRUE))) # Get the FRI forecast data
+
+naknek_fri_fore <- fri_fore %>% filter(system %in% 'Naknek') #just the Naknek
+
+nush_fri_fore <- fri_fore %>% filter(system %in% 'Nushagak') #and the Nush
+```
+
+Fit a model with `auto.arima()` in the forecast package.
+```{r message=FALSE}
+
+mod.naknek <- auto.arima(nak.train)
+mod.naknek
+
+mod.nush <- auto.arima(nush.train)
+mod.nush
+
+
+### Notes from Eli, testing with data from the Kvichak. (auto.arima chose a 0,0,1 model)
+
+# Chosing our own arima structure. This is how we would write it if we just wanted a single model with a specified structure.
+#fit = Arima(nak.train, order = c(2,1,0))# just a random example of how its written, didn't chose the order for any reason
+
+# For loop to test multiple models and find their accuracy
+mod.list <- list(c(0,1,0), c(1,0,1), c(1,0,0))## List of mods to test. 
+
+fits <- list()# list to store the model fits in
+err.list <- list(0) # list for accuracy data
+for(i in 1:3){
+  fits[[i]] <- Arima(nak.train, order = mod.list[[i]])# loops through list, fits model, and stores in 'fits'
+  err.list[[i]] <- accuracy(forecast(fits[[i]], h =10), nak.test) # puts accuracy data into list
+}
+
+fits
+err.list
+
+# Testing plot with the last ARIMA model (2,0,1)
+Nak.test.1 <- forecast(fits[[1]], h=20)
+Nak.test.2 <- forecast(fits[[2]], h=20)
+Nak.test.3 <- forecast(fits[[3]], h=20)
+
+autoplot(Nak.test.1) + geom_point(aes(x=x, y=y), data=fortify(nak.test))+
+  geom_point(aes(x=ret_yr, y=lntotal), data = naknek_fri_fore, col='red')
+
+autoplot(Nak.test.2) + geom_point(aes(x=x, y=y), data=fortify(nak.test))+
+  geom_point(aes(x=ret_yr, y=lntotal), data = naknek_fri_fore, col='red')
+
+autoplot(Nak.test.3) + geom_point(aes(x=x, y=y), data=fortify(nak.test))+
+  geom_point(aes(x=ret_yr, y=lntotal), data = naknek_fri_fore, col='red')
+
+```
+
+
+Plot a 5-year and 10-year forecast against the test data.
+```{r}
+# Naknek
+nak.fr.1 <- forecast(mod.naknek, h=5) #forecast the data for 5 years
+autoplot(nak.fr) + geom_point(aes(x=x, y=y), data=fortify(nak.test))+
+  geom_point(aes(x=ret_yr, y=lntotal), data = naknek_fri_fore, col='red') #plot the forecast
+nak.fr.1.2 <- forecast(mod.naknek, h=10) #forecast the data for 10 years
+autoplot(nak.fr.1) + geom_point(aes(x=x, y=y), data=fortify(nak.test))+
+  geom_point(aes(x=ret_yr, y=lntotal), data = naknek_fri_fore, col='red') 
+# Nush 
+
+nush.fr.1 <- forecast(mod.nush, h=5)
+autoplot(nush.fr) + geom_point(aes(x=x, y=y), data=fortify(nush.test))+
+  geom_point(aes(x=ret_yr, y=lntotal), data = nush_fri_fore, col = "red")
+
+
+nush.fr.2 <- forecast(mod.nush, h=10)
+autoplot(nush.fr.1) + geom_point(aes(x=x, y=y), data=fortify(nush.test))+
+  geom_point(aes(x=ret_yr, y=lntotal), data = nush_fri_fore, col = "red")
+
+```
+
+#plot the existing forecasts
+
+#check the residuals 
+```{r}
+residuals(nak.fr.1) #returns the residuals
+fitted(nak.fr.1) #returns the expected values
+
+forecast::checkresiduals(nak.fr.1) #plots the residuals, acf and histogram
+
+forecast::checkresiduals(nak.fr.1, plot = FALSE) #runs the Ljung- Box test
+#The null hypothesis for this test is no autocorrelation. We do not want to reject the null.
+#we fail to reject the null if p>.05
+
+
+residuals(nush.fr) 
+fitted(nush.fr) 
+forecast::checkresiduals(nush.fr) 
+forecast::checkresiduals(nush.fr, plot = FALSE) 
+
+
+
+```
+
+
+# Question your team will address
+
+What will your team do with the data? You can do many things with the data. The only constraints are that you
+
+* fit ARIMA models (note you'll want to log the abundance data). You can fit other models in addition to ARIMA if you want.
+* do diagnostics for ARIMA models
+* make forecasts
+* test how good your forecasts or compare forecasts (many options here)
+
+Example, "Our team decided to compare the accuracy of forecasts using best fit ARIMA models for pink salmon using 4 regions in the Ruggerone & Irvine data. Our question is whether forecast accuracy is different for different regions."
+
+# Method you will use
+
+## Initial plan
+
+Describe what you plan to do to address your question. Note this example is with Ruggerone & Irvine data but your team will use the Bristol Bay data.
+
+Example, "We will fit ARIMA models to 1960-1980 data on pink salmon in 2 regions in Alaska and 2 regions in E Asia. We will make 1981-1985  forecasts (5 year) and compare the accuracy of the forecasts to the actual values. We will measure accuracy with mean squared error. We will use the forecast package to fit the ARIMA models."
+
+## What you actually did
+
+Example, "We were able to do our plan fairly quickly, so after writing the basic code, we divided up all 12 regions in Ruggerone & Irvine and each team member did 4 regions. We compared the accuracy of forecasts for different time periods using 20-years for training and 5-year forecasts each time. We compared the RMSE, MAE, and MAPE accuracy measures."
+
+# Diagnostics and preliminary exploration
+
+## Plot the data
+
+Plot the data and discuss any obvious problems with stationarity from your visual test.
+
+## Use ACF and PACF
+
+Use the ACF and PACF plots to explore the time series. What did you learn? 
+
+###### Also try decomposition #####
+
+```{r}
+# codevfrom lecture 1 example
+
+par(mai = c(0.9,0.9,0.1,0.1), omi = c(0,0,0,0))
+plot.ts(datts.egegik)
+## weights for moving avg
+fltr <- c(1,1,1)/3
+trend <- stats::filter(datts.egegik, filter=fltr, method="convo", sides=2)
+fltr2 <- rep(1,9)/9
+trend2 <- stats::filter(datts.egegik, filter=fltr2, method="convo", sides=2)
+fltr3 <- rep(1,27)/27
+trend3 <- stats::filter(datts.egegik, filter=fltr3, method="convo", sides=2)
+lines(trend, col = "blue", lwd = 2)
+lines(trend2, col = "darkorange", lwd = 2)
+lines(trend3, col = "darkred", lwd = 2)
+text(x = 1965, y =10,
+     labels = expression(paste("a = 1; ", lambda, " = 1/3")),
+     adj = c(0,0), col = "blue")
+text(x = 1965, y = 9.5,
+     labels = expression(paste("a = 4; ", lambda, " = 1/9")),
+     adj = c(0,0), col = "darkorange")
+text(x = 1965, y = 9,
+     labels = expression(paste("a = 13; ", lambda, " = 1/27")),
+     adj = c(0,0), col = "darkred")
+```
+
+```{r, fig.cap = ""}
+seas <- trend2 - datts.egegik
+  
+par(mai = c(0.9,0.9,0.1,0.1), omi = c(0,0,0,0))
+plot.ts(seas, las = 1, ylab = "")
+# text(x = 1949, y = max(trend, na.rm = TRUE)*0.9,
+#      labels = expression(paste(lambda, " = 1/9")),
+#      adj = c(0,0), col = "darkorange")
+```
+
+
+```{r}
+seas_2 <- decompose(datts.egegik, type = ("additive"))
+#Error in decompose(datts.egegik, type = ("additive")) :time series has no or less than 2 periods
+
+#try with non log transformed data
+seas_2 <- decompose(dat.raw.egegik, type = ("additive"))
+#returns the same error
+
+par(mai = c(0.9,0.9,0.1,0.1), omi = c(0,0,0,0))
+plot.ts(seas_2, las = 1, ylab = "")
+```
+
+# Trying the second method from lecture notes
+```{r plot_lin_trend}
+tt <- as.vector(time(subdata.egegik$lntotal))
+cc <- coef(lm(lx ~ tt))
+pp <- cc[1] + cc[2] * tt
+  
+par(mai = c(0.9,0.9,0.1,0.1), omi = c(0,0,0,0))
+plot(tt, lx, type="l", las = 1,
+     xlab = "Time", ylab = "")
+lines(tt, pp, col = "blue", lwd = 2)
+```
+
+## Test for stationarity
+
+Run tests and discuss any stationarity issues and how these were addressed.
+
+# Results
+
+# Discussion
+
+# Description of each team member's contributions
+
+Example: "All team members helped decide on the goal and ran the analyses for the individual regions. Team members 2 & 3 wrote most of the code for the analysis of the regions. Team member 4 researched approaches for measuring accuracy of forecasts in [Hyndman & Athanasopoulos[OTexts.com/fpp2] and team member 2 added code for that to the methods. Team member 4 also researched tests for stationarity and worked with team member 2 to code that up. Team member 1 worked on the plotting section of the report using and adapting code that team member 3 wrote. All team members helped edit the report and wrote the discussion together."
+
