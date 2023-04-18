@@ -34,19 +34,20 @@ We will fit ARIMA models to each region and age group and compare the model stru
 
 ## Initial plan
 
-Using the forecast package, we plan to fit ARIMA models to the 1960-2010 data on 4 yr old fish in the Wood and Ugashik systems. Then forecast to 2020. We will then split up the 1.3 and 2.2 age groups and compare. We will measure accuracy by the comparing the RMS error of each model.
+Using the forecast package, we plan to fit ARIMA models to the 1960-2010 data on 4 yr old fish in the Wood and Ugashik systems. Then forecast to 2020. We will separate the fish spent by time in freshwater and time in the ocean. These age groups are labeled 1.3 (1 year in freshwater, 3 years in the ocean) and 2.2 (2 years in freshwater, 2 years in the ocean). We will measure accuracy by the comparing the RMS error of each model.
 
 ## What you actually did
 
-We were able to enact our plan with a few modifications. Instead of modeling all the 4 year old salmon together, we separated and compared them by age group from the outset. Additionally, we added the Kvichak region to our analysis. We noticed there was an outlier in the data for the 1yr freshwater and 3yr ocean fish in the Ugashik region, so we fit a second model to the data starting at the year 1980 and compared its forecast to the original model's.
+We were able to enact our plan with a few modifications. Instead of modeling all the 4 year old salmon together, we separated and compared them by age group from the outset. Additionally, we added the Kvichak region to our analysis. We noticed there was an outlier in the data for the 1.3 age group in the Ugashik region, so we fit a second model to the data starting at the year 1980 and compared its forecast to the original model's.
 
 # Diagnostics and preliminary exploration
 
 ## Plot the data
 
-## Ugashik Regional Populations
+### Ugashik Region
+
 ```{r}
-# Miranda's Code
+
 age1.3 = 1.3
 age2.2 = 2.2
 
@@ -73,20 +74,10 @@ plot.ts(Ugashik_1.3.ts, ylab = "Log abundance", main = "Time series of sockeye: 
 plot.ts(Ugashik_1.3.ts_out, ylab = "Log abundance", main = "Time series of sockeye: 1 year in freshwater, 3 years in ocean") 
 plot.ts(Ugashik_2.2.ts, ylab = "Log abundance", main = "Time series of sockeye: 2 years in freshwater, 2 years in ocean") 
 ```
-***Note that after looking at 1.3 data, went back to experiment with how
-removing outlier value would affect data and overall model for 1.3 fish.
-After removing negative value, the time series for 1 year fresh water -
-3 year ocean water fish looks very different.
 
-Data for 1 yr freshwater-3 yr ocean water fish show variance around a
-mean of 5. Removal of outlier shows higher variance prior to 1980 with a
-rise in log abundance after. Data for 2 yr freshwater-2 yr ocean water
-fish show variance around a mean of 5. This suggests differencing may be
-necessary to achieve stationarity.
+### Wood Region
 
-## Wood Regional Populations
 ```{r}
-#Dylan's Code
 wood_dt <- bb_data[(bb_data$system == rivers[2]) & (bb_data$full_age == 4),]
 #unique(wood_dt$o_age)
 #split the dataframe by years in the ocean
@@ -104,9 +95,9 @@ plot.ts(Wood_2.2.ts, ylab = "log Abundance", main ="Time series of sockeye: 2 ye
 #looks like it could potentially be stationary
 
 ```
-***Insert time series comments here
 
-## Kvichak Regional Populations
+### Kvichak Region
+
 ```{r}
 Kvichak_dt <- bb_data[(bb_data$system == rivers[4]) & (bb_data$full_age == 4),]
 #unique(Kvichak_dt$o_age)
@@ -118,21 +109,24 @@ Kvichak_1.3.ts <- ts(Kvichak_1.3$log_ret, start = 1963, end = 2020)
 Kvichak_2.2.ts <- ts(Kvichak_2.2$log_ret, start = 1963, end = 2020)
 
 #plots
-#layout(layout_mat_2)
-plot(Kvichak_2.2.ts, ylab = "log Abundance", main = "Time series of sockeye: 2 years in freshwater, 2 years in ocean" )
-#looks fairly stationary to me
 plot(Kvichak_1.3.ts, ylab = "log(fish counted x1000)", main = "Time series of sockeye: 1 year in freshwater, 3 years in ocean" )
 #one huge spike downward at start otherwise variance looks similar througout. maybe stationary around a trend if the initial spike doesn't ruin it
+plot(Kvichak_2.2.ts, ylab = "log Abundance", main = "Time series of sockeye: 2 years in freshwater, 2 years in ocean" )
+#looks fairly stationary to me
+
 ```
-***Insert time series comments here
 
-Plot the data and discuss any obvious problems with stationarity from your visual test.Side
+Uvashik: Upon observing the 1.3 time series, there is a clear outlier value at 1977. To remove the negative value, we re-plotted the data starting at 1980 instead of 1967. The new time series seems to show variance around a mean of 7. The 2.2 group appears to show variance around a mean of 5. Differencing the data will likely show stationarity
 
-## Use ACF, PACF, and decomposition
+Wood: The 1.3 age group appears to have a positive trend, so it is likely not stationary. It could be stationary around a trend. The 2.2 age group does not seem to have any trends, and could be stationary around a mean of 4.
 
-## Ugashik ACF and PACF
+Kvichak: There is another negative outlier in the 1.3 age group, otherwise the data appears to be stationary around a mean of 7. We will have to see how much influence the outlier has on the ARIMA model. The 2.2 age group does not show any obvious trends and seems to be stationary around a mean of 7.
+
+## ACF and PACF,
+
+### Ugashik
+
 ```{r}
-#Miranda's Code
 layout_matrix_1 <- matrix(c(1,2),ncol=2)  #setting up how the plots will display
 layout(layout_matrix_1)                   
 acf(Ugashik_1.3.ts)
@@ -151,7 +145,8 @@ acf(Ugashik_2.2.ts)
 pacf(Ugashik_2.2.ts)
 ```
 
-## Wood ACF and PACF
+### Wood
+
 ```{r}
 #acf and pacf for differenced Wood_1.3
 layout(layout_matrix_1)                   #setting up how the plots will display
@@ -169,14 +164,7 @@ pacf(Wood_2.2.ts)
 #no significant lags in either plot. This is white noise, no autocorrelation. expecting ARIMA(0,0,0)
 ```
 
-## Kvichak ACF and PACF
-```{r}
-#plot acf and pacf
-layout(layout_matrix_1)
-acf(Kvichak_2.2.ts)
-pacf(Kvichak_2.2.ts)
-#neither shows any clear lag or decay signs. maybe an combined ARMA model
-```
+### Kvichak
 
 ```{r}
 layout(layout_matrix_1)                   #setting up how the plots will display
@@ -192,15 +180,38 @@ pacf(diff(Kvichak_1.3.ts))
 #looks like slow decay on pacf and a significant lag at 1 on acf. expecting an ARIMA(0,1,1)
 ```
 
-Use the ACF and PACF plots to explore the time series. What did you learn? Also try decomposition.
-
 ```{r}
-datts_decomp <- decompose(datts) #Apply this to all variables
+#plot acf and pacf
+layout(layout_matrix_1)
+acf(Kvichak_2.2.ts)
+pacf(Kvichak_2.2.ts)
+#neither shows any clear lag or decay signs. maybe an combined ARMA model
 ```
+
+Ugashik:
+
+The ACF plot of the full 1.3 age group tails off slowly, which indicates an AR() model. There lag also shows potential seasonality, which we will ignore by recommendation of Eli. The PACF cuts off at 1, which further reinforces idea that this is an AR(1) model.
+
+The truncated 1.3 group shows significance at a lag of 2 for both the ACF and PACF. This may be some kind of ARMA model
+
+The 2.2 age group has an ACF that shows significance at lags 2, 4, 5, and 16. This may indicate seasonality, which again we will ignore in this experiment. The PACF cuts off a one so this may be an AR(1) model with a nonzero mean.
+
+Wood:
+
+ACF for the 1.3 data seems to cut off at 2. It also shows significance at lags of 5 and 10 which may indicate seasonality. The PACF appears to slowly taper off. This is likely an MA() model with a positive trend
+
+The 2.2 age group does not show significance in either plot, so this is most likely white noise.
+
+Kvichak:
+
+The ACF and PACF for the 1.3 shows no significance so we took the first difference and tried again. The new ACF cuts of and 1 and the PACF seems to slowly taper. This data may be an ARIMA(0,1,1).
+
+The 2.2 group does not show any patterns that line up with an AR or MA model. It may be an ARMA model of some sort.
 
 ## Test for stationarity
 
 ## Ugashik
+
 ```{r}
 #Miranda's Code
 tseries::adf.test(Ugashik_1.3.ts) 
@@ -222,6 +233,7 @@ datts_diff_2.2 <- diff(Ugashik_2.2.ts, differences = 1)
 ```
 
 # Wood
+
 ```{r}
 #Dylan's Code
 #Wood_1.3.ts testing
@@ -250,6 +262,7 @@ forecast::ndiffs(Wood_2.2.ts, test = "adf")     # 0 needed. Agrees with the unit
 ```
 
 #Kvichak
+
 ```{r}
 #test stationairity Kvichak_1.3
 tseries::adf.test(Kvichak_1.3.ts)                  #  Rejects just barely: stationary
@@ -276,48 +289,11 @@ forecast::ndiffs(Kvichak_2.2.ts, test = "adf")     # 0 needed. So I am expecting
 
 Run tests and discuss any stationarity issues and how these were addressed.
 
-##Fitting entire datasets with auto.arima, possibly remove? Or add Ugashik data
+##Fitting entire datasets with auto.arima, will add back if needed
 
-```{r}
-#Only Dylan's code here. Replicate for Ugashik or get rid of it?
-#auto fit the models to data
-forecast::auto.arima(diff(Wood_1.3.ts)) #MA(1) only not sure what to make of the lags at 5 and 10. could be the cyclic nature of the fish Eli has mentioned (see note further down)
-forecast::auto.arima(Wood_1.3.ts)       # is in agreement with need for differencing and MA(1). I think "with drift" in the non-differenced data is the equivalent of "with non-zero mean" in the pre-differenced model above.
-forecast::auto.arima(Wood_2.2.ts)       #my expectation panned out that this is just white noise but has non-zero mean which makes sense as this is count data
-#plot of our models
-layout_mat_2 <- matrix(c(1,1,2,2), nrow =2, byrow = TRUE)
-layout(layout_mat_2)
-plot.ts(Wood_2.2.ts, main ="4 year old sockeye returning to Wood River\nthat spent 2 years in Ocean", ylab = "log(counted fish x1000")
-lines(fitted(fit.Wood_2.2), col ="red")
-plot.ts(Wood_1.3.ts, main ="4 year old sockeye returning to Wood River\nthat spent 3 years in Ocean", ylab = "log(counted fish x1000")
-lines(fitted(fit.Wood_1.3), col ="red")
-forecast::checkresiduals(fit.Wood_1.3)  #All good news. fail to reject null hypothesis of Ljung-Box, which means the residuals are not autocorrelated. the ACF plot agrees with no significant lags and the histogram looks like a normal distribution
-forecast::checkresiduals(fit.Wood_2.2)  #All good news again. fail to reject null of Ljung-Box. no significant lags on ACF. Histogram looks pretty good, two large negative values but otherwise good.
-```
+## Fit Models to the training data
 
-```{r}
-#fit models
-fit.Kvichak_2.2 <- forecast::auto.arima(Kvichak_2.2.ts)
-#ARIMA(0,0,1) with non-zero mean. significant pacf lag at 7 could be cyclic nature of date obscuring the MA() pattern
-fit.Kvichak_1.3 <- forecast::auto.arima(Kvichak_1.3.ts)
-#ARIMA(0,1,1) as expected from acf and pacf plots
-#plot
-layout(layout_mat_2)
-plot(Kvichak_2.2.ts, main= "4 year old sockeye returning to Kvichak River\nthat spent 2 years in ocean", ylab = "log(count of fish x1000)")
-lines(fitted(fit.Kvichak_2.2), col = "red")
-plot(Kvichak_1.3.ts, main= "4 year old sockeye returning to Kvichak River\nthat spent 3 years in ocean", ylab = "log(count of fish x1000)")
-lines(fitted(fit.Kvichak_1.3), col= "red")
-#check residuals
-forecast::checkresiduals(fit.Kvichak_2.2)
-#here we see the that the residuals are autocorrelated as Eli had mentioned
-#we might find. we fail to reject Ljung-Box telling us the same thing. Histogram looks
-#good. Just mention we see the autocorrelation
-forecast::checkresiduals(fit.Kvichak_1.3)
-#this one does much better. fails to reject Ljung-Box and acf plot both telling us no autocorrelation. 
-#histogram looks ok. we see the giant negative spike in the tail. lots of variance in the first few years
-```
-
-##Fit Models to the training data
+## Ugashik
 
 ```{r}
 # Make dataframes for testing models later
@@ -340,6 +316,8 @@ model_Ugashik_2.2 <- auto.arima(train_Ugashik_2.2)
 model_Ugashik_2.2
 ```
 
+## Wood
+
 ```{r}
 #Dylan's Code, need to speak on auto.arima model results
 #creating the training and testing periods for models
@@ -353,6 +331,8 @@ test.Wood_2.2 <- window(Wood_2.2.ts, start = 2011, end = 2020)
 fit.Wood_2.2 <- auto.arima(train.Wood_2.2)
 fit.Wood_2.2
 ```
+
+## Kvichak
 
 ```{r}
 #train and test predictions
@@ -415,15 +395,15 @@ Ugashik 1.3, Starting from 1980
 #Miranda's Code
 fc_1.3 <- forecast(model_Ugashik_1.3_out, h=10)
 
-fr_1.3 <- accuracy(forecast(model_Ugashik_1.3_out, h=10), test_Ugashik_1.3_out) #test accuracy
+plot.ts(Ugashik_1.3.ts) # check fit of model train on data from 1980 on
+lines(fitted(model_Ugashik_1.3_out), col="blue") #model seems to fit well
 
-plot.ts(Ugashik_1.3.ts) # check fit
-lines(fitted(model_Ugashik_1.3_out), col="red") #model seems to fit well
+plot(fc_1.3,ylab = "log Abundance", xlab = "Time")
+points(test_Ugashik_1.3_out, pch=19, col="red")
+lines(fitted(model_Ugashik_1.3_out), col="blue")
 
 forecast::checkresiduals(model_Ugashik_1.3_out) # looks better than 1.3 trained on 1960-2010
-
-autoplot(fc_1.3) + 
-  geom_point(aes(x=x, y=y), data=fortify(test_Ugashik_1.3_out)) 
+accuracy(forecast(model_Ugashik_1.3_out, h=10), test_Ugashik_1.3_out) #test accuracy 
 ```
 
 ### Results for 1.3 fish in Ugashik
@@ -437,15 +417,12 @@ Ugashik 2.2
 ```{r}
 fc_2.2 <- forecast(model_Ugashik_2.2, h=10)
 
-fr_2.2 <- accuracy(forecast(model_Ugashik_2.2, h=10), test_Ugashik_2.2) #test accuracy
-
-plot.ts(Ugashik_2.2.ts) # check fit
-lines(fitted(model_Ugashik_2.2), col="red") #model seems to fit well, follows overall trend as it changes
+plot(fc_2.2,ylab = "log Abundance", xlab = "Time")
+points(test_Ugashik_2.2, pch=19, col="red")
+lines(fitted(model_Ugashik_2.2), col="blue")
 
 forecast::checkresiduals(model_Ugashik_2.2) 
-
-autoplot(fc_2.2) + 
-  geom_point(aes(x=x, y=y), data=fortify(test_Ugashik_2.2)) 
+accuracy(forecast(model_Ugashik_2.2, h=10), test_Ugashik_2.2) #test accuracy
 ```
 
 ### Results for 2.2 fish in Ugashik
@@ -458,8 +435,10 @@ Wood 1.3
 
 ```{r}
 pred.Wood_1.3 <- forecast(fit.Wood_1.3, h = 10)
-plot(pred.Wood_1.3,ylab = "log(fish counted x1000)", xlab = "Time")
+
+plot(pred.Wood_1.3,ylab = "log Abundance", xlab = "Time")
 points(test.Wood_1.3, pch=19, col="red")
+lines(fitted(fit.Wood_1.3), col="blue") 
 #we see that the prediction intervals widen as the forecast moves forward
 #likely due to the autocorrelation of the errors, because this is an MA(1) model,
 #which the model has to estimate with each successive prediction. The fitted points
@@ -468,8 +447,9 @@ points(test.Wood_1.3, pch=19, col="red")
 #selected an ARIMA(0,1,1) with drift, however with just the training data auto.arima() 
 #selected an ARIMA(0,1,1) because the model does not have drift, the predictions stay as a flat line
 # rather than having a trend.
-residuals.3 <- test.Wood_1.3[1:10] - pred.Wood_1.3$mean[1:10]
-sqrt(mean(residuals.3^2))
+#residuals.3 <- test.Wood_1.3[1:10] - pred.Wood_1.3$mean[1:10]
+#sqrt(mean(residuals.3^2))
+forecast::checkresiduals(fit.Wood_1.3) 
 accuracy(forecast(fit.Wood_1.3, h = 10), test.Wood_1.3)
 #the Root Mean Squared Error for this model is 0.532. This value is less
 #than the value for the Wood_2.2 model. This is a bit surprising as they both
@@ -483,14 +463,14 @@ Wood 2.2
 
 ```{r}
 pred.Wood_2.2 <- forecast(fit.Wood_2.2, h = 10)
-plot(pred.Wood_2.2,ylab = "log(fish counted x1000)", xlab = "Time")
+plot(pred.Wood_2.2,ylab = "log Abundance", xlab = "Time")
 points(test.Wood_2.2, pch=19, col="red")
+lines(fitted(fit.Wood_2.2), col="blue")
 #the actual observations do fall within the 80% prediction interval
 #This data is treated as white noise with the ARIMA(0,0,0) model so 
 #I imagine the prediction intervals are tied very closely to the variance 
 #of the residuals themselves.
-residuals <- (test.Wood_2.2[1:10] - pred.Wood_2.2$mean[1:10])
-RMSE.Wood_2.2 <- sqrt(mean(residuals^2))
+forecast::checkresiduals(fit.Wood_2.2) 
 accuracy(forecast(fit.Wood_2.2, h = 10), test.Wood_2.2)
 #the RMSE done manually matches with the RMSE value that is found by the 
 #model in row 2, column 2. This must be how the model does when compared to the 
@@ -502,10 +482,12 @@ Kvichak 1.3
 ```{r}
 #chooses same exact model as the full dataset model
 pred.kvi3 <- forecast(fit.Kvichak_1.3, h=10)
-plot(pred.kvi3, ylab= "log(counted fish x1000", xlab ="Time")
+
+plot(pred.kvi3, ylab= "log Abundance", xlab ="Time")
 points(test.Kvichak_1.3, pch=19, col ="red" ) 
-resd.k3 <- test.Kvichak_1.3[1:10] - pred.kvi3$mean[1:10]
-RMSE.k3 <- sqrt(mean(resd.k3^2))
+lines(fitted(fit.Kvichak_1.3), col="blue")
+
+forecast::checkresiduals(fit.Kvichak_1.3) 
 accuracy(pred.kvi3, test.Kvichak_1.3)
 #RMSE = 0.65 this time we see the prediction line with a positive trend
 #this is because the model is ARIMA(0,1,1) with drift. less variance in
@@ -518,10 +500,12 @@ Kvichak 2.2
 
 ```{r}
 pred.kvi2 <- forecast(fit.Kvichak_2.2, h=10)
-plot(pred.kvi2,ylab= "log(counted fish x1000", xlab ="Time")
+
+plot(pred.kvi2,ylab= "log Abundance", xlab ="Time")
 points(test.Kvichak_2.2, pch=19, col ="red")
-resd.k2 <- test.Kvichak_2.2[1:10] - pred.kvi2$mean[1:10]
-RMSE.k2 <- sqrt(mean(resd.k2^2))
+lines(fitted(fit.Kvichak_2.2), col="blue")
+
+forecast::checkresiduals(fit.Kvichak_2.2)
 accuracy(pred.kvi2, test.Kvichak_2.2)
 #manual calc matches accuracy(). RMSE = 2.088. points fell outside of the
 #prediction intervals with this model. Same straight line provided by the MA() 
