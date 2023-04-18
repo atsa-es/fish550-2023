@@ -1,6 +1,6 @@
 ---
-title: "Emma-ZR-Lab-1-draft"
-author: "Emma T-S, Zoe R"
+title: "Team 3 Lab-1 Write-Up"
+author: "Emma T-S, Zoe R, Madi S"
 date: "`r Sys.Date()`"
 output: html_document
 ---
@@ -13,6 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(forecast)
 library(here)
+library(cowplot)
 ```
 
 # Team Members
@@ -25,7 +26,11 @@ We chose to work with all data to compare ability of the ARIMA models to forecas
 
 ```{r}
 #reading in data
-ruggerone_data <- readRDS(here::here("Lab-1", "Data_Images", "ruggerone_data.rds"))
+#ruggerone_data <- readRDS(here::here("Lab-1", "Data_Images", "ruggerone_data.rds"))
+
+#The above code was not working for me, so I've added this in temporarily (MS)
+ruggerone_data <- readRDS("C:/GitHub/fish550-2023/Lab-1/Data_Images/ruggerone_data.rds")
+
 ```
 
 # Question your team will address
@@ -42,7 +47,7 @@ We will pick a couple of regions for each species to demonstrate ACF and PACF, a
 
 # What we actually did
 
-It was harder to compare models across species and regions than we assumed. We created functions to help streamline this process. Also after researching forecast accuracy metrics, we decided to use MASE as a metric instead of RMSE. It was difficult to decipher why some regions were more easily forecasted and others returned unreliable results.
+It was harder to compare models across species and regions than we assumed. We created functions to help streamline this process. Also after researching forecast accuracy metrics, we decided to use MASE as a metric instead of RMSE. It was difficult to decipher why some regions were more easily forecasted and others returned unreliable results. Additionally, each species had different dynamics, and some variable methods were applied in order to find a model that worked. 
 
 ## Sockeye: Combined Regions
 
@@ -78,13 +83,13 @@ Look at the options for fitting an ARIMA to the data and then choose a final mod
 
 ```{r}
 fit <- forecast::auto.arima(train.sockeye, trace=T)
-fit.final<-forecast::auto.arima(train.sockeye, approximation = F, stepwise = F)
+fit.final.sock<-forecast::auto.arima(train.sockeye, approximation = F, stepwise = F)
 ```
 
 Plot the 5 year forecast for the last part of the dataset compared to the actual data. The real data are represented by the black dots; the forecast is represented by the black line.
 
 ```{r echo=F}
-fit.final %>%
+fit.final.sock %>%
   forecast(h=5) %>%
   autoplot() + geom_point(aes(x=x, y=y), data=fortify(test.sockeye))
 ```
@@ -149,13 +154,39 @@ FitModFunction<-function(reg, forelevel){
   test <- window(datts, cutoff+1, 2015)
   
   mod <- auto.arima(train)
-  mod
   
-  res<-accuracy(forecast(mod, h=forelevel), test)[2,"MASE"] #test set MASE
+  #testing to be sure that this is the best model (is the best mode the simplest if it is within 2 AIC values?)
+  trace <- capture.output({
+    # assign so it doesn't pollute the output
+    model <- auto.arima(datts, trace = TRUE)
+  })
+  con    <- textConnection(trace)
+  models <- read.table(con, sep=":")
+  close(con)
   
-  return(list(Fit = mod, MASE = res))
-}
+  #getting the "best models" that are within 2 AIC units
+  BestMods<-models%>% filter(row_number() != nrow(models)) %>% mutate(AIC = replace(V2, V2 == "Inf", 99999), AIC = as.numeric(AIC), DeltaAIC = AIC-min(AIC)) %>% filter(DeltaAIC <= 2.0)
+  for(i in 1:nrow(BestMods)){
+    BestMods$Mod[i]<-strsplit(strsplit(strsplit(BestMods$V1[i], "[(]")[[1]][2], "[)]")[[1]][1],"[,]")
+    BestMods$npar[i]<-sum(as.numeric(BestMods$Mod[i][[1]][c(1,3)]))
+    if(strsplit(strsplit(BestMods$V1[i], "[(]")[[1]][2], "[)]")[[1]][2] == " with drift         "){
+      BestMods$npar[i] = BestMods$npar[i] + 1
+    }
+  }
+  
+  New<-BestMods %>% filter(npar == min(npar))
+  if(0 %in% New$DeltaAIC){
+      #auto arima picked the best model
+      res<-accuracy(forecast(mod, h=forelevel), test)[2,"MASE"] #test set MASE
+  }else{
+      #of the models with the fewest parameters, pick the lowest AIC
+      newmod<-New %>% filter(AIC == min(AIC)) %>% select(Mod)
+      mod<-Arima(train, order = as.numeric(strsplit(newmod$Mod[[1]], "[,]")), include.constant = TRUE)
+      res<-accuracy(forecast(mod, h=forelevel), test)[2,"MASE"] #test set MASE
+    }
 
+  return(list(Fit = mod, MASE = res, Bm = BestMods)) #include best mods for testing to see that it's doing what I want
+}
 RegionModsSock<-mapply(FitModFunction, Allcombs$regions, Allcombs$forecastlevels, SIMPLIFY = FALSE)
 
 ```
@@ -345,13 +376,512 @@ knitr::kable(head(ResultsTableChum))
 
 ## Pink: Combined Regions
 
-## Pink: Regional
+Subset the data to look at pink salmon only. 
+```{r}
+#Filter by species (Pink)
+dat <- ruggerone_data %>%  
+  filter(species=="pink" & region=="ci") %>% 
+  mutate(log.returns = log(returns)) %>% 
+  select(year, log.returns)
+```
 
+Plot the data 
 
+```{r}
+#Plot by region
+ruggerone_data %>% 
+  filter(species=="pink") %>% 
+  ggplot(aes(x=year, y=log(returns))) + 
+  geom_line() + 
+  ggtitle("pink salmon log abundance by region") +
+  facet_wrap(~region)
+```
+
+Note that there is no data in Korea, and WA has a lot of 0 values and very low returns. We will filter these regions out. All 0 values (-Inf in log space) were removed. 
+
+```{r}
+PinkByRegion<-ruggerone_data %>%
+  filter(region != "korea") %>% 
+  filter(region != "wa") %>%#Remove WA too, it's trouble 
+  group_by(species, region, year) %>%
+  summarize(total = sum(returns, na.rm=TRUE)) %>% 
+  mutate(lnreturns = log(total)) %>%
+  mutate(lnreturns = ifelse(lnreturns == -Inf, NA, lnreturns)) %>%
+  filter(species == "pink")%>% 
+  print(n=5)
+```
+
+Identify start and end years for each region.
+```{r}
+PinkByRegion %>% group_by(region) %>% summarise(startyear = min(year), endyear = max(year))
+
+```
+ The next step is to ID Stationarity with all the pink data. Lets plot the data in aggregate.
+
+```{r}
+PinkByRegion %>%
+  group_by(year) %>%
+  summarize(total = sum(total, na.rm=T)) %>%
+  ggplot(aes(x=year, y=log(total))) +
+  geom_line() +
+  ylab('Log (Returns)') +
+  xlab('Year')
+```
+
+Next, a time series object was created and we look at the ACF and PACF
+
+```{r}
+total.pink<-PinkByRegion %>%
+  group_by(year) %>%
+  summarize(lntotal=log(sum(total, na.rm=T)))
+
+pink.ts<-ts(total.pink$lntotal, 
+            start=total.pink$year[1])
+plot(diff(pink.ts)) #something odd happened between 1990 and 2005
+acf(diff(pink.ts)) #ruh roh, ACF correlation for entire series 
+```
+The ACF looks like there is a lot of corelation, that's probably because 
+Pinks have a very consistent two year cycle.
+
+Let's try a forecast model to see what happens.
+```{r}
+#Let's train and test with a 10 year period
+train.pink<-window(pink.ts, start=1952, end=2005)
+test.pink<-window(pink.ts, start=2006, end=2015)
+
+fit <- forecast::auto.arima(train.pink, trace=T)
+fit.final.pink<-forecast::auto.arima(train.pink, approximation = F, stepwise = F)
+
+#30 year forcast, not so believeable
+fit.final.pink %>%
+  forecast(h=15) %>%
+  autoplot() + geom_point(aes(x=x, y=y), data=fortify(test.pink))
+```
+
+The best model was the ARIMA(3,1,0), but the forecast doesn't look particularly great. 
+
+Given the life history of pink salmon, let's parse the data set into two pieces, even and odd years. 
+
+```{r}
+#Even Years: Totals 
+PinkByRegion_even<-PinkByRegion %>% 
+  filter(year %% 2 == 0)
+
+#Odd Years: Totals 
+PinkByRegion_odd<-PinkByRegion %>% 
+  filter(year %% 2 == 1)
+
+#Trends
+PinkByRegion_even %>%
+  group_by(year) %>%
+  summarize(total = sum(total, na.rm=T)) %>%
+  ggplot(aes(x=year, y=log(total))) +
+  geom_line() +
+  ylab('Log (Returns)') +
+  xlab('Year') +
+  ggtitle('Total Pinks (Even Years)')
+
+PinkByRegion_odd %>%
+  group_by(year) %>%
+  summarize(total = sum(total, na.rm=T)) %>%
+  ggplot(aes(x=year, y=log(total))) +
+  geom_line() +
+  ylab('Log (Returns)') +
+  xlab('Year') +
+  ggtitle('Total Pinks (Odd Years)')
+
+```
+
+Let's look at the ACF and PACF for even years:
+```{r}
+#Even Years -- Total
+total.pink_even<-PinkByRegion_even %>%
+  group_by(year) %>%
+  summarize(lntotal=log(sum(total, na.rm=T)))
+
+pink.ts_even<-ts(total.pink_even$lntotal, 
+            start=total.pink$year[1], frequency = 0.5)
+plot(diff(pink.ts_even)) #Looks pretty stationary
+acf(diff(pink.ts_even)) #This looks much better
+```
+The differences and the ACF plots here look better than the aggregate data set. Let's look at a forcast. 
+
+```{r}
+#Train and test for a 10 year period
+train.pink_even<-window(pink.ts_even, start=1952, end=2004)
+test.pink_even<-window(pink.ts_even, start=2006, end=2014)
+
+fit <- forecast::auto.arima(train.pink_even, trace=T)
+fit.final.pink_even<-forecast::auto.arima(train.pink_even, approximation = F, stepwise = F)
+
+fit.final.pink_even %>%
+  forecast(h=15) %>%
+  autoplot() + geom_point(aes(x=x, y=y), data=fortify(test.pink_even))
+
+#That is a straight line..... not very good.....
+```
+The best model was the ARIMA(0,1,0) model. But the forcast doesn't capture the trend. 
+
+Let's repeat the next steps for odd years. 
+```{r}
+#Odd Years -- Total
+
+total.pink_odd<-PinkByRegion_odd %>%
+  group_by(year) %>%
+  summarize(lntotal=log(sum(total, na.rm=T)))
+
+pink.ts_odd<-ts(total.pink_odd$lntotal, 
+                 start=total.pink_odd$year[1], frequency = 0.5)
+plot(diff(pink.ts_odd)) #Looks pretty stationary
+acf(diff(pink.ts_odd)) #This also looks better
+```
+These look stationary and the ACF looks better.
+
+```{r}
+#Train and test for a 10 year period
+train.pink_odd<-window(pink.ts_odd, start=1953, end=2005)
+test.pink_odd<-window(pink.ts_odd, start=2007, end=2015)
+
+fit <- forecast::auto.arima(train.pink_odd, trace=T)
+fit.final.pink_odd<-forecast::auto.arima(train.pink_odd, approximation = F, stepwise = F)
+
+fit.final.pink_odd %>%
+  forecast(h=15) %>%
+  autoplot() + geom_point(aes(x=x, y=y), data=fortify(test.pink_odd))
+```
+The best model was the ARIMA(0,1,0) model. But the forcast for only odd years also doesn't capture the trend. 
+
+# Pinks: Regional Considerations 
+
+Because of pink salmon life history, for regional models, models with even and odd years were considered separately. 
+
+```{r}
+#Even Years First 
+#Differenced plots for all Regions 
+PinkByRegion_even %>%
+  group_by(region) %>%
+  mutate(diff_total = c(NA, diff(total))) %>%
+  ggplot(aes(x = year, y = diff_total)) +
+  geom_line() +
+  facet_wrap(~region, scales = "free_y") +
+  ylab("Difference in Total Returns") +
+  xlab("Year") +
+  ggtitle("Diff by Region (Even Years)") 
+  #ggfortify::ggstat_acf(method = "ma", na.action = na.pass)
+
+# Odd Years First 
+#Differenced plots for all Regions 
+PinkByRegion_odd %>%
+  group_by(region) %>%
+  mutate(diff_total = c(NA, diff(total))) %>%
+  ggplot(aes(x = year, y = diff_total)) +
+  geom_line() +
+  facet_wrap(~region, scales = "free_y") +
+  ylab("Difference in Total Returns") +
+  xlab("Year") +
+  ggtitle("Diff by Region (Odd Years)") 
+
+```
+To test stationarity outside the auto.arima function , the ADF and KPSS tests were compared for all years, and even and odd years. Note for the ADF null hypothesis is that the system is non-stationary (we want to reject), and the KPSS test null hypothesis is that there is stationarity.
+
+```{r}
+#Augmented Dicky Fuller 
+tseries::adf.test(pink.ts, k=0)
+tseries::adf.test(pink.ts_even, k=0)
+tseries::adf.test(pink.ts_odd, k=0)
+
+tseries::kpss.test(pink.ts, null = c("Level", "Trend"))
+tseries::kpss.test(pink.ts_even, null = c("Level", "Trend"))
+tseries::kpss.test(pink.ts_odd, null = c("Level", "Trend"))
+
+```
+A complication is that the data sets split by even and odd years were not passing the tests of stationarity. Perhaps other steps should have been taken.
+
+```{r}
+#Functions for Regional ACF and PACF 
+#======================================================
+ACFandPACF<-function(reg){
+  Pinkdat<-PinkByRegion %>% filter(region == reg)
+  #create time series
+  datts <- ts(Pinkdat$lnreturns, start=Pinkdat$year[1]) 
+  return(list(a = acf(datts, plot = FALSE), p = pacf(datts, plot = FALSE)))
+}
+
+ACFandPACF_even<-function(reg){
+  Pinkdat<-PinkByRegion_even %>% filter(region == reg)
+  #create time series
+  datts <- ts(Pinkdat$lnreturns, start=Pinkdat$year[1]) 
+  return(list(a = acf(datts, plot = FALSE), p = pacf(datts, plot = FALSE)))
+}
+
+ACFandPACF_odd<-function(reg){
+  Pinkdat<-PinkByRegion_odd %>% filter(region == reg)
+  #create time series
+  datts <- ts(Pinkdat$lnreturns, start=Pinkdat$year[1]) 
+  return(list(a = acf(datts, plot = FALSE), p = pacf(datts, plot = FALSE)))
+}
+
+FitModFunction<-function(reg, forelevel){
+  #filter region
+  Pinkdat<-PinkByRegion %>% filter(region == reg)
+  #create time series
+  datts <- ts(Pinkdat$lnreturns, start=Pinkdat$year[1], frequency = 0.5) #set Frequency for 0.5
+  cutoff<-2014-forelevel
+  train <- window(datts, Pinkdat$year[1], cutoff)
+  test <- window(datts, cutoff+1, 2014)
+  
+  mod <- auto.arima(train)
+  #testing to be sure that this is the best model (is the best mode the simplest if it is within 2 AIC values?)
+  trace <- capture.output({
+    # assign so it doesn't pollute the output
+    model <- auto.arima(datts, trace = TRUE)
+  })
+  con    <- textConnection(trace)
+  models <- read.table(con, sep=":")
+  close(con)
+  
+  #getting the "best models" that are within 2 AIC units
+  BestMods<-models%>% filter(row_number() != nrow(models)) %>% mutate(AIC = replace(V2, V2 == "Inf", 99999), AIC = as.numeric(AIC), DeltaAIC = AIC-min(AIC)) %>% filter(DeltaAIC <= 2.0)
+  for(i in 1:nrow(BestMods)){
+    BestMods$Mod[i]<-strsplit(strsplit(strsplit(BestMods$V1[i], "[(]")[[1]][2], "[)]")[[1]][1],"[,]")
+    BestMods$npar[i]<-sum(as.numeric(BestMods$Mod[i][[1]][c(1,3)]))
+    if(strsplit(strsplit(BestMods$V1[i], "[(]")[[1]][2], "[)]")[[1]][2] == " with drift         "){
+      BestMods$npar[i] = BestMods$npar[i] + 1
+    }
+  }
+  
+  New<-BestMods %>% filter(npar == min(npar))
+  if(0 %in% New$DeltaAIC){
+    #auto arima picked the best model
+    res<-accuracy(forecast(mod, h=forelevel), test)[2,"MASE"] #test set MASE
+  }else{
+    #of the models with the fewest parameters, pick the lowest AIC
+    newmod<-New %>% filter(AIC == min(AIC)) %>% select(Mod)
+    mod<-Arima(train, order = as.numeric(strsplit(newmod$Mod[[1]], "[,]")), include.constant = TRUE)
+    res<-accuracy(forecast(mod, h=forelevel), test)[2,"MASE"] #test set MASE
+  }
+  
+  return(list(Fit = mod, MASE = res, Bm = BestMods)) #include best mods for testing to see that it's doing what I want
+  
+}
+
+FitModFunction_even<-function(reg, forelevel){
+  #filter region
+  Pinkdat<-PinkByRegion_even %>% filter(region == reg)
+  #create time series
+  datts <- ts(Pinkdat$lnreturns, start=Pinkdat$year[1], frequency = 0.5) #set Frequency for 0.5
+  cutoff<-2014-forelevel
+  train <- window(datts, Pinkdat$year[1], cutoff)
+  test <- window(datts, cutoff+1, 2014)
+  
+  mod <- auto.arima(train)
+  #testing to be sure that this is the best model (is the best mode the simplest if it is within 2 AIC values?)
+  trace <- capture.output({
+    # assign so it doesn't pollute the output
+    model <- auto.arima(datts, trace = TRUE)
+  })
+  con    <- textConnection(trace)
+  models <- read.table(con, sep=":")
+  close(con)
+  
+  #getting the "best models" that are within 2 AIC units
+  BestMods<-models%>% filter(row_number() != nrow(models)) %>% mutate(AIC = replace(V2, V2 == "Inf", 99999), AIC = as.numeric(AIC), DeltaAIC = AIC-min(AIC)) %>% filter(DeltaAIC <= 2.0)
+  for(i in 1:nrow(BestMods)){
+    BestMods$Mod[i]<-strsplit(strsplit(strsplit(BestMods$V1[i], "[(]")[[1]][2], "[)]")[[1]][1],"[,]")
+    BestMods$npar[i]<-sum(as.numeric(BestMods$Mod[i][[1]][c(1,3)]))
+    if(strsplit(strsplit(BestMods$V1[i], "[(]")[[1]][2], "[)]")[[1]][2] == " with drift         "){
+      BestMods$npar[i] = BestMods$npar[i] + 1
+    }
+  }
+  
+  New<-BestMods %>% filter(npar == min(npar))
+  if(0 %in% New$DeltaAIC){
+    #auto arima picked the best model
+    res<-accuracy(forecast(mod, h=forelevel), test)[2,"MASE"] #test set MASE
+  }else{
+    #of the models with the fewest parameters, pick the lowest AIC
+    newmod<-New %>% filter(AIC == min(AIC)) %>% select(Mod)
+    mod<-Arima(train, order = as.numeric(strsplit(newmod$Mod[[1]], "[,]")), include.constant = TRUE)
+    res<-accuracy(forecast(mod, h=forelevel), test)[2,"MASE"] #test set MASE
+  }
+  
+  return(list(Fit = mod, MASE = res, Bm = BestMods)) #include best mods for testing to see that it's doing what I want
+  
+}
+
+FitModFunction_odd<-function(reg, forelevel){
+  #filter region
+  Pinkdat<-PinkByRegion_odd %>% filter(region == reg)
+  #create time series
+  datts <- ts(Pinkdat$lnreturns, start=Pinkdat$year[1], frequency = 0.5) 
+  cutoff<-2015-forelevel
+  train <- window(datts, Pinkdat$year[1], cutoff)
+  test <- window(datts, cutoff+1, 2015)
+  
+  mod <- auto.arima(train)
+  #testing to be sure that this is the best model (is the best mode the simplest if it is within 2 AIC values?)
+  trace <- capture.output({
+    # assign so it doesn't pollute the output
+    model <- auto.arima(datts, trace = TRUE)
+  })
+  con    <- textConnection(trace)
+  models <- read.table(con, sep=":")
+  close(con)
+  
+  #getting the "best models" that are within 2 AIC units
+  BestMods<-models%>% filter(row_number() != nrow(models)) %>% mutate(AIC = replace(V2, V2 == "Inf", 99999), AIC = as.numeric(AIC), DeltaAIC = AIC-min(AIC)) %>% filter(DeltaAIC <= 2.0)
+  for(i in 1:nrow(BestMods)){
+    BestMods$Mod[i]<-strsplit(strsplit(strsplit(BestMods$V1[i], "[(]")[[1]][2], "[)]")[[1]][1],"[,]")
+    BestMods$npar[i]<-sum(as.numeric(BestMods$Mod[i][[1]][c(1,3)]))
+    if(strsplit(strsplit(BestMods$V1[i], "[(]")[[1]][2], "[)]")[[1]][2] == " with drift         "){
+      BestMods$npar[i] = BestMods$npar[i] + 1
+    }
+  }
+  
+  New<-BestMods %>% filter(npar == min(npar))
+  if(0 %in% New$DeltaAIC){
+    #auto arima picked the best model
+    res<-accuracy(forecast(mod, h=forelevel), test)[2,"MASE"] #test set MASE
+  }else{
+    #of the models with the fewest parameters, pick the lowest AIC
+    newmod<-New %>% filter(AIC == min(AIC)) %>% select(Mod)
+    mod<-Arima(train, order = as.numeric(strsplit(newmod$Mod[[1]], "[,]")), include.constant = TRUE)
+    res<-accuracy(forecast(mod, h=forelevel), test)[2,"MASE"] #test set MASE
+  }
+  
+  return(list(Fit = mod, MASE = res, Bm = BestMods)) #include best mods for testing to see that it's doing what I want
+  
+}
+
+#================================================================
+```
+
+Next step is to then define the regions 
+```{r}
+#regions vector
+regions<-unique(PinkByRegion$region)
+#regions key
+regionskey<-c("Cook Inlet", "E. Kamchatka", "Japan", "Kodiak", "Russia", "N.British Columbia",
+              "Prince William Sound", "S. Alaska Pen.", "S. British Columbia", "SE Alaska", "W. Kamchatka", "W. Alaska")
+names(regionskey)<-regions #for plotting
+
+#loop through regions/levels
+#all
+DiagPlots<-lapply(regions, ACFandPACF)
+   names(DiagPlots)<-regions
+
+#Even
+DiagPlots_even<-lapply(regions, ACFandPACF_even)
+   names(DiagPlots_even)<-regions
+   
+#Odd
+DiagPlots_odd<-lapply(regions, ACFandPACF_odd)
+   names(DiagPlots_odd)<-regions   
+```
+
+Lets look at the regional breakdowns of ACF and PACF, first for all years:
+```{r}
+#Even Years 
+par(mfrow=c(3,4))
+for(r in 1:length(regions)){
+  plot(DiagPlots[[r]][[1]], main = paste0("Region: ", regionskey[r]))
+}
+
+#PACF plots for each region
+par(mfrow=c(3,4))
+for(r in 1:length(regions)){
+  plot(DiagPlots[[r]][[2]], main = paste0("Region: ", regionskey[r]))
+}
+```
+The ACFs for regions show different levels of lag or total correlation. 
+Let's look for even years:
+```{r}
+#Even Years 
+par(mfrow=c(3,4))
+for(r in 1:length(regions)){
+  plot(DiagPlots_even[[r]][[1]], main = paste0("Region: ", regionskey[r]))
+}
+
+#PACF plots for each region
+par(mfrow=c(3,4))
+for(r in 1:length(regions)){
+  plot(DiagPlots_even[[r]][[2]], main = paste0("Region: ", regionskey[r]))
+}
+```
+And then for odd years:
+```{r}
+#Odd Years 
+par(mfrow=c(3,4))
+for(r in 1:length(regions)){
+  plot(DiagPlots_odd[[r]][[1]], main = paste0("Region: ", regionskey[r]))
+}
+
+#PACF plots for each region
+par(mfrow=c(3,4))
+for(r in 1:length(regions)){
+  plot(DiagPlots_odd[[r]][[2]], main = paste0("Region: ", regionskey[r]))
+}
+```
+
+The next step is to look at the ARIMA models for regions by all years, even and odd years, and define forecast levels. Let's start with all years.
+
+```{r}
+#forecast levels
+forecastlevels<-c(5, 10, 20)
+#all combinations
+Allcombs<-expand_grid(regions, forecastlevels)
+
+#================================================
+
+#All
+RegionMods<-mapply(FitModFunction, Allcombs$regions, Allcombs$forecastlevels, SIMPLIFY = FALSE)
+# head(RegionMods_even)
+# names(RegionMods_even)
+```
+Now let's consider even years. 
+```{r}
+#Even
+RegionMods_even<-mapply(FitModFunction_even, Allcombs$regions, Allcombs$forecastlevels, SIMPLIFY = FALSE)
+head(RegionMods_even)
+#names(RegionMods_even) #should be three for each region
+```
+
+Now let's consider odd years. 
+```{r}
+#Odd 
+RegionMods_odd<-mapply(FitModFunction_odd, Allcombs$regions, Allcombs$forecastlevels, SIMPLIFY = FALSE)
+head(RegionMods_odd)
+#names(RegionMods_odd) #should be three for each region
+```
+Now, we're extracting the MASE and creating our final model tables 
+```{r}
+#getting MASE
+#All
+RegionMASE<-sapply(RegionMods, function(x){y<-x$MASE})
+RegionBestMod<-sapply(RegionMods, function(x){y<-as.character(x$Fit)})
+#Even
+RegionMASE_even<-sapply(RegionMods_even, function(x){y<-x$MASE})
+RegionBestMod_even<-sapply(RegionMods_even, function(x){y<-as.character(x$Fit)})
+#Odd
+RegionMASE_odd<-sapply(RegionMods_odd, function(x){y<-x$MASE})
+RegionBestMod_odd<-sapply(RegionMods_odd, function(x){y<-as.character(x$Fit)})
+#combine into tables
+#all
+ResultsTable<-Allcombs %>% add_column(Model = RegionBestMod, MASE = RegionMASE)
+ResultsTable
+
+#even
+ResultsTable_even<-Allcombs %>% add_column(Model = RegionBestMod_even, MASE = RegionMASE_even)
+ResultsTable_even
+
+#Odd
+ResultsTable_odd<-Allcombs %>% add_column(Model = RegionBestMod_odd, MASE = RegionMASE_odd)
+ResultsTable_odd
+```
 
 # Results
 
-### Sockeye:
+## Sockeye:
 
 Plot MASE for three different forecast periods - 5, 10, and 20 years - across all regions. MASE \< 1 is a "good" value.
 
@@ -400,6 +930,23 @@ sbc.final20 %>%
   forecast(h=20) %>%
   autoplot() + geom_point(aes(x=x, y=y), data=fortify(test.sbc20))
 ```
+
+Looking at stationarity:
+```{r}
+Ndiff<-sapply(RegionBestModSock, function(x){
+  a<-strsplit(strsplit(strsplit(x, "[(]")[[1]][2], "[)]")[[1]][1],"[,]")
+  return(a[[1]][2])}
+)
+
+tibble(Ndiff = Ndiff, region = Allcombs$regions, level = Allcombs$forecastlevels) %>%
+  ggplot() + geom_bar(aes(x = region, y = Ndiff, fill = as.factor(level)), stat = "identity", position = "dodge") +
+  scale_x_discrete(labels = as_labeller(regionskey)) +
+  labs(fill = "Forecast Levels", x = "Region", y = "Number of Differences") + 
+  ggtitle("Number of differences to achieve stationarity (Sockeye)") + theme_bw() + theme(axis.text.x=element_text(angle=-90, hjust = 0, vjust = 0.5 ))
+```
+For Sockeye, 6 regions required differencing for all of the three subsets of the data (3 forecasting levels). Two regions required differencing for one subset of the data; four regions were stationary at any level of subsetting.
+
+None of the regional models for the 5-year forecast had autocorrelation in the residuals based on the results of the Ljung-Box test (p-value > 0.05). 
 
 ## Chum:
 
@@ -467,16 +1014,336 @@ for(i in 1:length(ac_mods_chum)){
 
 This suggests that ARIMA models may not be the best fit in this instance.
 
-### Pink:
+## Pink:
+
+Plot MASE for three different forecast periods - 5, 10, and 20 years - across all regions. MASE \< 1 is a "good" value.
+
+```{r}
+
+#All Years
+ggplot(ResultsTable) + 
+  geom_bar(aes(x = regions, y = MASE, fill = as.factor(forecastlevels)), stat = "identity", position = "dodge") + 
+  geom_hline(aes(yintercept = 1), linetype = "dashed") + 
+  scale_x_discrete(labels = as_labeller(regionskey)) +
+  labs(fill = "Forecast Levels", x = "Region") + 
+  ggtitle("Pinks all Years") + theme_bw() + theme(axis.text.x=element_text(angle=-90, hjust = 0, vjust = 0.5 ))
+
+#Even Years 
+ggplot(ResultsTable_even) + 
+  geom_bar(aes(x = regions, y = MASE, fill = as.factor(forecastlevels)), stat = "identity", position = "dodge") + 
+  geom_hline(aes(yintercept = 1), linetype = "dashed") + 
+  scale_x_discrete(labels = as_labeller(regionskey)) +
+  labs(fill = "Forecast Levels", x = "Region") + 
+  ggtitle("Pinks Even Years") + theme_bw() + theme(axis.text.x=element_text(angle=-90, hjust = 0, vjust = 0.5 ))
+
+#Odd Years 
+ggplot(ResultsTable_odd) + 
+  geom_bar(aes(x = regions, y = MASE, fill = as.factor(forecastlevels)), stat = "identity", position = "dodge") + 
+  geom_hline(aes(yintercept = 1), linetype = "dashed") + 
+  scale_x_discrete(labels = as_labeller(regionskey)) +
+  labs(fill = "Forecast Levels", x = "Region") + 
+  ggtitle("Pinks Odd Years") + theme_bw() + theme(axis.text.x=element_text(angle=-90, hjust = 0, vjust = 0.5 ))
+
+```
+Despite the MASE fits seeming pretty good for the pink model runs some of the forecasts were underwhelming. Two regions were considered for forcasts, Cook Inlet, and SE Alaska with models that included for all years, even years, and odd years.
+
+The first region, Cook Inlet, performed poorly (relative to some of the other regions) when looking at MASE values.  
+```{r}
+#Cook Inlet
+#----------------------------------------------------
+#All Years
+pink.ci<-subset(PinkByRegion, region=='ci')
+ci.ts<-ts(pink.ci$lnreturns, start=pink.ci$year[1], frequency = 1)
+
+#create training and test datasets for the 5 year forecast 
+train.ci5<-window(ci.ts, start=1952, end=2010)
+test.ci5<-window(ci.ts, start=2011, end=2015)
+ci.final5<-forecast::auto.arima(train.ci5, approximation = F, stepwise = F)
+
+#create training and test datasets for the 10 year forecast 
+train.ci10<-window(ci.ts, start=1952, end=2005)
+test.ci10<-window(ci.ts, start=2006, end=2015)
+ci.final10<-forecast::auto.arima(train.ci10, approximation = F, stepwise = F)
+
+#create training and test datasets for the 20 year forecast 
+train.ci20<-window(ci.ts, start=1952, end=1995)
+test.ci20<-window(ci.ts, start=1996, end=2015)
+ci.final20<-forecast::auto.arima(train.ci20, approximation = F, stepwise = F)
+
+#------------------------------
+#Even Years
+pink.ci_even<-subset(PinkByRegion_even, region=='ci')
+ci.ts_even<-ts(pink.ci_even$lnreturns, start=pink.ci_even$year[1], frequency = 0.5)
+
+#create training and test datasets for the 5 year forecast 
+train.ci_even5<-window(ci.ts_even, start=1952, end=2010)
+test.ci_even5<-window(ci.ts_even, start=2011, end=2014)
+ci_even.final5<-forecast::auto.arima(train.ci_even5, approximation = F, stepwise = F)
+
+#create training and test datasets for the 10 year forecast 
+train.ci_even10<-window(ci.ts_even, start=1952, end=2005)
+test.ci_even10<-window(ci.ts_even, start=2006, end=2014)
+ci_even.final10<-forecast::auto.arima(train.ci_even10, approximation = F, stepwise = F)
+
+#create training and test datasets for the 20 year forecast 
+train.ci_even20<-window(ci.ts_even, start=1952, end=1995)
+test.ci_even20<-window(ci.ts_even, start=1996, end=2014)
+ci_even.final20<-forecast::auto.arima(train.ci_even20, approximation = F, stepwise = F)
+
+#------------------------------
+#Odd Years
+pink.ci_odd<-subset(PinkByRegion_odd, region=='ci')
+ci.ts_odd<-ts(pink.ci_odd$lnreturns, start=pink.ci_odd$year[1], frequency = 0.5)
+
+#create training and test datasets for the 5 year forecast 
+train.ci_odd5<-window(ci.ts_odd, start=1953, end=2009)
+test.ci_odd5<-window(ci.ts_odd, start=2011, end=2015)
+ci_odd.final5<-forecast::auto.arima(train.ci_odd5, approximation = F, stepwise = F)
+
+#create training and test datasets for the 10 year forecast 
+train.ci_odd10<-window(ci.ts_odd, start=1953, end=2005)
+test.ci_odd10<-window(ci.ts_odd, start=2007, end=2015)
+ci_odd.final10<-forecast::auto.arima(train.ci_odd10, approximation = F, stepwise = F)
+
+#create training and test datasets for the 20 year forecast 
+train.ci_odd20<-window(ci.ts_odd, start=1953, end=1995)
+test.ci_odd20<-window(ci.ts_odd, start=1997, end=2015)
+ci_odd.final20<-forecast::auto.arima(train.ci_odd20, approximation = F, stepwise = F)
+```
+
+Let's look at forcast plots for the best performing models that consider all data, even years, and odd years. 
+
+```{r}
+#Plots
+plot_5 <- ci.final5 %>%
+  forecast(h=5) %>%
+  autoplot() + geom_point(aes(x=x, y=y), data=fortify(test.ci5))
+
+plot_10 <- ci.final10 %>%
+  forecast(h=10) %>%
+  autoplot() + geom_point(aes(x=x, y=y), data=fortify(test.ci10))
+
+plot_20 <- ci.final20 %>%
+  forecast(h=20) %>%
+  autoplot() + geom_point(aes(x=x, y=y), data=fortify(test.ci20))
+
+plot_even_5 <- ci_even.final5 %>%
+  forecast(h=5) %>%
+  autoplot() + geom_point(aes(x=x, y=y), data=fortify(test.ci_even5))
+
+plot_even_10 <- ci_even.final10 %>%
+  forecast(h=10) %>%
+  autoplot() + geom_point(aes(x=x, y=y), data=fortify(test.ci_even10))
+
+plot_even_20 <- ci_even.final20 %>%
+  forecast(h=20) %>%
+  autoplot() + geom_point(aes(x=x, y=y), data=fortify(test.ci_even20))
+
+plot_odd_5 <- ci_odd.final5 %>%
+  forecast(h=5) %>%
+  autoplot() + geom_point(aes(x=x, y=y), data=fortify(test.ci_odd5))
+
+plot_odd_10 <- ci_odd.final10 %>%
+  forecast(h=10) %>%
+  autoplot() + geom_point(aes(x=x, y=y), data=fortify(test.ci_odd10))
+
+plot_odd_20 <- ci_odd.final20 %>%
+  forecast(h=20) %>%
+  autoplot() + geom_point(aes(x=x, y=y), data=fortify(test.ci_odd20))
+
+plot_grid(plot_5, plot_10, plot_20, plot_even_5, plot_even_10, plot_even_20, plot_odd_5, plot_odd_10, plot_odd_20, ncol = 3, nrow = 3)
+```
+None of the models fit well. Let's look at one more region. 
+
+```{r}
+#SE AK
+#---------------------------------------------------
+#All Years
+pink.seak<-subset(PinkByRegion, region=='seak')
+seak.ts<-ts(pink.seak$lnreturns, start=pink.seak$year[1], frequency = 0.5)
+
+#create training and test datasets for the 5 year forecast 
+train.seak5<-window(seak.ts, start=1952, end=2010)
+test.seak5<-window(seak.ts, start=2011, end=2015)
+seak.final5<-forecast::auto.arima(train.seak5, approximation = F, stepwise = F)
+
+#create training and test datasets for the 10 year forecast 
+train.seak10<-window(seak.ts, start=1952, end=2005)
+test.seak10<-window(seak.ts, start=2006, end=2015)
+seak.final10<-forecast::auto.arima(train.seak10, approximation = F, stepwise = F)
+
+#create training and test datasets for the 20 year forecast 
+train.seak20<-window(seak.ts, start=1952, end=1995)
+test.seak20<-window(seak.ts, start=1996, end=2015)
+seak.final20<-forecast::auto.arima(train.seak20, approximation = F, stepwise = F)
+
+#----------------------------------------------------
+#Even Years
+pink.seak_even<-subset(PinkByRegion_even, region=='seak')
+seak.ts_even<-ts(pink.seak_even$lnreturns, start=pink.seak_even$year[1], frequency = 0.5)
+
+#create training and test datasets for the 5 year forecast 
+train.seak_even5<-window(seak.ts_even, start=1952, end=2010)
+test.seak_even5<-window(seak.ts_even, start=2012, end=2014)
+seak_even.final5<-forecast::auto.arima(train.seak_even5, approximation = F, stepwise = F)
+
+#create training and test datasets for the 10 year forecast 
+train.seak_even10<-window(seak.ts_even, start=1952, end=2004)
+test.seak_even10<-window(seak.ts_even, start=2006, end=2014)
+seak_even.final10<-forecast::auto.arima(train.seak_even10, approximation = F, stepwise = F)
+
+#create training and test datasets for the 20 year forecast 
+train.seak_even20<-window(seak.ts_even, start=1952, end=1994)
+test.seak_even20<-window(seak.ts_even, start=1996, end=2014)
+seak_even.final20<-forecast::auto.arima(train.seak_even20, approximation = F, stepwise = F)
+
+#------------------------------
+#Odd Years
+pink.seak_odd<-subset(PinkByRegion_odd, region=='seak')
+seak.ts_odd<-ts(pink.seak_odd$lnreturns, start=pink.seak_odd$year[1], frequency = 0.5)
+
+#create training and test datasets for the 5 year forecast 
+train.seak_odd5<-window(seak.ts_odd, start=1953, end=2009)
+test.seak_odd5<-window(seak.ts_odd, start=2011, end=2015)
+seak_odd.final5<-forecast::auto.arima(train.seak_odd5, approximation = F, stepwise = F)
+
+#create training and test datasets for the 10 year forecast 
+train.seak_odd10<-window(seak.ts_odd, start=1953, end=2005)
+test.seak_odd10<-window(seak.ts_odd, start=2007, end=2015)
+seak_odd.final10<-forecast::auto.arima(train.seak_odd10, approximation = F, stepwise = F)
+
+#create training and test datasets for the 20 year forecast 
+train.seak_odd20<-window(seak.ts_odd, start=1953, end=1995)
+test.seak_odd20<-window(seak.ts_odd, start=1997, end=2015)
+seak_odd.final20<-forecast::auto.arima(train.seak_odd20, approximation = F, stepwise = F)
+```
+
+Let's look at forcast plots for the best performing models that consider all data, even years, and odd years. 
+```{r}
+#Plots 
+plot_5 <- seak.final5 %>%
+  forecast(h=5) %>%
+  autoplot() + geom_point(aes(x=x, y=y), data=fortify(test.seak5))
+
+plot_10 <- seak.final10 %>%
+  forecast(h=10) %>%
+  autoplot() + geom_point(aes(x=x, y=y), data=fortify(test.seak10))
+
+plot_20 <- seak.final20 %>%
+  forecast(h=20) %>%
+  autoplot() + geom_point(aes(x=x, y=y), data=fortify(test.seak20))
+
+plot_even_5 <- seak_even.final5 %>%
+  forecast(h=5) %>%
+  autoplot() + geom_point(aes(x=x, y=y), data=fortify(test.seak_even5))
+
+plot_even_10 <- seak_even.final10 %>%
+  forecast(h=10) %>%
+  autoplot() + geom_point(aes(x=x, y=y), data=fortify(test.seak_even10))
+
+plot_even_20 <- seak_even.final20 %>%
+  forecast(h=20) %>%
+  autoplot() + geom_point(aes(x=x, y=y), data=fortify(test.seak_even20))
+
+plot_odd_5 <- seak_odd.final5 %>%
+  forecast(h=5) %>%
+  autoplot() + geom_point(aes(x=x, y=y), data=fortify(test.seak_odd5))
+
+plot_odd_10 <- seak_odd.final10 %>%
+  forecast(h=10) %>%
+  autoplot() + geom_point(aes(x=x, y=y), data=fortify(test.seak_odd10))
+
+plot_odd_20 <- seak_odd.final20 %>%
+  forecast(h=20) %>%
+  autoplot() + geom_point(aes(x=x, y=y), data=fortify(test.seak_odd20))
+
+plot_grid(plot_5, plot_10, plot_20, plot_even_5, plot_even_10, plot_even_20, plot_odd_5, plot_odd_10, plot_odd_20, ncol = 3, nrow = 3)
+```
+These models were all pretty flat and also didn't seem to capture the trends particularly well. 
+
+Next, the number of models that had a differencing was plotted for all years, even years, and odd years.  
+
+```{r}
+#All Years 
+Ndiff<-sapply(RegionBestMod, function(x){
+  a<-strsplit(strsplit(strsplit(x, "[(]")[[1]][2], "[)]")[[1]][1],"[,]")
+  return(a[[1]][2])}
+)
+
+tibble(Ndiff = Ndiff, region = Allcombs$regions, level = Allcombs$forecastlevels) %>%
+  ggplot() + geom_bar(aes(x = region, y = Ndiff, fill = as.factor(level)), stat = "identity", position = "dodge") +
+  scale_x_discrete(labels = as_labeller(regionskey)) +
+  labs(fill = "Forecast Levels", x = "Region", y = "Number of Differences") + 
+  ggtitle("Number of differences to achieve stationarity (Pink-All Years)") + theme_bw() + theme(axis.text.x=element_text(angle=-90, hjust = 0, vjust = 0.5 ))
+
+#Even Years 
+Ndiff_even<-sapply(RegionBestMod_even, function(x){
+  a<-strsplit(strsplit(strsplit(x, "[(]")[[1]][2], "[)]")[[1]][1],"[,]")
+  return(a[[1]][2])}
+)
+
+tibble(Ndiff = Ndiff_even, region = Allcombs$regions, level = Allcombs$forecastlevels) %>%
+  ggplot() + geom_bar(aes(x = region, y = Ndiff, fill = as.factor(level)), stat = "identity", position = "dodge") +
+  scale_x_discrete(labels = as_labeller(regionskey)) +
+  labs(fill = "Forecast Levels", x = "Region", y = "Number of Differences") + 
+  ggtitle("Number of differences to achieve stationarity (Pink-Even Years)") + theme_bw() + theme(axis.text.x=element_text(angle=-90, hjust = 0, vjust = 0.5 ))
+
+#Odd Years 
+Ndiff_odd<-sapply(RegionBestMod_odd, function(x){
+  a<-strsplit(strsplit(strsplit(x, "[(]")[[1]][2], "[)]")[[1]][1],"[,]")
+  return(a[[1]][2])}
+)
+
+tibble(Ndiff = Ndiff_odd, region = Allcombs$regions, level = Allcombs$forecastlevels) %>%
+  ggplot() + geom_bar(aes(x = region, y = Ndiff, fill = as.factor(level)), stat = "identity", position = "dodge") +
+  scale_x_discrete(labels = as_labeller(regionskey)) +
+  labs(fill = "Forecast Levels", x = "Region", y = "Number of Differences") + 
+  ggtitle("Number of differences to achieve stationarity (Pink-Odd Years)") + theme_bw() + theme(axis.text.x=element_text(angle=-90, hjust = 0, vjust = 0.5 ))
+```
+When considering models that used all data, five regions needed differencing. In models that considered even years only, six regions needed differencing.
+In models that considered odd years only, ten regions needed differencing. 
+
+Finally we're going to look at some residuals for models that displayed autocorraltion based on Ljung-Box test. There were only 
+```{r}
+#Residuals 
+#all
+ac_mods_Pink<- c(10, 11, 15, 29)
+
+for(i in 1:length(ac_mods_Pink)){
+print(paste(regionskey[ResultsTable$regions[ac_mods_Pink[i]]], ResultsTable_even$forecastlevels[ac_mods_Pink[i]]))
+checkresiduals(RegionMods[[ac_mods_Pink[i]]]$Fit)
+}
+
+#Even
+ac_mods_Pink_even<-c(19, 20) 
+
+for(i in 1:length(ac_mods_Pink_even)){
+print(paste(regionskey[ResultsTable_even$regions[ac_mods_Pink_even[i]]], ResultsTable_even$forecastlevels[ac_mods_Pink_even[i]]))
+checkresiduals(RegionMods_even[[ac_mods_Pink_even[i]]]$Fit)
+}
+
+#Odd
+ac_mods_Pink_odd<-c(8) 
+
+for(i in 1:length(ac_mods_Pink_odd)){
+  print(paste(regionskey[ResultsTable_odd$regions[ac_mods_Pink_odd[i]]], ResultsTable_odd$forecastlevels[ac_mods_Pink_odd[i]]))
+  checkresiduals(RegionMods_odd[[ac_mods_Pink_odd[i]]]$Fit)
+}
 
 
+```
+#---------------------------------------------------------------------
 
 
 # Discussion
 
-Comparing the models across the three forecasts for SBC underlines that the data chosen for a forecast matters. Not only is the estimated ARIMA a better fit for a shorter forecast (and is trained on more data), but the training data for the model for the 20 year forecast is not stationary so the ARIMA parameters are very different from the parameters estimated for the 5 and 10 year forecasts. Six regions had at least one forecast with a well performing model (MASE \< 1); however, six regions did not have MASE \< 1 for even the 5 year forecast model. None of the 20 year forecasts resulted in MASE \< 1. This suggests that our data are so stochastic that it is difficult to forecast more than 5 years into the future. Another hypothesis could be that the training data set isn't long enough to generate a good model for the 20 year forecast, but from looking at the data I think the large inter-year variability in returns makes it difficult to fit an accurate model. In general, the models that fit the data better (lower MASE) tended to include differencing and were more likely to have higher order parameters.
+Comparing the models across the three forecasts for SBC underlines that the data chosen for a forecast matters. Not only is the estimated ARIMA a better fit for a shorter forecast (and is trained on more data), but the training data for the model for the 20 year forecast is not stationary so the ARIMA parameters are very different from the parameters estimated for the 5 and 10 year forecasts. 
 
-Models fit to Chum do better than models fit to Sockeye (SOMEONE WITH FISH KNOWLEDGE KNOW WHY??)
+For sockeye, six regions had at least one forecast with a well performing model (MASE \< 1); however, six regions did not have MASE \< 1 for even the 5 year forecast model. None of the 20 year forecasts resulted in MASE \< 1. This suggests that our data are so stochastic that it is difficult to forecast more than 5 years into the future. Another hypothesis could be that the training data set isn't long enough to generate a good model for the 20 year forecast, but from looking at the data we think the large inter-year variability in returns makes it difficult to fit an accurate model. In general, the models that fit the data better (lower MASE) tended to include differencing and were more likely to have higher order parameters.
+
+Models fit to Chum do better than models fit to Sockeye. There may be something about the patterns of chum population fluctuations that are more amenable to being modeled with ARIMA.
+
+Model fits to pink depended on data assumptions given their cyclic life history, and while the MASE results were lower than the other stock, ARIMA models are likely not the appropriate method for assessing or predicting pinnk returns with any level of certainty. 
 
 # Description of each team member's contributions
 

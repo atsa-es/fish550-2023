@@ -1,6 +1,6 @@
 # Lab 2: MARSS models
 
-Team member names:
+Team member names: Dylan Hubl (Env & Forest Sci) and Madison Heller-Shipley (SAFS) 
 
 # Data
 
@@ -15,6 +15,12 @@ load(here::here("Lab-2", "Data_Images", "columbia-river.rda"))
 Wrangle the data.
 
 **Add your wrangling code here**
+
+```{r}
+
+knitr::include_graphics("C:/GitHub/fish550-2023/Lab-2/Team-4/Middle Columbia River sockeye.png")
+
+```
 
 # General Questions
 
@@ -35,6 +41,10 @@ Play around with different methods to fill in missing value and look how assmpti
 Make some assumptions about underlying population structure. This can help you fill in missing data areas.
 
 Adult run timing (when they're coming into fresh water, look at run timing--any correlation?)
+
+John Day Data set spans the entire time period, and we will look at the appropriatness of drawing inference from these data to fill in other missing values. 
+
+    Johm Day lower 
 
 # Methods
 

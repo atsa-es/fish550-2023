@@ -218,6 +218,19 @@ autoplot(fr_Wood) + geom_point(aes(x=x, y=y), data=fortify(test_Wood))
 checkresiduals(fr_Wood)
 ```
 
+
+```{r}
+library(zoo)
+train_Wood <- window(data_ts_Wood, 1963, 1990)
+test_Wood <- window(data_ts_Wood, 1990, 2020)
+mod_Wood_train <- auto.arima(train_Wood)
+mod_Wood_train
+fr_Wood_train <- forecast(mod_Wood_train, h=30)
+autoplot(fr_Wood_train) + geom_point(aes(x=x, y=y), data=fortify(test_Wood))
+checkresiduals(fr_Wood_train)
+```
+
+
 # Results
 
 # Discussion

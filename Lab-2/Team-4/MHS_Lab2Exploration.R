@@ -20,7 +20,11 @@ plotesu <- function(esuname){
 }
 
 
-#Test adding a comment
+#John Day Lower Mainstream Tributaries --test on this data and see how well you can track the other John Day pops
+
+#Cascades 1980's....what do we connect to? Disjunt from John Day 
+
+#Start with using John Day data to inform Cascade interpolation
 
 plotesu(esu[1])
 
@@ -37,6 +41,11 @@ dat <- columbia.river %>%
   t() # make time across the columns
 # MARSS complains if I don't do this
 dat[is.na(dat)] <- NA
+dat[is.nan(dat)] <- NA
+
+any(is.nan(dat))
+dat[is.infinite(dat)]<- NA #Make any -inf 
+any(is.infinite(dat))
 
 
 tmp <- rownames(dat)
@@ -46,12 +55,17 @@ tmp <- stringr::str_trim(tmp)
 rownames(dat) <- tmp
 
 mod.list1 <- list(
-  U = "unequal",
-  R = "diagonal and equal",
-  Q = "unconstrained"
+  U = "unequal", #each of the rivers are estimated separately (different U)
+  R = "diagonal and equal", #Process errors are all assumed to be the same 
+  Q = "diagonal and equal" #Observation error 
 )
+
+#We will eventually create matrices that link the population groups that we think
+#are related for model fitting 
+
 
 library(MARSS)
 fit1 <- MARSS(dat, model=mod.list1, method="BFGS")
+autoplot(fit1)
 
 #1. Create estimates of spawner abundance for all missing years and provide estimates of the decline from the historical abundance.
