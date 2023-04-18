@@ -60,6 +60,7 @@ We finally chose three rivers to work with - Kvichak, Wood and Nugashak. We spli
 Bristol Bay Data. Discuss what part of the data set you will work with.
 
 Read in the data 
+
 ```{r}
 
 bb_data <- readRDS(here::here("Lab-1", "Data_Images", "bristol_bay_data_plus_covariates.rds"))
@@ -71,6 +72,7 @@ cat("age groups: ", unique(bb_data$age_group), "\n")
 ```
 
 Explore the data 
+
 ```{r}
 bb_data %>% 
   group_by(system, ret_yr) %>%
@@ -170,11 +172,39 @@ The acf plots for Nushagak river is slowly decaying and the pacf plot shows sign
 
 ## Test for stationarity (NICK)
 
-Run tests and discuss any stationarity issues and how these were addressed.
+The Dickey fuller test- looks for evidence that the t.s. are a random walk. The null hypothesis for both tests is that the data are non-stationary. We want to REJECT the null hypothesis for this test, so we want a p-value of less that 0.05 (or smaller). If we reject the null, it IS stationary. 
+
+The KPSS test- The null hypothesis for the KPSS test is that the data are stationary. For this test, we do NOT want to reject the null hypothesis. In other words, we want the p-value to be greater than 0.05 not less than 0.05.
 
 ```{r}
 
+adf.list <- kpss.list <- kpss.trend <- list()
+p.vals <- kp.vals.lev <- kp.vals.tre <-  vector()
+River <- unique(our_rivers$system)
+
+for(i in 1:length(River)){
+  sub<-subset(our_rivers,our_rivers$system==River[i])
+  
+  adf.list[[i]] <- adf.test(sub$lntotal, k = 0)
+  kpss.list[[i]] <- kpss.test(sub$lntotal, null = "Level")
+  kpss.trend[[i]] <- kpss.test(sub$lntotal, null = "Trend")
+  
+  p.vals[[i]] <- adf.list[[i]]$p.value
+  kp.vals.lev[i] <- kpss.list[[i]]$p.value
+  kp.vals.tre[i] <- kpss.trend[[i]]$p.value
+}
+names(p.vals) <- names(kp.vals.lev) <- names(kp.vals.tre) <- River
+p.vals # Should be less than .05
+kp.vals.lev # Should be greater than .05
+kp.vals.tre # Should be greater than .05
+
 ```
+For the ADF test, we want to REJECT the null hypothesis, so we want a p-value less than 0.05
+For the KPSS test, we want to ACCEPT the null hypothesis, so we want a p-value greater than 0.05
+
+Kvichak == stationary
+Nushagak == non-stationary or stationary around a trend
+Wood == non-stationary or stationary around a trend
 
 ## Difference tests (LIZ)
 
@@ -237,7 +267,7 @@ mod_Nu
 
 mod_Wood <- auto.arima(train_Wood)
 mod_Wood
-#mod_Wood <- auto.arima(data_ts_Wood)
+
 ```
 
 ## Plot forecasts from auto.arima (LIZ)
@@ -321,31 +351,33 @@ Based on these plots we might decide to alter our model selection for the Nushag
 
 We also could change our model for the Kvichak, although the model chosen by auto.arima (ARIMA(0,0,1)) behaves essentially the same as the other top models.
 
-Before this decision, below we check the accuracies and the residuals for each of the models (n = 9).
+Before this decision, below we check the accuracies for each of the models (n = 9).
 
 ## Check accuracy (NICK)
+
 ```{r}
 #lists from forecast::accuracy for each river
-names(kv_err_list) <- c("Kvichak (0,0,1)", "Kvichak (1,0,1) drift", "Kvichak (0,0,2)")
-kv_err_list
-kv_RMSE <- matrix(data =c(kv_err_list[[1]][4],kv_err_list[[2]][4],kv_err_list[[3]][4]))
 
+#kv_err_list
+kv_RMSE <- matrix(data =c(kv_err_list[[1]][4],kv_err_list[[2]][4],kv_err_list[[3]][4]))
+rownames(kv_RMSE) <- c("Kvichak (0,0,1)", "Kvichak (1,0,1)", "Kvichak (0,0,2)")
+kv_RMSE
 #best model is model 1 - (0,0,1) with non zero mean
 
-names(nu_err_list) <- c("Nushagak (0,1,1)", "Nushagak (0,1,1) drift", "Nushagak (1,1,1)")
-nu_err_list
+#nu_err_list
 nu_RMSE <- matrix(data =c(nu_err_list[[1]][4],nu_err_list[[2]][4],nu_err_list[[3]][4]))
-
+rownames(nu_RMSE) <- c("Nushagak (0,1,1)", "Nushagak (0,1,1) w/ drift", "Nushagak (1,1,1)")
+nu_RMSE
 # best model is model 1 - (0,1,1)
 
-names(wo_err_list) <- c("Wood (0,1,1)", "Wood (0,1,1) drift", "Wood (1,1,1)")
-wo_err_list
+#wo_err_list
 wo_RMSE <- matrix(data =c(wo_err_list[[1]][4],wo_err_list[[2]][4],wo_err_list[[3]][4]))
-
+rownames(wo_RMSE) <- c("Wood (0,1,1)", "Wood (0,1,1) w/ drift", "Wood (1,1,1)")
+wo_RMSE
 #best model is model 2 - (0,1,1) with drift
 
 ```
-Best model is the one with the lowest RMSE.
+The best model forecast is the one with the lowest RMSE. 
 
 ## Check residuals (NICK)
 
