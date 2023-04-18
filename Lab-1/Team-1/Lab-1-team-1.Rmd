@@ -270,8 +270,6 @@ autoplot(wo_fr) + geom_point(aes(x=x, y=y), data=fortify(test_Wood))+
 
 Here we play around with different ARIMA structures. We tested the three top models for the Kvichak. For the Nushagak and the Wood, we tested the two top models, plus the best model with an added drift component. 
 
-NICK- this loop originally contained a list of accuracy results as well, but I deleted it since your section is below. Just an FYI. 
-
 ```{r}
 # Chosing our own arima structure in a for loop. Probably a cleaner way to do this. 
 
@@ -295,22 +293,21 @@ for(i in 1:3){
   kv_fore[[i]] <- forecast(kv_fits[[i]], h=5) # forecasts
   kv_plots[[i]] <- (autoplot(kv_fore[[i]]) + geom_point(aes(x=x, y=y), data=fortify(test_Kv))+ #forecast plots
           geom_point(aes(x=ret_yr, y=lntotal), data = kv_fri_fore, col = "red"))
-    kv_err_list[[i]] <- accuracy(kv_fore[[i]]) # puts accuracy data into list
+  kv_err_list[[i]] <- accuracy(forecast(kv_fore[[i]], h = 5), test_Kv) # puts accuracy data into list
 
   #Nushagak
   nu_fits[[i]] <- Arima(train_Nu, order = nu_mod_list[[i]], include.drift = drift[[i]])
   nu_fore[[i]] <- forecast(nu_fits[[i]], h=5)
   nu_plots[[i]] <- (autoplot(nu_fore[[i]]) + geom_point(aes(x=x, y=y), data=fortify(test_Nu))+ #forecast plots
           geom_point(aes(x=ret_yr, y=lntotal), data = nu_fri_fore, col = "red"))
-    nu_err_list[[i]] <- accuracy(kv_fore[[i]]) 
+  nu_err_list[[i]] <- accuracy(forecast(nu_fore[[i]], h = 5), test_Nu) 
 
   #Wood
   wo_fits[[i]] <- Arima(train_Wood, order = wo_mod_list[[i]], include.drift = drift[[i]])
   wo_fore[[i]] <- forecast(wo_fits[[i]], h=5)
   wo_plots[[i]] <- (autoplot(wo_fore[[i]]) + geom_point(aes(x=x, y=y), data=fortify(test_Wood))+
           geom_point(aes(x=ret_yr, y=lntotal), data = wo_fri_fore, col = "red"))
-
-  wo_err_list[[i]] <- accuracy(kv_fore[[i]])  
+  wo_err_list[[i]] <- accuracy(forecast(wo_fore[[i]], h = 5), test_Wood)  
 }
 
 library(ggpubr)
@@ -329,12 +326,15 @@ Before this decision, below we check the accuracies and the residuals for each o
 ## Check accuracy (NICK)
 ```{r}
 #lists from forecast::accuracy for each river
+names(kv_err_list) <- c("Kvichak (0,0,1)", "Kvichak (1,0,1) drift", "Kvichak (0,0,2)")
 kv_err_list
 #model 1 - (0,0,1), model 2 - (1,0,1) model 3 - (0,0,2)
 
+names(nu_err_list) <- c("Nushagak (0,1,1)", "Nushagak (0,1,1) drift", "Nushagak (1,1,1)")
 nu_err_list
 #model 1 - (0,1,1), model 2 - (0,1,1)drift model 3 - (1,1,1)
 
+names(wo_err_list) <- c("Wood (0,1,1)", "Wood (0,1,1) drift", "Wood (1,1,1)")
 wo_err_list
 #model 1 - (0,1,1), model 2 - (0,1,1) drift, model 3 - (1,1,1)
 
