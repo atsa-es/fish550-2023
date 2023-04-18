@@ -604,21 +604,21 @@ ACFandPACF<-function(reg){
   Pinkdat<-PinkByRegion %>% filter(region == reg)
   #create time series
   datts <- ts(Pinkdat$lnreturns, start=Pinkdat$year[1]) 
-  return(list(a = acf(datts), p = pacf(datts)))
+  return(list(a = acf(datts, plot = FALSE), p = pacf(datts, plot = FALSE)))
 }
 
 ACFandPACF_even<-function(reg){
   Pinkdat<-PinkByRegion_even %>% filter(region == reg)
   #create time series
   datts <- ts(Pinkdat$lnreturns, start=Pinkdat$year[1]) 
-  return(list(a = acf(datts), p = pacf(datts)))
+  return(list(a = acf(datts, plot = FALSE), p = pacf(datts, plot = FALSE)))
 }
 
 ACFandPACF_odd<-function(reg){
   Pinkdat<-PinkByRegion_odd %>% filter(region == reg)
   #create time series
   datts <- ts(Pinkdat$lnreturns, start=Pinkdat$year[1]) 
-  return(list(a = acf(datts), p = pacf(datts)))
+  return(list(a = acf(datts, plot = FALSE), p = pacf(datts, plot = FALSE)))
 }
 
 FitModFunction<-function(reg, forelevel){
