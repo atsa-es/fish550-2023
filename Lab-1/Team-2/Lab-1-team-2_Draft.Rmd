@@ -236,21 +236,35 @@ The 2.2 group does not show any patterns that line up with an AR or MA model. It
 tseries::adf.test(Ugashik_1.3.ts) 
 tseries::kpss.test(Ugashik_1.3.ts, null = "Level") 
 tseries::kpss.test(Ugashik_1.3.ts, null = "Trend") 
+<<<<<<< HEAD
 datts_diff_1.3 <- diff(Ugashik_1.3.ts, differences = 1)
 datts_diff_1.3_out <- diff(Ugashik_1.3.ts_out, differences = 1)
 plot(datts_diff_1.3, ylab = "Log abundance", main = "Time series, first differenced: 1 year freshwater, 3 years ocean")
 plot(datts_diff_1.3_out, ylab = "Log abundance", main = "Time series, first differenced: 1 year freshwater, 3 years ocean, outlier removed")
+=======
+
+>>>>>>> bdb8cb01c6f5dcd9e18301bcdb2bc1d1ace6aa63
 ```
 
 ```{r}
 tseries::adf.test(Ugashik_2.2.ts) 
 tseries::kpss.test(Ugashik_2.2.ts, null = "Level") 
 tseries::kpss.test(Ugashik_2.2.ts, null = "Trend")
+<<<<<<< HEAD
 datts_diff_2.2 <- diff(Ugashik_2.2.ts, differences = 1)
 plot(datts_diff_2.2, ylab = "Log abundance", main = "Time series, first differenced: 2 years freshwater, 2 years ocean")
 
 
 
+=======
+
+datts_diff_1.3 <- diff(Ugashik_1.3.ts, differences = 1)
+datts_diff_1.3_out <- diff(Ugashik_1.3.ts_out, differences = 1)
+datts_diff_2.2 <- diff(Ugashik_2.2.ts, differences = 1)
+plot(datts_diff_2.2, ylab = "Log abundance", main = "Time series, first differenced: 2 year freshwater, 2 years ocean")
+plot(datts_diff_1.3, ylab = "Log abundance", main = "Time series, first differenced: 1 year freshwater, 3 years ocean")
+plot(datts_diff_1.3_out, ylab = "Log abundance", main = "Time series, first differenced: 1 year freshwater, 3 years ocean, outlier removed")
+>>>>>>> bdb8cb01c6f5dcd9e18301bcdb2bc1d1ace6aa63
 ```
 
 ### Wood
