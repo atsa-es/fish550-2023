@@ -203,8 +203,8 @@ For the ADF test, we want to REJECT the null hypothesis, so we want a p-value le
 For the KPSS test, we want to ACCEPT the null hypothesis, so we want a p-value greater than 0.05
 
 Kvichak == stationary
-Nushagak == non-stationary or stationary around a trend
-Wood == non-stationary or stationary around a trend
+Nushagak == non-stationary around a level or stationary around a trend
+Wood == non-stationary around a level or stationary around a trend
 
 ## Difference tests (LIZ)
 
