@@ -34,11 +34,12 @@ We will fit ARIMA models to each region and age group and compare the model stru
 
 ## Initial plan
 
-Using the forecast package, we plan to fit ARIMA models to the 1960-2010 data on 4 yr old fish in the Wood and Ugashik systems. Then forecast to 2020. We will separate the fish spent by time in freshwater and time in the ocean. These age groups are labeled 1.3 (1 year in freshwater, 3 years in the ocean) and 2.2 (2 years in freshwater, 2 years in the ocean). We will measure accuracy by the comparing the RMS error of each model.
+Using the forecast package, we plan to fit ARIMA models to the 1960-2010 data on 4 yr old fish in the Wood and Ugashik systems. Then forecast to 2020. We will separate the fish by time spent in freshwater and time in the ocean. These age groups are labeled 1.3 (1 year in freshwater, 3 years in the ocean) and 2.2 (2 years in freshwater, 2 years in the ocean). We will measure accuracy by the comparing the RMS error of each model.
 
 ## What you actually did
 
-We were able to enact our plan with a few modifications. Instead of modeling all the 4 year old salmon together, we separated and compared them by age group from the outset. Additionally, we added the Kvichak region to our analysis. We noticed there was an outlier in the data for the 1.3 age group in the Ugashik region, so we fit a second model to the data starting at the year 1980 and compared its forecast to the original model's.
+We were able to enact our plan with a few modifications. Instead of modeling all the 4 year old salmon together, we separated and compared them by age group from the outset. Additionally, we added the Kvichak region to our analysis. 
+We also examined the accuracy of the forecast if we removed the years prior to 1980 from the training data for the 1.3 age group in the Ugashik river. We did this as there was increased varaince in the observed data if we included 1960 - 1980. We thought that removing the variance may improve the accuracy of the forecast, so we fit a second model to the data starting at the year 1980 and compared its forecast to the original model's.
 
 # Diagnostics and preliminary exploration
 
@@ -202,6 +203,24 @@ acf(Kvichak_2.2.ts)
 pacf(Kvichak_2.2.ts)
 #neither shows any clear lag or decay signs. maybe an combined ARMA model
 ```
+<<<<<<< HEAD
+=======
+
+Ugashik:
+
+The ACF plot of the full 1.3 age group tails off slowly, which indicates an AR() model. The lag also shows potential seasonality, which we will ignore by recommendation of Eli. The PACF cuts off at 1, which further reinforces idea that this is an AR(1) model.
+
+The truncated 1.3 group shows significance at a lag of 2 for both the ACF and PACF. This may be some kind of ARMA model
+
+The 2.2 age group has an ACF that shows significance at lags 1, 4, 5, and 16. This may indicate seasonality, which again we will ignore in this experiment. The PACF cuts off a one so this may be an AR(1) model with a nonzero mean.
+
+Wood:
+
+ACF for the 1.3 data seems to cut off at 2. It also shows significance at lags of 5 and 10 which may indicate seasonality. The PACF appears to slowly taper off. This is likely an MA() model with a positive trend
+
+The 2.2 age group does not show significance in either plot, so this is most likely white noise.
+
+>>>>>>> bdb8cb01c6f5dcd9e18301bcdb2bc1d1ace6aa63
 Kvichak:
 
 The ACF and PACF for the 1.3 shows no significance so we took the first difference and tried again. The new ACF cuts of and 1 and the PACF seems to slowly taper. This data may be an ARIMA(0,1,1).
