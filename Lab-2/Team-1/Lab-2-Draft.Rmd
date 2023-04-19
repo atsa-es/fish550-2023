@@ -14,6 +14,12 @@ load(here::here("Lab-2", "Data_Images", "columbia-river.rda"))
 
 Wrangle the data.
 
+We had some issues with one of the populations having duplicated entries, with some being NA and some having values, and so we removed this population from the analysis: "Salmon, Chinook (Lower Columbia River ESU) Lower Gorge Tributaries - fall"
+
+```{r}
+chin_c_r<-columbia.river %>% subset(esu_dps == esu[5]) %>% filter(esapopname != "Salmon, Chinook (Lower Columbia River ESU) Lower Gorge Tributaries - fall")
+```
+
 **Add your wrangling code here**
 
 # General Questions
