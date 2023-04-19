@@ -63,10 +63,10 @@ Address the following in your methods
 Hypothesis 1: All underlying states are the same and one underlying population (done!)
 
 Hypothesis 2: Four underlying states, each major group. 
-    2.1: Q matrix = equal variance covariance (done!)
-    2.2: Q matrix = unconstrained (done!)
+    2.1: Q matrix = unconstrained (done!)
+    2.2: Q matrix = equal variance covariance (done!)
     2.3: Q matrix = diagonal and equal 
-    2.4: Q matrix = custom? 
+    2.4: Q matrix = diagonal and unequal 
     
 Hypothesis 3: East vs West underlying states. John Day and Cascades vs Walla Walla and Yakima 
     3.1: Q matrix = equal variance covariance 
@@ -74,9 +74,10 @@ Hypothesis 3: East vs West underlying states. John Day and Cascades vs Walla Wal
     3.3: Q matrix = diagonal and equal  
 
 Hypothesis 4: Two underlying states. Yakama and the rest 
-    4.1: Q matrix = equal variance covariance 
-    4.2: Q matrix = unconstrained 
-    4.3: Q matrix = diagonal and equal  
+    4.1: Q matrix = unconstrained  
+    4.2: Q matrix = equal variance covariance
+    4.3: Q matrix = diagonal and equal 
+    4.4: Q matrix = diagonal and unequal
 
 Pick best hypthesis 
 
