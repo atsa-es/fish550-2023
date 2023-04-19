@@ -3,8 +3,8 @@ title: "Team 3 Lab-1 Write-Up"
 author: "Emma T-S, Zoe R, Madi S"
 date: "`r Sys.Date()`"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
