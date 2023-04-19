@@ -437,7 +437,7 @@ accuracy(forecast(fit.Wood_2.2, h = 10), test.Wood_2.2)
 #test data. So we have RMSE = 0.731
 ```
 
-The actual observations do fall within the 80% prediction interval This data is treated as white noise with the ARIMA(0,0,0) model so we predict the prediction intervals are tied very closely to the variance of the residuals themselves.The RMSE = 0.731
+The model fit the training data well as indicated by the Box test's failure to reject the null hypothesis. The actual observations do fall within the 80% prediction interval This data is treated as white noise with the ARIMA(0,0,0) model so we predict the prediction intervals are tied very closely to the variance of the residuals themselves.The RMSE = 0.731
 
 ### Wood 1.3
 
@@ -467,9 +467,9 @@ accuracy(forecast(fit.Wood_1.3, h = 10), test.Wood_1.3)
 #two years in both freshwater and the ocean.
 ```
 
-we see that the prediction intervals widen as the forecast moves forward likely due to the autocorrelation of the errors, because this is an MA(1) model, which the model has to estimate with each successive prediction. The fitted points are a flat line again because this is an MA(1) model, we would write the model as Xt = Xt-1 + error. When we fitted a model to the entire dataset, auto.arima() selected an ARIMA(0,1,1) with drift, however with just the training data auto.arima() selected an ARIMA(0,1,1) because the model does not have drift, the predictions stay as a flat line rather than having a trend.
+Again we see that the model fit the training dataset well. The box test fails to reject the null hypotheis. We see that the prediction intervals widen as the forecast moves forward likely due to the autocorrelation of the errors, because this is an MA(1) model, which the model has to estimate with each successive prediction. The fitted points are a flat line again because this is an MA(1) model, we would write the model as Xt = Xt-1 + error. When we fitted a model to the entire dataset, auto.arima() selected an ARIMA(0,1,1) with drift, however with just the training data auto.arima() selected an ARIMA(0,1,1) because the model does not have drift, the predictions stay as a flat line rather than having a trend.
 
-the Root Mean Squared Error for this model is 0.532. This value is less than the value for the Wood_2.2 model. This is a bit surprising as they both put a straight line on the graph for predictions. These values indicate that the model for wood.3 was more accurate. The returns of fish that spent less time in fresh water and longer in the ocean were more accurately predicted than of the fish who spent two years in both freshwater and the ocean.
+the Root Mean Squared Error for this model is 0.532. This value is less than the value for the Wood_2.2 model. This is a bit surprising as they both put a straight line on the graph for predictions. These values indicate that the model for wood_1.3 was more accurate at predicting future observations. The returns of fish that spent less time in fresh water and longer in the ocean were more accurately predicted than of the fish who spent two years in both freshwater and the ocean.
 
 ### Kvichak 2.2
 
@@ -485,7 +485,7 @@ accuracy(pred.kvi2, test.Kvichak_2.2)
 #
 ```
 
-The RMSE = 2.088. The actual data points fell outside of the prediction intervals with this model. We observe the same straight line provided by the MA() model but there was more variance in this data which corresponds to the poor prediction performance \### Kvichak 1.3
+Here we see the cyclic nature of the data reflected in the residual's ACF plot and the rejection of the Box test. This may have affected the model's ability to predict. The RMSE = 2.088. The actual data points fell outside of the prediction intervals with this model. We observe the same straight line provided by the MA() model but there was more variance in this data which corresponds to the poor prediction performance \### Kvichak 1.3
 
 ```{r}
 #chooses same exact model as the full dataset model
@@ -500,7 +500,7 @@ accuracy(pred.kvi3, test.Kvichak_1.3)
 #
 ```
 
-The RMSE = 0.65 for this forecast's accuracy, we see the prediction line with a positive trend which results because the model is ARIMA(0,1,1) with drift. Due to the smaller amount of variance in this data set the points fall much closer to the straight line prediction. Again we see that returns for fish that spent longer in the ocean were more accurately predicted in this system.
+The model fit the training data well again based on the failure to reject the Box test and did a good job forecasting future observation. The RMSE = 0.65 for this forecast's accuracy, we see the prediction line with a positive trend which results because the model is ARIMA(0,1,1) with drift. Due to the smaller amount of variance in this data set the points fall much closer to the straight line prediction. Again we see that returns for fish that spent longer in the ocean were more accurately predicted in this system.
 
 # Discussion
 
