@@ -60,6 +60,28 @@ Address the following in your methods
 
 -   Do your estimates differ depending on the assumptions you make about the structure of the data, i.e. you assumptions about the x's, Q, and U.
 
+Hypothesis 1: All underlying states are the same and one underlying population (done!)
+
+Hypothesis 2: Four underlying states, each major group. 
+    2.1: Q matrix = equal variance covariance (done!)
+    2.2: Q matrix = unconstrained (done!)
+    2.3: Q matrix = diagonal and equal 
+    2.4: Q matrix = custom? 
+    
+Hypothesis 3: East vs West underlying states. John Day and Cascades vs Walla Walla and Yakima 
+    3.1: Q matrix = equal variance covariance 
+    3.2: Q matrix = unconstrained 
+    3.3: Q matrix = diagonal and equal  
+
+Hypothesis 4: Two underlying states. Yakama and the rest 
+    4.1: Q matrix = equal variance covariance 
+    4.2: Q matrix = unconstrained 
+    4.3: Q matrix = diagonal and equal  
+
+Pick best hypthesis 
+
+Hypothesis 5: Evidence of cycling 
+
 ### Tips
 
 **Simplify**

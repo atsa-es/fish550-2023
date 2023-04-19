@@ -54,6 +54,10 @@ tmp <- stringr::str_replace(tmp, "River - summer", "")
 tmp <- stringr::str_trim(tmp)
 rownames(dat) <- tmp
 
+
+# Hypthesis 1 
+
+
 mod.list1 <- list(
   U = "unequal", #each of the rivers are estimated separately (different U)
   R = "diagonal and equal", #Process errors are all assumed to be the same 
@@ -67,5 +71,45 @@ mod.list1 <- list(
 library(MARSS)
 fit1 <- MARSS(dat, model=mod.list1, method="BFGS")
 autoplot(fit1)
+
+fit1$states
+
+
+
+##################################
+
+#Hypthesis 2.2
+
+U_mat2 <- matrix(c("Cascades","JohnDay","Walla","Yakima"),4,1)
+#make Z matrix correspond to 4 hidden states
+Z_mat2 <- matrix(c(rep(c(1,0,0,0),3),
+                  rep(c(0,1,0,0),5),
+                  rep(c(0,0,1,0),3),
+                  rep(c(0,0,0,1),4)),15,4, byrow=TRUE)
+
+mod.list2.2 <- list(
+  U = U_mat2,
+  R = "diagonal and equal",
+  Q = "unconstrained",
+  Z = Z_mat2
+)
+m2.2 <- MARSS(dat, model = mod.list1)
+autoplot(m2.2)
+
+#Notes. Four states. Q values on top of line. 
+#Confindence Intervals are not emcompassing data, 
+#but from the description doesn't seem like an issue
+
+
+
+#look at corrplot
+Q2 <- coef(m2, type = "matrix")$Q
+corrmat2 <- diag(1/sqrt(diag(Q2))) %*% Q1 %*% diag(1/sqrt(diag(Q2)))
+corrplot(corrmat2)
+
+
+
+
+
 
 #1. Create estimates of spawner abundance for all missing years and provide estimates of the decline from the historical abundance.
