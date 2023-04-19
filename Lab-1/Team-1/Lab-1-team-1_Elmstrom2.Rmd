@@ -125,7 +125,7 @@ our_rivers %>%
 
 ```
 
-Based on these plots, we hypothesize that data will be non-stationary for the Kvichak and stationary for the Nushagak and the Wood around a trend. 
+Based on these plots, we hypothesize that data will be stationary for the Kvichak and stationary for the Nushagak and the Wood around a trend. 
 
 ## Use ACF and PACF (MARIA)
 
@@ -172,11 +172,42 @@ The acf plots for Nushagak river is slowly decaying and the pacf plot shows sign
 
 Run tests and discuss any stationarity issues and how these were addressed.
 
+The Dickey fuller test- looks for evidence that the t.s. are a random walk. The null hypothesis for both tests is that the data are non-stationary. We want to REJECT the null hypothesis for this test, so we want a p-value of less that 0.05 (or smaller). If we reject the null, it IS stationary. 
+
+The KPSS test- The null hypothesis for the KPSS test is that the data are stationary. For this test, we do NOT want to reject the null hypothesis. In other words, we want the p-value to be greater than 0.05 not less than 0.05.
+
 ```{r}
+
+adf.list <- kpss.list <- kpss.trend <- list()
+p.vals <- kp.vals.lev <- kp.vals.tre <-  vector()
+River <- unique(our_rivers$system)
+
+for(i in 1:length(River)){
+  sub<-subset(our_rivers,our_rivers$system==River[i])
+  
+  adf.list[[i]] <- adf.test(sub$lntotal, k = 0)
+  kpss.list[[i]] <- kpss.test(sub$lntotal, null = "Level")
+  kpss.trend[[i]] <- kpss.test(sub$lntotal, null = "Trend")
+  
+  p.vals[[i]] <- adf.list[[i]]$p.value
+  kp.vals.lev[i] <- kpss.list[[i]]$p.value
+  kp.vals.tre[i] <- kpss.trend[[i]]$p.value
+}
+names(p.vals) <- names(kp.vals) <- River
+p.vals # Should be less than .05
+kp.vals.lev # Should be greater than .05
+kp.vals.tre # Should be greater than .05
 
 ```
 
-## Difference tests (LIZ)
+For the ADF test, we want to REJECT the null hypothesis, so we want a p-value less than 0.05
+For the KPSS test, we want to ACCEPT the null hypothesis, so we want a p-value greater than 0.05
+
+Kvichak == stationary
+Nushagak == non-stationary or stationary around a trend
+Wood == non-stationary or stationary around a trend
+
+# Difference tests (LIZ)
 
 ```{r}
 
