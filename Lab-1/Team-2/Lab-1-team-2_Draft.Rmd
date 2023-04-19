@@ -38,8 +38,7 @@ Using the forecast package, we plan to fit ARIMA models to the 1960-2010 data on
 
 ## What you actually did
 
-We were able to enact our plan with a few modifications. Instead of modeling all the 4 year old salmon together, we separated and compared them by age group from the outset. Additionally, we added the Kvichak region to our analysis. 
-We also examined the accuracy of the forecast if we removed the years prior to 1980 from the training data for the 1.3 age group in the Ugashik river. We did this as there was increased varaince in the observed data if we included 1960 - 1980. We thought that removing the variance may improve the accuracy of the forecast, so we fit a second model to the data starting at the year 1980 and compared its forecast to the original model's.
+We were able to enact our plan with a few modifications. Instead of modeling all the 4 year old salmon together, we separated and compared them by age group from the outset. Additionally, we added the Kvichak region to our analysis. We also examined the accuracy of the forecast if we removed the years prior to 1980 from the training data for the 1.3 age group in the Ugashik river. We did this as there was increased variance in the observed data if we included 1960 - 1980. We thought that removing the variance may improve the accuracy of the forecast, so we fit a second model to the data starting at the year 1980 and compared its forecast to the original model's.
 
 # Diagnostics and preliminary exploration
 
@@ -75,6 +74,7 @@ plot.ts(Ugashik_1.3.ts, ylab = "Log abundance", main = "Sockeye: 1 yr freshwater
 plot.ts(Ugashik_1.3.ts_out, ylab = "Log abundance", main = "Sockeye: 1 yr freshwater, 3 yrs ocean") 
 plot.ts(Ugashik_2.2.ts, ylab = "Log abundance", main = "Sockeye: 2 yrs freshwater, 2 yrs ocean") 
 ```
+
 Uvashik:
 
 Upon observing the 1.3 time series, there is a clear outlier value at 1977. To remove the negative value, we re-plotted the data starting at 1980 instead of 1967. The new time series seems to show variance around a mean of 7. The 2.2 group appears to show variance around a mean of 5. Differencing the data will likely show stationarity
@@ -93,13 +93,14 @@ Wood_1.3.ts <- ts(Wood_1.3$log_ret, start = 1963, frequency = 1)
 Wood_2.2.ts <- ts(Wood_2.2$log_ret, start = 1963, frequency = 1)
 
 #check the plot
-plot.ts(Wood_1.3.ts, ylab = "log Abundance", main ="Sockeye: 1 year in freshwater, 3 years in ocean" )
+plot.ts(Wood_1.3.ts, ylab = "log Abundance", main ="Sockeye: 1 yr freshwater, 3 yrs ocean" )
 #looks like there is a positive trend to the data: not stationary, or could be stationary around a trend
-plot.ts(Wood_2.2.ts, ylab = "log Abundance", main ="Sockeye: 2 years in freshwater, 2 years in ocean" )
+plot.ts(Wood_2.2.ts, ylab = "log Abundance", main ="Sockeye: 2 yrs freshwater, 2 yrs ocean" )
 #looks like it could potentially be stationary
 
 ```
-Wood: 
+
+Wood:
 
 The 1.3 age group appears to have a positive trend, so it is likely not stationary. It could be stationary around a trend. The 2.2 age group does not seem to have any trends, and could be stationary around a mean of 4.
 
@@ -116,113 +117,17 @@ Kvichak_1.3.ts <- ts(Kvichak_1.3$log_ret, start = 1963, end = 2020)
 Kvichak_2.2.ts <- ts(Kvichak_2.2$log_ret, start = 1963, end = 2020)
 
 #plots
-plot(Kvichak_1.3.ts, ylab = "log Abundance", main = "Sockeye: 1 year in freshwater, 3 years in ocean" )
+plot(Kvichak_1.3.ts, ylab = "log Abundance", main = "Sockeye: 1 yr freshwater, 3 yrs ocean" )
 
-plot(Kvichak_2.2.ts, ylab = "log Abundance", main = "Sockeye: 2 years in freshwater, 2 years in ocean" )
+plot(Kvichak_2.2.ts, ylab = "log Abundance", main = "Sockeye: 2 yrsfreshwater, 2 yrs ocean" )
 
 
 ```
-Kvichak: 
-
-There is another negative outlier in the 1.3 age group, otherwise the data appears to be stationary around a mean of 7. We will have to see how much influence the outlier has on the ARIMA model. The 2.2 age group does not show any obvious trends and seems to be stationary around a mean of 7.
-
-## ACF and PACF,
-
-### Ugashik
-
-```{r}
-layout_matrix_1 <- matrix(c(1,2),ncol=2)  #setting up how the plots will display
-layout(layout_matrix_1)                   
-acf(Ugashik_1.3.ts)
-pacf(Ugashik_1.3.ts)
-```
-
-```{r}
-layout(layout_matrix_1)                   #setting up how the plots will display
-acf(Ugashik_1.3.ts_out, na.action = na.pass) # allows na value
-pacf(Ugashik_1.3.ts_out,na.action = na.pass)
-```
-
-```{r}
-layout(layout_matrix_1)                   #setting up how the plots will display
-acf(Ugashik_2.2.ts)
-pacf(Ugashik_2.2.ts)
-```
-Ugashik:
-
-The ACF plot of the full 1.3 age group tails off slowly, which indicates an AR() model. There lag also shows potential seasonality, which we will ignore by recommendation of Eli. The PACF cuts off at 1, which further reinforces idea that this is an AR(1) model.
-
-The truncated 1.3 group shows significance at a lag of 2 for both the ACF and PACF. This may be some kind of ARMA model
-
-The 2.2 age group has an ACF that shows significance at lags 1, 4, 5, and 16. This may indicate seasonality, which again we will ignore in this experiment. The PACF cuts off a one so this may be an AR(1) model with a nonzero mean.
-
-### Wood
-
-```{r}
-#acf and pacf for differenced Wood_1.3
-layout(layout_matrix_1)                   #setting up how the plots will display
-acf(diff(Wood_1.3.ts))
-pacf(diff(Wood_1.3.ts))
-#pacf looks like a slow decay indicating it will be and MA model. signif lags at 1, 5, 10 on ACF
-```
-
-```{r}
-#acf and pacf for Wood_2.2
-#carries the plot display set up from the above over to these plots
-layout(layout_matrix_1)                   #setting up how the plots will display
-acf(Wood_2.2.ts)
-pacf(Wood_2.2.ts)
-#no significant lags in either plot. This is white noise, no autocorrelation. expecting ARIMA(0,0,0)
-```
-Wood:
-
-ACF for the 1.3 data seems to cut off at 2. It also shows significance at lags of 5 and 10 which may indicate seasonality. The PACF appears to slowly taper off. This is likely an MA() model with a positive trend
-
-The 2.2 age group does not show significance in either plot, so this is most likely white noise.
-
-### Kvichak
-
-```{r}
-layout(layout_matrix_1)                   #setting up how the plots will display
-acf(Kvichak_1.3.ts)
-pacf(Kvichak_1.3.ts)
-#both have a significant lag at 1. maybe just a differencing will help
-```
-
-```{r}
-layout(layout_matrix_1)                   #setting up how the plots will display
-acf(diff(Kvichak_1.3.ts))
-pacf(diff(Kvichak_1.3.ts))
-#looks like slow decay on pacf and a significant lag at 1 on acf. expecting an ARIMA(0,1,1)
-```
-
-```{r}
-#plot acf and pacf
-layout(layout_matrix_1)
-acf(Kvichak_2.2.ts)
-pacf(Kvichak_2.2.ts)
-#neither shows any clear lag or decay signs. maybe an combined ARMA model
-```
-
-Ugashik:
-
-The ACF plot of the full 1.3 age group tails off slowly, which indicates an AR() model. The lag also shows potential seasonality, which we will ignore by recommendation of Eli. The PACF cuts off at 1, which further reinforces idea that this is an AR(1) model.
-
-The truncated 1.3 group shows significance at a lag of 2 for both the ACF and PACF. This may be some kind of ARMA model
-
-The 2.2 age group has an ACF that shows significance at lags 1, 4, 5, and 16. This may indicate seasonality, which again we will ignore in this experiment. The PACF cuts off a one so this may be an AR(1) model with a nonzero mean.
-
-Wood:
-
-ACF for the 1.3 data seems to cut off at 2. It also shows significance at lags of 5 and 10 which may indicate seasonality. The PACF appears to slowly taper off. This is likely an MA() model with a positive trend
-
-The 2.2 age group does not show significance in either plot, so this is most likely white noise.
 
 Kvichak:
 
-The ACF and PACF for the 1.3 shows no significance so we took the first difference and tried again. The new ACF cuts of and 1 and the PACF seems to slowly taper. This data may be an ARIMA(0,1,1).
+There is another negative outlier in the 1.3 age group, otherwise the data appears to be stationary around a mean of 7. We will have to see how much influence the outlier has on the ARIMA model. The 2.2 age group does not show any obvious trends and seems to be stationary around a mean of 7.
 
-The 2.2 group does not show any patterns that line up with an AR or MA model. It may be an ARMA model of some sort.
 
 ## Testing for Stationarity
 
@@ -315,6 +220,115 @@ forecast::ndiffs(Kvichak_2.2.ts, test = "adf")     # 0 needed. So I am expecting
 
 Run tests and discuss any stationarity issues and how these were addressed.
 
+## ACF and PACF
+
+### Ugashik
+
+```{r}
+layout_matrix_1 <- matrix(c(1,2),ncol=2)  #setting up how the plots will display
+layout(layout_matrix_1)                   
+acf(Ugashik_1.3.ts)
+pacf(Ugashik_1.3.ts)
+```
+
+```{r}
+layout(layout_matrix_1)                   #setting up how the plots will display
+acf(Ugashik_1.3.ts_out, na.action = na.pass) # allows na value
+pacf(Ugashik_1.3.ts_out,na.action = na.pass)
+```
+
+```{r}
+layout(layout_matrix_1)                   #setting up how the plots will display
+acf(Ugashik_2.2.ts)
+pacf(Ugashik_2.2.ts)
+```
+
+Ugashik:
+
+The ACF plot of the full 1.3 age group tails off slowly, which indicates an AR() model. There lag also shows potential seasonality, which we will ignore by recommendation of Eli. The PACF cuts off at 1, which further reinforces idea that this is an AR(1) model.
+
+The truncated 1.3 group shows significance at a lag of 2 for both the ACF and PACF. This may be some kind of ARMA model
+
+The 2.2 age group has an ACF that shows significance at lags 1, 4, 5, and 16. This may indicate seasonality, which again we will ignore in this experiment. The PACF cuts off a one so this may be an AR(1) model with a nonzero mean.
+
+### Wood
+
+```{r}
+#acf and pacf for differenced Wood_1.3
+layout(layout_matrix_1)                   #setting up how the plots will display
+acf(diff(Wood_1.3.ts))
+pacf(diff(Wood_1.3.ts))
+#pacf looks like a slow decay indicating it will be and MA model. signif lags at 1, 5, 10 on ACF
+```
+
+```{r}
+#acf and pacf for Wood_2.2
+#carries the plot display set up from the above over to these plots
+layout(layout_matrix_1)                   #setting up how the plots will display
+acf(Wood_2.2.ts)
+pacf(Wood_2.2.ts)
+#no significant lags in either plot. This is white noise, no autocorrelation. expecting ARIMA(0,0,0)
+```
+
+Wood:
+
+ACF for the 1.3 data seems to cut off at 2. It also shows significance at lags of 5 and 10 which may indicate seasonality. The PACF appears to slowly taper off. This is likely an MA() model with a positive trend
+
+The 2.2 age group does not show significance in either plot, so this is most likely white noise.
+
+### Kvichak
+
+```{r}
+layout(layout_matrix_1)                   #setting up how the plots will display
+acf(Kvichak_1.3.ts)
+pacf(Kvichak_1.3.ts)
+#both have a significant lag at 1. maybe just a differencing will help
+```
+
+```{r}
+layout(layout_matrix_1)                   #setting up how the plots will display
+acf(diff(Kvichak_1.3.ts))
+pacf(diff(Kvichak_1.3.ts))
+#looks like slow decay on pacf and a significant lag at 1 on acf. expecting an ARIMA(0,1,1)
+```
+
+```{r}
+#plot acf and pacf
+layout(layout_matrix_1)
+acf(Kvichak_2.2.ts)
+pacf(Kvichak_2.2.ts)
+#neither shows any clear lag or decay signs. maybe an combined ARMA model
+```
+
+Kvichak:
+
+The ACF and PACF for the 1.3 shows no significance so we took the first difference and tried again. The new ACF cuts of and 1 and the PACF seems to slowly taper. This data may be an ARIMA(0,1,1).
+
+The 2.2 group does not show any patterns that line up with an AR or MA model. It may be an ARMA model of some sort.
+
+## Fit Models to each data set
+
+### Ugashik
+```{r}
+
+```
+### Wood
+```{r}
+#auto fit the models to data
+forecast::auto.arima(diff(wood3.ts)) #MA(1) only not sure what to make of the lags at 5 and 10. could be the cyclic nature of the fish Eli has mentioned (see note further down)
+forecast::auto.arima(wood3.ts)       # is in agreement with need for differencing and MA(1). I think "with drift" in the non-differenced data is the equivalent of "with non-zero mean" in the pre-differenced model above.
+forecast::auto.arima(wood2.ts)       #my expectation panned out that this is just white noise but has non-zero mean which makes sense as this is count data
+
+```
+### Kvichak
+```{r}
+#fit models
+fit.kvi.2 <- forecast::auto.arima(kvi.2.ts)
+#ARIMA(0,0,1) with non-zero mean. significant pacf lag at 7 could be cyclic nature of date obscuring the MA() pattern
+fit.kvi.3 <- forecast::auto.arima(kvi.3.ts)
+#ARIMA(0,1,1) as expected from acf and pacf plots
+#plot
+```
 ## Fit Models to the training data
 
 ### Ugashik
@@ -341,10 +355,24 @@ model_Ugashik_2.2 <- auto.arima(train_Ugashik_2.2)
 model_Ugashik_2.2
 ```
 
+results for Ugashik 1.3
+
+ARIMA model results from train data for ret_yr 1.3 fish in Bristol Bay very different from ret_yr 2.2 despite both being 4 yr old fish. Ret_yr 1.3 inconsistent with results of ACF and PACF tests suggesting AR(1). First differencing the time series object returned the mean to zero, and auto.arima agrees first differencing the data is the best approach for model.
+
+Unfortunately, this is totally different from the stationarity tests which suggest that that the data is stationary and the AICc is huge which suggests this is not the best model for this data. Below is the better model.
+
+results for Ugashik 1.3 outlier removed
+
+By focusing on years without the outlier value, the model changed to ARIMA (2,0,0) and the AICc is much lower, suggesting this model is the better fit for the data. For the 1 year freshwater - 3 year ocean fish we will proceed with this model.
+
+results for Ugashik 2.2
+
+ARIMA model results from train data for ret_yr 2.2 fish in Bristol Bay consistent with results of ACF and PACF tests suggesting AR(1). First differencing the time series object returned the mean to zero, but auto.arima suggests 0 differencing and that data has non-zero mean.
+
 ### Wood
 
 ```{r}
-#Dylan's Code, need to speak on auto.arima model results
+#Dylan's Code, I need to speak on auto.arima model results
 #creating the training and testing periods for models
 train.Wood_1.3 <- window(Wood_1.3.ts, start = 1963, end = 2010)
 test.Wood_1.3 <- window(Wood_1.3.ts, start = 2011, end = 2020)
@@ -373,17 +401,17 @@ fit.Kvichak_2.2 <- forecast::auto.arima(train.Kvichak_2.2)
 fit.Kvichak_2.2
 ```
 
-### Printed results for ret_yr 1.3
+results for ret_yr 1.3
 
 ARIMA model results from train data for ret_yr 1.3 fish in Bristol Bay very different from ret_yr 2.2 despite both being 4 yr old fish. Ret_yr 1.3 inconsistent with results of ACF and PACF tests suggesting AR(1). First differencing the time series object returned the mean to zero, and auto.arima agrees first differencing the data is the best approach for model.
 
 Unfortunately, this is totally different from the stationarity tests which suggest that that the data is stationary and the AICc is huge which suggests this is not the best model for this data. Below is the better model.
 
-### Printed results for ret_yr 1.3 outlier removed
+results for ret_yr 1.3 outlier removed
 
 By focusing on years without the outlier value, the model changed to ARIMA (2,0,0) and the AICc is much lower, suggesting this model is the better fit for the data. For the 1 year freshwater - 3 year ocean fish we will proceed with this model.
 
-### Printed results for ret_yr 2.2
+results for ret_yr 2.2
 
 ARIMA model results from train data for ret_yr 2.2 fish in Bristol Bay consistent with results of ACF and PACF tests suggesting AR(1). First differencing the time series object returned the mean to zero, but auto.arima suggests 0 differencing and that data has non-zero mean.
 
