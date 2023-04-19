@@ -2,9 +2,7 @@
 title: "Team 3 Lab-1 Write-Up"
 author: "Emma T-S, Zoe R, Madi S"
 date: "`r Sys.Date()`"
-output:
-  pdf_document: default
-  html_document: default
+output: html_document
 ---
 
 ```{r setup, include=FALSE}
@@ -1345,9 +1343,7 @@ For sockeye, six regions had at least one forecast with a well performing model 
 
 Models fit to Chum do better than models fit to Sockeye. There may be something about the patterns of chum population fluctuations that are more amenable to being modeled with ARIMA.
 
-Model fits to pink depended on data assumptions given their cyclic life history. Unlike other species, notably sockeye, there did not seem to be consistent autocorrelation or identifiable cycles, which makes it hard to predict returns. Many of the models for pink salmon fall back to the long term mean, with ARIMA(0,0,0) models, or alternatively random walk models which define the best estimate as the last onservation. Further, the MASE results were lower than the other stocks, indicating better performance,but ARIMA models are likely not the appropriate method for assessing or predicting pink returns with any level of certainty. Given more time, it would be interesting to explore the forecast models but trimming old data out systematically so the predictions are driven by more recent data. 
-
-
+Model fits to pink depended on data assumptions given their cyclic life history, and while the MASE results were lower than the other stock, ARIMA models are likely not the appropriate method for assessing or predicting pinnk returns with any level of certainty. 
 
 # Description of each team member's contributions
 
