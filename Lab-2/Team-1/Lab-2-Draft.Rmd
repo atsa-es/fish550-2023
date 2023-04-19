@@ -12,15 +12,60 @@ Load the data.
 load(here::here("Lab-2", "Data_Images", "columbia-river.rda"))
 ```
 
-Wrangle the data.
-
-We had some issues with one of the populations having duplicated entries, with some being NA and some having values, and so we removed this population from the analysis: "Salmon, Chinook (Lower Columbia River ESU) Lower Gorge Tributaries - fall"
+Look at the data.
 
 ```{r}
-chin_c_r<-columbia.river %>% subset(esu_dps == esu[5]) %>% filter(esapopname != "Salmon, Chinook (Lower Columbia River ESU) Lower Gorge Tributaries - fall")
+plotesu <- function(esuname){
+  df <- columbia.river %>% subset(esu_dps %in% esuname)
+  ggplot(df, aes(x=spawningyear, y=log(value), color=majorpopgroup)) + 
+    geom_point(size=0.2, na.rm = TRUE) + 
+    theme(strip.text.x = element_text(size = 3)) +
+    theme(axis.text.x = element_text(size = 5, angle = 90)) +
+    facet_wrap(~esapopname) +
+    ggtitle(paste0(esuname, collapse="\n"))
+}
+#Chinook
+plotesu(esu[5])
 ```
 
-**Add your wrangling code here**
+Wrangle the data.
+
+We had some issues with one of the populations having duplicated entries, with some being NA and some having values, (Lower Gorge Tributaries - fall) and we also had a lot of ESA populations, so we decided to focus only on the Cascade populations.
+
+```{r}
+chin_c_r<-columbia.river %>% subset(esu_dps == esu[5])
+chin_c_r %>% 
+  filter(majorpopgroup %in% c("Cascade fall", "Cascade late fall", "Cascade spring")) %>% ggplot(aes(x=spawningyear, y=log(value), color=majorpopgroup)) + 
+    geom_point(size=0.2, na.rm = TRUE) + 
+    theme(strip.text.x = element_text(size = 3)) +
+    theme(axis.text.x = element_text(size = 5, angle = 90)) +
+    facet_wrap(~esapopname) +
+    ggtitle(paste0(esu[5], collapse="\n"))
+```
+
+Formatting data for MARSS:
+
+```{r}
+chin_newdat <- chin_c_r %>% 
+  filter(majorpopgroup %in% c("Cascade fall", "Cascade late fall", "Cascade spring")) %>% #just looking at cascade populations
+  mutate(log.spawner = log(value)) %>% # create a column called log.spawner
+  select(esapopname, spawningyear, log.spawner) %>% # get just the columns that I need
+  pivot_wider(names_from = esapopname, values_from = log.spawner) %>% 
+  column_to_rownames(var = "spawningyear") %>% # make the years rownames
+  as.matrix() %>% # turn into a matrix with year down the rows
+  t() # make time across the columns
+# MARSS complains if I don't do this
+chin_newdat[is.na(chin_newdat)] <- NA
+
+#clean up row names
+tmp <- rownames(chin_newdat)
+tmp <- stringr::str_replace(tmp, "Salmon, Chinook [(]Lower Columbia River ESU[)]", "")
+tmp <- stringr::str_trim(tmp)
+rownames(chin_newdat) <- tmp
+
+#look at data
+print(chin_newdat[,1:5])
+```
 
 # General Questions
 
@@ -36,15 +81,93 @@ Each group has the same general tasks, but you will adapt them as you work on th
 
 Address the following in your methods
 
--   Describe your assumptions about the x and how the data time series are related to x.
+*Describe your assumptions about the x and how the data time series are related to x.*
 
-    -   How are the x and y (data) related? 1 x for 1 y or will you assume 1 x for all y or 1 x for each major population group? How will you choose?
-    -   What will you assume about the U for the x's?
-    -   What will you assume about the Q matrix?
+-   We tested 3 different assumptions about how the data time series are related to x.
 
--   Write out your assumptions as different models **in matrix form**, fit each and then compare these with AIC or AICc.
+    1.  All the esa populations are independent populations: this means that each data series (y) corresponds to an independent x series.
 
--   Do your estimates differ depending on the assumptions you make about the structure of the data, i.e. you assumptions about the x's, Q, and U.
+    2.  There are 3 Cascade populations based on run timing, and the river surveys are all surveying these populations according to run time: this means that each data series (y) corresponds to the x series that relates to it's run timing (major population group).
+
+        -   Within both of these, we tested independent process errors with different variances (Q is diagonal and unequal), which would suggest that the environment affects all of these populations differently, as well as independent process errors with equal variances (Q is diagonal and unequal), which suggests that the environment affects all the populations similarly but independently.
+
+        -   We assumed that each population has it's own growth rate (U is unequal).
+
+    3.  There's one population of Chinook in the Cascades and each survey is surveying this population: this means 1x and all the y's are observations of this same x.
+
+        -   Since there's only one population, there is just 1 q and 1 u.
+
+    *Write out assumptions in matrix form:*
+
+    1.  11 independent populations
+
+        $$
+        \begin{bmatrix} x_{t,1} \\ x_{t,2}\\ ... \\x_{t,11} \end{bmatrix} = \begin{bmatrix} x_{t-1,1} \\ x_{t-1,2}\\ ... \\x_{t-1,11} \end{bmatrix} + \begin{bmatrix} u_1 \\ u_2\\ ... \\u_{11} \end{bmatrix} + w_t \text{  where } w_t \sim MVN(0, \mathbf{Q})
+        $$
+
+    where:
+
+    $$
+    \mathbf{Q} = 
+    \begin{bmatrix} q_1 & 0  & ...& 0\\
+    0 & q_2 &  ...& 0\\
+    \vdots & 0 & \ddots & \vdots\\
+    0 & 0 & 0  & q_{11} \end{bmatrix}
+    $$
+
+    or:
+
+    $$
+    \mathbf{Q} = 
+    \begin{bmatrix} q & 0  & ...& 0\\
+    0 & q &  ...& 0\\
+    \vdots & 0 & \ddots & \vdots\\
+    0 & 0 & 0  & q \end{bmatrix}
+    $$
+
+    $$
+    \begin{bmatrix} y_{t,1} \\ y_{t, 2} \\ \vdots \\y_{t,11} \end{bmatrix} = 
+    \begin{bmatrix}1 & 0  & ...& 0\\
+    0 & 1 &  ...& 0\\
+    \vdots & 0 & \ddots & \vdots\\
+    0 & 0 & 0  & 1\end{bmatrix} 
+    \begin{bmatrix} x_{t,1} \\ x_{t, 2} \\ \vdots \\x_{t,11} \end{bmatrix} + \mathbf{a} + \mathbf{v_t} \text{ where } \mathbf{v_t} \sim MVN(0, \mathbf{R})
+    $$
+
+    where:
+
+$$
+\mathbf{R} = 
+\begin{bmatrix} r & 0  & ...& 0\\
+0 & r &  ...& 0\\
+\vdots & 0 & \ddots & \vdots\\
+0 & 0 & 0  & r \end{bmatrix}
+$$
+
+2.  3 independent populations according to run time
+
+$$
+\begin{bmatrix} x_{t,1} \\ x_{t,2}\\ x_{t,3} \end{bmatrix} = \begin{bmatrix} x_{t-1,1} \\ x_{t-1,2}\\ x_{t-1,3} \end{bmatrix} + \begin{bmatrix} u_1 \\ u_2\\ u_3 \end{bmatrix} + w_t \text{  where } w_t \sim MVN(0, \mathbf{Q})$$
+
+where ***Q*** is as above but is 3x3 instead of 11x11.
+
+$$
+\begin{bmatrix} y_{t,1} \\ y_{t, 2} \\ \vdots \\y_{t,11} \end{bmatrix} = 
+\begin{bmatrix}1 & 0  &  0\\
+1 & 0 &  0\\
+\vdots & 1 & \vdots\\
+0 & 1 & 0 \\ 
+\vdots & \vdots & \vdots\\
+\vdots & 0 & 1 \\
+\vdots & \vdots & \vdots \end{bmatrix} 
+\begin{bmatrix} x_{t,1} \\ x_{t, 2} \\x_{t,3} \end{bmatrix} + \mathbf{a} + \mathbf{v_t} \text{ where } \mathbf{v_t} \sim MVN(0, \mathbf{R})
+$$
+
+and ***R***is the same as above.
+
+3.  One Cascade Population:
+
+    **ADD EQUATIONS HERE**
 
 ### Tips
 
@@ -86,7 +209,49 @@ autoplot(fit, plot.type="fitted.ytT")
 autoplot(fit, plot.type="residuals")
 ```
 
+## Code for analysis:
+
+```{r}
+library(MARSS)
+
+```
+
+1.  11 independent populations
+
+```{r}
+mod.list1 <- list(
+  U = "unequal",
+  R = "diagonal and equal",
+  Q = "diagonal and unequal"
+)
+fit1<-MARSS(chin_newdat, model=mod.list1, method = "BFGS")
+
+```
+
+```{r}
+autoplot(fit1, plot.type="fitted.ytT")
+```
+
+```{r}
+mod.list2 <- list(
+  U = "unequal",
+  R = "diagonal and equal",
+  Q = "diagonal and equal"
+)
+fit2<-MARSS(chin_newdat, model=mod.list2, control = list(maxit = 2000))
+```
+
+```{r}
+autoplot(fit2, plot.type="fitted.ytT")
+```
+
 # Results
+
+*AICc Table:*
+
+*Historical Abundance:*
+
+*Do your estimates differ depending on the assumptions you make about the structure of the data, i.e. you assumptions about the x's, Q, and U?*
 
 # Discussion
 
