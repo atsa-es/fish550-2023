@@ -1,12 +1,14 @@
 ---
-title: Lab 2 Analyzing multivariate salmon data
-author: E Holmes
-date: April 13, 2023
-output: 
+title: "Lab 2 Analyzing multivariate salmon data"
+author: "E Holmes"
+date: "April 13, 2023"
+output:
+  pdf_document:
+    toc: yes
   html_document:
-    code-folding: true
-    toc: true
-    toc_float: true
+    code-folding: yes
+    toc: yes
+    toc_float: yes
 ---
 
 ```{r message=FALSE}
