@@ -203,7 +203,8 @@ mod_rivers <- c("Sandy River - early and late",
            "Grays and Chinook Rivers - late", 
            "Clatskanie River - late", 
            "Lower Gorge Tributaries - late", 
-           "Tilton River - early and late")
+           "Tilton River - early and late", 
+           "Oregon Upper Gorge Tributaries and Hood River - early")
 
 sub_dat <- dat[rownames(dat) %in% mod_rivers, ] 
 ```
@@ -223,16 +224,30 @@ mod.list2 <- list(
   Q = "unconstrained"
 )
 
-mod.list3 <- list(
+
+mod.list3 <- list(B = matrix(1), 
+                   U = matrix("u"), 
+                   Q = matrix("q"), # 1 X
+                   Z = matrix(1, 6, 1), 
+                   A = "scaling", 
+                   R = "diagonal and unequal", # single column of 1s for Y
+                   x0 = matrix("mu"), 
+                   tinitx = 0)
+
+mod.list4 <- list(B = diag(1,6), 
+                  U = matrix("u",6,1), 
+                  Q = "diagonal and unequal", 
+                  Z = diag(1,6), 
+                  A = "scaling", 
+                  R = "diagonal and equal", 
+                  x0 = "unequal", 
+                  tinitx = 0)
+
+# Best model! 
+mod.list5 <- list(
   U = "unequal",
   R = "diagonal and equal",
-  Q = "constrained"
-)
-
-mod.list4 <- list(
-  U = "equal",
-  R = "diagonal and equal",
-  Q = "constrained"
+  Q = "equalvarcov"
 )
 ```
 
@@ -242,42 +257,61 @@ Fit the model. In this case, a BFGS algorithm is faster.
 library(MARSS)
 fit1 <- MARSS(sub_dat, model=mod.list1, method="BFGS")
 fit2 <- MARSS(sub_dat, model=mod.list2, method="BFGS")
-fit3 <- MARSS(sub_dat, model=mod.list3, method="BFGS")
-
+fit3 <- MARSS(sub_dat, model=mod.list3)
+fit4 <- MARSS(sub_dat, model=mod.list4)
+fit5 <- MARSS(sub_dat, model=mod.list5, control = list(maxit=1000))
 
 ```
 
-Hmmmmm, the Q variance is so high that it perfectly fits the data. That doesn't seem right.
+Plot fits
 
 ```{r}
 plot.mod1 <- autoplot(fit1, plot.type="fitted.ytT")
 plot.mod2 <- autoplot(fit2, plot.type="fitted.ytT")
-
+plot.mod3 <- autoplot(fit3, plot.type="fitted.ytT")
+plot.mod4 <- autoplot(fit4, plot.type = "fitted.ytT")
+plot.mod5 <- autoplot(fit5, plot.type="fitted.ytT")
 ```
 
-Let's look at the corrplot. Interesting. The Methow and Entiat are almost perfectly correlated while the Entiat and Wenatchee are somewhat correlated. That makes sense if you look at a map.
+Evaluate correlation between regions
 
 ```{r}
+# change fit# to evaluate correlation between regions in different models 
+
 library(corrplot)
-Q <- coef(fit2, type="matrix")$Q
+Q <- coef(fit1, type="matrix")$Q
 corrmat <- diag(1/sqrt(diag(Q))) %*% Q %*% diag(1/sqrt(diag(Q)))
 corrplot(corrmat)
+
 ```
 
-I need to use the EM algorithm (remove `method="BFGS"`) because the BFGS algorithm doesn't allow constraints on the Q matrix.
+AICc 
 
 ```{r}
-mod.list5 <- list(
-  U = "unequal",
-  R = "diagonal and equal",
-  Q = "equalvarcov"
-)
-fit5 <- MARSS(sub_dat, model=mod.list5, control = list(maxit=1000))
+aic <- c(fit1$AICc, fit2$AICc, fit3$AICc, fit4$AICc, fit5$AICc )
+aic-min(aic) #delta AICc 
 ```
 
+Evaluating fit of states by looking at plots and residuals
+
 ```{r}
+fit5$states
+tsSmooth(fit5)
 autoplot(fit5, plot.type="fitted.ytT")
+autoplot(fit3, plot.type="residuals")
 ```
+
+Predict historical data for all regions and fit best models
+
+```{r}
+# use best model (5) to fit full dataset
+fit_full <- MARSS(dat, model=mod.list5, control = list(maxit=1000))
+
+#fit to full dataset
+autoplot(fit_full, plot.type = "fitted.ytT")
+```
+
+# Potential code for sub-groups
 
 Now I want try something different. I will treat the Methow-Okanogan as one state and the Entiat-Wenatchee as another. I'll let these be correlated together. Interesting, these two are estimated to be perfectly correlated.
 
@@ -288,13 +322,8 @@ mod.list3$Z <- factor(c("ew", "mo", "mo", "ew"))
 fit3 <- MARSS(dat, model = mod.list3)
 autoplot(fit3, plot.type="fitted.ytT")
 ```
-
+ 
 Finally, let's look at the AIC values. Fit1 was very flexible and can put a line through the data so I know I have at least one model in the set that can fit the data. Well, the most flexible model is the best. At this point, I'd like to look just at data after 1980 or so. I don't like the big dip that happened in the Wenatchee River. I'd want to talk to the biologists to find out what happened, especially because I know that there might be hatchery releases in this system.
-
-```{r}
-aic <- c(fit1$AICc, fit2$AICc, fit5$AICc )
-aic-min(aic)
-```
 
 ## Resources
 
