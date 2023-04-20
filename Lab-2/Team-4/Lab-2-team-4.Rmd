@@ -60,6 +60,37 @@ Address the following in your methods
 
 -   Do your estimates differ depending on the assumptions you make about the structure of the data, i.e. you assumptions about the x's, Q, and U.
 
+
+ Hypothesis X.1 = Diagonal and Equal 
+            X.2 = Diagonal and Unequal
+            X.3 = Equal variance and covariance 
+            X.4 = Unconstrained 
+            
+Hypothesis 1: All underlying states are the same and one underlying population (done!)
+
+Hypothesis 2: Four underlying states, each major group. 
+    2.1: Q matrix = unconstrained (done!)
+    2.2: Q matrix = equal variance covariance (done!)
+    2.3: Q matrix = diagonal and equal 
+    2.4: Q matrix = diagonal and unequal 
+    
+Hypothesis 3: East vs West underlying states. John Day and Cascades vs Walla Walla and Yakima (done!)
+    3.1: Q matrix = equal variance covariance (done!)
+    3.2: Q matrix = unconstrained (done!)
+    3.3: Q matrix = diagonal and equal  (done!)
+
+Hypothesis 4: Two underlying states. Yakama and the rest 
+    4.1: Q matrix = unconstrained  (done!)
+    4.2: Q matrix = equal variance covariance (done!)
+    4.3: Q matrix = diagonal and equal (done!)
+    4.4: Q matrix = diagonal and unequal (done!)
+
+Pick best hypothesis 
+
+compare AICs with Q matrix -- all 16 models should be comparable
+
+Hypothesis 5: Evidence of cycling 
+
 ### Tips
 
 **Simplify**
@@ -94,8 +125,30 @@ Estimate of the mean of the spawner counts based on your x model.
 
 # Results
 
+## Hypthesis 1 
+
+## Hypothesis 2 
+
+## Hypothesis 3 
+
+## Hypothesis 4 
+
+## AIC Results and Selected Model 
+
+## Cycling considerations for best model 
+
+ 
+
 # Discussion
 
 # Description of each team member's contributions
+
+Dylan: Rest of H2, H4 
+    model comparison methods 
+Madi: H3 and format the markdown document 
+    Look at cycling code 
+    
+
+
 
 Example: "All team members helped decide on the goal and ran the analyses for the individual regions. Team members 2 & 3 wrote most of the code for the analysis of the regions. Team member 4 researched approaches for measuring accuracy of forecasts in [Hyndman & Athanasopoulos[OTexts.com/fpp2] and team member 2 added code for that to the methods. Team member 4 also researched tests for stationarity and worked with team member 2 to code that up. Team member 1 worked on the plotting section of the report using and adapting code that team member 3 wrote. All team members helped edit the report and wrote the discussion together."
