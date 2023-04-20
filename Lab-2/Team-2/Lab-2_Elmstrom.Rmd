@@ -1,0 +1,122 @@
+---
+title: Lab 2 MARSS Models
+author: Liz Elmstrom (SAFS), Terrance Wang, Eric French
+date: April 20, 2023
+output: 
+  html_document:
+    code-folding: true
+    toc: true
+    toc_float: true
+---
+
+
+# Lab 2: MARSS models
+
+Lower Columbia River Steelhead: Eric French (Civil), Liz Elmstrom (SAFS), Terrance Wang (SAFS)
+
+# Data
+
+Describe what data set you will work with and any subsetting you decided on. For example, you may have decided to look only at a section of the ESU that your team was assigned.
+
+Load the data.
+```{r}
+library(tidyverse)
+load(here::here("Lab-2", "Data_Images", "columbia-river.rda"))
+
+#Evolutionary Significant Units
+esu <- unique(columbia.river$esu_dps)
+esu
+```
+```{r}
+
+df <- columbia.river %>% subset(esu_dps %in% "Steelhead (Lower Columbia River DPS)")
+
+cat("colnames: ", colnames(df), "\n")
+
+unique(df$esapopname)
+unique(df$commonpopname)
+
+df <- df %>%
+    mutate(commonpopname2 = str_remove_all(commonpopname, " Steelhead"))
+
+ggplot(df, aes(x=spawningyear, y=log(value), color=majorpopgroup)) + 
+  geom_point(size=2, na.rm = TRUE) + 
+  theme(strip.text.x = element_text(size = 3)) +
+  theme(axis.text.x = element_text(size = 5, angle = 90)) +
+  facet_wrap(~commonpopname2) +
+  ggtitle('Lower Columbia Steelhead Populations')+
+  theme(strip.text.x = element_text(size = 10))
+
+```
+
+Wrangle the data.
+
+**Add your wrangling code here**
+
+# General Questions
+
+Each group has the same general tasks, but you will adapt them as you work on the data.
+
+1. Create estimates of spawner abundance for all missing years and provide estimates of the decline from the historical abundance.
+
+2. Evaluate support for the major population groups. Are the populations in the groups more correlated than outside the groups?
+
+3. Evaluate the evidence of cycling in the data. *We will talk about how to do this on the Tuesday after lab.*
+
+
+# Methods
+
+Address the following in your methods
+
+* Describe your assumptions about the x and how the data time series are related to x.
+
+   - How are the x and y (data) related? 1 x for 1 y or will you assume 1 x for all y or 1 x for each major population group? How will you choose? 
+   - What will you assume about the U for the x's?
+   - What will you assume about the Q matrix?
+   
+* Write out your assumptions as different models **in matrix form**, fit each and then compare these with AIC or AICc.
+
+* Do your estimates differ depending on the assumptions you make about the structure of the data, i.e. you assumptions about the x's, Q, and U.
+
+### Tips
+
+**Simplify**
+
+If your ESU has many populations, start with a smaller set of 4-7 populations.
+
+**Assumptions**
+
+You can assume that `R="diagonal and equal"` and `A="scaling"`. Assume that "historical" means the earliest years available for your group.
+
+**States**
+
+Your abundance estimate is the "x" or "state" estimates. You can get this from
+```
+fit$states
+```
+or 
+```
+tsSmooth(fit)
+```
+where `fit` is from `fit <- MARSS()`
+
+**plotting**
+
+Estimate of the mean of the spawner counts based on your x model.
+```
+autoplot(fit, plot.type="fitted.ytT")
+```
+
+**diagnostics**
+```
+autoplot(fit, plot.type="residuals")
+```
+
+# Results
+
+# Discussion
+
+# Description of each team member's contributions
+
+Example: "All team members helped decide on the goal and ran the analyses for the individual regions. Team members 2 & 3 wrote most of the code for the analysis of the regions. Team member 4 researched approaches for measuring accuracy of forecasts in [Hyndman & Athanasopoulos[OTexts.com/fpp2] and team member 2 added code for that to the methods. Team member 4 also researched tests for stationarity and worked with team member 2 to code that up. Team member 1 worked on the plotting section of the report using and adapting code that team member 3 wrote. All team members helped edit the report and wrote the discussion together."
+
