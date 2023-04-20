@@ -63,7 +63,8 @@ ggplot(df, aes(x=spawningyear, y=log(value), color=run)) +
 
 #format data for MARSS
 #time needs to be column headers
-run.dat<-aggregate(log(value)~run + spawningyear, data=df, FUN=sum)
+run.dat<-aggregate(log(value)~run + spawningyear, data=df, FUN=sum) #na.rm = TRUE
+#replace the 0s with NAs
 colnames(run.dat)<-c('run', 'spawningyear', 'logvalue')
 #replace -inf with 0
 run.dat$logvalue[!is.finite(run.dat$logvalue)]<-0

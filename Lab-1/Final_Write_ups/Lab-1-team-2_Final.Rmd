@@ -1,3 +1,8 @@
+---
+output:
+  html_document: default
+  pdf_document: default
+---
 # Lab 1: ARIMA models
 
 Team member names: Eric French (Civil), Dylan Hubl (ESRM), Miranda Mudge (Molecular & Cell Bio)
