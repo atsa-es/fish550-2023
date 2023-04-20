@@ -60,6 +60,12 @@ Address the following in your methods
 
 -   Do your estimates differ depending on the assumptions you make about the structure of the data, i.e. you assumptions about the x's, Q, and U.
 
+
+ Hypothesis X.1 = Diagonal and Equal 
+            X.2 = Diagonal and Unequal
+            X.3 = Equal variance and covariance 
+            X.4 = Unconstrained 
+            
 Hypothesis 1: All underlying states are the same and one underlying population (done!)
 
 Hypothesis 2: Four underlying states, each major group. 
@@ -68,18 +74,20 @@ Hypothesis 2: Four underlying states, each major group.
     2.3: Q matrix = diagonal and equal 
     2.4: Q matrix = diagonal and unequal 
     
-Hypothesis 3: East vs West underlying states. John Day and Cascades vs Walla Walla and Yakima 
-    3.1: Q matrix = equal variance covariance 
-    3.2: Q matrix = unconstrained 
-    3.3: Q matrix = diagonal and equal  
+Hypothesis 3: East vs West underlying states. John Day and Cascades vs Walla Walla and Yakima (done!)
+    3.1: Q matrix = equal variance covariance (done!)
+    3.2: Q matrix = unconstrained (done!)
+    3.3: Q matrix = diagonal and equal  (done!)
 
 Hypothesis 4: Two underlying states. Yakama and the rest 
-    4.1: Q matrix = unconstrained  
-    4.2: Q matrix = equal variance covariance
-    4.3: Q matrix = diagonal and equal 
-    4.4: Q matrix = diagonal and unequal
+    4.1: Q matrix = unconstrained  (done!)
+    4.2: Q matrix = equal variance covariance (done!)
+    4.3: Q matrix = diagonal and equal (done!)
+    4.4: Q matrix = diagonal and unequal (done!)
 
-Pick best hypthesis 
+Pick best hypothesis 
+
+compare AICs with Q matrix -- all 16 models should be comparable
 
 Hypothesis 5: Evidence of cycling 
 
@@ -116,6 +124,20 @@ Estimate of the mean of the spawner counts based on your x model.
     autoplot(fit, plot.type="residuals")
 
 # Results
+
+## Hypthesis 1 
+
+## Hypothesis 2 
+
+## Hypothesis 3 
+
+## Hypothesis 4 
+
+## AIC Results and Selected Model 
+
+## Cycling considerations for best model 
+
+ 
 
 # Discussion
 
