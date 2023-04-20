@@ -315,18 +315,40 @@ ggplot(df, aes(x=type, y=estimate, col=lag)) +
   ggtitle("The cycle estimates with CIs")
 ```
 
-Let's compare to a model without the cycles. Note we cannot compare to `fit1` since that used different data back to 1962. Hmm model without cyles is much better (lower AICc). Even if we only have the 5 year cycles (`covariates[5:6,]`), the AICc is larger than for the model without cycles.
+Let's compare some other models.
 ```{r}
-fit1.87 <- MARSS(dat87, model=mod.list1, silent=TRUE)
-mod.list5 <- list(
+# No cycles
+mod.list <- list(
+  Q = "unconstrained",
+  U = "unequal",
+  R = "diagonal and equal"
+)
+fit1.87 <- MARSS(dat87, model=mod.list, silent=TRUE)
+# Only lag 5 cycles
+mod.list <- list(
   Q = "unconstrained",
   U = "unequal",
   R = "diagonal and equal",
   D = "unconstrained",
   d = covariates[5:6,]
 )
-fit5.87 <- MARSS(dat87, model=mod.list5, silent=TRUE)
-aic <- c(fit1.87$AICc, fit4.87$AICc, fit5.87$AICc)
+fit5.87 <- MARSS(dat87, model=mod.list, silent=TRUE)
+# Cycles in the process
+# which doesn't really make sense for salmon since the cycles are age-structure cycles 
+# which act like cycles in the observations
+mod.list <- list(
+  Q = "unconstrained",
+  U = "unequal",
+  R = "diagonal and equal",
+  C = "unconstrained",
+  c = covariates
+)
+fit6.87 <- MARSS(dat87, model=mod.list, silent=TRUE)
+```
+
+Hmm model without cyles is much better (lower AICc). Even if we only have the 5 year cycles (`covariates[5:6,]`), the AICc is larger than for the models with cycles.
+```{r}
+aic <- c(fit1.87$AICc, fit4.87$AICc, fit5.87$AICc, fit6.87$AICc)
 aic-min(aic)
 ```
 
