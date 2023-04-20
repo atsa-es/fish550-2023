@@ -45,6 +45,33 @@ all_dat <- lakeWAplanktonTrans
 ## add some code here
 ```
 
+## General Notes 
+
+labmate emails: 
+
+Madi Heller-Shipley --shipmadison@gmail.com
+Eric French -- ericvfrench@gmail.com 
+Maria Mariakuruvilla -- mariakur@uw.edu
+
+*Diatoms* dominated in early spring time (Phytoplankton)
+*Daphnia* eat diatoms --> bloom after diatoms (zooplankton)
+
+*bluegreen* (Cyano-bacteria) is toxic --> dominace correlated to TP (not as nitrogen limited)
+
+*Epischura* --> calanus copepod peaks after diatoms 
+
+*Neomysis* --> opossum shrimp (predator) Data limited 
+
+# First Steps 
+
+1) Plot all species all years and look for data-based relationships 
+  -connect what we see in the data to literature and the biology of Lake     Washington 
+
+2) Pick our species and connect them!!! 
+
+3) Connect species to avaialable environmental data 
+
+4) Play with models, move to general tasks 
 
 # General tasks
 
