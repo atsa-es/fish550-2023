@@ -74,15 +74,50 @@ autoplot(fit1)
 
 fit1$states
 
+fit1_smooth<-tsSmooth(fit1)
 
+#look at corrplot
+Q1 <- coef(fit1, type = "matrix")$Q
+corrmat1 <- diag(1/sqrt(diag(Q1))) %*% Q1 %*% diag(1/sqrt(diag(Q1)))
+corrplot(corrmat1)
 
 ##################################
+#Hypthesis 2
+#hypothesis that the four main groups form subpopulations. Random walk is allowed
+#to drift uniquely in each of the 4 hidden states based on U. The Q matrix for
+#variance of process errors have equal variance and covariance so they fluctuate
+#together
+
+#give U values names to make it easier to read results
+#this hypothesis has 4 hidden states based on major groups
+U_mat <- matrix(c("Cascades","JohnDay","Walla","Yakima"),4,1)
+#make Z matrix correspond to 4 hidden states
+Z_mat <- matrix(c(rep(c(1,0,0,0),3),
+                  rep(c(0,1,0,0),5),
+                  rep(c(0,0,1,0),3),
+                  rep(c(0,0,0,1),4)),15,4, byrow=TRUE)
+
+mod.list2 <- list(
+  U = U_mat,
+  R = "diagonal and equal",
+  Q = "equalvarcov",
+  Z = Z_mat
+)
+m2.1 <- MARSS(dat, model = mod.list1)
+autoplot(m1)
+
+#look at corrplot
+Q2.1 <- coef(m2.1, type = "matrix")$Q
+corrmat2.1 <- diag(1/sqrt(diag(Q2.1))) %*% Q2.1 %*% diag(1/sqrt(diag(Q2.1)))
+corrplot(corrmat2.1)
+#corrplot mirrors what we told MARSS to use as a Q matrix (equal variance and covariance)
+
 
 #Hypthesis 2.2
 
-U_mat2 <- matrix(c("Cascades","JohnDay","Walla","Yakima"),4,1)
+U_mat2.2 <- matrix(c("Cascades","JohnDay","Walla","Yakima"),4,1)
 #make Z matrix correspond to 4 hidden states
-Z_mat2 <- matrix(c(rep(c(1,0,0,0),3),
+Z_mat2.2 <- matrix(c(rep(c(1,0,0,0),3),
                   rep(c(0,1,0,0),5),
                   rep(c(0,0,1,0),3),
                   rep(c(0,0,0,1),4)),15,4, byrow=TRUE)
@@ -100,16 +135,59 @@ autoplot(m2.2)
 #Confindence Intervals are not emcompassing data, 
 #but from the description doesn't seem like an issue
 
+m2.2$states
 
+m2.2_smooth<-tsSmooth(fit)
 
 #look at corrplot
-Q2 <- coef(m2, type = "matrix")$Q
-corrmat2 <- diag(1/sqrt(diag(Q2))) %*% Q1 %*% diag(1/sqrt(diag(Q2)))
+Q2.2 <- coef(m2.2, type = "matrix")$Q
+corrmat2 <- diag(1/sqrt(diag(Q2.2))) %*% Q2.2 %*% diag(1/sqrt(diag(Q2.2)))
 corrplot(corrmat2)
 
+#######################################
+# Hypothesis 3 
+
+#East vs West underlying states. John Day and Cascades vs Walla Walla and Yakima 
+# 3.1: Q matrix = equal variance covariance 
+# 3.2: Q matrix = unconstrained 
+# 3.3: Q matrix = diagonal and equal 
 
 
+# 3.1: Q matrix = equal variance covariance 
+U_mat3 <- matrix(c("North","South"),2,1)
+#make Z matrix correspond to 2 hidden states
+Z_mat3 <- matrix(c(rep(c(0,1),8),
+                     rep(c(1,0),7)),15,2, byrow=TRUE)
+                     
 
+mod.list3.1 <- list(
+  U = U_mat3,
+  R = "diagonal and equal",
+  Q = "equalvarcov",
+  Z = Z_mat3
+)
+m3.1 <- MARSS(dat, model = mod.list3.1)
+autoplot(m3.1)
 
+# 3.2: Q matrix = unconstrained 
+
+mod.list3.2 <- list(
+  U = U_mat3,
+  R = "diagonal and equal",
+  Q = "unconstrained",
+  Z = Z_mat3
+)
+m3.2 <- MARSS(dat, model = mod.list3.2)
+autoplot(m3.2)
+
+# 3.3: Q matrix = diagonal and equal 
+mod.list3.3 <- list(
+  U = U_mat3,
+  R = "diagonal and equal",
+  Q = "diagonal and equal",
+  Z = Z_mat3
+)
+m3.3 <- MARSS(dat, model = mod.list3.3)
+autoplot(m3.3)
 
 #1. Create estimates of spawner abundance for all missing years and provide estimates of the decline from the historical abundance.
