@@ -102,3 +102,74 @@ rownames(chin_newdat) <- tmp
 #3) All one population
 #just one process error
 #each will allow for independent observation errors
+
+
+mod.list3 <- list(
+  U = "unequal",
+  R = "diagonal and equal",
+  Q = "equalvarcov"
+)
+fit3<-MARSS(chin_newdat, model=mod.list3, control = list(maxit = 2000))
+
+autoplot(fit3, plot.type="fitted.ytT")
+autoplot(fit3, plot.type = "residuals") #some of these residual plots don't look great
+
+aic <- c(fit1$AICc, fit2$AICc, fit3$AICc)
+#delta aic
+aic-min(aic) #model 1 has the best AICc of these
+
+
+#3 populations
+mod.list4<-mod.list1
+rownames(chin_newdat)
+mod.list4$Z<-factor(c(rep("fa", 5), rep("l_fa", 2), rep("Sp", 4)))
+mod.list4
+
+fit4<-MARSS(chin_newdat, model = mod.list4, method = "BFGS")
+autoplot(fit4, plot.type="fitted.ytT")
+autoplot(fit4, plot.type = "residuals") #some of these residual plots don't look great but most don't seem too bad?
+
+mod.list5<-mod.list4
+mod.list5$Q<-"diagonal and equal"
+fit5<-MARSS(chin_newdat, model = mod.list5, control = list(maxit = 2000))
+autoplot(fit5, plot.type="fitted.ytT")
+autoplot(fit5, plot.type = "residuals") #some of these residual plots don't look great but most don't seem too bad?
+
+
+mod.list6<-mod.list4
+mod.list6$Q<-"equalvarcov"
+fit6<-MARSS(chin_newdat, model = mod.list6, control = list(maxit = 2000))
+autoplot(fit6, plot.type="fitted.ytT")
+autoplot(fit6, plot.type = "residuals") #some of these residual plots don't look great but most don't seem too bad?
+
+aic <- c(fit1$AICc, fit2$AICc, fit3$AICc, fit4$AICc, fit5$AICc, fit6$AICc)
+mods<-seq(1,6)
+aic.names<-paste("Model", mods, sep = " ")
+names(aic)<-aic.names
+aic-min(aic) #model 1 has the best AICc of these
+a<-matrix(c(aic, aic-min(aic)), nrow = 6, byrow = F)
+rownames(a)<-aic.names
+a<-a[order(a[,2],decreasing=FALSE),]
+rownames(a)<-aic.names[order(a[,2],decreasing=FALSE),]
+knitr::kable(a, col.names = c("AICc", "Delta AIC"))
+
+fit1$states
+str(fit1$states)
+#%change from historical abundance 
+#using log scale-change in log abundance 
+hist.abund<-tibble(Pop = rownames(chin_newdat), 
+                   Year1 = fit1$states[,1],
+                   Year58 = fit1$states[,58])
+                   
+hist.abund<-hist.abund %>% mutate(PChange = ((Year58 - Year1)/abs(Year1)) * 100)
+
+ggplot(hist.abund) + geom_histogram(aes(x = Pop, y = PChange), stat = "identity")
+
+hist.abund %>% filter(Pop != "Upper Cowlitz River - fall") %>%
+  ggplot() + geom_histogram(aes(x = Pop, y = PChange, fill = factor(c(rep("fa", 5), rep("l_fa", 2), rep("Sp", 3)))), stat = "identity") + 
+  geom_hline(aes(yintercept = 0), color = "red") + 
+  scale_fill_discrete(labels = c("Fall", "Late Fall", "Spring"), name = "Run") + 
+  labs(x = "Population", y="% Change From Hist. Abund.") + theme_minimal() + 
+  theme(axis.text.x = element_text(angle = 270, hjust = -0.1))
+
+        
