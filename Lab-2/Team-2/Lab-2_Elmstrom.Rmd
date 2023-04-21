@@ -16,6 +16,11 @@ Lower Columbia River Steelhead: Eric French (Civil), Liz Elmstrom (SAFS), Terran
 
 # Data
 
+Step 1: Estimating data that doesn't exist-- Terrance
+Step 2A: Testing temporal Z matrices (different run times vs. one pop)-- Terrance
+Step 2B: Testing spatial Z matrices (different spatial groupings vs. one pop)-- Liz
+Step 3: Adding in seasonality as a covariate (C/c matrix) -- Eric
+
 Describe what data set you will work with and any subsetting you decided on. For example, you may have decided to look only at a section of the ESU that your team was assigned.
 
 Load the data.
