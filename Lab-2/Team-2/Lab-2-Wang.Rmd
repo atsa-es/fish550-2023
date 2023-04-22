@@ -130,6 +130,16 @@ We see that the simple model is not the best at fitting the population estimates
 
 Fitting the most flexible model to help determine spatial Z hypotheses: Individual populations with an unconstrained Q matrix and unequal U
 
+```{R}
+
+mod.list1 <- list(
+  U = "unequal",
+  R = "diagonal and equal",
+  Q = "unconstrained"
+)
+fit1 <- MARSS(dat, model=mod.list1, control=list(maxit=1000))
+```
+
 ```{r}
 autoplot(fit1, plot.type="fitted.ytT")
 
@@ -230,6 +240,7 @@ out.tab.1 <- cbind(out.tab.1, rel.like = exp(-1 * out.tab.1$delta.AICc/2))
 out.tab.1 <- cbind(out.tab.1, AIC.weight = out.tab.1$rel.like/sum(out.tab.1$rel.like))
 out.tab.1
 
+
 ```
 
 The best model (as supported by AICc) includes 9 states (individual populations) that share equal variance and covariance (Q) with the same drift term (U)
@@ -258,7 +269,7 @@ for (i in 1:9) {
     title(rownames(dat)[i])
 }
 ```
-The residuals of the best fitting model reveal some problems of our best fitting model. Many seem to be autocorrelated. For almost all the runs, there are periods of positive/negative residuals in a row. This suggests that perhaps runs abundances are affected by a cyclicing process. 
+The residuals of the best fitting model reveal some problems of our best fitting model. Many seem to be autocorrelated. For almost all the runs, there are periods of positive/negative residuals in a row. This suggests that perhaps runs abundances are affected by a cyclicing process.
 
 
 ## Comparing best model to the most flexible model 
