@@ -94,11 +94,11 @@ Address the following in your methods
 
     1.  All the esa populations are independent populations: this means that each data series (y) corresponds to an independent x series.
 
-    2.  There are 3 Cascade populations based on run timing, and the river surveys are all surveying these populations according to run time: this means that each data series (y) corresponds to the x series that relates to it's run timing (major population group).
+    2.  There are 3 Cascade populations based on run timing, and the river surveys are all surveying these populations according to run time: this means that each data series (y) corresponds to the x series that relates to its run timing (major population group).
 
         -   Within both of these, we tested independent process errors with different variances (Q is "diagonal and unequal"), as well as independent process errors with equal variances (Q is "diagonal and equal"), and equal variance covariance (Q is "equalvarcov").
 
-        -   We assumed that each population has it's own growth rate (U is unequal).
+        -   We assumed that each population has its own growth rate (U is unequal).
 
     *Write out assumptions in matrix form:*
 
@@ -178,49 +178,10 @@ $$
 
 and ***R*** is the same as above.
 
-### Tips
-
-**Simplify**
-
-If your ESU has many populations, start with a smaller set of 4-7 populations.
-
-**Assumptions**
-
-You can assume that `R="diagonal and equal"` and `A="scaling"`. Assume that "historical" means the earliest years available for your group.
-
-**States**
-
-Your abundance estimate is the "x" or "state" estimates. You can get this from
-
-```         
-fit$states
-```
-
-or
-
-```         
-tsSmooth(fit)
-```
-
-where `fit` is from `fit <- MARSS()`
-
-**plotting**
-
-Estimate of the mean of the spawner counts based on your x model.
-
-```         
-autoplot(fit, plot.type="fitted.ytT")
-```
-
-**diagnostics**
-
-```         
-autoplot(fit, plot.type="residuals")
-```
 
 ## Code for analysis:
 
-1.  11 independent populations
+1.  Hypothesis 1: 11 independent populations
 
 ```{r}
 mod.list1 <- list(
@@ -235,8 +196,26 @@ fit1<-MARSS(chin_newdat, model=mod.list1, method = "BFGS")
 ```{r}
 autoplot(fit1, plot.type="fitted.ytT")
 ```
+```{r, include=FALSE}
+options(knitr.duplicate.label = "allow")
+```
 
-NOTE: I think we should probably include a residual plot too but I can't figure out how to make them look nice.
+
+```{r, fig.keep="none"}
+resid1<-autoplot(fit1, plot.type="residuals")
+headings<-c('Model innovation', "Cholesky standardized model smoothation", "Cholesky standaradized state smoothation", "Residuals normality test", "Cholesky standaradized model innnovation residuals acf")
+```
+
+#### Heading  {.tabset}
+```{r, results='residuals model 1', echo=F}
+for(i in 1:length(resid1)) {
+  cat("#### ", headings[i], "\n")
+  print(resid1[[i]])
+  cat('\n\n')
+}
+
+```
+
 
 ```{r}
 mod.list2 <- list(
@@ -264,7 +243,7 @@ fit3<-MARSS(chin_newdat, model=mod.list3, control = list(maxit = 2000))
 ```{r}
 autoplot(fit3, plot.type="fitted.ytT")
 ```
-
+2. Hypothesis 2: 3 independent populations based on run timing
 ```{r}
 mod.list4<-mod.list1
 rownames(chin_newdat)
@@ -364,11 +343,80 @@ The form of the model does make a difference in the model outputs. For instance,
 
 2.  Evaluate support for the major population groups. Are the populations in the groups more correlated than outside the groups?
 
+Look at the correlation plots for the best models for each hypothesis: model 1 for hypothesis 1 and model 4 for hypothesis 2
+
+Population correlations for Model 1
+
+```{r}
+library(corrplot)
+#different variances and covariances in process error
+mod.list1.unconst <- list(
+  U = "unequal",
+  R = "diagonal and equal",
+  Q = "unconstrained"
+)
+fit1.unconst<-MARSS(chin_newdat, model=mod.list1.unconst, method = "BFGS")
+```
+```{r}
+Q1.unconst <- coef(fit1.unconst, type="matrix")$Q
+corrmat1.unconst <- diag(1/sqrt(diag(Q1.unconst))) %*% Q1.unconst %*% diag(1/sqrt(diag(Q1.unconst)))
+corrplot(corrmat1.unconst)
+```
+For model 1 (with Q changed to unconstrained so we can see a correlation matrix), abundances from the Clackamas fall (1) and Sandy River late fall (7) populations are highly positively correlated. These populations are very close geographically. In fact, populations 1-7 are all positively correlated; these are the fall run populations and may be influenced by the same environmental variables. Spring run populations demonstrate less association with each other and with the fall run fish. These results suggest that we could possibly group fall and late fall runs together, but there is little support for grouping the separate spring run populations.
+
+We can similarly look at an unconstrained Q if we group the populations:
+```{r}
+mod.list4.unconst <- list(
+  U = "unequal",
+  R = "diagonal and equal",
+  Q = "unconstrained",
+  Z=factor(c(rep("fa", 5), rep("l_fa", 2), rep("Sp", 4)))
+)
+fit4.unconst<-MARSS(chin_newdat, model=mod.list4.unconst, method = "BFGS")
+
+Q4.unconst <- coef(fit4.unconst, type="matrix")$Q
+corrmat4.unconst <- diag(1/sqrt(diag(Q4.unconst))) %*% Q4.unconst %*% diag(1/sqrt(diag(Q4.unconst)))
+corrplot(corrmat4.unconst)
+```
+When the data are all collapsed by run timing, all runs show high positive correlation with each other. We know this is a false way to group the data, but we can try to fit a model with grouped fall & late fall runs and separate spring run populations.
+
+```{r}
+mod.list7 <- list(
+  U = "unequal",
+  R = "diagonal and equal",
+  Q = "unconstrained",
+  Z=factor(c(rep("fa", 7), 'Sp1', 'Sp2', 'Sp3', 'Sp4'))
+)
+fit7<-MARSS(chin_newdat, model=mod.list7, method = "BFGS")
+
+Q7 <- coef(fit7, type="matrix")$Q
+corrmat7 <- diag(1/sqrt(diag(Q7))) %*% Q7 %*% diag(1/sqrt(diag(Q7)))
+corrplot(corrmat7)
+```
+Check the fit of this model if Q is set to diagonal and unequal, which yields a lower AICc than the unconstrained Q for previous examples.
+
+```{r}
+mod.list8 <- list(
+  U = "unequal",
+  R = "diagonal and equal",
+  Q = "diagonal and unequal",
+  Z=factor(c(rep("fa", 7), 'Sp1', 'Sp2', 'Sp3', 'Sp4'))
+)
+fit8<-MARSS(chin_newdat, model=mod.list8, method = "BFGS")
+
+autoplot(fit8, plot.type="fitted.ytT")
+```
+The AICc is quite a bit higher than it was for our preferred models. We can also see that some of the fall populations (e.g. Upper Cowlitz) are not well represented with this model. 
+
 3.  Evaluate the evidence of cycling in the data. 
 
 # Discussion
 
-We esimated that 6 of the 11 populations showed a decline from historical abundance, with two populations demonstrating a \>25% decline in log-abundance. However, other populations were estiamted to be increasing, with the populations in the Upper Cowlitz river (both spring and fall) showing very large increases in abundance. However, we're not sure all of these results are reasonable, specially these levels of increase in the Upper Cowlitz river, and these results change with the different model formulations we tested. Though our best model had the highest AICc, perhaps more models should be tested to confirm these results.
+We esimated that 6 of the 11 populations showed a decline from historical abundance, with two populations demonstrating a \>25% decline in log-abundance. However, other populations were estimated to be increasing, with the populations in the Upper Cowlitz river (both spring and fall) showing very large increases in abundance. However, we're not sure all of these results are reasonable, specially these levels of increase in the Upper Cowlitz river, and these results change with the different model formulations we tested. Though our best model had the lowest AICc, perhaps more models should be tested to confirm these results.
+
+Residuals for model 1 (hyp. 1) did not show an association with time; however, in the residuals for model 4 (best hyp. 2 model) some of the populations did still show an association with time. This further supports our selection of model 1 as our best model.
+
+We found that the population abundances of fall and late fall Chinook were positively correlated, with additional structure according to geographic proximity. Spring run populations showed higher differentiation from each other. However, when fall populations were grouped the model AICc was not improved. There is likely environmental and/or biological association among the fall and late fall run populations but they should be considered separate populations in our models.
 
 # Description of each team member's contributions
 
