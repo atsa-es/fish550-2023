@@ -114,7 +114,7 @@ dat <- dat[ order(row.names(dat)), ]## sort
 
 ## The most flexible model 
 
-Fitting the most flexible model: Individual populations with an unconstrained Q matrix and unequal U
+Fitting the most flexible model to help determine spatial Z hypotheses: Individual populations with an unconstrained Q matrix and unequal U
 ```{R}
 
 mod.list1 <- list(
@@ -148,14 +148,14 @@ Below we setting up population grouping hypotheses (Z matrices), correlation str
 # Here we evaluated the data support for the following hypotheses about Lower Columbia salmon river trends
 # Each Z model is a hypothesis
 
-## Spatial groupings
+## Simple spatial groupings
 # coweeman = coweeman and sf toutle
 # ef_lewis = east fork lewis
 # kalama = kalama summer and winter
 # cowlitz = lower cowlitz, tilton, and upper cowlitz
 # washougal = washougal
 
-## Correlation groupings
+## Correlation spatial groupings
 # coweeman = coweema, ef_lewis, sf toutle, washougal
 # kalama = kalama summer and winter
 # cowlitz = lower cowlitz, tilton, and upper cowlitz
