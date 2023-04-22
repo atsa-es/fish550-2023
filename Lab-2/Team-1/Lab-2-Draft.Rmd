@@ -1,0 +1,375 @@
+# Lab 2: MARSS models
+
+Team member names: Emma Timmins-Schiffman, Maria Kuruvilla, Zoe Rand
+
+```{r}
+library(tidyverse)
+library(MARSS)
+```
+
+# Data
+
+Describe what data set you will work with and any subsetting you decided on. For example, you may have decided to look only at a section of the ESU that your team was assigned.
+
+Load the data.
+
+```{r}
+load(here::here("Lab-2", "Data_Images", "columbia-river.rda"))
+```
+
+Look at the data.
+
+```{r}
+esu <- unique(columbia.river$esu_dps)
+esu
+plotesu <- function(esuname){
+  df <- columbia.river %>% subset(esu_dps %in% esuname)
+  ggplot(df, aes(x=spawningyear, y=log(value), color=majorpopgroup)) + 
+    geom_point(size=0.2, na.rm = TRUE) + 
+    theme(strip.text.x = element_text(size = 3)) +
+    theme(axis.text.x = element_text(size = 5, angle = 90)) +
+    facet_wrap(~esapopname) +
+    ggtitle(paste0(esuname, collapse="\n"))
+}
+#Chinook
+plotesu(esu[5])
+```
+
+Wrangle the data.
+
+We had some issues with one of the populations having duplicated entries, with some being NA and some having values, (Lower Gorge Tributaries - fall) and we also had a lot of ESA populations, so we decided to focus only on the Cascade populations.
+
+```{r}
+chin_c_r<-columbia.river %>% subset(esu_dps == esu[5])
+chin_c_r %>% 
+  filter(majorpopgroup %in% c("Cascade fall", "Cascade late fall", "Cascade spring")) %>% ggplot(aes(x=spawningyear, y=log(value), color=majorpopgroup)) + 
+    geom_point(size=0.2, na.rm = TRUE) + 
+    theme(strip.text.x = element_text(size = 3)) +
+    theme(axis.text.x = element_text(size = 5, angle = 90)) +
+    facet_wrap(~esapopname) +
+    ggtitle(paste0(esu[5], collapse="\n"))
+```
+
+Formatting data for MARSS:
+
+```{r}
+chin_newdat <- chin_c_r %>% 
+  filter(majorpopgroup %in% c("Cascade fall", "Cascade late fall", "Cascade spring")) %>% #just looking at cascade populations
+  mutate(log.spawner = log(value)) %>% # create a column called log.spawner
+  select(esapopname, spawningyear, log.spawner) %>% # get just the columns that I need
+  pivot_wider(names_from = esapopname, values_from = log.spawner) %>% 
+  column_to_rownames(var = "spawningyear") %>% # make the years rownames
+  as.matrix() %>% # turn into a matrix with year down the rows
+  t() # make time across the columns
+# MARSS complains if I don't do this
+chin_newdat[is.na(chin_newdat)] <- NA
+
+#clean up row names
+tmp <- rownames(chin_newdat)
+tmp <- stringr::str_replace(tmp, "Salmon, Chinook [(]Lower Columbia River ESU[)]", "")
+tmp <- stringr::str_trim(tmp)
+rownames(chin_newdat) <- tmp
+
+#look at data
+print(chin_newdat[,1:5])
+```
+
+# General Questions
+
+Each group has the same general tasks, but you will adapt them as you work on the data.
+
+1.  Create estimates of spawner abundance for all missing years and provide estimates of the decline from the historical abundance.
+
+2.  Evaluate support for the major population groups. Are the populations in the groups more correlated than outside the groups?
+
+3.  Evaluate the evidence of cycling in the data. *We will talk about how to do this on the Tuesday after lab.*
+
+# Methods
+
+Address the following in your methods
+
+*Describe your assumptions about the x and how the data time series are related to x.*
+
+-   We tested 2 different assumptions about how the data time series are related to x.
+
+    1.  All the esa populations are independent populations: this means that each data series (y) corresponds to an independent x series.
+
+    2.  There are 3 Cascade populations based on run timing, and the river surveys are all surveying these populations according to run time: this means that each data series (y) corresponds to the x series that relates to it's run timing (major population group).
+
+        -   Within both of these, we tested independent process errors with different variances (Q is "diagonal and unequal"), as well as independent process errors with equal variances (Q is "diagonal and equal"), and equal variance covariance (Q is "equalvarcov").
+
+        -   We assumed that each population has it's own growth rate (U is unequal).
+
+    *Write out assumptions in matrix form:*
+
+    1.  11 independent populations
+
+        $$
+        \begin{bmatrix} x_{t,1} \\ x_{t,2}\\ ... \\x_{t,11} \end{bmatrix} = \begin{bmatrix} x_{t-1,1} \\ x_{t-1,2}\\ ... \\x_{t-1,11} \end{bmatrix} + \begin{bmatrix} u_1 \\ u_2\\ ... \\u_{11} \end{bmatrix} + w_t \text{  where } w_t \sim MVN(0, \mathbf{Q})
+        $$
+
+    where:
+
+    $$
+    \mathbf{Q} = 
+    \begin{bmatrix} q_1 & 0  & ...& 0\\
+    0 & q_2 &  ...& 0\\
+    \vdots & 0 & \ddots & \vdots\\
+    0 & 0 & 0  & q_{11} \end{bmatrix}
+    $$
+
+    or:
+
+    $$
+    \mathbf{Q} = 
+    \begin{bmatrix} q & 0  & ...& 0\\
+    0 & q &  ...& 0\\
+    \vdots & 0 & \ddots & \vdots\\
+    0 & 0 & 0  & q \end{bmatrix}
+    $$
+
+    or:
+
+$$
+\mathbf{Q} = 
+\begin{bmatrix} q & p  & ...& p\\
+p & q &  ...& p\\
+\vdots & p & \ddots & \vdots\\
+p & p & p  & q \end{bmatrix}
+$$
+
+$$
+\begin{bmatrix} y_{t,1} \\ y_{t, 2} \\ \vdots \\y_{t,11} \end{bmatrix} = 
+\begin{bmatrix}1 & 0  & ...& 0\\
+0 & 1 &  ...& 0\\
+\vdots & 0 & \ddots & \vdots\\
+0 & 0 & 0  & 1\end{bmatrix} 
+\begin{bmatrix} x_{t,1} \\ x_{t, 2} \\ \vdots \\x_{t,11} \end{bmatrix} + \mathbf{a} + \mathbf{v_t} \text{ where } \mathbf{v_t} \sim MVN(0, \mathbf{R})
+$$
+
+where:
+
+$$
+\mathbf{R} = 
+\begin{bmatrix} r & 0  & ...& 0\\
+0 & r &  ...& 0\\
+\vdots & 0 & \ddots & \vdots\\
+0 & 0 & 0  & r \end{bmatrix}
+$$
+
+2.  3 independent populations according to run time
+
+$$
+\begin{bmatrix} x_{t,1} \\ x_{t,2}\\ x_{t,3} \end{bmatrix} = \begin{bmatrix} x_{t-1,1} \\ x_{t-1,2}\\ x_{t-1,3} \end{bmatrix} + \begin{bmatrix} u_1 \\ u_2\\ u_3 \end{bmatrix} + w_t \text{  where } w_t \sim MVN(0, \mathbf{Q})$$
+
+where ***Q*** is as above but is 3x3 instead of 11x11.
+
+$$
+\begin{bmatrix} y_{t,1} \\ y_{t, 2} \\ \vdots \\y_{t,11} \end{bmatrix} = 
+\begin{bmatrix}1 & 0  &  0\\
+1 & 0 &  0\\
+\vdots & 1 & \vdots\\
+0 & 1 & 0 \\ 
+\vdots & \vdots & \vdots\\
+\vdots & 0 & 1 \\
+\vdots & \vdots & \vdots \end{bmatrix} 
+\begin{bmatrix} x_{t,1} \\ x_{t, 2} \\x_{t,3} \end{bmatrix} + \mathbf{a} + \mathbf{v_t} \text{ where } \mathbf{v_t} \sim MVN(0, \mathbf{R})
+$$
+
+and ***R*** is the same as above.
+
+### Tips
+
+**Simplify**
+
+If your ESU has many populations, start with a smaller set of 4-7 populations.
+
+**Assumptions**
+
+You can assume that `R="diagonal and equal"` and `A="scaling"`. Assume that "historical" means the earliest years available for your group.
+
+**States**
+
+Your abundance estimate is the "x" or "state" estimates. You can get this from
+
+```         
+fit$states
+```
+
+or
+
+```         
+tsSmooth(fit)
+```
+
+where `fit` is from `fit <- MARSS()`
+
+**plotting**
+
+Estimate of the mean of the spawner counts based on your x model.
+
+```         
+autoplot(fit, plot.type="fitted.ytT")
+```
+
+**diagnostics**
+
+```         
+autoplot(fit, plot.type="residuals")
+```
+
+## Code for analysis:
+
+1.  11 independent populations
+
+```{r}
+mod.list1 <- list(
+  U = "unequal",
+  R = "diagonal and equal",
+  Q = "diagonal and unequal"
+)
+fit1<-MARSS(chin_newdat, model=mod.list1, method = "BFGS")
+
+```
+
+```{r}
+autoplot(fit1, plot.type="fitted.ytT")
+```
+
+NOTE: I think we should probably include a residual plot too but I can't figure out how to make them look nice.
+
+```{r}
+mod.list2 <- list(
+  U = "unequal",
+  R = "diagonal and equal",
+  Q = "diagonal and equal"
+)
+fit2<-MARSS(chin_newdat, model=mod.list2, control = list(maxit = 2000))
+```
+
+```{r}
+autoplot(fit2, plot.type="fitted.ytT")
+```
+
+```{r}
+mod.list3 <- list(
+  U = "unequal",
+  R = "diagonal and equal",
+  Q = "equalvarcov"
+)
+fit3<-MARSS(chin_newdat, model=mod.list3, control = list(maxit = 2000))
+
+```
+
+```{r}
+autoplot(fit3, plot.type="fitted.ytT")
+```
+
+```{r}
+mod.list4<-mod.list1
+rownames(chin_newdat)
+mod.list4$Z<-factor(c(rep("fa", 5), rep("l_fa", 2), rep("Sp", 4))) #creating factor based on run times
+#mod.list4
+fit4<-MARSS(chin_newdat, model = mod.list4, method = "BFGS")
+```
+
+```{r}
+autoplot(fit4, plot.type="fitted.ytT")
+
+```
+
+```{r}
+mod.list5<-mod.list4
+mod.list5$Q<-"diagonal and equal"
+fit5<-MARSS(chin_newdat, model = mod.list5, control = list(maxit = 2000))
+```
+
+```{r}
+autoplot(fit5, plot.type="fitted.ytT")
+```
+
+```{r}
+mod.list6<-mod.list4
+mod.list6$Q<-"equalvarcov"
+fit6<-MARSS(chin_newdat, model = mod.list6, control = list(maxit = 2000))
+```
+
+```{r}
+autoplot(fit6, plot.type="fitted.ytT")
+```
+
+# Results
+
+```{r}
+aic <- c(fit1$AICc, fit2$AICc, fit3$AICc, fit4$AICc, fit5$AICc, fit6$AICc)
+mods<-seq(1,6)
+aic.names<-paste("Model", mods, sep = " ")
+a<-matrix(c(aic, aic-min(aic)), nrow = 6, byrow = F)
+rownames(a)<-aic.names
+a<-a[order(a[,2],decreasing=FALSE),] #order by lowest AICc
+knitr::kable(a, col.names = c("AICc", "Delta AIC")) #make a pretty table
+```
+
+The first model we tested, where we had each population with its own x value and Q was diagonal and unequal, had the lowest AICc. Therefore, we used this model to look at historical abundance.
+
+1.  *Create estimates of spawner abundance for all missing years and provide estimates of the decline from the historical abundance.*
+
+Estimates of log abundance for each population:
+
+```{r}
+tibble("Pop" = rownames(chin_newdat),"Dat" = chin_newdat[,1], "Est" = fit1$states[,1])
+```
+
+Estimated percent change from historical abundance for each population
+
+```{r, warning = FALSE}
+#percent change in log abundance 
+hist.abund<-tibble(Pop = rownames(chin_newdat), 
+                   Year1 = fit1$states[,1],
+                   Year58 = fit1$states[,58])
+                   
+hist.abund<-hist.abund %>% mutate(PChange = ((Year58 - Year1)/abs(Year1)) * 100)
+
+#the estimate for "Upper Cowlitz River - fall" initial population is super low (<1 in real scale), and so the percent change blows up (it's like 1000), so I took this out to make the plot easier to read. Also I think this is probably unrealistic. 
+hist.abund %>% filter(Pop != "Upper Cowlitz River - fall") %>%
+  ggplot() + geom_histogram(aes(x = Pop, y = PChange, fill = factor(c(rep("fa", 5), rep("l_fa", 2), rep("Sp", 3)))), stat = "identity") + 
+  geom_hline(aes(yintercept = 0), color = "red") + 
+  scale_fill_discrete(labels = c("Fall", "Late Fall", "Spring"), name = "Run") + 
+  labs(x = "Population", y="% Change From Hist. Abund.") + theme_minimal() + 
+  theme(axis.text.x = element_text(angle = 270, hjust = -0.1))
+```
+
+*Do your estimates differ depending on the assumptions you make about the structure of the data, i.e. you assumptions about the x's, Q, and U?*
+
+Using our second best model:
+
+```{r, warning = FALSE}
+hist.abund<-tibble(Pop = rownames(chin_newdat), 
+                   Year1 = fit3$states[,1],
+                   Year58 = fit3$states[,58])
+                   
+hist.abund<-hist.abund %>% mutate(PChange = ((Year58 - Year1)/abs(Year1)) * 100)
+
+#the estimate for "Upper Cowlitz River - fall" is still not great, so I took this out for this plot as well
+hist.abund %>% filter(Pop != "Upper Cowlitz River - fall") %>% 
+  ggplot() + geom_histogram(aes(x = Pop, y = PChange, fill = factor(c(rep("fa", 5), rep("l_fa", 2), rep("Sp", 3)))), stat = "identity") + 
+  geom_hline(aes(yintercept = 0), color = "red") + 
+  scale_fill_discrete(labels = c("Fall", "Late Fall", "Spring"), name = "Run") + 
+  labs(x = "Population", y="% Change From Hist. Abund.") + theme_minimal() + 
+  theme(axis.text.x = element_text(angle = 270, hjust = -0.1))
+
+```
+
+The form of the model does make a difference in the model outputs. For instance, in the first model, the populations of Sandy River spring and late fall are estimated to show an increase, while in the second model, it's estimated to decrease. Lewis River fall and Lower Cowlitz river fall and Toutle River fall, all show opposite trends in these two models as well.
+
+2.  Evaluate support for the major population groups. Are the populations in the groups more correlated than outside the groups?
+
+3.  Evaluate the evidence of cycling in the data. 
+
+# Discussion
+
+We esimated that 6 of the 11 populations showed a decline from historical abundance, with two populations demonstrating a \>25% decline in log-abundance. However, other populations were estiamted to be increasing, with the populations in the Upper Cowlitz river (both spring and fall) showing very large increases in abundance. However, we're not sure all of these results are reasonable, specially these levels of increase in the Upper Cowlitz river, and these results change with the different model formulations we tested. Though our best model had the highest AICc, perhaps more models should be tested to confirm these results.
+
+# Description of each team member's contributions
+
+All members contributed to developing the plan and methods for the analysis. ETS and ZR worked on the code for subsetting the data and fitting the models. ZR wrote the equations for the methods and worked on the results for the first question on historical abundance. ETS analyzed the results in terms of evidence for multiple populations. MK analyzed the evidence of cycling in the data. All team members contributed to the discussion and worked on the report together.

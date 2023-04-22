@@ -24,9 +24,14 @@ n <- nrow(dat) - 1
 # https://atsa-es.github.io/atsa-labs/sec-mss-a-single-well-mixed-population.html
 # Fit a model with one underlying state (population process)
 # All sites having different observation variance
-mod.list.0 <- list(B = matrix(1), U = matrix("u"), Q = matrix("q"), 
-                   Z = matrix(1, 4, 1), A = "scaling", R = "diagonal and unequal", 
-                   x0 = matrix("mu"), tinitx = 0)
+mod.list.0 <- list(
+  B = matrix(1), 
+  U = matrix("u"), 
+  Q = matrix("q"), 
+  Z = matrix(1, 4, 1), 
+  A = "scaling", 
+  R = "diagonal and unequal", 
+  x0 = matrix("mu"), tinitx = 0)
 fit.0 <- MARSS(dat, model = mod.list.0)
 #there is one u and q because just 1 x
 # Look at the plots
