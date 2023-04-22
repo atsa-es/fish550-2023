@@ -33,11 +33,22 @@ mod.list.0 <- list(
   R = "diagonal and unequal", 
   x0 = matrix("mu"), tinitx = 0)
 fit.0 <- MARSS(dat, model = mod.list.0)
+#there is one u and q because just 1 x
 # Look at the plots
 # Plot 1. Model fitted Y + CI
 # Plot 2. States - That's the population estimate
 # Last plot. Model innovations residuals ACF
 autoplot(fit.0)
+#xtT is x at time t conditioned on data from 1 to T (all the data)
+#fitted is model prediction of the data
+
+#get coefficient: Q matrix
+coef(fit.0, type='matrix')$Q
+
+#use newton method to speed things up if problems with convergence
+fit.0 <- MARSS(dat, model = mod.list.0, method='BFGS')
+#to fix convergence problems also try
+fit.0 <- MARSS(dat, model = mod.list.0, control=list(maxit=1000))
 
 # Q1. Change the observation model to all sites
 # having the same observation error variance

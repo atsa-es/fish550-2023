@@ -1,6 +1,6 @@
 #Working doc for Emma Lab 2
 #Lower Columbia River Chinook
-
+#I am in charge of question 2 and finalizing the lab report
 library(tidyverse)
 library(MARSS)
 library(reshape)
@@ -46,6 +46,8 @@ na_counts<-aggregate(value~esapopname, data=df, FUN=function(x) sum(is.na(x)))
 #Create estimates of spawner abundance for all missing years and provide estimates of the decline from the historical abundance.
 #From the user manual: Section 3.4.7, discusses at length that the standard missing values correction leads to an inexact likelihood when there are missing values.
 #see page 21: The {MARSS} package uses instead the exact likelihood correction for missing values
+
+#SEE CHAPTER 11 IN ATSA FOR PREDICTING MISSING VALUES
 
 #variables: major pop group; esa pop name; common pop name; run
 #we could assume correlation at any of these levels
@@ -103,5 +105,6 @@ Z.model
 #Evaluate support for the major population groups. Are the populations in the groups more correlated than outside the groups?
 
 #Evaluate the evidence of cycling in the data. We will talk about how to do this on the Tuesday after lab.
+#in lab, include covariate of seasonality/cycling - looking for evidence that there is some kind of cycling (for Chinook should be ~ 5 year cycle based on generation time); ACF on raw data will pick up natural cycle to be included as covariate
 
 #You can assume that R="diagonal and equal" and A="scaling". Assume that “historical” means the earliest years available for your group.
