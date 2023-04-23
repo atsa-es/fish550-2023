@@ -57,6 +57,7 @@ Load the data.
 library(tidyverse)
 library(dplyr)
 library(janitor)
+library(MARSS)
 load(here::here("Lab-2", "Data_Images", "columbia-river.rda"))
 
 #Evolutionary Significant Units
@@ -112,9 +113,23 @@ dat <- dat[ order(row.names(dat)), ]## sort
 
 # Results
 
+## The simplest model 
+
+Fitting the most simple model to help determine need to group populations: One big population with different observations (populations). Id
+
+```{R}
+mod.list.0 <- list(B = matrix(1), U = matrix("u"), Q = matrix("q"), 
+    Z = matrix(1, 9, 1), A = "scaling", R = "diagonal and unequal", 
+    x0 = matrix("mu"), tinitx = 0)
+fit_simple <- MARSS(dat, model=mod.list.0, control=list(maxit=1000))
+autoplot(fit_simple, plot.type="fitted.ytT")
+```
+We see that the simple model is not the best at fitting the population estimates for many of the populations (e.g., Upper Cowlitz winter, East Fork Lewis winter). Many of the residuals do not appear to be stationary. 
+
 ## The most flexible model 
 
 Fitting the most flexible model to help determine spatial Z hypotheses: Individual populations with an unconstrained Q matrix and unequal U
+
 ```{R}
 
 mod.list1 <- list(
@@ -124,7 +139,6 @@ mod.list1 <- list(
 )
 fit1 <- MARSS(dat, model=mod.list1, control=list(maxit=1000))
 ```
-
 
 ```{r}
 autoplot(fit1, plot.type="fitted.ytT")
@@ -148,6 +162,10 @@ Below we setting up population grouping hypotheses (Z matrices), correlation str
 # Here we evaluated the data support for the following hypotheses about Lower Columbia salmon river trends
 # Each Z model is a hypothesis
 
+## Simple run timing groupings
+# summer = kalama_river_summer
+# winter = remaining population
+
 ## Simple spatial groupings
 # coweeman = coweeman and sf toutle
 # ef_lewis = east fork lewis
@@ -165,15 +183,18 @@ Z.models <- list(
   H2 = factor(c("coweeman","ef_lewis", "kalama_sum",
                 'kalama_win', "low_cowlitz", "sf_toutle",
                 "tilton", "up_cowlitz", "washougal")), #states are defined by individual population
-  H3 = factor(c("coweeman","ef_lewis", "kalama",
+  H3 = factor(c("winter","winter", "summer",
+                'winter', "winter", "winter",
+                "winter", "winter", "winter")),# states defined by running timing grouping (n = 2)
+  H4 = factor(c("coweeman","ef_lewis", "kalama",
                 'kalama', "cowlitz", "coweeman",
                 "cowlitz", "cowlitz", "washougal")),# states defined by spatial grouping (n = 5)
-  H4 = factor(c("coweeman","coweeman", "kalama",
+  H5 = factor(c("coweeman","coweeman", "kalama",
                 'kalama', "cowlitz", "coweeman",
                 "cowlitz", "cowlitz", "coweeman"))# states defined by correlation (n = 3)
 )
 
-names(Z.models) <- c("one_population","indiv_population",'spatial_groups',"corr_groups")
+names(Z.models) <- c("one_population","indiv_population","run_timing_groups",'spatial_groups',"corr_groups")
 
 # Also testing different process error varcovar matrices
 Q.models2 <- c("equalvarcov","unconstrained")
@@ -192,8 +213,6 @@ mod.list = list(
 
 Run MARSS models
 ```{r}
-
-
 out.tab <- NULL
 fits <- list()
 for(i in 1:length(Z.models)){
@@ -230,19 +249,28 @@ The best model (as supported by AICc) includes 9 states (individual populations)
 
 ```{r}
 
-best_mod <- fits[[6]]
+best_mod <- fits[[16]]
 best_mod
 
 autoplot(best_mod, plot.type="fitted.ytT")
-
-
 ```
 
 Inspecting model residuals
 ```{r}
 
-autoplot(best_mod, plot.type="residuals")
+# autoplot(best_mod, plot.type="residuals")
+
+par(mfrow = c(3, 3))
+resids <- MARSSresiduals(best_mod, type = "tt1")
+for (i in 1:9) {
+    plot(resids$model.residuals[i, ], ylab = "model residuals", 
+        xlab = "")
+    abline(h = 0)
+    title(rownames(dat)[i])
+}
 ```
+The residuals of the best fitting model reveal some problems of our best fitting model. Many seem to be autocorrelated. For almost all the runs, there are periods of positive/negative residuals in a row. This suggests that perhaps runs abundances are affected by a cyclicing process.
+
 
 ## Comparing best model to the most flexible model 
 
