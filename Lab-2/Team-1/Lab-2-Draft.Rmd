@@ -201,9 +201,15 @@ options(knitr.duplicate.label = "allow")
 ```
 
 
-```{r, fig.keep="none"}
-resid1<-autoplot(fit1, plot.type="residuals")
-headings<-c('Model innovation', "Cholesky standardized model smoothation", "Cholesky standaradized state smoothation", "Residuals normality test", "Cholesky standaradized model innnovation residuals acf")
+```{r fig.keep="none"}
+# resid1<-autoplot(fit1, plot.type="residuals")
+# headings<-c('Model innovation', "Cholesky standardized model smoothation", "Cholesky standaradized state smoothation", "Residuals normality test", "Cholesky standaradized model innnovation residuals acf")
+
+plot(fit1, plot.type = "model.resids.ytt1")
+plot(fit1, plot.type = "qqplot.std.model.resids.ytt1")
+plot(fit1, plot.type = "acf.std.model.resids.ytt1")
+
+
 ```
 
 #### Heading  {.tabset}
@@ -301,7 +307,7 @@ tibble("Pop" = rownames(chin_newdat),"Dat" = chin_newdat[,1], "Est" = fit1$state
 
 Estimated percent change from historical abundance for each population
 
-```{r, warning = FALSE}
+```{r warning=FALSE}
 #percent change in log abundance 
 hist.abund<-tibble(Pop = rownames(chin_newdat), 
                    Year1 = fit1$states[,1],
@@ -347,7 +353,7 @@ Look at the correlation plots for the best models for each hypothesis: model 1 f
 
 Population correlations for Model 1
 
-```{r}
+```{r eval=FALSE, include=FALSE}
 library(corrplot)
 #different variances and covariances in process error
 mod.list1.unconst <- list(
@@ -357,7 +363,7 @@ mod.list1.unconst <- list(
 )
 fit1.unconst<-MARSS(chin_newdat, model=mod.list1.unconst, method = "BFGS")
 ```
-```{r}
+```{r eval=FALSE, include=FALSE}
 Q1.unconst <- coef(fit1.unconst, type="matrix")$Q
 corrmat1.unconst <- diag(1/sqrt(diag(Q1.unconst))) %*% Q1.unconst %*% diag(1/sqrt(diag(Q1.unconst)))
 corrplot(corrmat1.unconst)
@@ -365,7 +371,7 @@ corrplot(corrmat1.unconst)
 For model 1 (with Q changed to unconstrained so we can see a correlation matrix), abundances from the Clackamas fall (1) and Sandy River late fall (7) populations are highly positively correlated. These populations are very close geographically. In fact, populations 1-7 are all positively correlated; these are the fall run populations and may be influenced by the same environmental variables. Spring run populations demonstrate less association with each other and with the fall run fish. These results suggest that we could possibly group fall and late fall runs together, but there is little support for grouping the separate spring run populations.
 
 We can similarly look at an unconstrained Q if we group the populations:
-```{r}
+```{r eval=FALSE, include=FALSE}
 mod.list4.unconst <- list(
   U = "unequal",
   R = "diagonal and equal",
@@ -380,7 +386,7 @@ corrplot(corrmat4.unconst)
 ```
 When the data are all collapsed by run timing, all runs show high positive correlation with each other. We know this is a false way to group the data, but we can try to fit a model with grouped fall & late fall runs and separate spring run populations.
 
-```{r}
+```{r eval=FALSE, include=FALSE}
 mod.list7 <- list(
   U = "unequal",
   R = "diagonal and equal",
@@ -409,6 +415,82 @@ autoplot(fit8, plot.type="fitted.ytT")
 The AICc is quite a bit higher than it was for our preferred models. We can also see that some of the fall populations (e.g. Upper Cowlitz) are not well represented with this model. 
 
 3.  Evaluate the evidence of cycling in the data. 
+
+First we want to look at the ACF for eaxh river to see potential cycles. 
+
+```{r}
+for(i in 1:length(chin_newdat[,1])){
+  ts <- ts(chin_newdat[i,], start = 1964, end = 2021)
+  acf(ts, na.action = na.pass)
+}
+
+
+```
+
+
+Looking for evidence for 5 year cycles using sines and cosines.
+
+$$
+\begin{bmatrix} x \\ \beta_1  \\ \beta_{2} \end{bmatrix}_t = 
+\begin{bmatrix} x \\ \beta_1  \\ \beta_{2} \end{bmatrix}_{t-1} +
+\begin{bmatrix} w_1 \\ w_2  \\ w_3 \end{bmatrix}_{t}
+
+$$
+
+
+$$
+\begin{bmatrix} y \end{bmatrix}_t = 
+\begin{bmatrix} 1 & sin(2\pi t/p) & cos(2\pi t/p) \end{bmatrix}
+\begin{bmatrix} x \\ \beta_1  \\ \beta_2 \end{bmatrix}_{t} + v_t
+
+$$
+
+
+```{r}
+fitriver <- function(i, p = 5) {
+  yt <- chin_newdat[i,]
+  TT <- length(yt)
+  Z <- array(1, dim = c(1, 3, TT))
+  Z[1, 2, ] <- sin(2 * pi * (1:TT)/p)
+  Z[1, 3, ] <- cos(2 * pi * (1:TT)/p)
+  mod.list <- list(U = "zero", Q = "diagonal and unequal", 
+                   Z = Z, A = "zero")
+  fit <- MARSS(yt, model = mod.list, inits = list(x0 = matrix(0, 
+                                                              3, 1)), silent = TRUE)
+  return(fit)
+  
+  fits <- list()
+for (i in 1:11){
+  fits[[i]] <- fitriver(i)
+}
+
+
+dfz <- data.frame()
+for (i in 1:11) {
+  fit <- fits[[i]]
+  tmp <- data.frame(amplitude = sqrt(fit$states[2, ]^2 + fit$states[3, 
+  ]^2), trend = fit$states[1, ], river = rownames(chin_newdat)[i], year = as.numeric(colnames(chin_newdat)))
+  dfz <- rbind(dfz, tmp)
+}
+
+}
+
+```
+
+
+```{r}
+ggplot(dfz, aes(x = year, y = amplitude)) + geom_line() + 
+  facet_wrap(~river, scales = "free_y") + ggtitle("Cycle Amplitude")
+
+```
+
+
+```{r}
+ggplot(dfz, aes(x = year, y = trend)) + 
+  geom_line() + facet_wrap(~river, scales = "free_y") + ggtitle("Stochastic Level")
+```
+
+
 
 # Discussion
 
