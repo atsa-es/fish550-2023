@@ -1,0 +1,382 @@
+---
+title: "test"
+author: "Dylan Hubl"
+date: "2023-04-23"
+output: html_document
+---
+$$
+\text{Hypothesis One}:
+\begin{bmatrix}
+y_1\\
+y_2\\
+y_3\\
+y_4\\
+y_5\\
+y_6\\
+y_7\\
+y_8\\
+y_9\\
+y_{10}\\
+y_{11}\\
+y_{12}\\
+y_{13}\\
+y_{14}\\
+y_{15}\\
+\end{bmatrix}_t=
+\begin{bmatrix}
+1 \\
+1 \\
+1 \\
+1 \\
+1 \\
+1 \\
+1 \\
+1 \\
+1 \\
+1 \\
+1 \\
+1 \\
+1 \\
+1 \\
+1 \\
+\end{bmatrix}*
+\begin{bmatrix}
+x_1\\
+\end{bmatrix}_t+
+\begin{bmatrix}
+a_1\\
+a_2\\
+a_3\\
+a_4\\
+a_5\\
+a_6\\
+a_7\\
+a_8\\
+a_9\\
+a_{10}\\
+a_{11}\\
+a_{12}\\
+a_{13}\\
+a_{14}\\
+a_{15}\\
+\end{bmatrix}+
+\begin{bmatrix}
+w_1\\
+w_2\\
+w_3\\
+w_4\\
+w_5\\
+w_6\\
+w_7\\
+w_8\\
+w_9\\
+w_{10}\\
+w_{11}\\
+w_{12}\\
+w_{13}\\
+w_{14}\\
+w_{15}\\
+\end{bmatrix}_t
+$$
+$$
+\text{Where }w \sim MVN
+\begin{pmatrix}
+\text{0,}\begin{bmatrix}
+R
+\end{bmatrix}
+\end{pmatrix}
+$$
+
+$$
+\text{Hypothesis Two}:
+\begin{bmatrix}
+y_1\\
+y_2\\
+y_3\\
+y_4\\
+y_5\\
+y_6\\
+y_7\\
+y_8\\
+y_9\\
+y_{10}\\
+y_{11}\\
+y_{12}\\
+y_{13}\\
+y_{14}\\
+y_{15}\\
+\end{bmatrix}_t=
+\begin{bmatrix}
+1 & 0 & 0 & 0\\
+1 & 0 & 0 & 0\\
+1 & 0 & 0 & 0\\
+0 & 1 & 0 & 0\\
+0 & 1 & 0 & 0\\
+0 & 1 & 0 & 0\\
+0 & 1 & 0 & 0\\
+0 & 1 & 0 & 0\\
+0 & 0 & 1 & 0\\
+0 & 0 & 1 & 0\\
+0 & 0 & 1 & 0\\
+0 & 0 & 0 & 1\\
+0 & 0 & 0 & 1\\
+0 & 0 & 0 & 1\\
+0 & 0 & 0 & 1\\
+\end{bmatrix}*
+\begin{bmatrix}
+x_1\\
+x_2\\
+x_3\\
+x_4\\
+\end{bmatrix}_t+
+\begin{bmatrix}
+a_1\\
+a_2\\
+a_3\\
+a_4\\
+a_5\\
+a_6\\
+a_7\\
+a_8\\
+a_9\\
+a_{10}\\
+a_{11}\\
+a_{12}\\
+a_{13}\\
+a_{14}\\
+a_{15}\\
+\end{bmatrix}+
+\begin{bmatrix}
+w_1\\
+w_2\\
+w_3\\
+w_4\\
+w_5\\
+w_6\\
+w_7\\
+w_8\\
+w_9\\
+w_{10}\\
+w_{11}\\
+w_{12}\\
+w_{13}\\
+w_{14}\\
+w_{15}\\
+\end{bmatrix}_t
+$$
+
+
+
+
+$$
+\text{Where }w \sim MVN
+\begin{pmatrix}
+\text{0,}\begin{bmatrix}
+R
+\end{bmatrix}
+\end{pmatrix}
+$$
+$$
+\text{Hypothesis Three}:
+\begin{bmatrix}
+y_1\\
+y_2\\
+y_3\\
+y_4\\
+y_5\\
+y_6\\
+y_7\\
+y_8\\
+y_9\\
+y_{10}\\
+y_{11}\\
+y_{12}\\
+y_{13}\\
+y_{14}\\
+y_{15}\\
+\end{bmatrix}_t=
+\begin{bmatrix}
+1 & 0 \\
+1 & 0 \\
+1 & 0 \\
+1 & 0 \\
+1 & 0 \\
+1 & 0 \\
+1 & 0 \\
+1 & 0 \\
+0 & 1 \\
+0 & 1 \\
+0 & 1 \\
+0 & 1 \\
+0 & 1 \\
+0 & 1 \\
+0 & 1 \\
+\end{bmatrix}*
+\begin{bmatrix}
+x_1\\
+x_2\\
+\end{bmatrix}_t+
+\begin{bmatrix}
+a_1\\
+a_2\\
+a_3\\
+a_4\\
+a_5\\
+a_6\\
+a_7\\
+a_8\\
+a_9\\
+a_{10}\\
+a_{11}\\
+a_{12}\\
+a_{13}\\
+a_{14}\\
+a_{15}\\
+\end{bmatrix}+
+\begin{bmatrix}
+w_1\\
+w_2\\
+w_3\\
+w_4\\
+w_5\\
+w_6\\
+w_7\\
+w_8\\
+w_9\\
+w_{10}\\
+w_{11}\\
+w_{12}\\
+w_{13}\\
+w_{14}\\
+w_{15}\\
+\end{bmatrix}_t
+$$
+$$
+\text{Where }w \sim MVN
+\begin{pmatrix}
+\text{0,}\begin{bmatrix}
+R
+\end{bmatrix}
+\end{pmatrix}
+$$
+
+
+$$
+
+\text{Where }w \sim MVN
+\begin{pmatrix}
+\text{0,}\begin{bmatrix}
+R
+\end{bmatrix}
+\end{pmatrix}
+
+$$
+
+$$
+\text{Hypothesis Four}:
+\begin{bmatrix}
+y_1\\
+y_2\\
+y_3\\
+y_4\\
+y_5\\
+y_6\\
+y_7\\
+y_8\\
+y_9\\
+y_{10}\\
+y_{11}\\
+y_{12}\\
+y_{13}\\
+y_{14}\\
+y_{15}\\
+\end{bmatrix}_t=
+\begin{bmatrix}
+1 & 0 \\
+1 & 0 \\
+1 & 0 \\
+1 & 0 \\
+1 & 0 \\
+1 & 0 \\
+1 & 0 \\
+1 & 0 \\
+1 & 0 \\
+1 & 0 \\
+1 & 0 \\
+0 & 1 \\
+0 & 1 \\
+0 & 1 \\
+0 & 1 \\
+\end{bmatrix}*
+\begin{bmatrix}
+x_1\\
+x_2\\
+\end{bmatrix}_t+
+\begin{bmatrix}
+a_1\\
+a_2\\
+a_3\\
+a_4\\
+a_5\\
+a_6\\
+a_7\\
+a_8\\
+a_9\\
+a_{10}\\
+a_{11}\\
+a_{12}\\
+a_{13}\\
+a_{14}\\
+a_{15}\\
+\end{bmatrix}+
+\begin{bmatrix}
+w_1\\
+w_2\\
+w_3\\
+w_4\\
+w_5\\
+w_6\\
+w_7\\
+w_8\\
+w_9\\
+w_{10}\\
+w_{11}\\
+w_{12}\\
+w_{13}\\
+w_{14}\\
+w_{15}\\
+\end{bmatrix}_t
+$$
+$$
+\text{Where }w \sim MVN
+\begin{pmatrix}
+\text{0,}\begin{bmatrix}
+R
+\end{bmatrix}
+\end{pmatrix}
+$$
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
