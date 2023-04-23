@@ -4,9 +4,9 @@ Team member names: Dylan Hubl (Env & Forest Sci) and Madison Heller-Shipley (SAF
 
 # Data
 
-Describe what data set you will work with and any subsetting you decided on. For example, you may have decided to look only at a section of the ESU that your team was assigned.
+We are examining the sockeye population within the Middle Columbia River System. Within this system there are four major population groups. The Cascades, John Day, Walla Walla, and Yakima. The John Day group has the longest running dataset with records reaching back to 1959. The other major population groups generally start their datasets in the 1980's. A noteable exception is the Umatilla River within the Walla Walla group which also has data beginning in the 1960s. In general all of the salmon running times occur in the summer in the Middle Columbia River System.
 
-Load the data.
+
 
 ```{r}
 library(tidyr)
@@ -19,8 +19,8 @@ library(knitr)
 load(here::here("Lab-2", "Data_Images", "columbia-river.rda"))
 ```
 
-Wrangle the data.
-We are only interest in the rivers in the Middle Columbia River Unit
+
+We are only interested in the rivers in the Middle Columbia River Unit
 **Add your wrangling code here**
 ```{r}
 #we are only interested in the Middle Columbia
@@ -98,6 +98,8 @@ Address the following in your methods
 
 -   Do your estimates differ depending on the assumptions you make about the structure of the data, i.e. you assumptions about the x's, Q, and U.
 
+For simplicity's sake we allowed all of our hypotheses to have independent U values. This does not prevent the models from estimating equal drift parameters for each of the underlying states. With Four main hypotheses each having four sub-hypotheses based on the Q matrix we felt it was best to allow the models to freely estimate indpendent "U" values to prevent having too many models to discuss.Furthermore, we do not have a strong understanding of the systems or data to back up a reason to constrain these values.
+
 
  Hypothesis X.1 = Diagonal and Equal 
             X.2 = Diagonal and Unequal
@@ -170,7 +172,7 @@ Estimate of the mean of the spawner counts based on your x model.
 ```
 
 ## Hypothesis 2 
-Hypothesis Two is that four main groups form separate sub-populations. In this hypothesis we are utilizing 4 separate underlying states to model the observations from each of the main population groups. For each of the four models that we are comparing for this hypothesis, we are allowing the random walks to drift independent of one another based on the supplied "U" matrix.
+Hypothesis Two is that the four main population groups form separate sub-populations. In this hypothesis we are utilizing 4 separate underlying states to model the observations from each of the main population groups. For each of the four models that we are comparing for this hypothesis, we are allowing the random walks to drift independent of one another based on the supplied "U" matrix.
 
 Hypothesis 2.1: The Q matrix for the variance of process errors is "diagonal and equal" meaning each state (x) model has the same variance but they are not correlated to each other.
 
@@ -214,6 +216,11 @@ corrplot(corrmat2.1)
 
 ```
 
+The Confidence Intervals in the sections of the underlying states (x) were very large in the sections where data was missing. This was also reflected in the plots showing the fitted values. Some structuring may also be present in the residuals. Six of the river systems have multiple significant lags when examining the ACF plots indicating the residuals display autocorrelation. The corrplot is fairly uninformative as we forced the model to be equal variance with no correlation.
+One interesting thing to note is that we allowed the "U" values to varying independently of each other and the Yakima group is the only one with a positive U value, indicating it is the only system with positive growth or at least increasing number of adults counted over time.
+
+____________________________________________________________________
+
 Hypothesis 2.2: The Q matrix for the variance of process errors is "diagonal and unequal" meaning each of the four underlying states' variance can be different but they are not correlated to each other
 
 ```{r}
@@ -253,6 +260,12 @@ corrplot(corrmat2.2)
 
 ```
 
+Again we see large balloon shaped confidence intervals in the sections of rivers that are missing data. This appears in both the estimated underlying states and the fitted value plots. The Walla Walla groups seems to have the widest confidence intervals of all of the river systems. Again six of the rivers have ACF plots with multiple significant lags.
+The Yakima Population group continues to be the only group with an underlying state which is estimated to have a positive drift.
+The variance-covariance matrix was allowed to vary the variance of each underlying state independently of one another, but we see that it estimated each to be equal.
+
+________________________________________________________________________
+
 Hypothesis 2.3: The Q matrix for the variance of process errors is "equal variance and covariance" so they each have equal variance and they are all correlated equally to one another
 
 ```{r}
@@ -284,6 +297,11 @@ corrplot(corrmat2.3)
 #corrplot mirrors what we told MARSS to use as a Q matrix (equal variance and covariance)
 
 ```
+
+This is the first set of models in the Hypothesis Two group that has not generated balloon shaped confidence intervals on the underlying states or the fitted values plots. Indicating that we have a better model when we allow the models to be correlated with one another. We potentially see some structuring in the residuals. Fewer of the ACF plots show strong structuring in the residuals, some of the plots with significant lags onlt have a few and we see less of the sine wave shaped plots than in the previous Hypothesis Two models.
+The variance covariate plot was forced to be equal, but we see that correlation between the major groups is estimated to be quite high.
+
+___________________________________________________________________________
 
 Hypothesis 2.4: The Q matrix for the variance of process errors is "unconstrained". Meaning that each hidden state is allowed to vary separately as is the correlation between the underlying states.
 
@@ -328,7 +346,11 @@ corrplot(corrmat2.4)
 
 ```
 
+Again we see that confidence intervals have some shape to them and fit the predicted values better than the balloon shaped confidence intervals seen in previous Hypotheis Two plots.Plots of the residuals look very similar to the other plots from this Hypothesis group. ACF plots are similar to the Hypothesis 2.3 and do not show as much structuring as previous plots.
 
+The Q matrix was allow to be unconstrained. We see very different variances estimated by the MARSS model, ranging from 0.03 to .21. covariance between the underlying states also a large degree.
+
+_____________________________________________________________________________
 
 ## Hypothesis 3 
 ```{r}
@@ -336,10 +358,9 @@ corrplot(corrmat2.4)
 
 ```
 
-Hypothesis 4: Salmon of the Yakima group have to swim the furthest to reach their 
-spawning ground, including a large bend in the river that heads back west. They
-are the most isolated group and thus may have their own hidden state while the 
-other 3 major population groups maybe more closely linked to each other due to their closer geographic proximity. Thus, we hypothesize that there may be two underlying states. The first desribing just the Yakima group while the second describes the Cascades, John Day, and Walla Walla groups.
+
+Hypothesis 4: Salmon of the Yakima group have to swim the furthest to reach their spawning ground, including a large bend in the river that heads back west. They are the most isolated group and thus may have their own hidden state while the other 3 major population groups maybe more closely linked to each other due to their closer geographic proximity. Thus, we hypothesize that there may be two underlying states describing the entire system. The first describing just the Yakima group while the second describes the Cascades, John Day, and Walla Walla groups.
+
 
 Hypothesis 4.1: Q matrix is "diagonal and equal" meaning the two hidden, underlying states will have equal variance but will not be correlated to each other.
 
@@ -383,6 +404,12 @@ corrplot(corrmat4.1)
 
 ```
 
+The confidence intervals on the underlying state and the fitted values have really big balloon shapes to them where data is missing from each system. The Yakima system, which was assumed to have its own underlying state in this hypothesis, has much large confidence intervals than all the other systems in the fitted values plot. The ACF plots do show that about half of the systems disply autocorrelation in their residuals.
+The Residuals normality test for the underlying states, X1 and X2, show that the residuals for the Yakima group (X2) are not normally distributed as they vary from the qqline to a great degree.
+The corrplot is relatively uninformative as we forced the Q matrix to be diagonal and equal.
+
+__________________________________________________________________________
+
 Hypothesis 4.2: Q matrix is "diagonal and unequal", meaning the two hidden, underlying states will have the same variance but will not be allowed to be correlated to one another.
 
 ```{r}
@@ -422,6 +449,12 @@ corrplot(corrmat4.2)
 #As expected for this Q call
 
 ```
+
+The largest confidence intervals we have seen on the underlying states and the fitted values yet. The Yakima group only has large balloon shaped confidence intervals on its fitted values while the other river systems have some structure to their confidence intervals in sections with missing data.
+Very similar ACF plots to the other Hypothesis Four models, showing structuring and multiple significant lags in approximately half of the plots.
+The variance was allowed to vary independently between the two underlying states but they were estimated to be very similar to one another
+
+__________________________________________________________________________
 
 Hypothesis 4.3: The Q matrix is "equal variance and covariance". This will result in both of the hidden, underlying states having the same variance and they will be corellated to one another.
 
@@ -463,6 +496,11 @@ corrplot(corrmat4.3)
 
 ```
 
+The confidence intervals for the underlying states and the fitted values now fit the estimated abundance in each river well rather than being oval shaped over any missing values.Very similar ACF plots to the other models in this Hypothesis group with about half of them showing sine wave patterns.
+The variance-covariance matrix was forced to be equal.
+
+____________________________________________________________________________
+
 Hypothesis 4.4: The Q matrix is "unconstrained". Meaning the two hidden, underlying states will be allowed to vary independently of one another and corellation is allowed to vary from 0 to 1 between the two states.
 
 ```{r}
@@ -500,9 +538,10 @@ corrplot(corrmat4.4)
 #As hinted at by the model out put very high correlation even though this was an
 #unconstrained model
 ```
+The confidence intervals on the underlying state and the fitted values fit the estimated abundances well in areas with missing data. QQplots all look good except for the North Fork of the John Day which displays heavy tails.The AFC plots show over half of the system have autocorrelated residuals.
+Even though this hypothesis allowed the Q matrix to be unconstrained, it still estimated variances and covariances that were essentially equal to the "equal variance and covariance" hypothesis.
 
-
-
+_________________________________________________________________________
 
 
 ## AIC Results and Selected Model 
