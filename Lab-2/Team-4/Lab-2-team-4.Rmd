@@ -166,6 +166,90 @@ Estimate of the mean of the spawner counts based on your x model.
 # Results
 
 ## Hypthesis 1 
+Hypothesis One is that there is a single hidden, underlying process that all sub-populations follow. In this hypothesis there is a single state (x) for all 15 observed time series (y). This is the simplest model that could be formed.
+$$
+\text{Hypothesis One}:
+\begin{bmatrix}
+y_1\\
+y_2\\
+y_3\\
+y_4\\
+y_5\\
+y_6\\
+y_7\\
+y_8\\
+y_9\\
+y_{10}\\
+y_{11}\\
+y_{12}\\
+y_{13}\\
+y_{14}\\
+y_{15}\\
+\end{bmatrix}_t=
+\begin{bmatrix}
+1 \\
+1 \\
+1 \\
+1 \\
+1 \\
+1 \\
+1 \\
+1 \\
+1 \\
+1 \\
+1 \\
+1 \\
+1 \\
+1 \\
+1 \\
+\end{bmatrix}*
+\begin{bmatrix}
+x_1\\
+\end{bmatrix}_t+
+\begin{bmatrix}
+a_1\\
+a_2\\
+a_3\\
+a_4\\
+a_5\\
+a_6\\
+a_7\\
+a_8\\
+a_9\\
+a_{10}\\
+a_{11}\\
+a_{12}\\
+a_{13}\\
+a_{14}\\
+a_{15}\\
+\end{bmatrix}+
+\begin{bmatrix}
+w_1\\
+w_2\\
+w_3\\
+w_4\\
+w_5\\
+w_6\\
+w_7\\
+w_8\\
+w_9\\
+w_{10}\\
+w_{11}\\
+w_{12}\\
+w_{13}\\
+w_{14}\\
+w_{15}\\
+\end{bmatrix}_t
+$$
+$$
+\text{Where }w \sim MVN
+\begin{pmatrix}
+\text{0,}\begin{bmatrix}
+R
+\end{bmatrix}
+\end{pmatrix}
+$$
+
 ```{r}
 
 
@@ -173,7 +257,91 @@ Estimate of the mean of the spawner counts based on your x model.
 
 ## Hypothesis 2 
 Hypothesis Two is that the four main population groups form separate sub-populations. In this hypothesis we are utilizing 4 separate underlying states to model the observations from each of the main population groups. For each of the four models that we are comparing for this hypothesis, we are allowing the random walks to drift independent of one another based on the supplied "U" matrix.
-
+$$
+\text{Hypothesis Two}:
+\begin{bmatrix}
+y_1\\
+y_2\\
+y_3\\
+y_4\\
+y_5\\
+y_6\\
+y_7\\
+y_8\\
+y_9\\
+y_{10}\\
+y_{11}\\
+y_{12}\\
+y_{13}\\
+y_{14}\\
+y_{15}\\
+\end{bmatrix}_t=
+\begin{bmatrix}
+1 & 0 & 0 & 0\\
+1 & 0 & 0 & 0\\
+1 & 0 & 0 & 0\\
+0 & 1 & 0 & 0\\
+0 & 1 & 0 & 0\\
+0 & 1 & 0 & 0\\
+0 & 1 & 0 & 0\\
+0 & 1 & 0 & 0\\
+0 & 0 & 1 & 0\\
+0 & 0 & 1 & 0\\
+0 & 0 & 1 & 0\\
+0 & 0 & 0 & 1\\
+0 & 0 & 0 & 1\\
+0 & 0 & 0 & 1\\
+0 & 0 & 0 & 1\\
+\end{bmatrix}*
+\begin{bmatrix}
+x_1\\
+x_2\\
+x_3\\
+x_4\\
+\end{bmatrix}_t+
+\begin{bmatrix}
+a_1\\
+a_2\\
+a_3\\
+a_4\\
+a_5\\
+a_6\\
+a_7\\
+a_8\\
+a_9\\
+a_{10}\\
+a_{11}\\
+a_{12}\\
+a_{13}\\
+a_{14}\\
+a_{15}\\
+\end{bmatrix}+
+\begin{bmatrix}
+w_1\\
+w_2\\
+w_3\\
+w_4\\
+w_5\\
+w_6\\
+w_7\\
+w_8\\
+w_9\\
+w_{10}\\
+w_{11}\\
+w_{12}\\
+w_{13}\\
+w_{14}\\
+w_{15}\\
+\end{bmatrix}_t
+$$
+$$
+\text{Where }w \sim MVN
+\begin{pmatrix}
+\text{0,}\begin{bmatrix}
+R
+\end{bmatrix}
+\end{pmatrix}
+$$
 Hypothesis 2.1: The Q matrix for the variance of process errors is "diagonal and equal" meaning each state (x) model has the same variance but they are not correlated to each other.
 
 ```{r}
@@ -353,6 +521,91 @@ The Q matrix was allow to be unconstrained. We see very different variances esti
 _____________________________________________________________________________
 
 ## Hypothesis 3 
+Description of H3
+
+$$
+\text{Hypothesis Three}:
+\begin{bmatrix}
+y_1\\
+y_2\\
+y_3\\
+y_4\\
+y_5\\
+y_6\\
+y_7\\
+y_8\\
+y_9\\
+y_{10}\\
+y_{11}\\
+y_{12}\\
+y_{13}\\
+y_{14}\\
+y_{15}\\
+\end{bmatrix}_t=
+\begin{bmatrix}
+1 & 0 \\
+1 & 0 \\
+1 & 0 \\
+1 & 0 \\
+1 & 0 \\
+1 & 0 \\
+1 & 0 \\
+1 & 0 \\
+0 & 1 \\
+0 & 1 \\
+0 & 1 \\
+0 & 1 \\
+0 & 1 \\
+0 & 1 \\
+0 & 1 \\
+\end{bmatrix}*
+\begin{bmatrix}
+x_1\\
+x_2\\
+\end{bmatrix}_t+
+\begin{bmatrix}
+a_1\\
+a_2\\
+a_3\\
+a_4\\
+a_5\\
+a_6\\
+a_7\\
+a_8\\
+a_9\\
+a_{10}\\
+a_{11}\\
+a_{12}\\
+a_{13}\\
+a_{14}\\
+a_{15}\\
+\end{bmatrix}+
+\begin{bmatrix}
+w_1\\
+w_2\\
+w_3\\
+w_4\\
+w_5\\
+w_6\\
+w_7\\
+w_8\\
+w_9\\
+w_{10}\\
+w_{11}\\
+w_{12}\\
+w_{13}\\
+w_{14}\\
+w_{15}\\
+\end{bmatrix}_t
+$$
+$$
+\text{Where }w \sim MVN
+\begin{pmatrix}
+\text{0,}\begin{bmatrix}
+R
+\end{bmatrix}
+\end{pmatrix}
+$$
 ```{r}
 
 
@@ -361,7 +614,99 @@ _____________________________________________________________________________
 
 Hypothesis 4: Salmon of the Yakima group have to swim the furthest to reach their spawning ground, including a large bend in the river that heads back west. They are the most isolated group and thus may have their own hidden state while the other 3 major population groups maybe more closely linked to each other due to their closer geographic proximity. Thus, we hypothesize that there may be two underlying states describing the entire system. The first describing just the Yakima group while the second describes the Cascades, John Day, and Walla Walla groups.
 
+$$
+\text{Hypothesis Four}:
+\begin{bmatrix}
+y_1\\
+y_2\\
+y_3\\
+y_4\\
+y_5\\
+y_6\\
+y_7\\
+y_8\\
+y_9\\
+y_{10}\\
+y_{11}\\
+y_{12}\\
+y_{13}\\
+y_{14}\\
+y_{15}\\
+\end{bmatrix}_t=
+\begin{bmatrix}
+1 & 0 \\
+1 & 0 \\
+1 & 0 \\
+1 & 0 \\
+1 & 0 \\
+1 & 0 \\
+1 & 0 \\
+1 & 0 \\
+1 & 0 \\
+1 & 0 \\
+1 & 0 \\
+0 & 1 \\
+0 & 1 \\
+0 & 1 \\
+0 & 1 \\
+\end{bmatrix}*
+\begin{bmatrix}
+x_1\\
+x_2\\
+\end{bmatrix}_t+
+\begin{bmatrix}
+a_1\\
+a_2\\
+a_3\\
+a_4\\
+a_5\\
+a_6\\
+a_7\\
+a_8\\
+a_9\\
+a_{10}\\
+a_{11}\\
+a_{12}\\
+a_{13}\\
+a_{14}\\
+a_{15}\\
+\end{bmatrix}+
+\begin{bmatrix}
+w_1\\
+w_2\\
+w_3\\
+w_4\\
+w_5\\
+w_6\\
+w_7\\
+w_8\\
+w_9\\
+w_{10}\\
+w_{11}\\
+w_{12}\\
+w_{13}\\
+w_{14}\\
+w_{15}\\
+\end{bmatrix}_t
+$$
+$$
+\text{Where }w \sim MVN
+\begin{pmatrix}
+\text{0,}\begin{bmatrix}
+R
+\end{bmatrix}
+\end{pmatrix}
+$$
 
+
+$$
+\text{Where }w \sim MVN
+\begin{pmatrix}
+\text{0,}\begin{bmatrix}
+R
+\end{bmatrix}
+\end{pmatrix}
+$$
 Hypothesis 4.1: Q matrix is "diagonal and equal" meaning the two hidden, underlying states will have equal variance but will not be correlated to each other.
 
 ## Hypothesis 4 
