@@ -122,6 +122,7 @@ m2.2 <- MARSS(dat, model = mod.list1)
 #notes: again yakima is the only positive drift value on the hidden state's random walk
 #       4 varied Q values output as all hidden states have a different one and there is no
 #       covariance/correlation between states
+
 autoplot(m2.2)
 #huge ballooned CIs on the missing data in hidden states
 #fitted CI have the same balloon shaped CIs on missing data and is quite large 
@@ -161,7 +162,7 @@ m2.3 <- MARSS(dat, model = mod.list1)
 autoplot(m2.3)
 
 #look at corrplot
-Q2.3 <- coef(m1, type = "matrix")$Q
+Q2.3 <- coef(m2.3, type = "matrix")$Q
 corrmat2.3 <- diag(1/sqrt(diag(Q2.3))) %*% Q2.3 %*% diag(1/sqrt(diag(Q2.3)))
 corrplot(corrmat2.3)
 #corrplot mirrors what we told MARSS to use as a Q matrix (equal variance and covariance)
@@ -347,6 +348,7 @@ mod.list1 <- list(
 m4.4 <- MARSS(dat, model = mod.list1)
 #notes: yakima continues its positive drift, collective group shows negative drift
 # Q values are very similar across variance and covariance
+
 autoplot(m4.4)
 #positive and negative drifts apparent in States graphs. Decent looking CIs too
 #Pretty good looking CIs on the fitted values
