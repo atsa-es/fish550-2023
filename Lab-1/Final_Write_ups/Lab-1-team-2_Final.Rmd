@@ -1,7 +1,12 @@
 ---
-output:
-  html_document: default
-  pdf_document: default
+title: Team 2
+subtitle: Lab 1 Forecasting with ARIMA models
+author: "Eric French (Civil), Dylan Hubl (ESRM), Miranda Mudge (Molecular & Cell Bio)"
+output: 
+  html_document:
+    code-folding: true
+    toc: true
+    toc_float: true
 ---
 # Lab 1: ARIMA models
 

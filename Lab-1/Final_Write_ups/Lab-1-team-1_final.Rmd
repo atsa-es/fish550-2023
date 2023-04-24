@@ -1,14 +1,12 @@
 ---
-title: "Lab 1 Forecasting with ARIMA models"
+title: Team 1
+subtitle: Lab 1 Forecasting with ARIMA models
 author: "Nick Chambers (SAFS), Liz Elmstrom (SAFS), Maria Kuruvilla (QERM)"
-date: "March 22, 2023"
-output:
-  pdf_document:
-    toc: yes
+output: 
   html_document:
-    code-folding: yes
-    toc: yes
-    toc_float: yes
+    code-folding: true
+    toc: true
+    toc_float: true
 ---
 
 ```{r include=FALSE}

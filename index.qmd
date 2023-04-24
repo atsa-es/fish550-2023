@@ -1,0 +1,6 @@
+# Labs
+
+* Lab 1: Forecasting with ARIMA models
+* Lab 2: Interpolating with MARSS models
+* 
+

@@ -1,5 +1,6 @@
 ---
-title: Lab 1 Forecasting with ARIMA models
+title: Team 1
+subtitle: Lab 1 Forecasting with ARIMA models
 author: Nick Chambers (SAFS), Liz Elmstrom (SAFS), Maria Kuruvilla (QERM)
 date: March 22, 2023
 output: 
