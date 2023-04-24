@@ -1,0 +1,393 @@
+---
+title: Lab 2 MARSS Models
+author: Liz Elmstrom (SAFS), Terrance Wang, Eric French
+date: April 20, 2023
+output: 
+  html_document:
+    code-folding: true
+    toc: true
+    toc_float: true
+---
+
+# General Questions
+
+Each group has the same general tasks, but you will adapt them as you work on the data.
+
+1.  Create estimates of spawner abundance for all missing years and provide estimates of the decline from the historical abundance.
+
+2.  Evaluate support for the major population groups. Are the populations in the groups more correlated than outside the groups?
+
+3.  Evaluate the evidence of cycling in the data. *We will talk about how to do this on the Tuesday after lab.*
+
+Step 1: Estimating data that doesn't exist-- Terrance Step 2A: Testing temporal Z matrices (different run times vs. one pop)-- Terrance Step 2B: Testing spatial Z matrices (different spatial groupings vs. one pop)-- Liz Step 3: Adding in seasonality as a covariate (C/c matrix) -- Eric
+
+Describe what data set you will work with and any subsetting you decided on. For example, you may have decided to look only at a section of the ESU that your team was assigned.
+
+# Methods
+
+Address the following in your methods
+
+-   Describe your assumptions about the x and how the data time series are related to x.
+
+    -   How are the x and y (data) related? 1 x for 1 y or will you assume 1 x for all y or 1 x for each major population group? How will you choose?
+
+We tested 4 different population groupings: one population, individual populations, spatial groupings, and groupings based on correlations
+
+-   What will you assume about the U for the x's?
+
+We tested the support for both equal and unequal population growth rates.
+
+-   What will you assume about the Q matrix?
+
+We assumed that these populations were correlated through time and tested model support for unconstrained and equal variance covariance matrices.
+
+-   Write out your assumptions as different models **in matrix form**, fit each and then compare these with AIC or AICc.
+
+Our models are written in matrix form in the "Model Assumptions" section of the results.
+
+-   Do your estimates differ depending on the assumptions you make about the structure of the data, i.e. you assumptions about the x's, Q, and U.
+
+# Data exploration
+
+Load the data.
+
+```{r}
+library(tidyverse)
+library(dplyr)
+library(janitor)
+library(MARSS)
+library(forecast)
+load(here::here("Lab-2", "Data_Images", "columbia-river.rda"))
+
+#Evolutionary Significant Units
+esu <- unique(columbia.river$esu_dps)
+esu
+```
+
+```{r}
+
+df <- columbia.river %>% subset(esu_dps %in% "Steelhead (Lower Columbia River DPS)")
+
+cat("colnames: ", colnames(df), "\n")
+
+unique(df$esapopname)
+unique(df$commonpopname)
+
+df$esapopname2 <- stringr::str_replace(df$esapopname, "Steelhead [(]Lower Columbia River DPS[)] ", "")
+unique(df$esapopname2)
+
+ggplot(df, aes(x=spawningyear, y=log(value), color=majorpopgroup)) + 
+  geom_point(size=2, na.rm = TRUE) + 
+  theme(strip.text.x = element_text(size = 3)) +
+  theme(axis.text.x = element_text(size = 5, angle = 90)) +
+  facet_wrap(~esapopname2) +
+  ggtitle('Lower Columbia Steelhead Populations')+
+  theme(strip.text.x = element_text(size = 10))
+
+```
+
+Wrangle the data.
+
+```{r}
+
+esuname <- esu[3]
+dat <- columbia.river %>% 
+  subset(esu_dps == esuname) %>% # get only this ESU
+  mutate(log.spawner = log(value)) %>% # create a column called log.spawner
+  select(esapopname, spawningyear, log.spawner) %>% # get just the columns that I need
+  pivot_wider(names_from = "esapopname", values_from = "log.spawner") %>% 
+  column_to_rownames(var = "spawningyear") %>% # make the years rownames
+  as.matrix() %>% # turn into a matrix with year down the rows
+  t() # make time across the columns
+dat[is.na(dat)] <- NA
+
+## Fixing row names
+tmp <- rownames(dat)
+tmp <- stringr::str_replace(tmp, "Steelhead [(]Lower Columbia River DPS[)]", "")
+tmp <- make_clean_names(tmp)
+rownames(dat) <- tmp
+
+dat <- dat[1:9,]# remove upper gorge
+dat <- dat[ order(row.names(dat)), ]## sort
+
+```
+
+# Results
+
+## The simplest model
+
+Fitting the most simple model to help determine need to group populations: One big population with different observations (populations). Id
+
+```{R}
+mod.list.0 <- list(B = matrix(1), U = matrix("u"), Q = matrix("q"), 
+    Z = matrix(1, 9, 1), A = "scaling", R = "diagonal and unequal", 
+    x0 = matrix("mu"), tinitx = 0)
+fit_simple <- MARSS(dat, model=mod.list.0, control=list(maxit=1000))
+autoplot(fit_simple, plot.type="fitted.ytT")
+```
+
+We see that the simple model is not the best at fitting the population estimates for many of the populations (e.g., Upper Cowlitz winter, East Fork Lewis winter). Many of the residuals do not appear to be stationary.
+
+## The most flexible model
+
+Fitting the most flexible model to help determine spatial Z hypotheses: Individual populations with an unconstrained Q matrix and unequal U
+
+```{R}
+
+mod.list1 <- list(
+  U = "unequal",
+  R = "diagonal and equal",
+  Q = "unconstrained"
+)
+fit1 <- MARSS(dat, model=mod.list1, control=list(maxit=800))
+```
+
+```{r}
+autoplot(fit1, plot.type="fitted.ytT")
+
+library(corrplot)
+Q <- coef(fit1, type="matrix")$Q
+corrmat <- diag(1/sqrt(diag(Q))) %*% Q %*% diag(1/sqrt(diag(Q)))
+corrplot(corrmat)
+
+```
+
+Some of the populations are correlated. This implies it would be reasonable to test for equal variance covariance, along with some other population structures.
+
+We opted to test this in a for loop to compare multiple spatial structures, u options, and two options for Q.
+
+## Model Assumptions
+
+Below we setting up population grouping hypotheses (Z matrices), correlation structures, drift or "bias" terms, and the fixed model list.
+
+```{r}
+
+# Here we evaluated the data support for the following hypotheses about Lower Columbia salmon river trends
+# Each Z model is a hypothesis
+
+## Simple run timing groupings
+# summer = kalama_river_summer
+# winter = remaining population
+
+## Simple spatial groupings
+# coweeman = coweeman and sf toutle
+# ef_lewis = east fork lewis
+# kalama = kalama summer and winter
+# cowlitz = lower cowlitz, tilton, and upper cowlitz
+# washougal = washougal
+
+## Correlation spatial groupings
+# coweeman = coweema, ef_lewis, sf toutle, washougal
+# kalama = kalama summer and winter
+# cowlitz = lower cowlitz, tilton, and upper cowlitz
+
+Z.models <- list(
+  H1 = matrix(1,9,1), #one hidden population state
+  H2 = factor(c("coweeman","ef_lewis", "kalama_sum",
+                'kalama_win', "low_cowlitz", "sf_toutle",
+                "tilton", "up_cowlitz", "washougal")), #states are defined by individual population
+  H3 = factor(c("winter","winter", "summer",
+                'winter', "winter", "winter",
+                "winter", "winter", "winter")),# states defined by running timing grouping (n = 2)
+  H4 = factor(c("coweeman","ef_lewis", "kalama",
+                'kalama', "cowlitz", "coweeman",
+                "cowlitz", "cowlitz", "washougal")),# states defined by spatial grouping (n = 5)
+  H5 = factor(c("coweeman","coweeman", "kalama",
+                'kalama', "cowlitz", "coweeman",
+                "cowlitz", "cowlitz", "coweeman"))# states defined by correlation (n = 3)
+)
+
+names(Z.models) <- c("one_population","indiv_population","run_timing_groups",'spatial_groups',"corr_groups")
+
+# Also testing different process error varcovar matrices
+Q.models2 <- c("equalvarcov","unconstrained")
+
+# Process cycling terms
+# Each is on a 10-year cycle, will test orders 0-4
+# see Evaluating Cycling Section
+
+ct.models <- list(
+  c0 = "zero", # No cycling
+  
+  c1 = t(fourier(ts(1:ncol(dat), frequency = 10), K=1)), # seasonality follows a 1st order fourier series with the same # rows as y
+ 
+  c2 = t(fourier(ts(1:ncol(dat), frequency = 10), K=2)), # seasonality follows a 2nd order fourier series
+  
+  c3 = t(fourier(ts(1:ncol(dat), frequency = 10), K=3)), # seasonality follows a 3rd order fourier series
+
+  c4 = t(fourier(ts(1:ncol(dat), frequency = 10), K=4)) # seasonality follows a 4rd order fourier series
+  )
+names(ct.models) <- c("no_cycling", "1st_order", "2nd_order", "3rd_order", "4th_order")
+
+# Bias terms
+u2 <- c("unequal", 'equal')
+
+# Setting fixed portion of mod list
+mod.list = list(
+  A = "scaling",
+  R = "diagonal and equal")
+
+```
+
+## MARSS Model Selection
+
+Run MARSS models
+
+```{r}
+# Added in another for loop to run through cycling options, be warned, this means there are 80 total models. It takes a long time to run
+out.tab <- NULL
+fits <- list()
+for(i in 1:length(Z.models)){
+  for (j in 1:length(ct.models)){
+    for(Q.model in Q.models2){
+      for(U.model in u2){
+      fit.model = c(list(Z=Z.models[[i]], c=ct.models[[j]], Q=Q.model, U=U.model), mod.list)
+      fit = MARSS(dat, model=fit.model,
+                silent=TRUE, control=list(maxit=3000))
+      out=data.frame(H=names(Z.models)[i],ct=names(ct.models)[j],Q=Q.model,U=U.model,
+                   logLik=fit$logLik, AICc=fit$AICc, num.param=fit$num.params,
+                   m=length(unique(Z.models[[i]])),
+                   num.iter=fit$numIter, converged=!fit$convergence,
+                   stringsAsFactors = FALSE)
+      out.tab=rbind(out.tab,out)
+      fits=c(fits,list(fit))
+      } 
+    }
+  }
+}
+
+min.AICc <- order(out.tab$AICc)
+out.tab.1 <- out.tab[min.AICc, ]
+out.tab.1 <- cbind(out.tab.1, delta.AICc = out.tab.1$AICc - out.tab.1$AICc[1])
+out.tab.1 <- cbind(out.tab.1, rel.like = exp(-1 * out.tab.1$delta.AICc/2))
+out.tab.1 <- cbind(out.tab.1, AIC.weight = out.tab.1$rel.like/sum(out.tab.1$rel.like))
+out.tab.1
+
+
+```
+
+Including cycling in the test, the best fit still appears to be Z split into spatial groups, no cyclic behavior, unconstrained Q, and equal drift - Eric
+
+
+
+## Inspecting second best model (spatial group, 1st order fourier, unconstrained Q, equal U)
+
+```{r}
+
+best_mod <- fits[[68]]
+best_mod
+
+autoplot(best_mod, plot.type="fitted.ytT")
+```
+
+# Eli's code
+
+Testing season options in best model 
+
+```{r}
+
+Z.mat <-  factor(c("coweeman","ef_lewis", "kalama",
+                'kalama', "cowlitz", "coweeman",
+                "cowlitz", "cowlitz", "washougal"))
+
+TT <- dim(dat)[2]
+covariates <- rbind(
+  forecast::fourier(ts(1:TT, freq=3), K=1) |> t(),
+  forecast::fourier(ts(1:TT, freq=4), K=1) |> t(),
+  forecast::fourier(ts(1:TT, freq=5), K=1) |> t()
+)
+
+
+mod.list2 = list(
+  U = "equal",
+  Q = "unconstrained", 
+  Z = Z.mat,
+  A = "scaling",
+  R = "diagonal and equal",
+  D = "unconstrained",
+  d = covariates)
+
+fit_season <- MARSS(dat, model=mod.list2)
+
+
+```
+
+```{r}
+
+
+library(broom)
+df <- tidy(fit_season) %>%
+  subset(stringr::str_sub(term,1,1)=="D")
+df$lag <- as.factor(rep(3:5, each=18))
+df$river <- as.factor(rep(rownames(dat),3))
+df$sc <- rep(rep(c("S","C"), each=9), 3)
+df$type <- paste0(df$sc,df$lag)
+```
+
+We can then plot this. Interesting. Some support for 5 year cycles.
+```{r}
+ggplot(df, aes(x=type, y=estimate, col=lag)) + 
+  geom_point() +
+  geom_errorbar(aes(ymin=conf.low, ymax=conf.up), width=.2, position=position_dodge(.9)) +
+  geom_hline(yintercept = 0) +
+  facet_wrap(~river) +
+  ggtitle("The cycle estimates with CIs")
+```
+
+```
+
+Inspecting model residuals
+
+```{r}
+
+# autoplot(best_mod, plot.type="residuals")
+
+par(mfrow = c(3, 3))
+resids <- MARSSresiduals(best_mod, type = "tt1")
+for (i in 1:9) {
+    plot(resids$model.residuals[i, ], ylab = "model residuals", 
+        xlab = "")
+    abline(h = 0)
+    title(rownames(dat)[i])
+}
+```
+
+Even with added cyclic covariates in the process, there still appears to be some cyclic behavior in the residuals
+
+
+Evaluating Cycling
+Judging by the residuals a 10 year cycle would be a good first guess. Now what order should the series be?
+```{r}
+
+#attempting to get this function working
+x <- ts(1:ncol(dat), frequency = 10) # following the example in lecture 7, but with a cycle of 10 years
+plot.ts(x)
+covariate <- fourier(x, K=5) 
+plot.ts(covariate)
+# got it working, now how does this fit into a MARSS model, maybe in the for loop?
+# 3rd order will probably be enough, will test to 4th order to be safe
+
+
+```
+
+## Comparing best model to the most flexible model
+
+-   Do your estimates differ depending on the assumptions you make about the structure of the data, i.e. you assumptions about the x's, Q, and U.
+
+Definitely!
+
+Not sure why autoplot keeps spitting out two plots??
+
+```{r}
+
+autoplot(fit_simple, plot.type ="fitted.ytT")
+autoplot(fit1, plot.type="fitted.ytT")
+autoplot(best_mod, plot.type="fitted.ytT")
+
+```
+
+# Discussion
+
+# Description of each team member's contributions
+
+Example: "All team members helped decide on the goal and ran the analyses for the individual regions. Team members 2 & 3 wrote most of the code for the analysis of the regions. Team member 4 researched approaches for measuring accuracy of forecasts in [Hyndman & Athanasopoulos[OTexts.com/fpp2] and team member 2 added code for that to the methods. Team member 4 also researched tests for stationarity and worked with team member 2 to code that up. Team member 1 worked on the plotting section of the report using and adapting code that team member 3 wrote. All team members helped edit the report and wrote the discussion together."
