@@ -1,5 +1,6 @@
 ---
-title: "Lab 2 Analyzing multivariate salmon data"
+title: Lab Intro
+subtitle: "Lab 2 Analyzing multivariate salmon data"
 author: "E Holmes"
 date: "April 13, 2023"
 output:

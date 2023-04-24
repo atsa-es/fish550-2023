@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.335">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Terrance Wang (SAFS), Karl Veggerby (SAFS)">
+
+<title>Fish 550 Spring 2023 - 6&nbsp; Team 4</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../Lab-2/Lab2-MARSS.html" rel="next">
+<link href="../../Lab-1/Final_Write_ups/Lab-1-team-3_final.html" rel="prev">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Team 4</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../../">Fish 550 Spring 2023</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/atsa-es/fish550-2023" title="Source Code" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../index.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Labs</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">Forecasting with ARIMA models</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lab-1/Lab1-ARIMA.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Lab Intro</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lab-1/Final_Write_ups/Lab-1-team-1_final.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Team 1</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lab-1/Final_Write_ups/Lab-1-team-2_final.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Team 2</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lab-1/Final_Write_ups/Lab-1-team-3_final.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Team 3</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lab-1/Final_Write_ups/Lab-1-team-4_final.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Team 4</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">Analyzing multivariate salmon data with MARSS</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lab-2/Lab2-MARSS.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Lab Intro</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#lab-1-arima-models" id="toc-lab-1-arima-models" class="nav-link active" data-scroll-target="#lab-1-arima-models"><span class="toc-section-number">7</span>  Lab 1: ARIMA models</a></li>
+  <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data"><span class="toc-section-number">8</span>  Data</a></li>
+  <li><a href="#question-your-team-will-address" id="toc-question-your-team-will-address" class="nav-link" data-scroll-target="#question-your-team-will-address"><span class="toc-section-number">9</span>  Question your team will address</a></li>
+  <li><a href="#method-you-will-use" id="toc-method-you-will-use" class="nav-link" data-scroll-target="#method-you-will-use"><span class="toc-section-number">10</span>  Method you will use</a>
+  <ul class="collapse">
+  <li><a href="#initial-plan" id="toc-initial-plan" class="nav-link" data-scroll-target="#initial-plan"><span class="toc-section-number">10.0.1</span>  Initial plan</a></li>
+  <li><a href="#what-you-actually-did" id="toc-what-you-actually-did" class="nav-link" data-scroll-target="#what-you-actually-did"><span class="toc-section-number">10.0.2</span>  What you actually did</a></li>
+  </ul></li>
+  <li><a href="#diagnostics-and-preliminary-exploration" id="toc-diagnostics-and-preliminary-exploration" class="nav-link" data-scroll-target="#diagnostics-and-preliminary-exploration"><span class="toc-section-number">11</span>  Diagnostics and preliminary exploration</a>
+  <ul class="collapse">
+  <li><a href="#massage-the-data" id="toc-massage-the-data" class="nav-link" data-scroll-target="#massage-the-data"><span class="toc-section-number">11.0.1</span>  Massage the data</a></li>
+  <li><a href="#plot-the-data" id="toc-plot-the-data" class="nav-link" data-scroll-target="#plot-the-data"><span class="toc-section-number">11.0.2</span>  Plot the data</a></li>
+  <li><a href="#use-acf-and-pacf" id="toc-use-acf-and-pacf" class="nav-link" data-scroll-target="#use-acf-and-pacf"><span class="toc-section-number">11.0.3</span>  Use ACF and PACF</a></li>
+  <li><a href="#test-for-stationarity" id="toc-test-for-stationarity" class="nav-link" data-scroll-target="#test-for-stationarity"><span class="toc-section-number">11.0.4</span>  Test for stationarity</a></li>
+  </ul></li>
+  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results"><span class="toc-section-number">12</span>  Results</a>
+  <ul class="collapse">
+  <li><a href="#regional-arima-models" id="toc-regional-arima-models" class="nav-link" data-scroll-target="#regional-arima-models"><span class="toc-section-number">12.1</span>  Regional ARIMA models</a>
+  <ul class="collapse">
+  <li><a href="#comparing-regional-arima-models-within-and-among-area" id="toc-comparing-regional-arima-models-within-and-among-area" class="nav-link" data-scroll-target="#comparing-regional-arima-models-within-and-among-area"><span class="toc-section-number">12.1.1</span>  Comparing regional ARIMA models within and among area</a></li>
+  </ul></li>
+  <li><a href="#area-arima-models" id="toc-area-arima-models" class="nav-link" data-scroll-target="#area-arima-models"><span class="toc-section-number">12.2</span>  Area ARIMA models</a>
+  <ul class="collapse">
+  <li><a href="#comparing-regional-arima-models-to-area-arima-models" id="toc-comparing-regional-arima-models-to-area-arima-models" class="nav-link" data-scroll-target="#comparing-regional-arima-models-to-area-arima-models"><span class="toc-section-number">12.2.1</span>  Comparing regional ARIMA models to area ARIMA models</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion"><span class="toc-section-number">13</span>  Discussion</a></li>
+  <li><a href="#description-of-each-team-members-contributions" id="toc-description-of-each-team-members-contributions" class="nav-link" data-scroll-target="#description-of-each-team-members-contributions"><span class="toc-section-number">14</span>  Description of each team member’s contributions</a></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/atsa-es/fish550-2023/edit/main/Lab-1/Final_Write_ups/Lab-1-team-4_final.Rmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/atsa-es/fish550-2023/blob/main/Lab-1/Final_Write_ups/Lab-1-team-4_final.Rmd" class="toc-action">View source</a></p><p><a href="https://github.com/atsa-es/fish550-2023/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title d-none d-lg-block"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Team 4</span></h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+<p class="subtitle lead">Lab 1 Forecasting with ARIMA models</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Terrance Wang (SAFS), Karl Veggerby (SAFS) </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="lab-1-arima-models" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Lab 1: ARIMA models</h1>
+<p>Team member names: Terrance Wang (SAFS), Karl Veggerby (SAFS)</p>
+</section>
+<section id="data" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Data</h1>
+<p>Ruggerone &amp; Irvine Data. We will focus on sockeye salmon and all their 15 regional stocks in the North Pacific.</p>
+</section>
+<section id="question-your-team-will-address" class="level1" data-number="9">
+<h1 data-number="9"><span class="header-section-number">9</span> Question your team will address</h1>
+<ol type="1">
+<li><p>What is the autoregressive structure for sockeye salmon? Is there a general autoregressive structure to describe all sockeye salmon regional stocks? Are there similarities and differences within and among North American West Coast, Alaska, and East Asian sockeye stocks?</p></li>
+<li><p>Do different summarizing approaches of fitting ARIMA confirm the answers for the above questions?</p></li>
+</ol>
+</section>
+<section id="method-you-will-use" class="level1" data-number="10">
+<h1 data-number="10"><span class="header-section-number">10</span> Method you will use</h1>
+<ol type="1">
+<li>Fit ARIMA models for individual regional stocks and summed area stocks. Compare ARIMA structures and parameters of all regions and of larger areas. Compare results between the individual regional stocks and summed area stocks.</li>
+</ol>
+<section id="initial-plan" class="level3" data-number="10.0.1">
+<h3 data-number="10.0.1" class="anchored" data-anchor-id="initial-plan"><span class="header-section-number">10.0.1</span> Initial plan</h3>
+<ol type="1">
+<li><p>We will fit ARIMA models for each of the sockeye regional stocks with the Box Jenkins method, which includes selecting the model form, estimating the parameters, and diagnosing the model. We will then compare the parameters of the individual ARIMA model structure among regional stocks and larger area aggregations with summary statistics and plots.</p></li>
+<li><p>We will also fit ARIMA models for each of the 3 areas by summing a scaled time series of each of the regions. We will then compare these area-wide ARIMA models to the summary of regional models.</p></li>
+</ol>
+</section>
+<section id="what-you-actually-did" class="level3" data-number="10.0.2">
+<h3 data-number="10.0.2" class="anchored" data-anchor-id="what-you-actually-did"><span class="header-section-number">10.0.2</span> What you actually did</h3>
+<ol type="1">
+<li><p>The first step of the plan was relatively straightforward. The interpretation of each regional ARIMA model and comparing them within and among areas was not statistically rigorous, but hopefully still informative.</p></li>
+<li><p>The second step of our initial plan was difficult to defend. Comparing and interpreting results among ARIMA models at different spatial scales did not seem statistically kosher, but we still proceeded anyways.</p></li>
+</ol>
+</section>
+</section>
+<section id="diagnostics-and-preliminary-exploration" class="level1" data-number="11">
+<h1 data-number="11"><span class="header-section-number">11</span> Diagnostics and preliminary exploration</h1>
+<section id="massage-the-data" class="level3" data-number="11.0.1">
+<h3 data-number="11.0.1" class="anchored" data-anchor-id="massage-the-data"><span class="header-section-number">11.0.1</span> Massage the data</h3>
+<div class="cell">
+
+</div>
+</section>
+<section id="plot-the-data" class="level3" data-number="11.0.2">
+<h3 data-number="11.0.2" class="anchored" data-anchor-id="plot-the-data"><span class="header-section-number">11.0.2</span> Plot the data</h3>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="Lab-1-team-4_final_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="Lab-1-team-4_final_files/figure-html/unnamed-chunk-3-2.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>At the regional level, systematic changes in the mean are present in many of the stocks (e.g., nbc, w_kam, kod). There are a few increasing means and some random-walk-like ones. There is a strong linear trend in the ci, kod, and s_pen regions. Changes in the variance may also be present in a few stocks (e.g., wak, kod). 4-year period cycles are possible in several regions (e.g., wak, sbc).</p>
+<p>At the area-wide level, Alaska, East Asia, and NA West Coast all exhibit systematic changes. There are some similarities among areas. Alaska and NA West Coast share periodic variations. Alaska and East Asia both have increasing regional stocks. There also differences among areas, such as the decreasing trend and increasing variance in the West Coast regional stocks.</p>
+<p>From these plots, we interpret that there is likely non-stationarity at both the regional and area-wide scale, and proceed with our analysis.</p>
+</section>
+<section id="use-acf-and-pacf" class="level3" data-number="11.0.3">
+<h3 data-number="11.0.3" class="anchored" data-anchor-id="use-acf-and-pacf"><span class="header-section-number">11.0.3</span> Use ACF and PACF</h3>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="Lab-1-team-4_final_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>A handful of regions (e.g., ci, seak) show ACF with a long tail and PACFs that cut off at 1-3 orders, which may indicate some autoregressive structure. Other regions (e.g., pws, m_i) have a sharp cut off with ACF and tailing PACFs, which may suggest a moving average structure. Some regions (s_pen,w_kam,kod) show long tails for both ACF and PACF, suggesting ARMA structure. A few regions show periodic trends (negative AR parameters) from their oscillating correlations factors.</p>
+</section>
+<section id="test-for-stationarity" class="level3" data-number="11.0.4">
+<h3 data-number="11.0.4" class="anchored" data-anchor-id="test-for-stationarity"><span class="header-section-number">11.0.4</span> Test for stationarity</h3>
+<p>We ran stationarity tests at the area-wide level for simplicity.</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Region</th>
+<th style="text-align: right;">DF_Test_diff0_p</th>
+<th style="text-align: right;">DF_Test_diff1_p</th>
+<th style="text-align: right;">N_pred_diffs</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">AK</td>
+<td style="text-align: right;">0.6692914</td>
+<td style="text-align: right;">0.01</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">E_Asia</td>
+<td style="text-align: right;">0.7455006</td>
+<td style="text-align: right;">0.01</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">US_WC</td>
+<td style="text-align: right;">0.4780300</td>
+<td style="text-align: right;">0.01</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>The Dickey-Fuller tests for each of the 3 areas do not reject the null hypothesis that the data is non-stationary. Differencing all 3 areas by 1 order makes the sockeye abundance stationary, suggesting random walk characteristics. The unit root tests of estimated order of differencing confirms the D-F tests for Alaska and East Asia, but not NA West Coast. The NA West Coast does have a non-moving mean, which partly explains the difference between D-F test and unit root test.</p>
+<p>Altogether, the abundance plots, ACF and PCF plots, and stationarity tests demonstrate that the abundances of the regional stocks can be explained by some combination of auto-regressive, differencing, and moving average components. For this reason, we proceed forward with fitting ARIMA models to each of the regional stocks.</p>
+</section>
+</section>
+<section id="results" class="level1" data-number="12">
+<h1 data-number="12"><span class="header-section-number">12</span> Results</h1>
+<section id="regional-arima-models" class="level2" data-number="12.1">
+<h2 data-number="12.1" class="anchored" data-anchor-id="regional-arima-models"><span class="header-section-number">12.1</span> Regional ARIMA models</h2>
+<p>We fit ARIMA models to each individual regional stock and report the fits and diagnostics in the table below.</p>
+<div class="cell">
+
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<caption>ARIMA fitting results and residual diagnostics for all sockeye regions</caption>
+<colgroup>
+<col style="width: 12%">
+<col style="width: 8%">
+<col style="width: 3%">
+<col style="width: 3%">
+<col style="width: 3%">
+<col style="width: 13%">
+<col style="width: 13%">
+<col style="width: 13%">
+<col style="width: 12%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">area</th>
+<th style="text-align: left;">region</th>
+<th style="text-align: right;">p</th>
+<th style="text-align: right;">d</th>
+<th style="text-align: right;">q</th>
+<th style="text-align: right;">ar1</th>
+<th style="text-align: right;">ar2</th>
+<th style="text-align: right;">ma1</th>
+<th style="text-align: right;">ma2</th>
+<th style="text-align: right;">resid_p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Alaska</td>
+<td style="text-align: left;">ci</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.3771937</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">-0.7575114</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">0.0955948</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Alaska</td>
+<td style="text-align: left;">kod</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">-0.6049560</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">0.3682442</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Alaska</td>
+<td style="text-align: left;">pws</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.4031980</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">-0.9583822</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">0.0312119</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Alaska</td>
+<td style="text-align: left;">seak</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">-0.4807931</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">0.3015960</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Alaska</td>
+<td style="text-align: left;">s_pen</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">-0.7605650</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">0.9076421</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Alaska</td>
+<td style="text-align: left;">wak</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.5174071</td>
+<td style="text-align: right;">-0.9318466</td>
+<td style="text-align: right;">-0.7103177</td>
+<td style="text-align: right;">0.7039975</td>
+<td style="text-align: right;">0.2357500</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">East_Asia</td>
+<td style="text-align: left;">e_kam</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.7956410</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">0.4879928</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">East_Asia</td>
+<td style="text-align: left;">m_i</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.5291796</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">0.5479562</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">East_Asia</td>
+<td style="text-align: left;">w_kam</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">-0.3667696</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">0.0992328</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">WC</td>
+<td style="text-align: left;">nbc</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.9296554</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">-0.7239860</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">0.3154644</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">WC</td>
+<td style="text-align: left;">sbc</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">0.0015210</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">WC</td>
+<td style="text-align: left;">wc</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">-0.9320727</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">1.2724536</td>
+<td style="text-align: right;">0.4421506</td>
+<td style="text-align: right;">0.6338888</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>The best fitting ARIMA models show a wide diversity of structure. Similarities and differences within and among areas will be discussed in more detail in the next section. Residuals are generally stationary, meaning acceptable ARIMA fits, with a few exceptions (e.g., kod, sbc). Below, the example of w_kam shows that residuals show signs of stationarity like a stable mean, normal distribution of values, and little autocorrelation. Though there is some temporal pattern in the variance.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Lab-1-team-4_final_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Example of residual diagnostics of one of the regions</figcaption><p></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Ljung-Box test
+
+data:  Residuals from ARIMA(0,1,1)
+Q* = 14.709, df = 9, p-value = 0.09923
+
+Model df: 1.   Total lags used: 10</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Lab-1-team-4_final_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">ARIMA structure by area</figcaption><p></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Lab-1-team-4_final_files/figure-html/unnamed-chunk-9-2.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">AR parameters by area</figcaption><p></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Lab-1-team-4_final_files/figure-html/unnamed-chunk-9-3.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">MA parameters by area</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="comparing-regional-arima-models-within-and-among-area" class="level3" data-number="12.1.1">
+<h3 data-number="12.1.1" class="anchored" data-anchor-id="comparing-regional-arima-models-within-and-among-area"><span class="header-section-number">12.1.1</span> Comparing regional ARIMA models within and among area</h3>
+<p>The ARIMA structure for all sockeye stocks (ignoring area) do not show a clear pattern in AR, differencing, and MA. A slight majority of stocks support first order AR, differencing, and MA. When we look closer at the parameter values, there is a small tendency for sockeye to have positive AR1 values and negative MA1 values. This suggests sockeye populations are loosely related to the previous time step and deviate around the general trajectory with a 2 year period.</p>
+<p>Alaska shows a consistent ARIMA pattern for all of its regions. The best fit ARIMA models for AK regions all predict first difference. AK strongly supports a first order of the moving average part. Additionally, all AK regions have negative MA1 values. There is some substructure of ARIMA properties within AK. AK shows no area-wide consensus on the order of the autoregressive part, but Looking more closely at the autoregressive parameter values of Alaska regions, we see only positive AR1 values for the regions with at least 1 order of AR (wak,ci,pws). Wak, ci, and pws populations tend to be more related to the previous year than other AK regions are.</p>
+<p>West Coast regions do not have a consensus on ARIMA structure, with an exception of 0 differencing. AR1 and MA1 parameters range from negative to positive. This inconclusiveness is partly explained by the low sample size (n=3). East Asia regions are also inconsistent on the predicted order number of the moving average and autoregressive components. With only 3 East Asia regions with data, it is difficult to construe any pattern.</p>
+</section>
+</section>
+<section id="area-arima-models" class="level2" data-number="12.2">
+<h2 data-number="12.2" class="anchored" data-anchor-id="area-arima-models"><span class="header-section-number">12.2</span> Area ARIMA models</h2>
+<p>We fit ARIMA models to each area stock (scaled, summed, and logged) and report the fits and diagnostics in the table below.</p>
+<div class="cell">
+
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<caption>ARIMA fitting results and residual diagnostics for summed scaled sockeye areas</caption>
+<colgroup>
+<col style="width: 13%">
+<col style="width: 4%">
+<col style="width: 4%">
+<col style="width: 4%">
+<col style="width: 15%">
+<col style="width: 15%">
+<col style="width: 15%">
+<col style="width: 13%">
+<col style="width: 13%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">area</th>
+<th style="text-align: right;">p</th>
+<th style="text-align: right;">d</th>
+<th style="text-align: right;">q</th>
+<th style="text-align: right;">ar1</th>
+<th style="text-align: right;">ar2</th>
+<th style="text-align: right;">ma1</th>
+<th style="text-align: right;">ma2</th>
+<th style="text-align: right;">resid_p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Alaska</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.5975743</td>
+<td style="text-align: right;">-0.8201475</td>
+<td style="text-align: right;">-0.9625597</td>
+<td style="text-align: right;">0.7736959</td>
+<td style="text-align: right;">0.5803041</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">East_Asia</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-0.2890606</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">0.6259541</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">WC</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">0.0265574</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<section id="comparing-regional-arima-models-to-area-arima-models" class="level3" data-number="12.2.1">
+<h3 data-number="12.2.1" class="anchored" data-anchor-id="comparing-regional-arima-models-to-area-arima-models"><span class="header-section-number">12.2.1</span> Comparing regional ARIMA models to area ARIMA models</h3>
+<p>The area-wide ARIMA structures did not match their regional counterparts. The best fitting AK ARIMA model was a 2 order AR and MA and 1 order difference structure, which contrasts with the &lt;2 order AR and 1 order MA of the summarized ARIMA structure of the regional stocks. The East Asia ARIMA model has some semblance to the regional E Asia stocks, but this is inconclusive because of the low sample size. West Coast model had no ARIMA structure which does not to capture the non-stationarity of some NA WC regional stocks.</p>
+</section>
+</section>
+</section>
+<section id="discussion" class="level1" data-number="13">
+<h1 data-number="13"><span class="header-section-number">13</span> Discussion</h1>
+<p>Overall, the sockeye stocks population trajectories are clearly not stationary. All regions benefit from ARIMA models to understand their underlying temporal dynamics. There is no unifying ARIMA structure that can reliably describe all sockeye populations. This is unsurprising because of the wide spectrum of biological and environmental forces that impact sockeye across its species range. Scattered across the North Pacific are 3 sockeye ecotypes (kokanee, lake, sea/river) that often occur together in the same watershed. Some regions, such as Southern British Columbia, also undergo more human disturbance than other more “pristine” regions, such as Western Alaska.</p>
+<p>Alaska regional stocks seem to share similar temporal dynamics and this is especially true for wak, ci, and pws stocks. We do not what the mechanisms for the shared pattern of these 3 stocks, which are not spatially adjacent to each other. We did not detect reliably, representative ARIMA structures for both the West Coast and East Asia stocks. The low sample size of 3 for both areas is a likely reason for the inconclusiveness.</p>
+<p>Interestingly, the area-wide ARIMA structures did not confirm the area-summarized regional ARIMA ones. Summing the scaled totals by area seems to wash away the temporal dynamics within each region and do not describe the general ARIMA structure and diversity of structures within areas. A next step would explore the potential area-wide ARIMA model candidates for each area since we looked only at the best fitting ones.</p>
+</section>
+<section id="description-of-each-team-members-contributions" class="level1" data-number="14">
+<h1 data-number="14"><span class="header-section-number">14</span> Description of each team member’s contributions</h1>
+<p>Terrance did most of it, Karl did stationarity section.</p>
+
+
+<!-- -->
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../Lab-1/Final_Write_ups/Lab-1-team-3_final.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Team 3</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../../Lab-2/Lab2-MARSS.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Lab Intro</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb2" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> Team 4</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> Lab 1 Forecasting with ARIMA models</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Terrance Wang (SAFS), Karl Veggerby (SAFS)"</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="an">output:</span><span class="co"> </span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">  html_document:</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">    code-folding: true</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co">    toc_float: true</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="in">```{r include=FALSE}</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tseries)</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">dplyr.summarise.inform =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="fu"># Lab 1: ARIMA models</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>Team member names: Terrance Wang (SAFS), Karl Veggerby (SAFS)</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="fu"># Data</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>Ruggerone &amp; Irvine Data. We will focus on sockeye salmon and all their 15 regional stocks in the North Pacific. </span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a><span class="fu"># Question your team will address</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>What is the autoregressive structure for sockeye salmon? Is there a general autoregressive structure to describe all sockeye salmon regional stocks? Are there similarities and differences within and among North American West Coast, Alaska, and East Asian sockeye stocks? </span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Do different summarizing approaches of fitting ARIMA confirm the answers for the above questions?</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a><span class="fu"># Method you will use</span></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Fit ARIMA models for individual regional stocks and summed area stocks. Compare ARIMA structures and parameters of all regions and of larger areas. Compare results between the individual regional stocks and summed area stocks.</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a><span class="fu">### Initial plan</span></span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>We will fit ARIMA models for each of the sockeye regional stocks with the Box Jenkins method, which includes selecting the model form, estimating the parameters, and diagnosing the model. We will then compare the parameters of the individual ARIMA model structure among regional stocks and larger area aggregations with summary statistics and plots.  </span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>We will also fit ARIMA models for each of the 3 areas by summing a scaled time series of each of the regions. We will then compare these area-wide ARIMA models to the summary of regional models. </span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a><span class="fu">### What you actually did</span></span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>The first step of the plan was relatively straightforward. The interpretation of each regional ARIMA model and comparing them within and among areas was not statistically rigorous, but hopefully still informative. </span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>The second step of our initial plan was difficult to defend. Comparing and interpreting results among ARIMA models at different spatial scales did not seem statistically kosher, but we still proceeded anyways. </span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a><span class="fu"># Diagnostics and preliminary exploration</span></span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a><span class="fu">### Massage the data</span></span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a><span class="co"># read in data</span></span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a>rug_path <span class="ot">=</span> <span class="fu">file.path</span>(<span class="fu">here</span>(), <span class="st">'Lab-1'</span>,<span class="st">'Data_Images'</span>,<span class="st">'ruggerone_data.rds'</span>)</span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a>ruggerone_data <span class="ot">=</span> <span class="fu">readRDS</span>(rug_path)</span>
+<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a><span class="co"># get sockeye data per region</span></span>
+<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a>sockeye_data<span class="ot">=</span>ruggerone_data <span class="sc">%&gt;%</span> </span>
+<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(region) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a>  <span class="co"># scale data so all regions have equal weighting</span></span>
+<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">returns_scale =</span> <span class="fu">scale</span>(returns, <span class="at">center =</span> <span class="cn">FALSE</span>),</span>
+<span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a>    <span class="at">lnreturns=</span><span class="fu">log</span>(returns_scale)) <span class="sc">%&gt;%</span></span>
+<span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a>  <span class="co"># do not include NA or all 0 data</span></span>
+<span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(species<span class="sc">==</span><span class="st">"sockeye"</span> <span class="sc">&amp;</span> <span class="sc">!</span>region <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"korea"</span>,<span class="st">"japan"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a>    <span class="at">area =</span> <span class="fu">case_match</span>(</span>
+<span id="cb2-70"><a href="#cb2-70" aria-hidden="true" tabindex="-1"></a>      region, </span>
+<span id="cb2-71"><a href="#cb2-71" aria-hidden="true" tabindex="-1"></a>      <span class="fu">c</span>(<span class="st">"japan"</span>, <span class="st">"korea"</span>, <span class="st">"m_i"</span>, <span class="st">"e_kam"</span>, <span class="st">"w_kam"</span>) <span class="sc">~</span> <span class="st">"East_Asia"</span>,</span>
+<span id="cb2-72"><a href="#cb2-72" aria-hidden="true" tabindex="-1"></a>      <span class="fu">c</span>(<span class="st">"wak"</span>, <span class="st">"s_pen"</span>, <span class="st">"kod"</span>, <span class="st">"ci"</span>, <span class="st">"pws"</span>, <span class="st">"seak"</span>) <span class="sc">~</span> <span class="st">"Alaska"</span>,</span>
+<span id="cb2-73"><a href="#cb2-73" aria-hidden="true" tabindex="-1"></a>      <span class="fu">c</span>(<span class="st">"nbc"</span>, <span class="st">"sbc"</span>, <span class="st">"wa"</span>, <span class="st">"wc"</span>) <span class="sc">~</span> <span class="st">"WC"</span>,</span>
+<span id="cb2-74"><a href="#cb2-74" aria-hidden="true" tabindex="-1"></a>      <span class="at">.default =</span> region</span>
+<span id="cb2-75"><a href="#cb2-75" aria-hidden="true" tabindex="-1"></a>    ))</span>
+<span id="cb2-76"><a href="#cb2-76" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-77"><a href="#cb2-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-78"><a href="#cb2-78" aria-hidden="true" tabindex="-1"></a><span class="fu">### Plot the data</span></span>
+<span id="cb2-81"><a href="#cb2-81" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb2-82"><a href="#cb2-82" aria-hidden="true" tabindex="-1"></a>sockeye_data <span class="sc">%&gt;%</span> </span>
+<span id="cb2-83"><a href="#cb2-83" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>year, <span class="at">y=</span>lnreturns)) <span class="sc">+</span> </span>
+<span id="cb2-84"><a href="#cb2-84" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
+<span id="cb2-85"><a href="#cb2-85" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggtitle</span>(<span class="st">"log abundance by region"</span>)<span class="sc">+</span></span>
+<span id="cb2-86"><a href="#cb2-86" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span>region,<span class="at">scales =</span> <span class="st">"free"</span>) <span class="sc">+</span> <span class="fu">theme_bw</span>()</span>
+<span id="cb2-87"><a href="#cb2-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-88"><a href="#cb2-88" aria-hidden="true" tabindex="-1"></a>sockeye_data_area_sum <span class="ot">=</span> sockeye_data <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(area,year) <span class="sc">%&gt;%</span></span>
+<span id="cb2-89"><a href="#cb2-89" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">lntotal =</span> <span class="fu">log</span>(<span class="fu">sum</span>(returns_scale, <span class="at">na.rm=</span><span class="cn">TRUE</span>))) </span>
+<span id="cb2-90"><a href="#cb2-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-91"><a href="#cb2-91" aria-hidden="true" tabindex="-1"></a>sockeye_data_area_sum <span class="sc">%&gt;%</span> </span>
+<span id="cb2-92"><a href="#cb2-92" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>year, <span class="at">y=</span>lntotal)) <span class="sc">+</span> </span>
+<span id="cb2-93"><a href="#cb2-93" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
+<span id="cb2-94"><a href="#cb2-94" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggtitle</span>(<span class="st">"log abundance by area"</span>)<span class="sc">+</span></span>
+<span id="cb2-95"><a href="#cb2-95" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span>area)<span class="sc">+</span> <span class="fu">theme_bw</span>()</span>
+<span id="cb2-96"><a href="#cb2-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-97"><a href="#cb2-97" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-98"><a href="#cb2-98" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-99"><a href="#cb2-99" aria-hidden="true" tabindex="-1"></a>At the regional level, systematic changes in the mean are present in many of the stocks (e.g., nbc, w_kam, kod). There are a few increasing means and some random-walk-like ones. There is a strong linear trend in the ci, kod, and s_pen regions. Changes in the variance may also be present in a few stocks (e.g., wak, kod). 4-year period cycles are possible in several regions (e.g., wak, sbc). </span>
+<span id="cb2-100"><a href="#cb2-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-101"><a href="#cb2-101" aria-hidden="true" tabindex="-1"></a>At the area-wide level, Alaska, East Asia, and NA West Coast all exhibit systematic changes. There are some similarities among areas. Alaska and NA West Coast share periodic variations. Alaska and East Asia both have increasing regional stocks. There also differences among areas, such as the decreasing trend and increasing variance in the West Coast regional stocks.</span>
+<span id="cb2-102"><a href="#cb2-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-103"><a href="#cb2-103" aria-hidden="true" tabindex="-1"></a>From these plots, we interpret that there is likely non-stationarity at both the regional and area-wide scale, and proceed with our analysis.  </span>
+<span id="cb2-104"><a href="#cb2-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-105"><a href="#cb2-105" aria-hidden="true" tabindex="-1"></a><span class="fu">### Use ACF and PACF</span></span>
+<span id="cb2-108"><a href="#cb2-108" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb2-109"><a href="#cb2-109" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(forecast)</span>
+<span id="cb2-110"><a href="#cb2-110" aria-hidden="true" tabindex="-1"></a><span class="co"># run ACF and PACF for each region, massage data into longer format for ggplotting</span></span>
+<span id="cb2-111"><a href="#cb2-111" aria-hidden="true" tabindex="-1"></a>sockeye_acf_pacf <span class="ot">=</span> sockeye_data <span class="sc">%&gt;%</span> </span>
+<span id="cb2-112"><a href="#cb2-112" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(region) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-113"><a href="#cb2-113" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">list_acf=</span><span class="fu">list</span>(<span class="fu">acf</span>(lnreturns, <span class="at">plot=</span><span class="cn">FALSE</span>)),</span>
+<span id="cb2-114"><a href="#cb2-114" aria-hidden="true" tabindex="-1"></a>            <span class="at">list_pacf=</span><span class="fu">list</span>(<span class="fu">pacf</span>(lnreturns, <span class="at">plot=</span><span class="cn">FALSE</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb2-115"><a href="#cb2-115" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">acf_lnreturns=</span>purrr<span class="sc">::</span><span class="fu">map</span>(list_acf, <span class="sc">~</span><span class="fu">as.numeric</span>(.x<span class="sc">$</span>acf)),</span>
+<span id="cb2-116"><a href="#cb2-116" aria-hidden="true" tabindex="-1"></a>         <span class="co"># add 1 to first value of PCF, one of the weird things Mark mentioned</span></span>
+<span id="cb2-117"><a href="#cb2-117" aria-hidden="true" tabindex="-1"></a>         <span class="at">pacf_lnreturns=</span>purrr<span class="sc">::</span><span class="fu">map</span>(list_pacf, <span class="sc">~</span><span class="fu">as.numeric</span>(<span class="fu">c</span>(<span class="dv">0</span>,.x<span class="sc">$</span>acf)))) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-118"><a href="#cb2-118" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">c</span>(list_acf,list_pacf)) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-119"><a href="#cb2-119" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(<span class="fu">c</span>(acf_lnreturns,pacf_lnreturns)) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-120"><a href="#cb2-120" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(region) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-121"><a href="#cb2-121" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">lag=</span><span class="fu">row_number</span>() <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb2-122"><a href="#cb2-122" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols=</span><span class="fu">c</span>(acf_lnreturns,pacf_lnreturns),</span>
+<span id="cb2-123"><a href="#cb2-123" aria-hidden="true" tabindex="-1"></a>               <span class="at">values_to =</span> <span class="st">"cf"</span>,</span>
+<span id="cb2-124"><a href="#cb2-124" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">"cf_type"</span>)</span>
+<span id="cb2-125"><a href="#cb2-125" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-126"><a href="#cb2-126" aria-hidden="true" tabindex="-1"></a>sockeye_ci <span class="ot">=</span> sockeye_data <span class="sc">%&gt;%</span> </span>
+<span id="cb2-127"><a href="#cb2-127" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(region) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-128"><a href="#cb2-128" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">ci =</span> <span class="fu">qnorm</span>((<span class="dv">1</span> <span class="sc">+</span> <span class="fl">0.95</span>)<span class="sc">/</span><span class="dv">2</span>)<span class="sc">/</span><span class="fu">sqrt</span>(<span class="fu">n</span>()))</span>
+<span id="cb2-129"><a href="#cb2-129" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-130"><a href="#cb2-130" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(sockeye_acf_pacf,<span class="fu">aes</span>(<span class="at">x=</span>lag, <span class="at">y=</span>cf, <span class="at">fill=</span>cf_type)) <span class="sc">+</span></span>
+<span id="cb2-131"><a href="#cb2-131" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat=</span><span class="st">"identity"</span>, <span class="at">position =</span> <span class="st">'dodge'</span>,<span class="at">width=</span><span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb2-132"><a href="#cb2-132" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>) <span class="sc">+</span></span>
+<span id="cb2-133"><a href="#cb2-133" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">data =</span> sockeye_ci, <span class="fu">aes</span>(<span class="at">yintercept =</span> <span class="sc">-</span>ci), <span class="at">color=</span><span class="st">"blue"</span>, <span class="at">linetype=</span><span class="st">"dotted"</span>) <span class="sc">+</span></span>
+<span id="cb2-134"><a href="#cb2-134" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">data =</span> sockeye_ci, <span class="fu">aes</span>(<span class="at">yintercept =</span> ci), <span class="at">color=</span><span class="st">"blue"</span>, <span class="at">linetype=</span><span class="st">"dotted"</span>) <span class="sc">+</span></span>
+<span id="cb2-135"><a href="#cb2-135" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="st">"Lag"</span>, <span class="at">y=</span><span class="st">"ACF"</span>) <span class="sc">+</span></span>
+<span id="cb2-136"><a href="#cb2-136" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>region) <span class="sc">+</span> <span class="fu">theme_bw</span>()</span>
+<span id="cb2-137"><a href="#cb2-137" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-138"><a href="#cb2-138" aria-hidden="true" tabindex="-1"></a>A handful of regions (e.g., ci, seak) show ACF with a long tail and PACFs that cut off at 1-3 orders, which may indicate some autoregressive structure. Other regions (e.g., pws, m_i) have a sharp cut off with ACF and tailing PACFs, which may suggest a moving average structure. Some regions (s_pen,w_kam,kod) show long tails for both ACF and PACF, suggesting ARMA structure. A few regions show periodic trends (negative AR parameters) from their oscillating correlations factors. </span>
+<span id="cb2-139"><a href="#cb2-139" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-140"><a href="#cb2-140" aria-hidden="true" tabindex="-1"></a><span class="fu">### Test for stationarity</span></span>
+<span id="cb2-141"><a href="#cb2-141" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-142"><a href="#cb2-142" aria-hidden="true" tabindex="-1"></a>We ran stationarity tests at the area-wide level for simplicity. </span>
+<span id="cb2-143"><a href="#cb2-143" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-144"><a href="#cb2-144" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, warning=FALSE, message=FALSE}</span></span>
+<span id="cb2-145"><a href="#cb2-145" aria-hidden="true" tabindex="-1"></a><span class="co"># stationarity tests</span></span>
+<span id="cb2-146"><a href="#cb2-146" aria-hidden="true" tabindex="-1"></a><span class="co"># subdata_sockeye&lt;-subdata %&gt;% filter(species=="sockeye")</span></span>
+<span id="cb2-147"><a href="#cb2-147" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-148"><a href="#cb2-148" aria-hidden="true" tabindex="-1"></a><span class="co"># can't get select to work here</span></span>
+<span id="cb2-149"><a href="#cb2-149" aria-hidden="true" tabindex="-1"></a>alaska_sockeye<span class="ot">&lt;-</span>sockeye_data_area_sum <span class="sc">%&gt;%</span> </span>
+<span id="cb2-150"><a href="#cb2-150" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(area<span class="sc">==</span><span class="st">"Alaska"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb2-151"><a href="#cb2-151" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(lntotal)</span>
+<span id="cb2-152"><a href="#cb2-152" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-153"><a href="#cb2-153" aria-hidden="true" tabindex="-1"></a><span class="co"># dickey fuller test for stationarity alaska</span></span>
+<span id="cb2-154"><a href="#cb2-154" aria-hidden="true" tabindex="-1"></a>alaska_sockeye_vec<span class="ot">&lt;-</span>alaska_sockeye<span class="sc">$</span>lntotal</span>
+<span id="cb2-155"><a href="#cb2-155" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-156"><a href="#cb2-156" aria-hidden="true" tabindex="-1"></a>ak_adf <span class="ot">=</span> <span class="fu">adf.test</span>(alaska_sockeye_vec)</span>
+<span id="cb2-157"><a href="#cb2-157" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-158"><a href="#cb2-158" aria-hidden="true" tabindex="-1"></a><span class="co"># do first difference to see if we can get to stationarity</span></span>
+<span id="cb2-159"><a href="#cb2-159" aria-hidden="true" tabindex="-1"></a>alaska_sockeye_vec_1diff<span class="ot">&lt;-</span><span class="fu">diff</span>(alaska_sockeye_vec)</span>
+<span id="cb2-160"><a href="#cb2-160" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-161"><a href="#cb2-161" aria-hidden="true" tabindex="-1"></a>ak_adf_d1 <span class="ot">=</span> <span class="fu">adf.test</span>(alaska_sockeye_vec_1diff)</span>
+<span id="cb2-162"><a href="#cb2-162" aria-hidden="true" tabindex="-1"></a><span class="co"># doing a first difference successful for Alaska</span></span>
+<span id="cb2-163"><a href="#cb2-163" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-164"><a href="#cb2-164" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-165"><a href="#cb2-165" aria-hidden="true" tabindex="-1"></a><span class="co"># dickey fuller test for stationarity east asia</span></span>
+<span id="cb2-166"><a href="#cb2-166" aria-hidden="true" tabindex="-1"></a>asia_sockeye<span class="ot">&lt;-</span>sockeye_data_area_sum <span class="sc">%&gt;%</span> </span>
+<span id="cb2-167"><a href="#cb2-167" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(area<span class="sc">==</span><span class="st">"East_Asia"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb2-168"><a href="#cb2-168" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(lntotal)</span>
+<span id="cb2-169"><a href="#cb2-169" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-170"><a href="#cb2-170" aria-hidden="true" tabindex="-1"></a>asia_sockeye_vec<span class="ot">&lt;-</span>asia_sockeye<span class="sc">$</span>lntotal</span>
+<span id="cb2-171"><a href="#cb2-171" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-172"><a href="#cb2-172" aria-hidden="true" tabindex="-1"></a>ea_adf <span class="ot">=</span> <span class="fu">adf.test</span>(asia_sockeye_vec)</span>
+<span id="cb2-173"><a href="#cb2-173" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-174"><a href="#cb2-174" aria-hidden="true" tabindex="-1"></a>asia_sockeye_vec_1diff<span class="ot">&lt;-</span><span class="fu">diff</span>(asia_sockeye_vec)</span>
+<span id="cb2-175"><a href="#cb2-175" aria-hidden="true" tabindex="-1"></a>ea_adf_d1 <span class="ot">=</span> <span class="fu">adf.test</span>(asia_sockeye_vec_1diff)</span>
+<span id="cb2-176"><a href="#cb2-176" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-177"><a href="#cb2-177" aria-hidden="true" tabindex="-1"></a><span class="co"># dickey fuller test for stationarity west coast</span></span>
+<span id="cb2-178"><a href="#cb2-178" aria-hidden="true" tabindex="-1"></a>wc_sockeye<span class="ot">&lt;-</span>sockeye_data_area_sum <span class="sc">%&gt;%</span> </span>
+<span id="cb2-179"><a href="#cb2-179" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(area<span class="sc">==</span><span class="st">"WC"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb2-180"><a href="#cb2-180" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(lntotal)</span>
+<span id="cb2-181"><a href="#cb2-181" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-182"><a href="#cb2-182" aria-hidden="true" tabindex="-1"></a>wc_sockeye_vec<span class="ot">&lt;-</span>wc_sockeye<span class="sc">$</span>lntotal</span>
+<span id="cb2-183"><a href="#cb2-183" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-184"><a href="#cb2-184" aria-hidden="true" tabindex="-1"></a>wc_adf <span class="ot">=</span> <span class="fu">adf.test</span>(wc_sockeye_vec)</span>
+<span id="cb2-185"><a href="#cb2-185" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-186"><a href="#cb2-186" aria-hidden="true" tabindex="-1"></a>wc_sockeye_vec_1diff<span class="ot">&lt;-</span><span class="fu">diff</span>(wc_sockeye_vec)</span>
+<span id="cb2-187"><a href="#cb2-187" aria-hidden="true" tabindex="-1"></a>wc_adf_d1 <span class="ot">=</span> <span class="fu">adf.test</span>(wc_sockeye_vec_1diff)</span>
+<span id="cb2-188"><a href="#cb2-188" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-189"><a href="#cb2-189" aria-hidden="true" tabindex="-1"></a><span class="co"># confirm with forcast </span></span>
+<span id="cb2-190"><a href="#cb2-190" aria-hidden="true" tabindex="-1"></a>ak_nd <span class="ot">=</span> forecast<span class="sc">::</span><span class="fu">ndiffs</span>(alaska_sockeye_vec)</span>
+<span id="cb2-191"><a href="#cb2-191" aria-hidden="true" tabindex="-1"></a>ea_nd <span class="ot">=</span> forecast<span class="sc">::</span><span class="fu">ndiffs</span>(asia_sockeye_vec)</span>
+<span id="cb2-192"><a href="#cb2-192" aria-hidden="true" tabindex="-1"></a>wc_nd <span class="ot">=</span> forecast<span class="sc">::</span><span class="fu">ndiffs</span>(wc_sockeye_vec)</span>
+<span id="cb2-193"><a href="#cb2-193" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-194"><a href="#cb2-194" aria-hidden="true" tabindex="-1"></a>adf_tbl <span class="ot">=</span> <span class="fu">data.frame</span>(<span class="at">Region=</span><span class="fu">c</span>(<span class="st">"AK"</span>,<span class="st">"E_Asia"</span>,<span class="st">"US_WC"</span>), </span>
+<span id="cb2-195"><a href="#cb2-195" aria-hidden="true" tabindex="-1"></a>           <span class="at">DF_Test_diff0_p =</span> <span class="fu">c</span>(ak_adf<span class="sc">$</span>p.value,ea_adf<span class="sc">$</span>p.value,wc_adf<span class="sc">$</span>p.value), </span>
+<span id="cb2-196"><a href="#cb2-196" aria-hidden="true" tabindex="-1"></a>           <span class="at">DF_Test_diff1_p =</span> <span class="fu">c</span>(ak_adf_d1<span class="sc">$</span>p.value,ea_adf_d1<span class="sc">$</span>p.value,wc_adf_d1<span class="sc">$</span>p.value), </span>
+<span id="cb2-197"><a href="#cb2-197" aria-hidden="true" tabindex="-1"></a>           <span class="at">N_pred_diffs =</span> <span class="fu">c</span>(ak_nd,ea_nd,wc_nd))</span>
+<span id="cb2-198"><a href="#cb2-198" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-199"><a href="#cb2-199" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(adf_tbl)</span>
+<span id="cb2-200"><a href="#cb2-200" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-201"><a href="#cb2-201" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-202"><a href="#cb2-202" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-203"><a href="#cb2-203" aria-hidden="true" tabindex="-1"></a>The Dickey-Fuller tests for each of the 3 areas do not reject the null hypothesis that the data is non-stationary. Differencing all 3 areas by 1 order makes the sockeye abundance stationary, suggesting random walk characteristics. The unit root tests of estimated order of differencing confirms the D-F tests for Alaska and East Asia, but not NA West Coast. The NA West Coast does have a non-moving mean, which partly explains the difference between D-F test and unit root test. </span>
+<span id="cb2-204"><a href="#cb2-204" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-205"><a href="#cb2-205" aria-hidden="true" tabindex="-1"></a>Altogether, the abundance plots, ACF and PCF plots, and stationarity tests demonstrate that the abundances of the regional stocks can be explained by some combination of auto-regressive, differencing, and moving average components. For this reason, we proceed forward with fitting ARIMA models to each of the regional stocks. </span>
+<span id="cb2-206"><a href="#cb2-206" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-207"><a href="#cb2-207" aria-hidden="true" tabindex="-1"></a><span class="fu"># Results</span></span>
+<span id="cb2-208"><a href="#cb2-208" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-209"><a href="#cb2-209" aria-hidden="true" tabindex="-1"></a><span class="fu">## Regional ARIMA models</span></span>
+<span id="cb2-210"><a href="#cb2-210" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-211"><a href="#cb2-211" aria-hidden="true" tabindex="-1"></a>We fit ARIMA models to each individual regional stock and report the fits and diagnostics in the table below. </span>
+<span id="cb2-212"><a href="#cb2-212" aria-hidden="true" tabindex="-1"></a><span class="in">```{r,results='hide',fig.show='hide'}</span></span>
+<span id="cb2-213"><a href="#cb2-213" aria-hidden="true" tabindex="-1"></a><span class="co"># make a data frame to fill in values for each stock</span></span>
+<span id="cb2-214"><a href="#cb2-214" aria-hidden="true" tabindex="-1"></a>stock_arima <span class="ot">=</span> <span class="fu">data.frame</span>(<span class="fu">matrix</span>(<span class="at">ncol =</span> <span class="dv">4</span>))</span>
+<span id="cb2-215"><a href="#cb2-215" aria-hidden="true" tabindex="-1"></a>names <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"region"</span>,<span class="st">"p"</span>,<span class="st">"d"</span>,<span class="st">"q"</span>)</span>
+<span id="cb2-216"><a href="#cb2-216" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(stock_arima) <span class="ot">=</span> names</span>
+<span id="cb2-217"><a href="#cb2-217" aria-hidden="true" tabindex="-1"></a>sock_stocks <span class="ot">=</span> <span class="fu">unique</span>(sockeye_data<span class="sc">$</span>region)</span>
+<span id="cb2-218"><a href="#cb2-218" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-219"><a href="#cb2-219" aria-hidden="true" tabindex="-1"></a><span class="co"># loop through each stock and auto arima and save outputs</span></span>
+<span id="cb2-220"><a href="#cb2-220" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(sock_stocks)){</span>
+<span id="cb2-221"><a href="#cb2-221" aria-hidden="true" tabindex="-1"></a><span class="co"># subset data to each region</span></span>
+<span id="cb2-222"><a href="#cb2-222" aria-hidden="true" tabindex="-1"></a>stock<span class="ot">=</span>sock_stocks[i]</span>
+<span id="cb2-223"><a href="#cb2-223" aria-hidden="true" tabindex="-1"></a>stock_data <span class="ot">=</span> sockeye_data<span class="sc">%&gt;%</span> <span class="fu">filter</span>(region<span class="sc">==</span>stock)</span>
+<span id="cb2-224"><a href="#cb2-224" aria-hidden="true" tabindex="-1"></a>datts <span class="ot">=</span> <span class="fu">ts</span>(stock_data<span class="sc">$</span>lnreturns, <span class="at">start=</span>stock_data<span class="sc">$</span>year[<span class="dv">1</span>])</span>
+<span id="cb2-225"><a href="#cb2-225" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-226"><a href="#cb2-226" aria-hidden="true" tabindex="-1"></a><span class="co"># arima tests </span></span>
+<span id="cb2-227"><a href="#cb2-227" aria-hidden="true" tabindex="-1"></a>mod <span class="ot">=</span> <span class="fu">auto.arima</span>(datts)</span>
+<span id="cb2-228"><a href="#cb2-228" aria-hidden="true" tabindex="-1"></a>mod<span class="sc">$</span>coef</span>
+<span id="cb2-229"><a href="#cb2-229" aria-hidden="true" tabindex="-1"></a>arima_order <span class="ot">=</span> <span class="fu">arimaorder</span>(mod)</span>
+<span id="cb2-230"><a href="#cb2-230" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-231"><a href="#cb2-231" aria-hidden="true" tabindex="-1"></a><span class="co"># look at model resids</span></span>
+<span id="cb2-232"><a href="#cb2-232" aria-hidden="true" tabindex="-1"></a>resid <span class="ot">=</span> <span class="fu">checkresiduals</span>(mod,<span class="at">plot=</span>F)</span>
+<span id="cb2-233"><a href="#cb2-233" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-234"><a href="#cb2-234" aria-hidden="true" tabindex="-1"></a><span class="co"># save all this data</span></span>
+<span id="cb2-235"><a href="#cb2-235" aria-hidden="true" tabindex="-1"></a>stock_arima[i,<span class="fu">c</span>(<span class="st">"p"</span>,<span class="st">"d"</span>,<span class="st">"q"</span>)] <span class="ot">=</span> arima_order</span>
+<span id="cb2-236"><a href="#cb2-236" aria-hidden="true" tabindex="-1"></a>stock_arima[i,<span class="fu">c</span>(<span class="fu">names</span>(mod<span class="sc">$</span>coef))] <span class="ot">=</span> mod<span class="sc">$</span>coef</span>
+<span id="cb2-237"><a href="#cb2-237" aria-hidden="true" tabindex="-1"></a>stock_arima[i,<span class="fu">c</span>(<span class="st">"region"</span>)] <span class="ot">=</span> stock</span>
+<span id="cb2-238"><a href="#cb2-238" aria-hidden="true" tabindex="-1"></a>stock_arima[i,<span class="fu">c</span>(<span class="st">"resid_p"</span>)] <span class="ot">=</span> resid<span class="sc">$</span>p.value</span>
+<span id="cb2-239"><a href="#cb2-239" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-240"><a href="#cb2-240" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-241"><a href="#cb2-241" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-242"><a href="#cb2-242" aria-hidden="true" tabindex="-1"></a>stock_arima_area <span class="ot">=</span> stock_arima <span class="sc">%&gt;%</span> </span>
+<span id="cb2-243"><a href="#cb2-243" aria-hidden="true" tabindex="-1"></a>  <span class="co"># fill in NAs with 0s</span></span>
+<span id="cb2-244"><a href="#cb2-244" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate_if</span>(is.numeric, <span class="sc">~</span><span class="fu">replace_na</span>(., <span class="dv">0</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-245"><a href="#cb2-245" aria-hidden="true" tabindex="-1"></a>  <span class="co"># add area</span></span>
+<span id="cb2-246"><a href="#cb2-246" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb2-247"><a href="#cb2-247" aria-hidden="true" tabindex="-1"></a>    <span class="at">area =</span> <span class="fu">case_match</span>(</span>
+<span id="cb2-248"><a href="#cb2-248" aria-hidden="true" tabindex="-1"></a>      region, </span>
+<span id="cb2-249"><a href="#cb2-249" aria-hidden="true" tabindex="-1"></a>      <span class="fu">c</span>(<span class="st">"japan"</span>, <span class="st">"korea"</span>, <span class="st">"m_i"</span>, <span class="st">"e_kam"</span>, <span class="st">"w_kam"</span>) <span class="sc">~</span> <span class="st">"East_Asia"</span>,</span>
+<span id="cb2-250"><a href="#cb2-250" aria-hidden="true" tabindex="-1"></a>      <span class="fu">c</span>(<span class="st">"wak"</span>, <span class="st">"s_pen"</span>, <span class="st">"kod"</span>, <span class="st">"ci"</span>, <span class="st">"pws"</span>, <span class="st">"seak"</span>) <span class="sc">~</span> <span class="st">"Alaska"</span>,</span>
+<span id="cb2-251"><a href="#cb2-251" aria-hidden="true" tabindex="-1"></a>      <span class="fu">c</span>(<span class="st">"nbc"</span>, <span class="st">"sbc"</span>, <span class="st">"wa"</span>, <span class="st">"wc"</span>) <span class="sc">~</span> <span class="st">"WC"</span>,</span>
+<span id="cb2-252"><a href="#cb2-252" aria-hidden="true" tabindex="-1"></a>      <span class="at">.default =</span> region)) </span>
+<span id="cb2-253"><a href="#cb2-253" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-256"><a href="#cb2-256" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb2-257"><a href="#cb2-257" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(stock_arima_area<span class="sc">%&gt;%</span> <span class="fu">select</span>(area,region, p, d, q,ar1,ar2,ma1,ma2,resid_p)<span class="sc">%&gt;%</span><span class="fu">arrange</span>(area),</span>
+<span id="cb2-258"><a href="#cb2-258" aria-hidden="true" tabindex="-1"></a>      <span class="at">caption =</span> <span class="st">"ARIMA fitting results and residual diagnostics for all sockeye regions"</span>)</span>
+<span id="cb2-259"><a href="#cb2-259" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-260"><a href="#cb2-260" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-261"><a href="#cb2-261" aria-hidden="true" tabindex="-1"></a>The best fitting ARIMA models show a wide diversity of structure. Similarities and differences within and among areas will be discussed in more detail in the next section. Residuals are generally stationary, meaning acceptable ARIMA fits, with a few exceptions (e.g., kod, sbc). Below, the example of w_kam shows that residuals show signs of stationarity like a stable mean, normal distribution of values, and little autocorrelation. Though there is some temporal pattern in the variance. </span>
+<span id="cb2-262"><a href="#cb2-262" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-263"><a href="#cb2-263" aria-hidden="true" tabindex="-1"></a><span class="in">```{r,message = FALSE,fig.cap = "Example of residual diagnostics of one of the regions"}</span></span>
+<span id="cb2-264"><a href="#cb2-264" aria-hidden="true" tabindex="-1"></a>resid <span class="ot">=</span> <span class="fu">checkresiduals</span>(mod,<span class="at">plot=</span>T)</span>
+<span id="cb2-265"><a href="#cb2-265" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-266"><a href="#cb2-266" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-267"><a href="#cb2-267" aria-hidden="true" tabindex="-1"></a><span class="in">```{r,fig.cap = c("ARIMA structure by area","AR parameters by area","MA parameters by area")}</span></span>
+<span id="cb2-268"><a href="#cb2-268" aria-hidden="true" tabindex="-1"></a><span class="co"># make into long format for ggplotting</span></span>
+<span id="cb2-269"><a href="#cb2-269" aria-hidden="true" tabindex="-1"></a>stock_gg_long <span class="ot">=</span> stock_arima_area <span class="sc">%&gt;%</span> </span>
+<span id="cb2-270"><a href="#cb2-270" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span><span class="fu">c</span>(region,area), <span class="at">names_to =</span> <span class="st">"parameter"</span>, <span class="at">values_to =</span> <span class="st">"param_est"</span>)</span>
+<span id="cb2-271"><a href="#cb2-271" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-272"><a href="#cb2-272" aria-hidden="true" tabindex="-1"></a><span class="co"># General ARIMA structure</span></span>
+<span id="cb2-273"><a href="#cb2-273" aria-hidden="true" tabindex="-1"></a>stock_gg_long <span class="sc">%&gt;%</span> <span class="fu">filter</span>(parameter <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"p"</span>,<span class="st">"d"</span>,<span class="st">"q"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb2-274"><a href="#cb2-274" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>param_est,<span class="at">fill=</span>area)) <span class="sc">+</span> <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
+<span id="cb2-275"><a href="#cb2-275" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(parameter),<span class="at">ncol=</span><span class="dv">1</span>) <span class="sc">+</span> <span class="fu">theme_bw</span>()</span>
+<span id="cb2-276"><a href="#cb2-276" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-277"><a href="#cb2-277" aria-hidden="true" tabindex="-1"></a><span class="co"># Autoregressive plot</span></span>
+<span id="cb2-278"><a href="#cb2-278" aria-hidden="true" tabindex="-1"></a>stock_gg_long <span class="sc">%&gt;%</span> <span class="fu">filter</span>(parameter <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"ar1"</span>,<span class="st">"ar2"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb2-279"><a href="#cb2-279" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>param_est,<span class="at">y=</span>area,<span class="at">color=</span>area)) <span class="sc">+</span> <span class="fu">geom_boxplot</span>(<span class="at">outlier.shape =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
+<span id="cb2-280"><a href="#cb2-280" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>()<span class="sc">+</span></span>
+<span id="cb2-281"><a href="#cb2-281" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(parameter),<span class="at">ncol=</span><span class="dv">1</span>, <span class="at">scales =</span> <span class="st">"free"</span>)<span class="sc">+</span> <span class="fu">theme_bw</span>()</span>
+<span id="cb2-282"><a href="#cb2-282" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-283"><a href="#cb2-283" aria-hidden="true" tabindex="-1"></a><span class="co"># Moving average plot</span></span>
+<span id="cb2-284"><a href="#cb2-284" aria-hidden="true" tabindex="-1"></a>stock_gg_long <span class="sc">%&gt;%</span> <span class="fu">filter</span>(parameter <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"ma1"</span>,<span class="st">"ma2"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb2-285"><a href="#cb2-285" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>param_est,<span class="at">y=</span>area,<span class="at">color=</span>area)) <span class="sc">+</span> <span class="fu">geom_boxplot</span>(<span class="at">outlier.shape =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
+<span id="cb2-286"><a href="#cb2-286" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>()<span class="sc">+</span></span>
+<span id="cb2-287"><a href="#cb2-287" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(parameter),<span class="at">ncol=</span><span class="dv">1</span>, <span class="at">scales =</span> <span class="st">"free"</span>)<span class="sc">+</span> <span class="fu">theme_bw</span>()</span>
+<span id="cb2-288"><a href="#cb2-288" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-289"><a href="#cb2-289" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-290"><a href="#cb2-290" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-291"><a href="#cb2-291" aria-hidden="true" tabindex="-1"></a><span class="fu">### Comparing regional ARIMA models within and among area</span></span>
+<span id="cb2-292"><a href="#cb2-292" aria-hidden="true" tabindex="-1"></a>The ARIMA structure for all sockeye stocks (ignoring area) do not show a clear pattern in AR, differencing, and MA. A slight majority of stocks support first order AR, differencing, and MA. When we look closer at the parameter values, there is a small tendency for sockeye to have positive AR1 values and negative MA1 values. This suggests sockeye populations are loosely related to the previous time step and deviate around the general trajectory with a 2 year period. </span>
+<span id="cb2-293"><a href="#cb2-293" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-294"><a href="#cb2-294" aria-hidden="true" tabindex="-1"></a>Alaska shows a consistent ARIMA pattern for all of its regions. The best fit ARIMA models for AK regions all predict first difference. AK strongly supports a first order of the moving average part. Additionally, all AK regions have negative MA1 values. There is some substructure of ARIMA properties within AK. AK shows no area-wide consensus on the order of the autoregressive part, but  Looking more closely at the autoregressive parameter values of Alaska regions, we see only positive AR1 values for the regions with at least 1 order of AR (wak,ci,pws). Wak, ci, and pws populations tend to be more related to the previous year than other AK regions are. </span>
+<span id="cb2-295"><a href="#cb2-295" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-296"><a href="#cb2-296" aria-hidden="true" tabindex="-1"></a>West Coast regions do not have a consensus on ARIMA structure, with an exception of 0 differencing. AR1 and MA1 parameters range from negative to positive. This inconclusiveness is partly explained by the low sample size (n=3). East Asia regions are also inconsistent on the predicted order number of the moving average and autoregressive components. With only 3 East Asia regions with data, it is difficult to construe any pattern.</span>
+<span id="cb2-297"><a href="#cb2-297" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-298"><a href="#cb2-298" aria-hidden="true" tabindex="-1"></a><span class="fu">## Area ARIMA models</span></span>
+<span id="cb2-299"><a href="#cb2-299" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-300"><a href="#cb2-300" aria-hidden="true" tabindex="-1"></a>We fit ARIMA models to each area stock (scaled, summed, and logged) and report the fits and diagnostics in the table below.</span>
+<span id="cb2-301"><a href="#cb2-301" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-302"><a href="#cb2-302" aria-hidden="true" tabindex="-1"></a><span class="in">```{r,results='hide',fig.show='hide'}</span></span>
+<span id="cb2-303"><a href="#cb2-303" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-304"><a href="#cb2-304" aria-hidden="true" tabindex="-1"></a>sockeye_data_area_sum</span>
+<span id="cb2-305"><a href="#cb2-305" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-306"><a href="#cb2-306" aria-hidden="true" tabindex="-1"></a>area_arima <span class="ot">=</span> <span class="fu">data.frame</span>(<span class="fu">matrix</span>(<span class="at">ncol =</span> <span class="dv">4</span>))</span>
+<span id="cb2-307"><a href="#cb2-307" aria-hidden="true" tabindex="-1"></a>names <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"region"</span>,<span class="st">"p"</span>,<span class="st">"d"</span>,<span class="st">"q"</span>)</span>
+<span id="cb2-308"><a href="#cb2-308" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(area_arima) <span class="ot">=</span> names</span>
+<span id="cb2-309"><a href="#cb2-309" aria-hidden="true" tabindex="-1"></a>sock_area <span class="ot">=</span> <span class="fu">unique</span>(sockeye_data_area_sum<span class="sc">$</span>area)</span>
+<span id="cb2-310"><a href="#cb2-310" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-311"><a href="#cb2-311" aria-hidden="true" tabindex="-1"></a><span class="co"># loop through each area and auto arima and save outputs</span></span>
+<span id="cb2-312"><a href="#cb2-312" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(sock_area)){</span>
+<span id="cb2-313"><a href="#cb2-313" aria-hidden="true" tabindex="-1"></a><span class="co"># subset data to each region</span></span>
+<span id="cb2-314"><a href="#cb2-314" aria-hidden="true" tabindex="-1"></a>area_tmp<span class="ot">=</span>sock_area[i]</span>
+<span id="cb2-315"><a href="#cb2-315" aria-hidden="true" tabindex="-1"></a>stock_data <span class="ot">=</span> sockeye_data_area_sum<span class="sc">%&gt;%</span> <span class="fu">filter</span>(area<span class="sc">==</span>area_tmp)</span>
+<span id="cb2-316"><a href="#cb2-316" aria-hidden="true" tabindex="-1"></a>datts <span class="ot">=</span> <span class="fu">ts</span>(stock_data<span class="sc">$</span>lntotal, <span class="at">start=</span>sockeye_data_area_sum<span class="sc">$</span>year[<span class="dv">1</span>])</span>
+<span id="cb2-317"><a href="#cb2-317" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-318"><a href="#cb2-318" aria-hidden="true" tabindex="-1"></a><span class="co"># arima tests </span></span>
+<span id="cb2-319"><a href="#cb2-319" aria-hidden="true" tabindex="-1"></a>mod <span class="ot">=</span> <span class="fu">auto.arima</span>(datts)</span>
+<span id="cb2-320"><a href="#cb2-320" aria-hidden="true" tabindex="-1"></a>mod<span class="sc">$</span>coef</span>
+<span id="cb2-321"><a href="#cb2-321" aria-hidden="true" tabindex="-1"></a>arima_order <span class="ot">=</span> <span class="fu">arimaorder</span>(mod)</span>
+<span id="cb2-322"><a href="#cb2-322" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-323"><a href="#cb2-323" aria-hidden="true" tabindex="-1"></a><span class="co"># look at model resids</span></span>
+<span id="cb2-324"><a href="#cb2-324" aria-hidden="true" tabindex="-1"></a>resid <span class="ot">=</span> <span class="fu">checkresiduals</span>(mod,<span class="at">plot=</span>F)</span>
+<span id="cb2-325"><a href="#cb2-325" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-326"><a href="#cb2-326" aria-hidden="true" tabindex="-1"></a><span class="co"># save all this data</span></span>
+<span id="cb2-327"><a href="#cb2-327" aria-hidden="true" tabindex="-1"></a>area_arima[i,<span class="fu">c</span>(<span class="st">"p"</span>,<span class="st">"d"</span>,<span class="st">"q"</span>)] <span class="ot">=</span> arima_order</span>
+<span id="cb2-328"><a href="#cb2-328" aria-hidden="true" tabindex="-1"></a>area_arima[i,<span class="fu">c</span>(<span class="fu">names</span>(mod<span class="sc">$</span>coef))] <span class="ot">=</span> mod<span class="sc">$</span>coef</span>
+<span id="cb2-329"><a href="#cb2-329" aria-hidden="true" tabindex="-1"></a>area_arima[i,<span class="fu">c</span>(<span class="st">"area"</span>)] <span class="ot">=</span> area_tmp</span>
+<span id="cb2-330"><a href="#cb2-330" aria-hidden="true" tabindex="-1"></a>area_arima[i,<span class="fu">c</span>(<span class="st">"resid_p"</span>)] <span class="ot">=</span> resid<span class="sc">$</span>p.value</span>
+<span id="cb2-331"><a href="#cb2-331" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-332"><a href="#cb2-332" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-333"><a href="#cb2-333" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-334"><a href="#cb2-334" aria-hidden="true" tabindex="-1"></a>area_arima<span class="ot">=</span>area_arima <span class="sc">%&gt;%</span> </span>
+<span id="cb2-335"><a href="#cb2-335" aria-hidden="true" tabindex="-1"></a>  <span class="co"># fill in NAs with 0s</span></span>
+<span id="cb2-336"><a href="#cb2-336" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate_if</span>(is.numeric, <span class="sc">~</span><span class="fu">replace_na</span>(., <span class="dv">0</span>))</span>
+<span id="cb2-337"><a href="#cb2-337" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-338"><a href="#cb2-338" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-339"><a href="#cb2-339" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-342"><a href="#cb2-342" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb2-343"><a href="#cb2-343" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(area_arima<span class="sc">%&gt;%</span> <span class="fu">select</span>(area, p, d, q,ar1,ar2,ma1,ma2,resid_p)<span class="sc">%&gt;%</span><span class="fu">arrange</span>(area),</span>
+<span id="cb2-344"><a href="#cb2-344" aria-hidden="true" tabindex="-1"></a>      <span class="at">caption =</span> <span class="st">"ARIMA fitting results and residual diagnostics for summed scaled sockeye areas"</span>)</span>
+<span id="cb2-345"><a href="#cb2-345" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-346"><a href="#cb2-346" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-347"><a href="#cb2-347" aria-hidden="true" tabindex="-1"></a><span class="fu">### Comparing regional ARIMA models to area ARIMA models</span></span>
+<span id="cb2-348"><a href="#cb2-348" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-349"><a href="#cb2-349" aria-hidden="true" tabindex="-1"></a>The area-wide ARIMA structures did not match their regional counterparts. The best fitting AK ARIMA model was a 2 order AR and MA and 1 order difference structure, which contrasts with the &lt;2 order AR and 1 order MA of the summarized ARIMA structure of the regional stocks. The East Asia ARIMA model has some semblance to the regional E Asia stocks, but this is inconclusive because of the low sample size. West Coast model had no ARIMA structure which does not to capture the non-stationarity of some NA WC regional stocks. </span>
+<span id="cb2-350"><a href="#cb2-350" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-351"><a href="#cb2-351" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-352"><a href="#cb2-352" aria-hidden="true" tabindex="-1"></a><span class="fu"># Discussion</span></span>
+<span id="cb2-353"><a href="#cb2-353" aria-hidden="true" tabindex="-1"></a>Overall, the sockeye stocks population trajectories are clearly not stationary. All regions benefit from ARIMA models to understand their underlying temporal dynamics. There is no unifying ARIMA structure that can reliably describe all sockeye populations. This is unsurprising because of the wide spectrum of biological and environmental forces that impact sockeye across its species range. Scattered across the North Pacific are 3 sockeye ecotypes (kokanee, lake, sea/river) that often occur together in the same watershed. Some regions, such as Southern British Columbia, also undergo more human disturbance than other more "pristine" regions, such as Western Alaska. </span>
+<span id="cb2-354"><a href="#cb2-354" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-355"><a href="#cb2-355" aria-hidden="true" tabindex="-1"></a>Alaska regional stocks seem to share similar temporal dynamics and this is especially true for wak, ci, and pws stocks. We do not what the  mechanisms for the shared pattern of these 3 stocks, which are not spatially adjacent to each other. We did not detect reliably, representative ARIMA structures for both the West Coast and East Asia stocks. The low sample size of 3 for both areas is a likely reason for the inconclusiveness.</span>
+<span id="cb2-356"><a href="#cb2-356" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-357"><a href="#cb2-357" aria-hidden="true" tabindex="-1"></a>Interestingly, the area-wide ARIMA structures did not confirm the area-summarized regional ARIMA ones. Summing the scaled totals by area seems to wash away the temporal dynamics within each region and do not describe the general ARIMA structure and diversity of structures within areas. A next step would explore the potential area-wide ARIMA model candidates for each area since we looked only at the best fitting ones. </span>
+<span id="cb2-358"><a href="#cb2-358" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-359"><a href="#cb2-359" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-360"><a href="#cb2-360" aria-hidden="true" tabindex="-1"></a><span class="fu"># Description of each team member's contributions</span></span>
+<span id="cb2-361"><a href="#cb2-361" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-362"><a href="#cb2-362" aria-hidden="true" tabindex="-1"></a>Terrance did most of it, Karl did stationarity section.</span>
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+</body></html>

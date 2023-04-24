@@ -1,5 +1,6 @@
 ---
-title: Lab 1 Forecasting with ARIMA models
+title: Lab Intro
+subtitle: Lab 1 Forecasting with ARIMA models
 author: E Holmes
 date: March 22, 2023
 output: 

@@ -1,7 +1,7 @@
 ---
-title: Lab 1 Forecasting with ARIMA models
-author: Veggerby, Wang
-date: April 10, 2023
+title: Team 4
+subtitle: Lab 1 Forecasting with ARIMA models
+author: "Terrance Wang (SAFS), Karl Veggerby (SAFS)"
 output: 
   html_document:
     code-folding: true
@@ -71,7 +71,8 @@ sockeye_data=ruggerone_data %>%
       c("nbc", "sbc", "wa", "wc") ~ "WC",
       .default = region
     ))
-    ```
+```
+
 ### Plot the data
 ```{r}
 sockeye_data %>% 
@@ -326,12 +327,12 @@ area_arima=area_arima %>%
   # fill in NAs with 0s
   mutate_if(is.numeric, ~replace_na(., 0))
 
-````
+```
 
-````{r}
+```{r}
 kable(area_arima%>% select(area, p, d, q,ar1,ar2,ma1,ma2,resid_p)%>%arrange(area),
       caption = "ARIMA fitting results and residual diagnostics for summed scaled sockeye areas")
-````
+```
 
 ### Comparing regional ARIMA models to area ARIMA models
 
