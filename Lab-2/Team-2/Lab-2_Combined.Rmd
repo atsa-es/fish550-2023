@@ -21,7 +21,7 @@ Each group has the same general tasks, but you will adapt them as you work on th
 
 Step 1: Estimating data that doesn't exist-- Terrance Step 2A: Testing temporal Z matrices (different run times vs. one pop)-- Terrance Step 2B: Testing spatial Z matrices (different spatial groupings vs. one pop)-- Liz Step 3: Adding in seasonality as a covariate (C/c matrix) -- Eric
 
-Describe what data set you will work with and any subsetting you decided on. For example, you may have decided to look only at a section of the ESU that your team was assigned.
+We analyzed the Steelhead (Lower Columbia ESU). We decided to exclude the Gorge Tributary winter run because there was only 1 short time series, and focused the 9 remaining runs that belonged to Cascade major population group. 
 
 # Methods
 
@@ -31,21 +31,140 @@ Address the following in your methods
 
     -   How are the x and y (data) related? 1 x for 1 y or will you assume 1 x for all y or 1 x for each major population group? How will you choose?
 
-We tested 4 different population groupings: one population, individual populations, spatial groupings, and groupings based on correlations
+We tested 5 different population groups hypotheses: one population, individual populations, run timing groups, spatial groups, and correlation groups. 
 
--   What will you assume about the U for the x's?
+One population
+$$
+\begin{bmatrix} y_{1} \\ y_{2} \\ \vdots \\y_{9} \end{bmatrix}_{t} = 
+\begin{bmatrix}1\\
+1\\
+\vdots\\
+\\ 
+1\end{bmatrix} 
+ x_{t}  + \mathbf{a} + \mathbf{v_t} \text{ where } \mathbf{v_t} \sim MVN(0, \mathbf{R})
+$$
 
-We tested the support for both equal and unequal population growth rates.
+$$
+\begin{bmatrix} x \end{bmatrix}_{t} = 
+\begin{bmatrix}1\\
+\end{bmatrix} 
+ x_{t-1}  + u + w_t \text{ where } w_t \sim N(0,q)
+$$
 
--   What will you assume about the Q matrix?
+Individual populations
+$$
+\begin{bmatrix} y_{1} \\ y_{2} \\ \vdots \\y_{9} \end{bmatrix}_{t} = 
+I_{9}
+\begin{bmatrix} x_{1} \\ x_{2} \\ \vdots \\x_{9} \end{bmatrix}_{t} + \mathbf{a} + \mathbf{v_t} \text{ where } \mathbf{v_t} \sim MVN(0, \mathbf{R})
+$$
+$$
+\begin{bmatrix} x_{1} \\
+x_{2} \\ 
+\vdots \\
+x_{9}
+\end{bmatrix}_{t}
+= 
+I_{9}
+\begin{bmatrix} x_{1} \\
+x_{2} \\ 
+\vdots \\
+x_{9}
+\end{bmatrix}_{t-1}  + \begin{bmatrix}u_{1}\\u_{2}\\ \vdots \\u_{9} \end{bmatrix}  + \mathbf{w_t} \text{ where } \mathbf{w_t} \sim MVN(0, \mathbf{Q})
+$$
+Run Timing Groups, Spatial Groups, Correlation Groups
+We provide the Z matrices for the 3 groupings below. 
+$$
+\begin{equation*}
+\begin{array}{rcccc}
+&Run Timing&Spatial&Correlation\\
+&\text{summer winter}&\text{Coweeman E-Fork-Lewis Kalama Cowlitz Washougal}&\text{Coweeman Kalama Cowlitz}\\
+\hline
+\begin{array}{r}\text{Coweeman - W}\\ \text{Fork E Lewis - W} \\ \text{Kalama - S} \\ \text{Kalama - W} \\ 
+\text{Lower Cowlitz - W} \\ \text{Toutle - W} \\ \text{Tilton - W} \\ \text{Upper Cowlitz - W} \\ \text{Washougal - W}\end{array}&
+\begin{bmatrix}
+0 & 1 \\
+0 & 1 \\
+1 & 0 \\
+0 & 1 \\
+0 & 1 \\
+0 & 1 \\
+0 & 1 \\
+0 & 1 \\
+0 & 1 \\
+\end{bmatrix}&
+\begin{bmatrix}
+1 & 0 & 0 & 0 &0 \\
+0 & 1 & 0 & 0 &0 \\
+0 & 0 & 1 & 0 &0 \\
+0 & 0 & 1 & 0 &0 \\
+0 & 0 & 0 & 1 &0 \\
+1 & 0 & 0 & 0 &0 \\
+0 & 0 & 0 & 1 &0 \\
+1 & 0 & 0 & 0 &0 \\
+0 & 0 & 0 & 0 &1 \\ 
+\end{bmatrix}&
+\begin{bmatrix}
+1 & 0 & 0 \\
+1 & 0 & 0 \\
+0 & 1 & 0 \\
+0 & 1 & 0 \\
+0 & 0 & 1 \\
+1 & 0 & 0 \\
+0 & 0 & 1 \\
+0 & 0 & 1 \\
+1 & 0 & 0
+\end{bmatrix}&
+\end{array}
+\end{equation*}
+$$
 
-We assumed that these populations were correlated through time and tested model support for unconstrained and equal variance covariance matrices.
+We assume that all models have identical observation errors, thus a diagonal and equal R matrix. 
+$$
+\mathbf{R} = 
+\begin{bmatrix} r & 0  & ...& 0\\
+0 & r &  ...& 0\\
+\vdots & 0 & \ddots & \vdots\\
+0 & 0 & 0  & r \end{bmatrix}
+$$
+For each model we test both equal and unequal biases for the states. We also assumed all states were correlated over time and test both equal var-cov and unconstrained process errors for each state.
 
--   Write out your assumptions as different models **in matrix form**, fit each and then compare these with AIC or AICc.
+Equal Bias
+$$
+\mathbf{u} = 
+\begin{bmatrix} u\\
+\vdots\\
+u_\end{bmatrix}
+$$
+Unequal Bias
+$$
+\mathbf{u} = 
+\begin{bmatrix} u_{1}\\
+\vdots\\
+u_{i}\end{bmatrix} \text{where i is # of states} 
+$$
 
-Our models are written in matrix form in the "Model Assumptions" section of the results.
-
--   Do your estimates differ depending on the assumptions you make about the structure of the data, i.e. you assumptions about the x's, Q, and U.
+Equal Variance-Covariance
+$$
+\begin{equation}
+\mathbf{Q}=\begin{bmatrix}
+    q & c & ... & c \\
+    c & q & \ddots & \vdots\\
+    \vdots & c & \ddots & c \\
+    c & c & ... & q \end{bmatrix}
+\end{equation} 
+\text{where # of rows is equal to # of states} 
+$$
+Unconstrained
+$$
+\begin{equation}
+\mathbf{Q}=\begin{bmatrix}
+    q_{1}& c_{1,2} & ... & c_{1,i} \\
+    c_{1,2} & q_{2} & \ddots & c_{2,i}\\
+    \vdots & \ddots & \ddots & \vdots \\
+    c_{1,i} & ... & c_{i-1,i} & q_{i} \end{bmatrix}
+\end{equation} 
+\text{where # of rows is equal to # of states} 
+$$
 
 # Data exploration
 
