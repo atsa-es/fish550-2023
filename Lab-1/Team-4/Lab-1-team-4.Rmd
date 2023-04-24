@@ -71,7 +71,8 @@ sockeye_data=ruggerone_data %>%
       c("nbc", "sbc", "wa", "wc") ~ "WC",
       .default = region
     ))
-    ```
+```
+
 ### Plot the data
 ```{r}
 sockeye_data %>% 
