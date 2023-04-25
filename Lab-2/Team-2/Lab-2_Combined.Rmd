@@ -19,8 +19,6 @@ Each group has the same general tasks, but you will adapt them as you work on th
 
 3.  Evaluate the evidence of cycling in the data. *We will talk about how to do this on the Tuesday after lab.*
 
-Step 1: Estimating data that doesn't exist-- Terrance Step 2A: Testing temporal Z matrices (different run times vs. one pop)-- Terrance Step 2B: Testing spatial Z matrices (different spatial groupings vs. one pop)-- Liz Step 3: Adding in seasonality as a covariate (C/c matrix) -- Eric
-
 We analyzed the Steelhead (Lower Columbia ESU). We decided to exclude the Gorge Tributary winter run because there was only 1 short time series, and focused the 9 remaining runs that belonged to Cascade major population group. 
 
 # Methods
@@ -176,6 +174,8 @@ library(dplyr)
 library(janitor)
 library(MARSS)
 library(forecast)
+library(broom)
+
 load(here::here("Lab-2", "Data_Images", "columbia-river.rda"))
 
 #Evolutionary Significant Units
@@ -235,14 +235,16 @@ dat <- dat[ order(row.names(dat)), ]## sort
 
 ## The simplest model
 
-Fitting the most simple model to help determine need to group populations: One big population with different observations (populations). Id
+Fitting the most simple model to help determine the need to group populations: One big population with different observations (populations). 
 
 ```{R}
+
 mod.list.0 <- list(B = matrix(1), U = matrix("u"), Q = matrix("q"), 
-    Z = matrix(1, 9, 1), A = "scaling", R = "diagonal and unequal", 
+    Z = matrix(1, 9, 1), A = "scaling", R = "diagonal and equal", 
     x0 = matrix("mu"), tinitx = 0)
 fit_simple <- MARSS(dat, model=mod.list.0, control=list(maxit=1000))
 autoplot(fit_simple, plot.type="fitted.ytT")
+
 ```
 
 We see that the simple model is not the best at fitting the population estimates for many of the populations (e.g., Upper Cowlitz winter, East Fork Lewis winter). Many of the residuals do not appear to be stationary.
@@ -321,23 +323,6 @@ names(Z.models) <- c("one_population","indiv_population","run_timing_groups",'sp
 # Also testing different process error varcovar matrices
 Q.models2 <- c("equalvarcov","unconstrained")
 
-# Process cycling terms
-# Each is on a 10-year cycle, will test orders 0-4
-# see Evaluating Cycling Section
-
-ct.models <- list(
-  c0 = "zero", # No cycling
-  
-  c1 = t(fourier(ts(1:ncol(dat), frequency = 10), K=1)), # seasonality follows a 1st order fourier series with the same # rows as y
- 
-  c2 = t(fourier(ts(1:ncol(dat), frequency = 10), K=2)), # seasonality follows a 2nd order fourier series
-  
-  c3 = t(fourier(ts(1:ncol(dat), frequency = 10), K=3)), # seasonality follows a 3rd order fourier series
-
-  c4 = t(fourier(ts(1:ncol(dat), frequency = 10), K=4)) # seasonality follows a 4rd order fourier series
-  )
-names(ct.models) <- c("no_cycling", "1st_order", "2nd_order", "3rd_order", "4th_order")
-
 # Bias terms
 u2 <- c("unequal", 'equal')
 
@@ -350,20 +335,19 @@ mod.list = list(
 
 ## MARSS Model Selection
 
-Run MARSS models
+Run MARSS models. 
 
 ```{r}
-# Added in another for loop to run through cycling options, be warned, this means there are 80 total models. It takes a long time to run
+
 out.tab <- NULL
 fits <- list()
 for(i in 1:length(Z.models)){
-  for (j in 1:length(ct.models)){
     for(Q.model in Q.models2){
       for(U.model in u2){
-      fit.model = c(list(Z=Z.models[[i]], c=ct.models[[j]], Q=Q.model, U=U.model), mod.list)
+      fit.model = c(list(Z=Z.models[[i]], Q=Q.model, U=U.model), mod.list)
       fit = MARSS(dat, model=fit.model,
                 silent=TRUE, control=list(maxit=3000))
-      out=data.frame(H=names(Z.models)[i],ct=names(ct.models)[j],Q=Q.model,U=U.model,
+      out=data.frame(H=names(Z.models)[i],Q=Q.model,U=U.model,
                    logLik=fit$logLik, AICc=fit$AICc, num.param=fit$num.params,
                    m=length(unique(Z.models[[i]])),
                    num.iter=fit$numIter, converged=!fit$convergence,
@@ -373,7 +357,6 @@ for(i in 1:length(Z.models)){
       } 
     }
   }
-}
 
 min.AICc <- order(out.tab$AICc)
 out.tab.1 <- out.tab[min.AICc, ]
@@ -385,30 +368,48 @@ out.tab.1
 
 ```
 
-Including cycling in the test, the best fit still appears to be Z split into spatial groups, no cyclic behavior, unconstrained Q, and equal drift - Eric
 
+The best model (as supported by AICc) includes 5 states (our "spatial populations" model) that are correlated with unique variance and covariance terms (unconstrained Q) with the same drift term (U)
 
+## Inspecting the best model (spatial group, unconstrained Q, equal U)
+```{r}
 
-## Inspecting second best model (spatial group, 1st order fourier, unconstrained Q, equal U)
+best_mod <- fits[[16]]
+best_mod
+
+autoplot(best_mod, plot.type = "fitted.ytT")
+autoplot(best_mod, plot.type = "acf.std.model.resids.ytt1")
+
+```
+
+In our best model, we do see some autocorrelation in our residuals. In the next section, we will try to include a covariate of season into our best model and see if this improves the model fit. 
+
+## Comparing best model to the most flexible model
+
+Do our estimates differ depending on the assumptions of the structure of the data, i.e. our assumptions about the x's, Q, and U?
 
 ```{r}
 
-best_mod <- fits[[68]]
-best_mod
+autoplot(fit1, plot.type="fitted.ytT")#flexible
 
-autoplot(best_mod, plot.type="fitted.ytT")
+autoplot(best_mod, plot.type="fitted.ytT")#best
+
 ```
 
-# Eli's code
+Definitely! The more flexible model (individual states, unequal bias term) produces more variable forecasts (with some populations increasing or decreasing through time). Our spatial model (5 states, unequal bias term) provides relatively stable forecasts across populations, likely due to the "equal" bias term. 
 
-Testing season options in best model 
+# Seasonality as a covariate
 
+In this next section, we test for age structured cycling of steelhead populations or "season" in our best "spatial" model. 
+
+## Initial model fitting
 ```{r}
 
 Z.mat <-  factor(c("coweeman","ef_lewis", "kalama",
                 'kalama', "cowlitz", "coweeman",
-                "cowlitz", "cowlitz", "washougal"))
+                "cowlitz", "cowlitz", "washougal")) #Our best model Z matrix
 
+# Setting up 3-5 year cycles as a covariate
 TT <- dim(dat)[2]
 covariates <- rbind(
   forecast::fourier(ts(1:TT, freq=3), K=1) |> t(),
@@ -416,96 +417,89 @@ covariates <- rbind(
   forecast::fourier(ts(1:TT, freq=5), K=1) |> t()
 )
 
-
 mod.list2 = list(
   U = "equal",
   Q = "unconstrained", 
   Z = Z.mat,
   A = "scaling",
   R = "diagonal and equal",
-  D = "unconstrained",
+  D = "unconstrained", # We include these in the D matrix because the age structure cycling of salmon typically affects our observations rather than the state
   d = covariates)
 
 fit_season <- MARSS(dat, model=mod.list2)
 
-
 ```
+## Evaluating the effect of different cycles
+
+We can then plot the effects of each cycle estimate. 
 
 ```{r}
 
-
-library(broom)
 df <- tidy(fit_season) %>%
   subset(stringr::str_sub(term,1,1)=="D")
 df$lag <- as.factor(rep(3:5, each=18))
 df$river <- as.factor(rep(rownames(dat),3))
 df$sc <- rep(rep(c("S","C"), each=9), 3)
 df$type <- paste0(df$sc,df$lag)
-```
 
-We can then plot this. Interesting. Some support for 5 year cycles.
-```{r}
 ggplot(df, aes(x=type, y=estimate, col=lag)) + 
   geom_point() +
   geom_errorbar(aes(ymin=conf.low, ymax=conf.up), width=.2, position=position_dodge(.9)) +
   geom_hline(yintercept = 0) +
   facet_wrap(~river) +
   ggtitle("The cycle estimates with CIs")
-```
 
 ```
 
-Inspecting model residuals
+These estimates suggest that there is some evidence of cycling at the 5 year interval in the East Fork Lewis, the South Fork Toutle, the Tilton, and the Washougal River steelhead populations. 
+
+This, however, increases our AICc quite a bit, from 459.0557 in our original best model to 582.6302. Now let's try just including 5 year cycles and compare this AICc to our best model. 
+
+## Comparing models with and without 5 year cycles
 
 ```{r}
 
-# autoplot(best_mod, plot.type="residuals")
-
-par(mfrow = c(3, 3))
-resids <- MARSSresiduals(best_mod, type = "tt1")
-for (i in 1:9) {
-    plot(resids$model.residuals[i, ], ylab = "model residuals", 
-        xlab = "")
-    abline(h = 0)
-    title(rownames(dat)[i])
-}
-```
-
-Even with added cyclic covariates in the process, there still appears to be some cyclic behavior in the residuals
+mod.list3 = list(
+  U = "equal",
+  Q = "unconstrained", 
+  Z = Z.mat,
+  A = "scaling",
+  R = "diagonal and equal",
+  D = "unconstrained", # We include these in the D matrix because the age structure cycling of salmon typically affects our observations rather than the state
+  d = covariates[5:6,]) # Specifying just 5 year cycles 
 
 
-Evaluating Cycling
-Judging by the residuals a 10 year cycle would be a good first guess. Now what order should the series be?
-```{r}
+fit_5season <- MARSS(dat, model=mod.list3)
 
-#attempting to get this function working
-x <- ts(1:ncol(dat), frequency = 10) # following the example in lecture 7, but with a cycle of 10 years
-plot.ts(x)
-covariate <- fourier(x, K=5) 
-plot.ts(covariate)
-# got it working, now how does this fit into a MARSS model, maybe in the for loop?
-# 3rd order will probably be enough, will test to 4th order to be safe
+(mod_AICc <- c(fit_5season$AICc, best_mod$AICc))
 
 ```
 
-## Comparing best model to the most flexible model
+Interesting-- This greatly improves our AICc, but the model without cycles still test as the best model. 
 
--   Do your estimates differ depending on the assumptions you make about the structure of the data, i.e. you assumptions about the x's, Q, and U.
-
-Definitely!
-
-Not sure why autoplot keeps spitting out two plots??
+Next we compare the residuals of our best model and our model with 5 year cycles.
 
 ```{r}
 
-autoplot(fit_simple, plot.type ="fitted.ytT")
-autoplot(fit1, plot.type="fitted.ytT")
-autoplot(best_mod, plot.type="fitted.ytT")
+autoplot(best_mod, plot.type = "acf.std.model.resids.ytt1")
+autoplot(fit_5season, plot.type = "acf.std.model.resids.ytt1")
 
 ```
+
+**** Eric and Terrance, does this sound okay....
+
+When comparing the ACF plots of the spatial model w/o cycling and the spatial model w/ cycling, we do see some of the ACF plots improve. For example, around lag 10 in the Kalama River winter population, the autocorrelation reduces relative the spatial model w/o cycling. However, even with added cyclic covariates in the process, there still appears to be some cyclic behavior in the residuals.
+
+Or since most of the lines are within the dashed blue lines does that mean that the cycling that is present is no longer significant?
 
 # Discussion
 
+Discussion notes- our best model was X. This grouped XX rivers together to form 5 populations. Reducing # of states/pops from 9 to 5. 
+
+We found some evidence for 5 year cycles. Not the best model. Makes sense since steelhead (relative to other salmonids) do not exhibit cycling. Though not the best models, these models did somewhat improve autocorrelation in our model residuals? Okay to say?
+
 # Description of each team member's contributions
+
+Step 1: Estimating data that doesn't exist-- Terrance Step 2A: Testing temporal Z matrices (different run times vs. one pop)-- Terrance Step 2B: Testing spatial Z matrices (different spatial groupings vs. one pop)-- Liz Step 3: Adding in seasonality as a covariate (C/c matrix) -- Eric
 
 Example: "All team members helped decide on the goal and ran the analyses for the individual regions. Team members 2 & 3 wrote most of the code for the analysis of the regions. Team member 4 researched approaches for measuring accuracy of forecasts in [Hyndman & Athanasopoulos[OTexts.com/fpp2] and team member 2 added code for that to the methods. Team member 4 also researched tests for stationarity and worked with team member 2 to code that up. Team member 1 worked on the plotting section of the report using and adapting code that team member 3 wrote. All team members helped edit the report and wrote the discussion together."
