@@ -1045,7 +1045,7 @@ Best model is 2.4 where it is assumed that the four main population groups form 
 
 ##Simple model first 
 TT <- years
-p <- 5
+p <- 4
 
 Z <- array(1, dim = c(15, 3, TT))
 Z[1, 2, ] <- sin(2 * pi * (1:TT)/p)
@@ -1055,8 +1055,7 @@ mod.list_test <- list(U = "zero", Q = "diagonal and unequal", Z = Z,
     A = "zero")
 
 m <- dim(Z)[2]
-m_test <- MARSS(dat, model = mod.list_test, inits = list(x0 = matrix(0, 
-    m, 1)))
+m_test <- MARSS(dat, model = mod.list_test, inits = list(x0 = matrix(0,m, 1)))
 ```
 Warning! Abstol convergence only. Maxit (=500) reached before log-log convergence.
 
@@ -1108,6 +1107,14 @@ autoplot(m_cyl)
 
 plot type = "xtT" Estimated states
 # Discussion
+
+Cycling probably not approapriate given ACFs from streams and the higher AICc value for the cycled model.
+
+    p=4 (done), p=7, p=9 try these and pick the best one. 
+    
+    AICc of just the cycled models to pick the best one. 
+    
+Hypothesis 2.4 was the best, with 4 states assumed and unconstrained Qmat.  
 
 # Description of each team member's contributions
 
