@@ -38,7 +38,7 @@ esu <- unique(columbia.river$esu_dps)
 esu
 ```
 
-```{r echo=FALSE, out.width="50%", fig.cap="Figure from ESA recovery plan for Lower Columbia River Coho salmon, Lower Columbia River Chinook salmon, Columbia River Chum salmon, and Lower Columbia River steelhead. 2013. NMFS NW Region.  https://repository.library.noaa.gov/view/noaa/16002"}
+```{r echo=FALSE, out.width="50%", eval = FALSE, fig.cap="Figure from ESA recovery plan for Lower Columbia River Coho salmon, Lower Columbia River Chinook salmon, Columbia River Chum salmon, and Lower Columbia River steelhead. 2013. NMFS NW Region.  https://repository.library.noaa.gov/view/noaa/16002"}
 knitr::include_graphics("Data_Images/LCR-chinook-regions.png")
 ```
 
@@ -156,7 +156,7 @@ autoplot(fit, plot.type="residuals")
 
 Here I show how I might analyze the Upper Columbia Steelhead data.
 
-```{r echo=FALSE, out.width="50%", fig.cap="Figure from 2022 5-Year Review: Summary & Evaluation of Upper Columbia River Spring-run Chinook Salmon and Upper Columbia River Steelhead. NMFS. West Coast Region. https://doi.org/10.25923/p4w5-dp31"}
+```{r echo=FALSE, out.width="50%", eval = FALSE, fig.cap="Figure from 2022 5-Year Review: Summary & Evaluation of Upper Columbia River Spring-run Chinook Salmon and Upper Columbia River Steelhead. NMFS. West Coast Region. https://doi.org/10.25923/p4w5-dp31"}
 knitr::include_graphics("Data_Images/UCR-Steelhead-regions.png")
 ```
 
@@ -304,6 +304,7 @@ autoplot(fit5, plot.type="fitted.ytT")
 ----------------------------------------------------------------
 # Fit the model
 ## we should probably move this section to the very end
+this isn't running for me yet
 
 Predict historical data for all regions and fit best models
 
@@ -376,14 +377,15 @@ fit9 <- MARSS(sub_dat, model = mod.list9)
 autoplot(fit9, plot.type="fitted.ytT")
 ```
 
-## compare to best model
-
-Best model is still the best model by a lot
+## compare the new models using AICc
 
 ```{r}
 aic <- c(fit3$AICc, fit7$AICc, fit8$AICc, fit9$AICc )
 aic-min(aic) #delta AICc 
 ```
+
+<!-- Model 3 still outperforms the models which include various sub groups -->
+<!-- I get model 8 as the best model here? -->
 
 ---------------------------------------------------------------
 ### Including cycling - using our coho data, full time series
