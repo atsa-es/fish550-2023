@@ -14,12 +14,11 @@ output:
 options(dplyr.summarise.inform = FALSE)
 ```
 
-***
+------------------------------------------------------------------------
 
 # Data
 
-Describe what plankton groups and covariates you used and indicate any temporal subsetting you chose. 
-
+Describe what plankton groups and covariates you used and indicate any temporal subsetting you chose.
 
 ## Load the data
 
@@ -37,77 +36,177 @@ all_dat <- lakeWAplanktonTrans
 
 ## Wrangle the data
 
-* You can choose any taxa to include in your analyses, but make sure there are at least 5 groups. You can mix phytoplankton and zooplankton, if you'd like, but justify any choices you make. 
+-   You can choose any taxa to include in your analyses, but make sure there are at least 5 groups. You can mix phytoplankton and zooplankton, if you'd like, but justify any choices you make.
 
-* You will want to subset the data to a time period with adequate observations for the taxa of interest. Your time window should include at lest 5 years (60 months).
+-   You will want to subset the data to a time period with adequate observations for the taxa of interest. Your time window should include at lest 5 years (60 months).
 
 ```{r wrangle_data}
 ## add some code here
 ```
 
-## General Notes 
+## General Notes
 
-labmate emails: 
+labmate emails:
 
-Madi Heller-Shipley --shipmadison@gmail.com
-Eric French -- ericvfrench@gmail.com 
-Maria Mariakuruvilla -- mariakur@uw.edu
+Madi Heller-Shipley --[shipmadison\@gmail.com](mailto:shipmadison@gmail.com){.email} Eric French -- [ericvfrench\@gmail.com](mailto:ericvfrench@gmail.com){.email} Maria Mariakuruvilla -- [mariakur\@uw.edu](mailto:mariakur@uw.edu){.email}
 
-*Diatoms* dominated in early spring time (Phytoplankton)
-*Daphnia* eat diatoms --> bloom after diatoms (zooplankton)
+*Diatoms* dominated in early spring time (Phytoplankton) *Daphnia* eat diatoms --\> bloom after diatoms (zooplankton)
 
-*bluegreen* (Cyano-bacteria) is toxic --> dominace correlated to TP (not as nitrogen limited)
+*bluegreen* (Cyano-bacteria) is toxic --\> dominace correlated to TP (not as nitrogen limited)
 
-*Epischura* --> calanus copepod peaks after diatoms 
+*Epischura* --\> calanus copepod peaks after diatoms
 
-*Neomysis* --> opossum shrimp (predator) Data limited 
+*Neomysis* --\> opossum shrimp (predator) Data limited
 
-# First Steps 
+# First Steps
 
-1) Plot all species all years and look for data-based relationships 
-  -connect what we see in the data to literature and the biology of Lake     Washington 
+1)  Plot all species all years and look for data-based relationships -connect what we see in the data to literature and the biology of Lake Washington
 
-2) Pick our species and connect them!!! 
+2)  Pick our species and connect them!!!
 
-3) Connect species to avaialable environmental data 
+3)  Connect species to avaialable environmental data
 
-4) Play with models, move to general tasks 
+4)  Play with models, move to general tasks
 
 # General tasks
 
 Each group has the same general tasks, but you will adapt them as you work on the data.
 
-1) Find the most parsimonious model among a set that examines the effects of environmental covariates and/or an indicator of seasonality, varying numbers of trends, and different forms of variance-covariance matrices for the observation errors.
+1)  Find the most parsimonious model among a set that examines the effects of environmental covariates and/or an indicator of seasonality, varying numbers of trends, and different forms of variance-covariance matrices for the observation errors.
 
-2) Plot trends and individual loadings for the model identified in task (1) above.
+2)  Plot trends and individual loadings for the model identified in task (1) above.
 
-3) Plot model fits and uncertainty intervals for the model identified in task (1) above.
+3)  Plot model fits and uncertainty intervals for the model identified in task (1) above.
 
-4) Describe the effects of environmental or dummy variables on (possibly seasonal) patterns in the data.
+4)  Describe the effects of environmental or dummy variables on (possibly seasonal) patterns in the data.
 
+# Model fitting from lab 2
+
+MARSS assumptions
+```{r}
+
+# Here we evaluated the data support for the following hypotheses about Lower Columbia salmon river trends
+# Each Z model is a hypothesis
+
+## Simple run timing groupings
+# summer = kalama_river_summer
+# winter = remaining population
+
+## Simple spatial groupings
+# coweeman = coweeman and sf toutle
+# ef_lewis = east fork lewis
+# kalama = kalama summer and winter
+# cowlitz = lower cowlitz, tilton, and upper cowlitz
+# washougal = washougal
+
+## Correlation spatial groupings
+# coweeman = coweema, ef_lewis, sf toutle, washougal
+# kalama = kalama summer and winter
+# cowlitz = lower cowlitz, tilton, and upper cowlitz
+
+Z.models <- list(
+  H1 = matrix(1,9,1), #one hidden population state
+  H2 = factor(c("coweeman","ef_lewis", "kalama_sum",
+                'kalama_win', "low_cowlitz", "sf_toutle",
+                "tilton", "up_cowlitz", "washougal")), #states are defined by individual population
+  H3 = factor(c("winter","winter", "summer",
+                'winter', "winter", "winter",
+                "winter", "winter", "winter")),# states defined by running timing grouping (n = 2)
+  H4 = factor(c("coweeman","ef_lewis", "kalama",
+                'kalama', "cowlitz", "coweeman",
+                "cowlitz", "cowlitz", "washougal")),# states defined by spatial grouping (n = 5)
+  H5 = factor(c("coweeman","coweeman", "kalama",
+                'kalama', "cowlitz", "coweeman",
+                "cowlitz", "cowlitz", "coweeman"))# states defined by correlation (n = 3)
+)
+
+names(Z.models) <- c("one_population","indiv_population","run_timing_groups",'spatial_groups',"corr_groups")
+
+# Also testing different process error varcovar matrices
+Q.models2 <- c("equalvarcov","unconstrained")
+
+# Process cycling terms
+# Each is on a 10-year cycle, will test orders 0-4
+# see Evaluating Cycling Section
+
+ct.models <- list(
+  c0 = "zero", # No cycling
+  
+  c1 = t(fourier(ts(1:ncol(dat), frequency = 10), K=1)), # seasonality follows a 1st order fourier series with the same # rows as y
+ 
+  c2 = t(fourier(ts(1:ncol(dat), frequency = 10), K=2)), # seasonality follows a 2nd order fourier series
+  
+  c3 = t(fourier(ts(1:ncol(dat), frequency = 10), K=3)), # seasonality follows a 3rd order fourier series
+
+  c4 = t(fourier(ts(1:ncol(dat), frequency = 10), K=3)) # seasonality follows a 3rd order fourier series
+  )
+names(ct.models) <- c("no_cycling", "1st_order", "2nd_order", "3rd_order", "4th_order")
+
+# Bias terms
+u2 <- c("unequal", 'equal')
+
+# Setting fixed portion of mod list
+mod.list = list(
+  A = "scaling",
+  R = "diagonal and equal")
+
+```
+
+## MARSS Model Selection
+
+Run MARSS models
+
+```{r}
+# Added in another for loop to run through cycling options, be warned, this means there are 80 total models. It takes a long time to run
+out.tab <- NULL
+fits <- list()
+for(i in 1:length(Z.models)){
+  for (j in 1:length(ct.models)){
+    for(Q.model in Q.models2){
+      for(U.model in u2){
+      fit.model = c(list(Z=Z.models[[i]], c=ct.models[[j]], Q=Q.model, U=U.model), mod.list)
+      fit = MARSS(dat, model=fit.model,
+                silent=TRUE, control=list(maxit=5000))
+      out=data.frame(H=names(Z.models)[i],ct=names(ct.models)[j],Q=Q.model,U=U.model,
+                   logLik=fit$logLik, AICc=fit$AICc, num.param=fit$num.params,
+                   m=length(unique(Z.models[[i]])),
+                   num.iter=fit$numIter, converged=!fit$convergence,
+                   stringsAsFactors = FALSE)
+      out.tab=rbind(out.tab,out)
+      fits=c(fits,list(fit))
+      } 
+    }
+  }
+}
+
+min.AICc <- order(out.tab$AICc)
+out.tab.1 <- out.tab[min.AICc, ]
+out.tab.1 <- cbind(out.tab.1, delta.AICc = out.tab.1$AICc - out.tab.1$AICc[1])
+out.tab.1 <- cbind(out.tab.1, rel.like = exp(-1 * out.tab.1$delta.AICc/2))
+out.tab.1 <- cbind(out.tab.1, AIC.weight = out.tab.1$rel.like/sum(out.tab.1$rel.like))
+out.tab.1
+
+
+```
 
 # Methods
 
 Please address the following in your methods:
 
-* Which plankton taxa did you choose and how did you choose them?
-   
-* What time period(s) did you examine and why?
+-   Which plankton taxa did you choose and how did you choose them?
 
-* What environmental or dummy variables did you include and why?
+-   What time period(s) did you examine and why?
 
-* What forms of models did you fit (ie, write them out in matrix form)?
+-   What environmental or dummy variables did you include and why?
 
-* What sort of model diagnostics did you use to examine model assumptions?
+-   What forms of models did you fit (ie, write them out in matrix form)?
 
+-   What sort of model diagnostics did you use to examine model assumptions?
 
 # Results
 
-
 # Discussion
-
 
 # Team contributions
 
 Example: "All team members helped decide on the goal and ran the analyses for the individual regions. Team members 2 & 3 wrote most of the code for the analysis. Team member 1 worked on the plotting section of the report using and adapting code that team member 3 wrote. All team members helped edit the report and wrote the discussion together."
-
