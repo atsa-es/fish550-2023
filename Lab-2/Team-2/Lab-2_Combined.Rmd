@@ -133,7 +133,7 @@ $$
 \mathbf{u} = 
 \begin{bmatrix} u\\
 \vdots\\
-u_\end{bmatrix}
+u\end{bmatrix}
 $$
 Unequal Bias
 $$
@@ -485,7 +485,6 @@ covariate <- fourier(x, K=5)
 plot.ts(covariate)
 # got it working, now how does this fit into a MARSS model, maybe in the for loop?
 # 3rd order will probably be enough, will test to 4th order to be safe
-
 
 ```
 
