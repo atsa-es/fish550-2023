@@ -332,6 +332,12 @@ autoplot(best_mod, plot.type="fitted.ytT")
 
 # Discussion
 
+- best model was spatially based groups
+- seems to be no evidence of cycling for steelhead
+- residuals seem to have cycling but, adding cyclic behavior to our model resulted in no major changes to residuals
+- check how eli's code performed vs eric's (changing frequency vs order)
+- could have hand-made a c matrix for cyclic behavior but chose not to b/c of effort required
+
 # Description of each team member's contributions
 
 Example: "All team members helped decide on the goal and ran the analyses for the individual regions. Team members 2 & 3 wrote most of the code for the analysis of the regions. Team member 4 researched approaches for measuring accuracy of forecasts in [Hyndman & Athanasopoulos[OTexts.com/fpp2] and team member 2 added code for that to the methods. Team member 4 also researched tests for stationarity and worked with team member 2 to code that up. Team member 1 worked on the plotting section of the report using and adapting code that team member 3 wrote. All team members helped edit the report and wrote the discussion together."

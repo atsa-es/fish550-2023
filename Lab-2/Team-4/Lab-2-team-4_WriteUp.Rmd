@@ -356,8 +356,10 @@ w_{12}\\
 w_{13}\\
 w_{14}\\
 w_{15}\\
-\end{bmatrix}_t
-$$ $$
+\end{bmatrix}_t $$
+
+
+$$
 \text{Where }w \sim MVN
 \begin{pmatrix}
 \text{0,}\begin{bmatrix}
@@ -622,16 +624,17 @@ w_{13}\\
 w_{14}\\
 w_{15}\\
 \end{bmatrix}_t
-$$ \$\$ \text{Where }w \sim MVN
+$$ 
 
-```{=tex}
+$$
+\text{Where }w \sim MVN
 \begin{pmatrix}
 \text{0,}\begin{bmatrix}
 R
 \end{bmatrix}
 \end{pmatrix}
-```
-\$\$
+$$
+
 
 ```{r}
 U_mat3 <- matrix(c("North","South"),2,1)
@@ -1045,7 +1048,7 @@ Best model is 2.4 where it is assumed that the four main population groups form 
 
 ##Simple model first 
 TT <- years
-p <- 5
+p <- 4
 
 Z <- array(1, dim = c(15, 3, TT))
 Z[1, 2, ] <- sin(2 * pi * (1:TT)/p)
@@ -1055,8 +1058,7 @@ mod.list_test <- list(U = "zero", Q = "diagonal and unequal", Z = Z,
     A = "zero")
 
 m <- dim(Z)[2]
-m_test <- MARSS(dat, model = mod.list_test, inits = list(x0 = matrix(0, 
-    m, 1)))
+m_test <- MARSS(dat, model = mod.list_test, inits = list(x0 = matrix(0,m, 1)))
 ```
 Warning! Abstol convergence only. Maxit (=500) reached before log-log convergence.
 
@@ -1067,18 +1069,21 @@ plot_test<-autoplot(m_test)
 
 
 ```{r}
-#Try something a little more complex 
+#Try something a little more complex period 4
 U_cyl <- matrix(c("Cascades","JohnDay","Walla","Yakima"),4,1)
-
-z_cyl <- array(0, dim = c(15, 6, TT))
+TT <- 64
+p <- 4 #7 or 9
+z_cyl <- array(0, dim = c(15, 4, TT))
 
 z_cyl[1:3,1,]<-1
 z_cyl[4:8,2,]<-1
 z_cyl[9:11,3,]<-1
 z_cyl[12:15,4,]<-1
 
-z_cyl[1, 5, ] <- sin(2 * pi * (1:TT)/p)
-z_cyl[1, 6, ] <- cos(2 * pi * (1:TT)/p)
+d_cyl <- matrix(0,2,TT)
+
+d_cyl[1,] <- sin(2 * pi * (1:TT)/p)
+d_cyl[2,] <- cos(2 * pi * (1:TT)/p)
 
 
 # ensure that Z_cly is in the correct format
@@ -1086,12 +1091,17 @@ Z_cyl <- matrix(z_cyl, nrow = 15, ncol = 6*TT)
 
  
 mod.list <- list(U = U_cyl, 
-                 Q = "diagonal and unequal", #"unconstrained"
-                 Z = Z_cly, 
-                 A = "zero") 
+                 Q = "unconstrained",
+                 Z = Z_mat2, 
+                 A = "zero",
+                 D="unconstrained",
+                 d = d_cyl) 
 
-m <- dim(Z_cyl)[2]
+m <- dim(Z_mat2)[2]
 m_cyl <- MARSS(dat, model = mod.list, inits = list(x0 = matrix(0, m, 1)))
+
+autoplot(m_cyl)
+
 
 
 ```
@@ -1101,6 +1111,17 @@ m_cyl <- MARSS(dat, model = mod.list, inits = list(x0 = matrix(0, m, 1)))
 
 plot type = "xtT" Estimated states
 # Discussion
+
+Cycling probably not approapriate given ACFs from streams and the higher AICc value for the cycled model.
+
+
+    p=4 (done), p=7, p=9 try these and pick the best one. 
+    
+    AICc of just the cycled models to pick the best one. 
+    
+    Table: 2.4, p=4, p=7, p=9, test 
+    
+Hypothesis 2.4 was the best, with 4 states assumed and unconstrained Qmat.  
 
 # Description of each team member's contributions
 
