@@ -18,11 +18,15 @@ plank_dat <- all_dat[all_dat[, "Year"] >= yr_frst &
                        all_dat[, "Year"] <= yr_last,]
 
 ## create vector of phytoplankton group names
-phytoplankton <- c("Diatoms", "Bluegreens", "Daphnia",
-                   "Epischura", "Neomysis")
+phytoplankton1 <- c("Cryptomonas", "Diatoms", "Greens",
+                   "Bluegreens", "Unicells")
+phytoplankton2 <- c("Other.algae", "Conochilus", "Cyclops",
+                   "Daphnia", "Diaptomus")
+phytoplankton3 <- c("Epischura", "Leptodora", "Neomysis",
+                   "Non.daphnid.cladocerans", "Non.colonial.rotifers")
 
 ## get only the phytoplankton
-dat_init <- plank_dat[, phytoplankton]
+dat_init <- plank_dat[, phytoplankton3]
 
 ## transpose data so time goes across columns
 dat_init <- t(dat_init)
