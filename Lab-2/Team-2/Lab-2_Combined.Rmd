@@ -396,7 +396,7 @@ autoplot(best_mod, plot.type="fitted.ytT")#best
 
 ```
 
-Definitely! The more flexible model (individual states, unequal bias term) produces more variable forecasts (with some populations increasing or decreasing through time). Our spatial model (5 states, unequal bias term) provides relatively stable forecasts across populations, likely due to the "equal" bias term. 
+Definitely! The more flexible model (individual states, unequal bias term) produces more variable forecasts (with some populations increasing or decreasing through time). Our spatial model (5 states, equal bias term) provides relatively stable forecasts across populations, likely due to the "equal" bias term. 
 
 # Seasonality as a covariate
 
