@@ -300,12 +300,16 @@ fit4.87 <- MARSS(dat87, model=mod.list4)
 Let's plot the estimates. `broom::tidy()` will get a data frame with the terms, estimates and CIs.
 ```{r}
 library(broom)
+# get all the parameter estimates for D
 df <- tidy(fit4.87) %>%
   subset(stringr::str_sub(term,1,1)=="D")
-df$lag <- as.factor(rep(3:5, each=8))
-df$river <- as.factor(rep(rownames(dat87),3))
-df$sc <- rep(rep(c("S","C"), each=4), 3)
-df$type <- paste0(df$sc,df$lag)
+# add a column with the river names
+df$river <- as.factor(rep(rownames(dat87),nrow(covariates)))
+# add a column for the lag or frequency
+lags <- stringr::str_split(rownames(covariates), "-") %>% lapply(function(x){x[[2]]}) %>% unlist()
+df$lag <- rep(lags, each=nrow(dat87))
+# add column for the type of fourier
+df$type <- rep(rownames(covariates), each=nrow(dat87))
 ```
 
 We can then plot this. Interesting. Some support for 5 year cycles.
