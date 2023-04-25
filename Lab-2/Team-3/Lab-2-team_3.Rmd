@@ -1,20 +1,89 @@
 # Lab 2: MARSS models
 
-Team member names: 
-
+Team member names: Miranda Mudge, Karl Veggerby, Nick Chambers
 
 # Data
 
-Describe what data set you will work with and any subsetting you decided on. For example, you may have decided to look only at a section of the ESU that your team was assigned.
+<!-- Describe what data set you will work with and any subsetting you decided on. For example, you may have decided to look only at a section of the ESU that your team was assigned. -->
 
-Load the data.
-```{r}
+We were assigned the Lower Columbia Coho data set. We selected two rivers from each Major Population Group (MPG) to test the performance of several models. The selected populations are:
+
+Cascade MPG - 
+Tilton and Sandy Rivers
+
+Gorge MPG
+Upper and Lower Gorge Tributaries
+
+Coast MPG
+Clatskanie, and Grays/Chinook Rivers
+
+
+
+```{r, echo=TRUE}
+# Load the data
 load(here::here("Lab-2", "Data_Images", "columbia-river.rda"))
+```
+
+
+```{r, echo=TRUE}
+#plot the data
+esu <- unique(columbia.river$esu_dps)
+plotesu <- function(esuname){
+  df <- columbia.river %>% subset(esu_dps %in% esuname)
+ggplot(df, aes(x=spawningyear, y=log(value), color=majorpopgroup)) + 
+  geom_point(size=0.2, na.rm = TRUE) + 
+  theme(strip.text.x = element_text(size = 3)) +
+  theme(axis.text.x = element_text(size = 5, angle = 90)) +
+  facet_wrap(~esapopname) +
+  ggtitle(paste0(esuname, collapse="\n"))
+}
+
+plotesu(esu[4])
+
 ```
 
 Wrangle the data.
 
-**Add your wrangling code here**
+```{r, echo=TRUE}
+
+#format for visualization
+
+library(dplyr)
+esuname <- esu[4]
+
+dat <- columbia.river %>% 
+  subset(esu_dps == esuname) %>% # get only this ESU
+  mutate(log.spawner = log(value)) %>% # create a column called log.spawner
+  select(esapopname, spawningyear, log.spawner) %>% # get just the columns that I need
+  pivot_wider(names_from = "esapopname", values_from = "log.spawner") %>% 
+  column_to_rownames(var = "spawningyear") %>% # make the years rownames
+  as.matrix() %>% # turn into a matrix with year down the rows
+  t() # make time across the columns
+# MARSS complains if I don't do this
+dat[is.na(dat)] <- NA
+```
+
+Clean up the row names
+
+```{r}
+tmp <- rownames(dat)
+tmp <- stringr::str_replace(tmp, "Salmon, coho [(]Lower Columbia River ESU[)]", "")
+tmp <- stringr::str_trim(tmp)
+rownames(dat) <- tmp
+```
+
+Select a subset of rivers to test
+
+```{r}
+mod_rivers <- c("Sandy River - early and late", 
+           "Grays and Chinook Rivers - late", 
+           "Clatskanie River - late", 
+           "Lower Gorge Tributaries - late", 
+           "Tilton River - early and late" , 
+           "Oregon Upper Gorge Tributaries and Hood River - early")
+
+sub_dat <- dat[rownames(dat) %in% mod_rivers, ] 
+```
 
 # General Questions
 
@@ -41,12 +110,63 @@ Address the following in your methods
 
 * Do your estimates differ depending on the assumptions you make about the structure of the data, i.e. you assumptions about the x's, Q, and U.
 
-### Tips
 
-**Simplify**
 
-If your ESU has many populations, start with a smaller set of 4-7 populations.
+Here took our assumptions and used them to generate five models to test
 
+```{r}
+mod.list1 <- list(
+  U = "unequal",
+  R = "diagonal and equal",
+  Q = "unconstrained"
+)
+
+mod.list2 <- list(
+  U = "equal",
+  R = "diagonal and equal",
+  Q = "unconstrained"
+)
+
+
+mod.list3 <- list(B = matrix(1), 
+                   U = matrix("u"), 
+                   Q = matrix("q"), # 1 X
+                   Z = matrix(1, 6, 1), 
+                   A = "scaling", 
+                   R = "diagonal and unequal", # single column of 1s for Y
+                   x0 = matrix("mu"), 
+                   tinitx = 0)
+
+mod.list4 <- list(B = diag(1,6), 
+                  U = matrix("u",6,1), 
+                  Q = "diagonal and unequal", 
+                  Z = diag(1,6), 
+                  A = "scaling", 
+                  R = "diagonal and equal", 
+                  x0 = "unequal", 
+                  tinitx = 0)
+
+# Best model! 
+mod.list5 <- list(
+  U = "unequal",
+  R = "diagonal and equal",
+  Q = "equalvarcov"
+)
+```
+
+
+Here we fit the model. ##In this case, a BFGS algorithm is faster##
+Is the BFGS text leftover from Eli ? I see we only used it on two models.
+
+```{r}
+library(MARSS)
+fit1 <- MARSS(sub_dat, model=mod.list1, method="BFGS")
+fit2 <- MARSS(sub_dat, model=mod.list2, method="BFGS")
+fit3 <- MARSS(sub_dat, model=mod.list3)
+fit4 <- MARSS(sub_dat, model=mod.list4)
+fit5 <- MARSS(sub_dat, model=mod.list5, control = list(maxit=1000))
+
+```
 **Assumptions**
 
 You can assume that `R="diagonal and equal"` and `A="scaling"`. Assume that "historical" means the earliest years available for your group.
@@ -65,12 +185,127 @@ where `fit` is from `fit <- MARSS()`
 
 **plotting**
 
+Here we plot the fit of the models to visually check the model performance
+
+```{r}
+plot.mod1 <- autoplot(fit1, plot.type="fitted.ytT")
+plot.mod2 <- autoplot(fit2, plot.type="fitted.ytT")
+plot.mod3 <- autoplot(fit3, plot.type="fitted.ytT")
+plot.mod4 <- autoplot(fit4, plot.type = "fitted.ytT")
+plot.mod5 <- autoplot(fit5, plot.type="fitted.ytT")
+```
+
+
 Estimate of the mean of the spawner counts based on your x model.
 ```
 autoplot(fit, plot.type="fitted.ytT")
 ```
 
+Here we further tested the model fit by examining the corrplot to see which rivers were most closely correlated to see if that fit with our assumptions based on Lower Columbia Geography. 
+
+```{r}
+# change fit# to evaluate correlation between regions in different models 
+
+library(corrplot)
+Q <- coef(fit1, type="matrix")$Q
+corrmat <- diag(1/sqrt(diag(Q))) %*% Q %*% diag(1/sqrt(diag(Q)))
+corrplot(corrmat)
+
+```
+
 **diagnostics**
+
+Testing for model performance using AICc
+
+```{r}
+aic <- c(fit1$AICc, fit2$AICc, fit3$AICc, fit4$AICc, fit5$AICc)
+aic-min(aic) #delta AICc 
+```
+
+A comparison of delta AICc indicates that model 3 is the best fit for the data. There are no other models within delta AICc of 2.0 or less. There are two alternative models within delta AICc of 5.0, but no compelling reason to use those over the cearly top model. Model 3 was the best out of the five models tested, so we'll use that one to estimate historical abundances. This is not to say that model 3 is the best model possible for this data, only that it's the best model out of the 5 that we compared. 
+
+
+We then valuated the fit of states by looking at plots and residuals
+
+```{r}
+fit3$states
+tsSmooth(fit3)
+autoplot(fit3, plot.type="fitted.ytT")
+autoplot(fit3, plot.type="residuals")
+```
+# Testing different regions as sub groups
+
+
+# Test different regions as sub-groups: 
+
+Comparing 3 sub-populations: cascade, coast, and gorge
+```{r}
+mod.list7 <- list(#B = matrix(1), 
+                  # U = matrix("u"), 
+                   Q = "unconstrained", # 1 X
+                   Z = factor(c("cascade", "cascade", 
+                                "coast", "coast", 
+                                "gorge", "gorge")), 
+                   A = "scaling", 
+                   R = "diagonal and unequal", # single column of 1s for Y
+                   #x0 = matrix("mu"), 
+                   tinitx = 0)
+
+
+fit7 <- MARSS(sub_dat, model = mod.list7)
+autoplot(fit7, plot.type="fitted.ytT")
+```
+
+Based on the correlation plot, the grays and chinook rivers and the lower gorge tributaries are highly correlated. Want to evaluate a model with these regions as a sub-population. 
+
+Comparing 2 sub-populations: grays/chinook rivers and lower gorge "GCL" and all other test regions "STCU"
+```{r}
+mod.list8 <- list(#B = matrix(1), 
+                  # U = matrix("u"), 
+                   Q = "unconstrained", # 1 X
+                   Z = factor(c("STCU", "STCU", 
+                                "STCU", "GCL", 
+                                "GCL", "STCU")), 
+                   A = "scaling", 
+                   R = "diagonal and unequal", # single column of 1s for Y
+                   #x0 = matrix("mu"), 
+                   tinitx = 0)
+
+
+fit8 <- MARSS(sub_dat, model = mod.list8)
+autoplot(fit8, plot.type="fitted.ytT")
+```
+
+While the description "cascades" only describes a couple regions in our test set, we decided to test a model separating the general cascades from the 2 coast regions (Clatskaine and Gray/Chinook) because geographically there is a large separation. 
+
+Comparing 2 sub-populations: coast "coast" and all other test regions "casgor"
+```{r}
+mod.list9 <- list(#B = matrix(1), 
+                  # U = matrix("u"), 
+                   Q = "unconstrained", # 1 X
+                   Z = factor(c("casgor", "casgor", 
+                                "coast", "coast", 
+                                "casgor", "casgor")), 
+                   A = "scaling", 
+                   R = "diagonal and unequal", # single column of 1s for Y
+                   #x0 = matrix("mu"), 
+                   tinitx = 0)
+
+
+fit9 <- MARSS(sub_dat, model = mod.list9)
+autoplot(fit9, plot.type="fitted.ytT")
+```
+
+## compare the new models using AICc
+
+```{r}
+aic <- c(fit3$AICc, fit7$AICc, fit8$AICc, fit9$AICc )
+aic-min(aic) #delta AICc 
+```
+
+<!-- Model 3 still outperforms the models which include various sub groups -->
+<!-- I get model 8 as the best model here ? -->
+
 ```
 autoplot(fit, plot.type="residuals")
 ```
