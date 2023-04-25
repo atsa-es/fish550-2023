@@ -1,0 +1,1082 @@
+# Lab 2: MARSS models
+
+Team member names: Dylan Hubl (Env & Forest Sci) and Madison Heller-Shipley (SAFS)
+
+# Data
+
+We are examining the sockeye population within the Middle Columbia River System. Within this system there are four major population groups. The Cascades, John Day, Walla Walla, and Yakima. The John Day group has the longest running dataset with records reaching back to 1959. The other major population groups generally start their datasets in the 1980's. A noteable exception is the Umatilla River within the Walla Walla group which also has data beginning in the 1960s. In general all of the salmon running times occur in the summer in the Middle Columbia River System.
+
+```{r}
+library(tidyr)
+library(ggplot2)
+library(tidyverse)
+library(dplyr)
+library(MARSS)
+library(corrplot)
+library(knitr)
+load(here::here("Lab-2", "Data_Images", "columbia-river.rda"))
+```
+
+We are only interested in the rivers in the Middle Columbia River Unit
+
+**Add your wrangling code here**
+
+```{r}
+#we are only interested in the Middle Columbia
+#plot the unique Rivers in Middle Columbia
+dat <- columbia.river
+esuname <- unique(dat$esu_dps)
+years<-length(unique(dat$spawningyear))
+plotesu <- function(esuname){
+  df <- dat %>% subset(esu_dps %in% esuname)
+  ggplot(df, aes(x=spawningyear, y=log(value), color=majorpopgroup)) + 
+    geom_point(size=1, na.rm = TRUE) + 
+    theme(strip.text.x = element_text(size = 8)) +
+    theme(axis.text.x = element_text(size = 8, angle = 90)) +
+    facet_wrap(~esapopname) +
+    ggtitle(paste0(esuname, collapse="\n"))
+}
+plotesu(esuname[1])
+
+#Prepare our data so the columns are the years and rows are unique rivers
+esuname <- esuname[1]
+dat <- columbia.river %>% 
+  subset(esu_dps == esuname) %>% # get only this ESU
+  mutate(log.spawner = log(value)) %>% # create a column called log.spawner
+  dplyr::select(esapopname, spawningyear, log.spawner) %>% # get just the columns that I need
+  pivot_wider(names_from = "esapopname", values_from = "log.spawner") %>% 
+  column_to_rownames(var = "spawningyear") %>% # make the years rownames
+  as.matrix() %>% # turn into a matrix with year down the rows
+  t() # make time across the columns
+# MARSS complains if I don't do this
+dat[is.na(dat)] <- NA
+any(is.null(dat))
+any(is.infinite(dat))
+dat[is.infinite(dat)] <- NA
+```
+
+```{r}
+
+knitr::include_graphics("C:/GitHub/fish550-2023/Lab-2/Data_Images/Middle Columbia River sockeye.png")
+
+```
+
+# General Questions
+
+Each group has the same general tasks, but you will adapt them as you work on the data.
+
+1.  Create estimates of spawner abundance for all missing years and provide estimates of the decline from the historical abundance.
+
+2.  Evaluate support for the major population groups. Are the populations in the groups more correlated than outside the groups?
+
+3.  Evaluate the evidence of cycling in the data. *We will talk about how to do this on the Tuesday after lab.*
+
+## Data Notes
+
+Make some assumptions about underlying population structure. This can help you fill in missing data areas.
+
+Adult run timing (when they're coming into fresh water, look at run timing--any correlation?)
+
+John Day Data set spans the entire time period, and we will look at the appropriatness of drawing inference from these data to fill in other missing values.
+
+# Methods
+
+Address the following in your methods
+
+-   Describe your assumptions about the x and how the data time series are related to x.
+
+    -   How are the x and y (data) related? 1 x for 1 y or will you assume 1 x for all y or 1 x for each major population group? How will you choose?
+    -   What will you assume about the U for the x's?
+    -   What will you assume about the Q matrix?
+
+-   Write out your assumptions as different models **in matrix form**, fit each and then compare these with AIC or AICc.
+
+-   Do your estimates differ depending on the assumptions you make about the structure of the data, i.e. you assumptions about the x's, Q, and U.
+
+## Hypotheses
+
+For simplicity's sake we allowed all of our hypotheses to have independent U values. This does not prevent the models from estimating equal drift parameters for each of the underlying states. There were four main hypotheses explored in this modeling excersise.
+
+-   Hypothesis 1: All underlying states are the same and one underlying population.
+
+-   Hypothesis 2: There are four underlying states, each associated with one of the main distinct population centers (DPC), the Cascades, John Day, Walla Walla, and Yakima tributaries.
+
+-   Hypothesis 3: There are two underlying states, one representing the northern area (Walla Walla and Yakima) and on representing the southern area (John Day and Cascades).
+
+-   Hypothesis 4: There are two underlying states, Yakama and the rest of the areas. Salmon swim eastward and there is a bend in the river where salmon can choose to go north to the Yakama DPC, or south to the rest of the system.
+
+For Hypothesis 1, only one model was tested that assumed the Q matrix was diagonal and equal. We only tested this as a baseline for simplicity and time sake. For Hypotheses 2-4 four sub-hypotheses based on the Q matrix were tested.
+
+Hypotheses:
+
+* X.1 = Diagonal and Equal
+
+* X.2 = Diagonal and Unequal
+
+* X.3 = Equal variance and covariance
+
+* X.4 = Unconstrained
+
+We felt it was best to allow the models to freely estimate independent "U" values to prevent having too many models to discuss, and we do not have a strong understanding of the systems or data to back up a reason to constrain these values.
+
+#### Other Assumptions
+
+You can assume that `R="diagonal and equal"` and `A="scaling"`. Assume that "historical" means the earliest years available for your group.
+
+**States**
+
+Your abundance estimate is the "x" or "state" estimates.
+
+## Pick best Hypothesis
+
+We will compare AICs, all 16 models should be comparable
+
+## Evidence of cycling
+
+We will see which hypothesis performs the best, and then explore cycling assumptions.
+
+### Tips
+
+**Assumptions**
+
+or
+
+    tsSmooth(fit)
+
+where `fit` is from `fit <- MARSS()`
+
+**plotting**
+
+Estimate of the mean of the spawner counts based on your x model.
+
+    autoplot(fit, plot.type="fitted.ytT")
+
+**diagnostics**
+
+    autoplot(fit, plot.type="residuals")
+
+# Results
+
+## Hypothesis 1
+
+Hypothesis 1 assumes that there is a single hidden, underlying process that all sub-populations follow. In this hypothesis there is a single state (x) for all 15 observed time series (y). This is the simplest model that could be formed. The Q matrix for the variance of process errors is "diagonal and equal" meaning each state (x) model has the same variance but they are not correlated to each other.
+
+$$
+\text{Hypothesis One}:
+\begin{bmatrix}
+y_1\\
+y_2\\
+y_3\\
+y_4\\
+y_5\\
+y_6\\
+y_7\\
+y_8\\
+y_9\\
+y_{10}\\
+y_{11}\\
+y_{12}\\
+y_{13}\\
+y_{14}\\
+y_{15}\\
+\end{bmatrix}_t=
+\begin{bmatrix}
+1 \\
+1 \\
+1 \\
+1 \\
+1 \\
+1 \\
+1 \\
+1 \\
+1 \\
+1 \\
+1 \\
+1 \\
+1 \\
+1 \\
+1 \\
+\end{bmatrix}*
+\begin{bmatrix}
+x_1\\
+\end{bmatrix}_t+
+\begin{bmatrix}
+a_1\\
+a_2\\
+a_3\\
+a_4\\
+a_5\\
+a_6\\
+a_7\\
+a_8\\
+a_9\\
+a_{10}\\
+a_{11}\\
+a_{12}\\
+a_{13}\\
+a_{14}\\
+a_{15}\\
+\end{bmatrix}+
+\begin{bmatrix}
+w_1\\
+w_2\\
+w_3\\
+w_4\\
+w_5\\
+w_6\\
+w_7\\
+w_8\\
+w_9\\
+w_{10}\\
+w_{11}\\
+w_{12}\\
+w_{13}\\
+w_{14}\\
+w_{15}\\
+\end{bmatrix}_t
+$$ $$
+\text{Where }w \sim MVN
+\begin{pmatrix}
+\text{0,}\begin{bmatrix}
+R
+\end{bmatrix}
+\end{pmatrix}
+$$
+
+```{r}
+mod.list1 <- list(
+  U = "unequal", #each of the rivers are estimated separately (different U)
+  R = "diagonal and equal", #Process errors are all assumed to be the same 
+  Q = "diagonal and equal" #Observation error 
+)
+
+m1 <- MARSS(dat, model=mod.list1, method="BFGS")
+
+```
+
+The model converged! Let's take a look at the plots:
+
+```{r}
+autoplot(m1)
+```
+
+This model doesn't perform very well in areas that lack data, and, related, some of the QQ plots don't hold assumptions of normality . In the states plots, the areas with missing data are characterized by confidence intervals that balloon out. Let's look at the abundance estimates for this model.
+
+```{r}
+
+print(fit1_smooth<-tsSmooth(m1))
+
+```
+Finally, let's look at the correlation plot.
+
+```{r}
+
+Q1 <- coef(fit1, type = "matrix")$Q
+corrmat1 <- diag(1/sqrt(diag(Q1))) %*% Q1 %*% diag(1/sqrt(diag(Q1)))
+corrplot(corrmat1)
+ 
+```
+
+## Hypothesis 2
+
+Hypothesis two assumes that the four main population groups form separate sub-populations. In this hypothesis we are utilizing 4 separate underlying states to model the observations from each of the main population groups. For each of the four models that we are comparing for this hypothesis, we are allowing the random walks to drift independent of one another based on the supplied "U" matrix.
+
+$$
+\text{Hypothesis Two}:
+\begin{bmatrix}
+y_1\\
+y_2\\
+y_3\\
+y_4\\
+y_5\\
+y_6\\
+y_7\\
+y_8\\
+y_9\\
+y_{10}\\
+y_{11}\\
+y_{12}\\
+y_{13}\\
+y_{14}\\
+y_{15}\\
+\end{bmatrix}_t=
+\begin{bmatrix}
+1 & 0 & 0 & 0\\
+1 & 0 & 0 & 0\\
+1 & 0 & 0 & 0\\
+0 & 1 & 0 & 0\\
+0 & 1 & 0 & 0\\
+0 & 1 & 0 & 0\\
+0 & 1 & 0 & 0\\
+0 & 1 & 0 & 0\\
+0 & 0 & 1 & 0\\
+0 & 0 & 1 & 0\\
+0 & 0 & 1 & 0\\
+0 & 0 & 0 & 1\\
+0 & 0 & 0 & 1\\
+0 & 0 & 0 & 1\\
+0 & 0 & 0 & 1\\
+\end{bmatrix}*
+\begin{bmatrix}
+x_1\\
+x_2\\
+x_3\\
+x_4\\
+\end{bmatrix}_t+
+\begin{bmatrix}
+a_1\\
+a_2\\
+a_3\\
+a_4\\
+a_5\\
+a_6\\
+a_7\\
+a_8\\
+a_9\\
+a_{10}\\
+a_{11}\\
+a_{12}\\
+a_{13}\\
+a_{14}\\
+a_{15}\\
+\end{bmatrix}+
+\begin{bmatrix}
+w_1\\
+w_2\\
+w_3\\
+w_4\\
+w_5\\
+w_6\\
+w_7\\
+w_8\\
+w_9\\
+w_{10}\\
+w_{11}\\
+w_{12}\\
+w_{13}\\
+w_{14}\\
+w_{15}\\
+\end{bmatrix}_t
+$$ $$
+\text{Where }w \sim MVN
+\begin{pmatrix}
+\text{0,}\begin{bmatrix}
+R
+\end{bmatrix}
+\end{pmatrix}
+$$ 
+
+Set up the U and Z matrices 
+
+```{r}
+#give U values names to make it easier to read results
+#this hypothesis has 4 hidden states based on major groups
+U_mat2 <- matrix(c("Cascades","JohnDay","Walla","Yakima"),4,1)
+#make Z matrix correspond to 4 hidden states
+Z_mat2 <- matrix(c(rep(c(1,0,0,0),3),
+                  rep(c(0,1,0,0),5),
+                  rep(c(0,0,1,0),3),
+                  rep(c(0,0,0,1),4)),15,4, byrow=TRUE)
+```
+
+###Hypothesis 2.1
+The Q matrix for the variance of process errors is "diagonal and equal" meaning each state (x) model has the same variance but they are not correlated to each other.
+
+```{r}
+
+mod.list2.1 <- list(
+  U = U_mat2,
+  R = "diagonal and equal",
+  Q = "diagonal and equal",
+  Z = Z_mat2
+)
+m2.1 <- MARSS(dat, model = mod.list2.1)
+```
+
+Yakima is the only positive drift value on the hidden state's random walk. There is only one Q value output as all hidden states have the same one and there is no covariance/correlation between states
+
+```{r}
+autoplot(m2.1)
+```
+There are larged ballooned CIs on the missing data in hidden states
+fitted CI have the same balloon shaped CIs on missing data.There also appears to be some cyclic structure in the residuals. This model likely will not be a contender when we evaluate based on AICs. Let's look at the estimates.  
+
+```{r}
+print(fit2.1_smooth<-tsSmooth(m2.1))
+
+```
+And let's look at corrplot, it should be very familiar. 
+```{r}
+Q2.1 <- coef(m2.1, type = "matrix")$Q
+corrmat2.1 <- diag(1/sqrt(diag(Q2.1))) %*% Q2.1 %*% diag(1/sqrt(diag(Q2.1)))
+corrplot(corrmat2.1)
+#As expected output displays only diagonal as we told it diagonal and equal
+
+```
+
+The Confidence Intervals in the sections of the underlying states (x) were very large in the sections where data was missing. This was also reflected in the plots showing the fitted values. Some structuring may also be present in the residuals. Six of the river systems have multiple significant lags when examining the ACF plots indicating the residuals display autocorrelation. The corrplot is fairly uninformative as we forced the model to be equal variance with no correlation. One interesting thing to note is that we allowed the "U" values to varying independently of each other and the Yakima group is the only one with a positive U value, indicating it is the only system with positive growth or at least increasing number of adults counted over time.
+
+------------------------------------------------------------------------
+
+### Hypothesis 2.2
+The Q matrix for the variance of process errors is "diagonal and unequal" meaning each of the four underlying states' variance can be different but they are not correlated to each other
+
+```{r}
+
+mod.list2.2 <- list(
+  U = U_mat2,
+  R = "diagonal and equal",
+  Q = "diagonal and unequal",
+  Z = Z_mat2
+)
+m2.2 <- MARSS(dat, model = mod.list2.2)
+```
+Again Yakima is the only positive drift value on the hidden state's random walk
+
+4 varied Q values output as all hidden states have a different one and there is no
+Covariance/correlation between states
+
+```{r}
+autoplot(m2.2)
+
+```
+
+huge ballooned CIs on the missing data in hidden states. fitted CI have the same balloon shaped CIs on missing data and is quite large on the Walla Walla group.
+
+
+Estimates 
+```{r}
+print(fit2.1_smooth<-tsSmooth(m2.2))
+```
+
+Lets look at the correlation plots
+```{r}
+Q2.2 <- coef(m2.2, type = "matrix")$Q
+corrmat2.2 <- diag(1/sqrt(diag(Q2.2))) %*% Q2.2 %*% diag(1/sqrt(diag(Q2.2)))
+corrplot(corrmat2.2)
+
+```
+
+Again we see large balloon shaped confidence intervals in the sections of rivers that are missing data. This appears in both the estimated underlying states and the fitted value plots. The Walla Walla groups seems to have the widest confidence intervals of all of the river systems. Again six of the rivers have ACF plots with multiple significant lags. The Yakima Population group continues to be the only group with an underlying state which is estimated to have a positive drift. The variance-covariance matrix was allowed to vary the variance of each underlying state independently of one another, but we see that it estimated each to be equal.
+
+------------------------------------------------------------------------
+
+### Hypothesis 2.3
+The Q matrix for the variance of process errors is "equal variance and covariance" so they each have equal variance and they are all correlated equally to one another
+
+```{r}
+
+mod.list2.3 <- list(
+  U = U_mat2,
+  R = "diagonal and equal",
+  Q = "equalvarcov",
+  Z = Z_mat2
+)
+m2.3 <- MARSS(dat, model = mod.list2.3)
+```
+Notes: Yakima group's hidden state is the only one with a positive U, indicating this random walk has a positive drift while the others have a negative
+
+```{r}
+autoplot(m2.3)
+```
+
+Estimates 
+```{r}
+print(fit2.1_smooth<-tsSmooth(m2.3))
+```
+look at corrplot
+```{r}
+Q2.3 <- coef(m2.3, type = "matrix")$Q
+corrmat2.3 <- diag(1/sqrt(diag(Q2.3))) %*% Q2.3 %*% diag(1/sqrt(diag(Q2.3)))
+corrplot(corrmat2.3)
+#corrplot mirrors what we told MARSS to use as a Q matrix (equal variance and covariance)
+
+```
+
+This is the first set of models in the Hypothesis Two group that has not generated balloon shaped confidence intervals on the underlying states or the fitted values plots. Indicating that we have a better model when we allow the models to be correlated with one another. We potentially see some structuring in the residuals. Fewer of the ACF plots show strong structuring in the residuals, some of the plots with significant lags onlt have a few and we see less of the sine wave shaped plots than in the previous Hypothesis Two models. The variance covariate plot was forced to be equal, but we see that correlation between the major groups is estimated to be quite high.
+
+------------------------------------------------------------------------
+
+### Hypothesis 2.4
+The Q matrix for the variance of process errors is "unconstrained". Meaning that each hidden state is allowed to vary separately as is the correlation between the underlying states.
+
+```{r}
+
+mod.list2.4 <- list(
+  U = U_mat2,
+  R = "diagonal and equal",
+  Q = "unconstrained",
+  Z = Z_mat2
+)
+m2.4 <- MARSS(dat, model = mod.list2.4, method="BFGS")
+
+```
+notes: again yakima is the only positive drift value on the hidden state's random walk John Day and Yakima have strongest correlation and then John Day and Cascades I expect this to be seen in the corrplot
+
+```{r}
+autoplot(m2.4)
+```
+
+fitted CI look decent, Deschutes and Fifteenmile are the worst otherwise the CI doesn't blow up on others where data was missing. Apparently not a good for the Cascades group
+
+Standardized residuals may show a bit of structure in a few graphs but otherwise white noise
+
+Lets look at estimates:
+
+```{r}
+print(fit2.1_smooth<-tsSmooth(m2.4))
+```
+
+look at corrplot
+
+```{r}
+Q2.4 <- coef(m2.4, type = "matrix")$Q
+corrmat2.4 <- diag(1/sqrt(diag(Q2.4))) %*% Q2.4 %*% diag(1/sqrt(diag(Q2.4)))
+corrplot(corrmat2.4)
+
+```
+not at all what I was expecting from the model output, 
+All groups are highly correlated with each other
+
+Again we see that confidence intervals have some shape to them and fit the predicted values better than the balloon shaped confidence intervals seen in previous Hypotheis Two plots.Plots of the residuals look very similar to the other plots from this Hypothesis group. ACF plots are similar to the Hypothesis 2.3 and do not show as much structuring as previous plots.
+
+The Q matrix was allow to be unconstrained. We see very different variances estimated by the MARSS model, ranging from 0.03 to .21. covariance between the underlying states also a large degree.
+
+------------------------------------------------------------------------
+
+## Hypothesis 3
+
+Description of H3: There are two underlying states, one representing the northern area (Walla Walla and Yakima) and on representing the southern area (John Day and Cascades).
+
+$$
+\text{Hypothesis Three}:
+\begin{bmatrix}
+y_1\\
+y_2\\
+y_3\\
+y_4\\
+y_5\\
+y_6\\
+y_7\\
+y_8\\
+y_9\\
+y_{10}\\
+y_{11}\\
+y_{12}\\
+y_{13}\\
+y_{14}\\
+y_{15}\\
+\end{bmatrix}_t=
+\begin{bmatrix}
+1 & 0 \\
+1 & 0 \\
+1 & 0 \\
+1 & 0 \\
+1 & 0 \\
+1 & 0 \\
+1 & 0 \\
+1 & 0 \\
+0 & 1 \\
+0 & 1 \\
+0 & 1 \\
+0 & 1 \\
+0 & 1 \\
+0 & 1 \\
+0 & 1 \\
+\end{bmatrix}*
+\begin{bmatrix}
+x_1\\
+x_2\\
+\end{bmatrix}_t+
+\begin{bmatrix}
+a_1\\
+a_2\\
+a_3\\
+a_4\\
+a_5\\
+a_6\\
+a_7\\
+a_8\\
+a_9\\
+a_{10}\\
+a_{11}\\
+a_{12}\\
+a_{13}\\
+a_{14}\\
+a_{15}\\
+\end{bmatrix}+
+\begin{bmatrix}
+w_1\\
+w_2\\
+w_3\\
+w_4\\
+w_5\\
+w_6\\
+w_7\\
+w_8\\
+w_9\\
+w_{10}\\
+w_{11}\\
+w_{12}\\
+w_{13}\\
+w_{14}\\
+w_{15}\\
+\end{bmatrix}_t
+$$ \$\$ \text{Where }w \sim MVN
+
+```{=tex}
+\begin{pmatrix}
+\text{0,}\begin{bmatrix}
+R
+\end{bmatrix}
+\end{pmatrix}
+```
+\$\$
+
+```{r}
+U_mat3 <- matrix(c("North","South"),2,1)
+#make Z matrix correspond to 2 hidden states
+Z_mat3 <- matrix(c(rep(c(0,1),8),
+                     rep(c(1,0),7)),15,2, byrow=TRUE)
+                     
+```
+
+### Hypothesis 3.1 
+
+Q matrix = diagonal and equal 
+```{r}
+mod.list3.1 <- list(
+  U = U_mat3,
+  R = "diagonal and equal",
+  Q = "diagonal and equal",
+  Z = Z_mat3
+)
+m3.1 <- MARSS(dat, model = mod.list3.1)
+```
+
+Plots 
+
+```{r}
+autoplot(m3.1)
+```
+
+Estimates 
+```{r}
+print(fit3.1_smooth<-tsSmooth(m3.1))
+```
+look at corrplot
+```{r}
+Q3.1 <- coef(m3.1, type = "matrix")$Q
+corrmat3.1 <- diag(1/sqrt(diag(Q3.1))) %*% Q3.1 %*% diag(1/sqrt(diag(Q3.1)))
+corrplot(corrmat3.1)
+```
+
+### Hypothesis 3.2
+Diagonal and unequal
+
+```{r}
+mod.list3.2 <- list(
+  U = U_mat3,
+  R = "diagonal and equal",
+  Q = "diagonal and unequal",
+  Z = Z_mat3
+)
+m3.2 <- MARSS(dat, model = mod.list3.2)
+```
+
+Estimates 
+```{r}
+print(fit3.2_smooth<-tsSmooth(m3.2))
+```
+look at corrplot
+```{r}
+Q3.2 <- coef(m3.2, type = "matrix")$Q
+corrmat3.2 <- diag(1/sqrt(diag(Q3.2))) %*% Q3.2 %*% diag(1/sqrt(diag(Q3.2)))
+corrplot(corrmat3.2)
+```
+
+### Hypothesis 3.3 
+
+Equal var and covar 
+```{r}
+
+mod.list3.3 <- list(
+  U = U_mat3,
+  R = "diagonal and equal",
+  Q = "equalvarcov",
+  Z = Z_mat3
+)
+m3.3 <- MARSS(dat, model = mod.list3.3)
+```
+
+```{r}
+autoplot(m3.3)
+```
+
+Estimates 
+
+```{r}
+print(fit3.3_smooth<-tsSmooth(m3.3))
+```
+corrplots
+
+```{r}
+Q3.3 <- coef(m3.3, type = "matrix")$Q
+corrmat3.3 <- diag(1/sqrt(diag(Q3.3))) %*% Q3.3 %*% diag(1/sqrt(diag(Q3.3)))
+corrplot(corrmat3.3)
+```
+
+### Hypothesis 3.4
+
+Q matrix = unconstrained 
+```{r}
+mod.list3.4 <- list(
+  U = U_mat3,
+  R = "diagonal and equal",
+  Q = "unconstrained",
+  Z = Z_mat3
+)
+m3.4 <- MARSS(dat, model = mod.list3.4)
+```
+plots
+```{r}
+autoplot(m3.4)
+```
+Estimates 
+
+```{r}
+print(fit3.4_smooth<-tsSmooth(m3.4))
+```
+corrplots
+
+```{r}
+Q3.4 <- coef(m3.4, type = "matrix")$Q
+corrmat3.4 <- diag(1/sqrt(diag(Q3.4))) %*% Q3.4 %*% diag(1/sqrt(diag(Q3.4)))
+corrplot(corrmat3.4)
+```
+
+## Hypothesis 4:
+
+Salmon of the Yakima group have to swim the furthest to reach their spawning ground, including a large bend in the river that heads back west. They are the most isolated group and thus may have their own hidden state while the other 3 major population groups maybe more closely linked to each other due to their closer geographic proximity. Thus, we hypothesize that there may be two underlying states describing the entire system. The first describing just the Yakima group while the second describes the Cascades, John Day, and Walla Walla groups.
+
+$$
+\text{Hypothesis Four}:
+\begin{bmatrix}
+y_1\\
+y_2\\
+y_3\\
+y_4\\
+y_5\\
+y_6\\
+y_7\\
+y_8\\
+y_9\\
+y_{10}\\
+y_{11}\\
+y_{12}\\
+y_{13}\\
+y_{14}\\
+y_{15}\\
+\end{bmatrix}_t=
+\begin{bmatrix}
+1 & 0 \\
+1 & 0 \\
+1 & 0 \\
+1 & 0 \\
+1 & 0 \\
+1 & 0 \\
+1 & 0 \\
+1 & 0 \\
+1 & 0 \\
+1 & 0 \\
+1 & 0 \\
+0 & 1 \\
+0 & 1 \\
+0 & 1 \\
+0 & 1 \\
+\end{bmatrix}*
+\begin{bmatrix}
+x_1\\
+x_2\\
+\end{bmatrix}_t+
+\begin{bmatrix}
+a_1\\
+a_2\\
+a_3\\
+a_4\\
+a_5\\
+a_6\\
+a_7\\
+a_8\\
+a_9\\
+a_{10}\\
+a_{11}\\
+a_{12}\\
+a_{13}\\
+a_{14}\\
+a_{15}\\
+\end{bmatrix}+
+\begin{bmatrix}
+w_1\\
+w_2\\
+w_3\\
+w_4\\
+w_5\\
+w_6\\
+w_7\\
+w_8\\
+w_9\\
+w_{10}\\
+w_{11}\\
+w_{12}\\
+w_{13}\\
+w_{14}\\
+w_{15}\\
+\end{bmatrix}_t
+$$ $$
+\text{Where }w \sim MVN
+\begin{pmatrix}
+\text{0,}\begin{bmatrix}
+R
+\end{bmatrix}
+\end{pmatrix}
+$$
+
+$$
+\text{Where }w \sim MVN
+\begin{pmatrix}
+\text{0,}\begin{bmatrix}
+R
+\end{bmatrix}
+\end{pmatrix}
+$$ Hypothesis 4.1: Q matrix is "diagonal and equal" meaning the two hidden, underlying states will have equal variance but will not be correlated to each other.
+
+### Hypothesis 4.1 
+
+```{r}
+#give U values names to make it easier to read results
+#this hypothesis has 2 hidden states based spatial distribution of major groups
+U_mat4 <- matrix(c("West_group","Yakima"),2,1)
+#make Z matrix correspond to 4 hidden states
+Z_mat4 <- matrix(c(rep(c(1,0),3),
+                  rep(c(1,0),5),
+                  rep(c(1,0),3),
+                  rep(c(0,1),4)),15,2, byrow=TRUE)
+
+mod.list4.1 <- list(
+  U = U_mat4,
+  R = "diagonal and equal",
+  Q = "diagonal and equal",
+  Z = Z_mat4
+)
+m4.1 <- MARSS(dat, model = mod.list4.1)
+```
+notes: yakima continues its positive drift, collective group shows negative drift
+ single Q value reported as "diagonal and equal"
+
+```{r}
+autoplot(m4.1)
+```
+
+HUGE CIs on hidden state of Yakima group where data is missing. Less missing data 
+for the other hidden state but CI do get big at the last time steps where data 
+CIs for fitted values show the same pattern
+qqplots show more variation in the Yakima group then I have noticed before.
+North Fork John Daly is continually the worst performer
+
+Estimates
+```{r}
+print(fit4.1_smooth<-tsSmooth(m4.1))
+```
+
+look at corrplot
+```{r}
+Q4.1 <- coef(m4.1, type = "matrix")$Q
+corrmat4.1 <- diag(1/sqrt(diag(Q4.1))) %*% Q4.1 %*% diag(1/sqrt(diag(Q4.1)))
+corrplot(corrmat4.1)
+#As expected for this Q call
+
+```
+
+The confidence intervals on the underlying state and the fitted values have really big balloon shapes to them where data is missing from each system. The Yakima system, which was assumed to have its own underlying state in this hypothesis, has much large confidence intervals than all the other systems in the fitted values plot. The ACF plots do show that about half of the systems disply autocorrelation in their residuals. The Residuals normality test for the underlying states, X1 and X2, show that the residuals for the Yakima group (X2) are not normally distributed as they vary from the qqline to a great degree. The corrplot is relatively uninformative as we forced the Q matrix to be diagonal and equal.
+
+------------------------------------------------------------------------
+
+### Hypothesis 4.2
+Q matrix is "diagonal and unequal", meaning the two hidden, underlying states will have the same variance but will not be allowed to be correlated to one another.
+
+```{r}
+mod.list4.2 <- list(
+  U = U_mat4,
+  R = "diagonal and equal",
+  Q = "diagonal and unequal",
+  Z = Z_mat4
+)
+m4.2 <- MARSS(dat, model = mod.list4.2)
+```
+
+notes: yakima continues its positive drift, collective group shows negative drift
+ Q values are similar but not as close as they were in the unconstrained model
+
+```{r}
+autoplot(m4.2)
+```
+
+HUGE, HUGE! CIs on hidden state of Yakima group where data is missing. Less missing data for the other hidden state but CI do get big at the last time steps where data 
+CIs for fitted values show the same pattern qqplots show more variation in the Yakima group then I have noticed before. North Fork John Daly is continually the worst performer
+
+Estimates
+```{r}
+print(fit4.2_smooth<-tsSmooth(m4.2))
+```
+
+look at corrplot
+```{r}
+Q4.2 <- coef(m4.2, type = "matrix")$Q
+corrmat4.2 <- diag(1/sqrt(diag(Q4.2))) %*% Q4.2 %*% diag(1/sqrt(diag(Q4.2)))
+corrplot(corrmat4.2)
+#As expected for this Q call
+
+```
+
+The largest confidence intervals we have seen on the underlying states and the fitted values yet. The Yakima group only has large balloon shaped confidence intervals on its fitted values while the other river systems have some structure to their confidence intervals in sections with missing data. Very similar ACF plots to the other Hypothesis Four models, showing structuring and multiple significant lags in approximately half of the plots. The variance was allowed to vary independently between the two underlying states but they were estimated to be very similar to one another
+
+------------------------------------------------------------------------
+
+### Hypothesis 4.3
+The Q matrix is "equal variance and covariance". This will result in both of the hidden, underlying states having the same variance and they will be corellated to one another.
+
+```{r}
+
+mod.list4.3 <- list(
+  U = U_mat4,
+  R = "diagonal and equal",
+  Q = "equalvarcov",
+  Z = Z_mat4
+)
+m4.3 <- MARSS(dat, model = mod.list4.3)
+```
+notes: yakima continues its positive drift, collective group shows negative drift
+Both the variance and covariance almost have the same value. likely will have same
+results as hypothesis 4.1
+
+```{r}
+autoplot(m4.3)
+```
+
+positive and negative drifts apparent in States graphs. Decent looking CIs too
+Pretty good looking CIs on the fitted values
+maybe some structure in residuals, qqplots ok: North Fork John Daly has heavy tails
+results look very similar to 4.1
+
+Estimates 
+```{r}
+print(fit4.3_smooth<-tsSmooth(m4.3))
+```
+
+look at corrplot
+```{r}
+Q4.3 <- coef(m4.3, type = "matrix")$Q
+corrmat4.3 <- diag(1/sqrt(diag(Q4.3))) %*% Q4.3 %*% diag(1/sqrt(diag(Q4.3)))
+corrplot(corrmat4.3)
+#As expected almost the exact results of the 4.1 hypothesis
+
+```
+
+The confidence intervals for the underlying states and the fitted values now fit the estimated abundance in each river well rather than being oval shaped over any missing values.Very similar ACF plots to the other models in this Hypothesis group with about half of them showing sine wave patterns. The variance-covariance matrix was forced to be equal.
+
+------------------------------------------------------------------------
+
+### Hypothesis 4.4
+The Q matrix is "unconstrained". Meaning the two hidden, underlying states will be allowed to vary independently of one another and corellation is allowed to vary from 0 to 1 between the two states.
+
+```{r}
+mod.list4.4 <- list(
+  U = U_mat4,
+  R = "diagonal and equal",
+  Q = "unconstrained",
+  Z = Z_mat4
+)
+m4.4 <- MARSS(dat, model = mod.list4.4)
+```
+notes: yakima continues its positive drift, collective group shows negative drift
+Q values are very similar across variance and covariance
+
+```{r}
+autoplot(m4.4)
+```
+
+positive and negative drifts apparent in States graphs. Decent looking CIs too
+Pretty good looking CIs on the fitted values maybe some structure in residuals, qqplots ok: North Fork John Daly has heavy tails
+
+Estimates 
+```{r}
+print(fit4.4_smooth<-tsSmooth(m4.4))
+```
+
+look at corrplot
+```{r}
+Q4.4 <- coef(m4.4, type = "matrix")$Q
+corrmat4.4 <- diag(1/sqrt(diag(Q4.4))) %*% Q4.4 %*% diag(1/sqrt(diag(Q4.4)))
+corrplot(corrmat4.4)
+#As hinted at by the model out put very high correlation even though this was an
+#unconstrained model
+```
+
+The confidence intervals on the underlying state and the fitted values fit the estimated abundances well in areas with missing data. QQplots all look good except for the North Fork of the John Day which displays heavy tails.The AFC plots show over half of the system have autocorrelated residuals. Even though this hypothesis allowed the Q matrix to be unconstrained, it still estimated variances and covariances that were essentially equal to the "equal variance and covariance" hypothesis.
+
+------------------------------------------------------------------------
+
+## AIC Results and Selected Model
+
+```{r}
+mods <- c("1","2.1","2.2","2.3","2.4","3.1","3.2", "3.3", "3.4","4.1","4.2","4.3","4.4")
+aic <- c(m1$AICc, m2.1$AICc, m2.2$AICc, m2.3$AICc, m2.4$AICc,m3.1$AICc, m3.2$AICc, m3.3$AICc, m3.4$AICc, m4.1$AICc, m4.2$AICc, m4.3$AICc, m4.4$AICc)
+daic <- aic-min(aic)
+tab <- cbind.data.frame(mods, aic, daic)
+kable(tab, col.names = c("Hypothesis", "AICc", "delta AICc"))
+```
+
+Best model is 2.4 where it is assumed that the four main population groups form separate sub-populations. In this hypothesis we are utilizing 4 separate underlying states to model the observations from each of the main population groups. The Q matrix for the variance of process errors is "unconstrained". Meaning that each hidden state is allowed to vary separately as is the correlation between the underlying states.
+
+## Cycling considerations for best model
+
+Data review 
+```{r}
+
+print(years) #64 years of data 
+TT<-years
+p <- 5 #period to look at
+```
+1) specify the Z matrix 
+```{r}
+Z <- array(1, dim = c(15, 4, TT))
+#Fix this matrix
+Z[1, 2 ] <- sin(2 * pi * (1:TT)/p)
+Z[1, 3 ] <- cos(2 * pi * (1:TT)/p)
+```
+
+2) specify the mod.list
+```{r}
+
+mod.list <- list(U = U_mat2, Q = "diagonal and unequal", Z = Z, 
+    A = "zero")
+```
+
+3) Fit
+```{r}
+m <- dim(Z)[2]
+fit <- MARSS(dat, model = mod.list, inits = list(x0 = matrix(0, m, 1)))
+```
+
+4) Plot
+
+plot type = "xtT" Estimated states
+# Discussion
+
+# Description of each team member's contributions
+
+Dylan: Hypothesis conceptualization, Hypothesis 2 and 4, matrix display code, and AICc comparison methods.  
+Madi: Hypothesis 1 and 3, Rmarkdown formatting and cycling code.
+
+Example: "All team members helped decide on the goal and ran the analyses for the individual regions. Team members 2 & 3 wrote most of the code for the analysis of the regions. Team member 4 researched approaches for measuring accuracy of forecasts in \[Hyndman & Athanasopoulos\[OTexts.com/fpp2\] and team member 2 added code for that to the methods. Team member 4 also researched tests for stationarity and worked with team member 2 to code that up. Team member 1 worked on the plotting section of the report using and adapting code that team member 3 wrote. All team members helped edit the report and wrote the discussion together."

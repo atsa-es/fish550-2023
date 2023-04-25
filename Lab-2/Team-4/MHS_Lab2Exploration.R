@@ -58,7 +58,7 @@ rownames(dat) <- tmp
 # Hypthesis 1 
 
 
-mod.list1 <- list(
+mod.list1.1 <- list(
   U = "unequal", #each of the rivers are estimated separately (different U)
   R = "diagonal and equal", #Process errors are all assumed to be the same 
   Q = "diagonal and equal" #Observation error 
@@ -69,8 +69,8 @@ mod.list1 <- list(
 
 
 library(MARSS)
-fit1 <- MARSS(dat, model=mod.list1, method="BFGS")
-autoplot(fit1)
+fit1.1 <- MARSS(dat, model=mod.list1, method="BFGS")
+autoplot(fit1.1)
 
 fit1$states
 
