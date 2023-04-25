@@ -202,7 +202,7 @@ options(knitr.duplicate.label = "allow")
 ```
 
 
-```{r fig.keep="none"}
+```{r}
 # resid1<-autoplot(fit1, plot.type="residuals")
 # headings<-c('Model innovation', "Cholesky standardized model smoothation", "Cholesky standaradized state smoothation", "Residuals normality test", "Cholesky standaradized model innnovation residuals acf")
 
