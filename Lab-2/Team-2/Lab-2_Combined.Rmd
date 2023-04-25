@@ -23,12 +23,6 @@ We analyzed the Steelhead (Lower Columbia ESU). We decided to exclude the Gorge 
 
 # Methods
 
-Address the following in your methods
-
--   Describe your assumptions about the x and how the data time series are related to x.
-
-    -   How are the x and y (data) related? 1 x for 1 y or will you assume 1 x for all y or 1 x for each major population group? How will you choose?
-
 We tested 5 different population groups hypotheses: one population, individual populations, run timing groups, spatial groups, and correlation groups. 
 
 One population
