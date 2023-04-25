@@ -1067,18 +1067,20 @@ plot_test<-autoplot(m_test)
 
 
 ```{r}
-#Try something a little more complex 
+#Try something a little more complex period 4
 U_cyl <- matrix(c("Cascades","JohnDay","Walla","Yakima"),4,1)
-
-z_cyl <- array(0, dim = c(15, 6, TT))
+TT <- 64
+z_cyl <- array(0, dim = c(15, 4, TT))
 
 z_cyl[1:3,1,]<-1
 z_cyl[4:8,2,]<-1
 z_cyl[9:11,3,]<-1
 z_cyl[12:15,4,]<-1
 
-z_cyl[1, 5, ] <- sin(2 * pi * (1:TT)/p)
-z_cyl[1, 6, ] <- cos(2 * pi * (1:TT)/p)
+d_cyl <- matrix(0,2,TT)
+
+d_cyl[1,] <- sin(2 * pi * (1:TT)/4)
+d_cyl[2,] <- cos(2 * pi * (1:TT)/4)
 
 
 # ensure that Z_cly is in the correct format
@@ -1086,12 +1088,17 @@ Z_cyl <- matrix(z_cyl, nrow = 15, ncol = 6*TT)
 
  
 mod.list <- list(U = U_cyl, 
-                 Q = "diagonal and unequal", #"unconstrained"
-                 Z = Z_cly, 
-                 A = "zero") 
+                 Q = "unconstrained",
+                 Z = Z_mat2, 
+                 A = "zero",
+                 D="unconstrained",
+                 d = d_cyl) 
 
-m <- dim(Z_cyl)[2]
+m <- dim(Z_mat2)[2]
 m_cyl <- MARSS(dat, model = mod.list, inits = list(x0 = matrix(0, m, 1)))
+
+autoplot(m_cyl)
+
 
 
 ```
