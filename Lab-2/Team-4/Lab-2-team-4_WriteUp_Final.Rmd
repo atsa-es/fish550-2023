@@ -1,7 +1,8 @@
 ---
-title: "Lab 2: MARSS models"
-output: html_document
+title: 'Lab 2: MARSS Models'
+author: "Madison Heller-Shipley, Dylan Hubl"
 date: "2023-04-26"
+output: html_document
 ---
 
 ```{r setup, include=FALSE}
@@ -21,6 +22,7 @@ library(tidyr)
 library(ggplot2)
 library(tidyverse)
 library(dplyr)
+library(forecast)
 library(MARSS)
 library(corrplot)
 library(knitr)
@@ -1268,7 +1270,6 @@ Ultimately, the model that assumed four states performed the best, and from this
 
 # Description of each team member's contributions
 
-Dylan: Hypothesis conceptualization, code for hypothesis 2 and 4, matrix display code, and AICc comparison methods.\
-Madi: Hypothesis 1 and 3, cycling code, and Rmarkdown formatting.
+Dylan: Hypothesis conceptualization, code for hypothesis 2 and 4, matrix display code, and AICc comparison methods. Madison: Hypothesis 1 and 3, cycling code, and Rmarkdown formatting.
 
 Both Dylan and Madi helped to write the report.
