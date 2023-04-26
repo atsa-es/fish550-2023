@@ -73,7 +73,8 @@ Let's take a look at the Middle Columbia River area and formulate some hypothese
 
 ```{r}
 
-knitr::include_graphics("C:/GitHub/fish550-2023/Lab-2/Data_Images/Middle Columbia River sockeye.png")
+here::here("Lab-2", "Team-4", "Middle Columbia River sockeye.png") |>
+  knitr::include_graphics()
 
 ```
 
