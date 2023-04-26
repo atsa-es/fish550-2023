@@ -380,8 +380,6 @@ In our best model, we do see some autocorrelation in our residuals. In the next 
 
 ## Comparing best model to the most flexible model
 
-Do our estimates differ depending on the assumptions of the structure of the data, i.e. our assumptions about the x's, Q, and U?
-
 ```{r}
 
 plot(fit1, plot.type="fitted.ytT")#flexible
@@ -389,6 +387,8 @@ plot(fit1, plot.type="fitted.ytT")#flexible
 plot(best_mod, plot.type="fitted.ytT")#best
 
 ```
+
+Do our estimates differ depending on the assumptions of the structure of the data, i.e. our assumptions about the x's, Q, and U?
 
 Definitely! The more flexible model (individual states, unequal bias term) produces more variable forecasts (with some populations increasing or decreasing through time). Our spatial model (5 states, equal bias term) provides relatively stable forecasts across populations, likely due to the "equal" bias term. 
 
@@ -508,15 +508,15 @@ plot(fit_5season, plot.type = "acf.std.model.resids.ytt1")
 
 ```
 
-When comparing the ACF plots of the spatial model w/o cycling and the spatial model w/ cycling, we do see some of the residual and ACF plots improve. For example, around lag 10 in the Kalama River winter population, the autocorrelation reduces relative the spatial model w/o cycling. The residual plots also remove some of the cycling patterns in a few groups (e.g., Tilton River, South Fork Toutle). However, the cyclic covariates in the process does not completely remove the residuals' cycling patterns; positive values tend to follow positive ones. 
+When comparing the residual and ACF plots of the spatial model w/o cycling and the spatial model w/ cycling, we do see some of the residual and ACF plots improve. For example, around lag 10 in the Kalama River winter population, the autocorrelation reduces relative the spatial model w/o cycling. The residual plots also remove some of the cycling patterns in a few groups (e.g., Tilton River, South Fork Toutle). However, the cyclic covariates in the process does not completely remove the residuals' cycling patterns; positive values tend to follow positive ones. 
 
 # Discussion
 
-Our best model was the spatial groupings. This grouped 7 rivers together to form 5 watershed populations, reducing # of states/pops from 9 to 5. Abundance dynamics are most influenced by watershed characteristics, and not so much run timing and similar correlations of Q. All run populations seem to have increased since the earliest year of data, though some populations seem to have decreased slightly in recent years (e.g., Washougal, Cowlitz, East Fork Lewis). Our best performing model seems to fit the data well with no major problems in the residuals, with the exception of cycling.   
+Our best model was our "spatial" group model, which was designed based on the spatial proximity of the subwatersheds of study and their steelhead populations. This grouped 9 steelhead populations together to form 5 populations or 5 "hidden states" of steelhead abundance dynamics through time. This implies that steelhead populations located closer in space or within the same catchment share temporal variation in their abundance dynamics, suggesting that populations are largely influenced by similar river or watershed characteristics (e.g., habitat quality or availability) and not so much run timing. All run populations seem to have increased since the earliest year of data, though some populations seem to have decreased slightly in recent years (e.g., Washougal, Cowlitz, East Fork Lewis). Our best performing model seems to fit the data well with no major problems in the residuals, with the exception of cycling.   
 
 We found some evidence for 5 year cycles, though it did not lower the AIC relative to the spatial model. This makes sense since steelhead (relative to other salmonids) do not exhibit as much cycling. Even within these 9 runs, we see some runs (e.g. Kalama winter) show more cycling patterns than others (e.g. Upper Cowlitz winter) do. A reason why AIC does not support adding 5 year cycles to all runs is that not all runs need cycling and the addition of parameters for these runs is superfluous. Cycling did somewhat improve autocorrelation in our model residuals by reducing the number of statistically significant ACF lags. 
 
-Future improvements to our best performing spatial model would be to include cycling in only populations that strong seasonal patterns. 
+Future improvements to our best performing spatial model would be to include cycling in only populations that strong seasonal patterns. This, however, involves "hand-baking" a series of upper C matrices and was outside the scope of this study. 
 
 # Description of each team member's contributions
 
