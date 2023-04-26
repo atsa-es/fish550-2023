@@ -437,17 +437,6 @@ Future directions should include evaluating the correlation between all the regi
 ## Miranda's attempt at fitting our best model...but probably shouldn't include because it isn't complete and doesn't really make biological sense to continue without further work detailed above. 
 ```{r}
 
-mod.list.test <- list(B = matrix(1), 
-                   U = matrix("u"), 
-                   Q = matrix("q"), # 1 X
-                   Z = matrix(1, 23, 1), 
-                   A = "scaling", 
-                   R = "diagonal and unequal", # single column of 1s for Y
-                   x0 = matrix("mu"), 
-                   tinitx = 0)
-
-
-
 mod.list.full <- list(B = matrix(1), 
                    U = matrix("u"), 
                    Q = matrix("q"), # 1 X
@@ -457,36 +446,16 @@ mod.list.full <- list(B = matrix(1),
                    x0 = matrix("mu"), 
                    tinitx = 0)
 
-
-fit.test <- MARSS(dat, model = mod.list.test)
 fit_full <- MARSS(dat, model = mod.list.full, control = list(maxit=5000))
 
 autoplot(fit_full, plot.type="fitted.ytT")
 ```
 
 
-extra code for now
-```{r}
-
-
-
-
-mod.list.test <- list(B = matrix(1), 
-                   U = matrix("u"), 
-                   Q = matrix("q"), # 1 X
-                   Z = matrix(1, 23, 1), 
-                   A = "scaling", # default
-                   R = "diagonal and unequal", # single column of 1s for Y
-                   x0 = matrix("mu"), 
-                   tinitx = 0)
-
-
-```
-
-**States**
+#States
 
 Your abundance estimate is the "x" or "state" estimates. You can get this from
-```
+```{r}
 fit$states
 ```
 or 
