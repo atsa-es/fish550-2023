@@ -4,8 +4,6 @@ Team member names: Miranda Mudge, Karl Veggerby, Nick Chambers
 
 # Data
 
-<!-- Describe what data set you will work with and any subsetting you decided on. For example, you may have decided to look only at a section of the ESU that your team was assigned. -->
-
 We were assigned the Lower Columbia Coho data set. We selected two rivers from each Major Population Group (MPG) to test the performance of several models. The selected populations are:
 
 Cascade MPG - 
@@ -17,9 +15,10 @@ Upper and Lower Gorge Tributaries
 Coast MPG
 Clatskanie, and Grays/Chinook Rivers
 
-
-
 ```{r, echo=TRUE}
+library(tidyverse)
+library(MARSS)
+
 # Load the data
 load(here::here("Lab-2", "Data_Images", "columbia-river.rda"))
 ```
@@ -85,18 +84,8 @@ mod_rivers <- c("Sandy River - early and late",
 sub_dat <- dat[rownames(dat) %in% mod_rivers, ] 
 ```
 
-# General Questions
-
-Each group has the same general tasks, but you will adapt them as you work on the data.
-
-1. Create estimates of spawner abundance for all missing years and provide estimates of the decline from the historical abundance.
-
-2. Evaluate support for the major population groups. Are the populations in the groups more correlated than outside the groups?
-
-3. Evaluate the evidence of cycling in the data. *We will talk about how to do this on the Tuesday after lab.*
-
-
 # Methods
+You can assume that `R="diagonal and equal"` and `A="scaling"`.
 
 Address the following in your methods
 
@@ -186,23 +175,6 @@ fit4 <- MARSS(sub_dat, model=mod.list4)
 fit5 <- MARSS(sub_dat, model=mod.list5, control = list(maxit=1000))
 
 ```
-**Assumptions**
-
-You can assume that `R="diagonal and equal"` and `A="scaling"`. Assume that "historical" means the earliest years available for your group.
-
-**States**
-
-Your abundance estimate is the "x" or "state" estimates. You can get this from
-```
-fit$states
-```
-or 
-```
-tsSmooth(fit)
-```
-where `fit` is from `fit <- MARSS()`
-
-**plotting**
 
 Here we plot the fit of the models to visually check the model performance
 
@@ -215,12 +187,7 @@ plot.mod5 <- autoplot(fit5, plot.type="fitted.ytT")
 ```
 
 
-Estimate of the mean of the spawner counts based on your x model.
-```
-autoplot(fit, plot.type="fitted.ytT")
-```
-
-Here we further tested the model fit by examining the corrplot to see which rivers were most closely correlated to see if that fit with our assumptions based on Lower Columbia Geography. 
+Here we further tested the model fit by examining the corrplot to see which rivers were most closely correlated to see if that fit with our assumptions.
 
 ```{r}
 # change fit# to evaluate correlation between regions in different models 
@@ -254,19 +221,14 @@ tsSmooth(fit3)
 autoplot(fit3, plot.type="fitted.ytT")
 autoplot(fit3, plot.type="residuals")
 
-#model 5
-fit5$states
-tsSmooth(fit5)
-autoplot(fit5, plot.type="fitted.ytT")
-```
-# Testing different regions as sub groups
 
+```
 
 # Test different regions as sub-groups: 
 
-We also wanted to look into the potential of regions behaving as sub-populations based on major population group, our initial correlation analysis, and some geographic assumptions after looking at a map of the rivers and thinking about salmon swimming patterns. 
+We also examined the potential for region to behave as sub-populations based on major population group, our initial correlation analysis, and some geographic assumptions about physical proximity and climate. 
 
-Comparing 3 sub-populations: cascade, coast, and gorge
+Comparing 3 sub-populations: cascade, coast, and gorge based on their designated MPG
 ```{r}
 mod.list6 <- list(#B = matrix(1), # B = "identity" 3x3 matrix
                   # U = matrix("u"), #needs 3 rows U = "equal" or "unequal" # default = unequal
@@ -326,14 +288,15 @@ aic <- c(fit3$AICc, fit6$AICc, fit7$AICc, fit8$AICc )
 aic-min(aic) #delta AICc 
 ```
 
-Our new analysis of sub-populations indicates that some of the regions do behave as some populations. The new best model builds off of the predictions from the correlation analysis, with the Grays/Chinook Rivers and the Lower Gorge Tributaries behaving as 1 sub-population. Additionally, the model treating major populaton groups as sub-populations perfomred better than our original model, suggesting that incorporating your knowledge of the system (biological and geographic) can help inform your model. 
+Our new analysis of grouped populations indicates that some of the regions do behave as sub populations. The new best model builds off of the predictions from the correlation analysis, with the Grays/Chinook Rivers and the Lower Gorge Tributaries behaving as 1 sub-population. Additionally, the model treating major populaton groups as sub-populations performed better than our original model providing some possible evidence that grouping by MPG can improve the model fit to the data. However, the AICc value was only 1.56 better than our model without the grouping by MPG so it is not significantly better. 
+
 
 ### Including cycling - using our coho data, full time series
 
-Because we know that salmon have spawning cycles, we wanted to consider incorporating the idea that this underlying seasonality could allow us to generate a better fitting model. To do this, we incorporated seasonality as a covariate in a new model below. We tested 5 and 10 year cycles after looking back at our data, specifically of the Sandy River which has good ESU coverage across the testing regions. 
+Because we know that coho abundance can be influenced by broad patterns in climate and ocean conditions we tested for underlying seasonality by looking for cycling in the data set and evaluated whether this might generate a better fitting model.To accomplish this, we incorporated seasonality as a covariate in a new model below. We tested 5 and 10 year cycles after looking back at our data, specifically of the Sandy River which has good the fewest missing values of the time series data. 
 
 
-Cycling possible in Tilton River. 
+# Plot the ACF and look for evidence of cycling
 ```{r}
 par(mfrow=c(2,2))
 for(i in 1:4){
@@ -341,10 +304,7 @@ for(i in 1:4){
 }
 ```
 
-
-## evidence of cycling in Tilton
-
-Based on looking at the data, we decided to test for cycling with frequency 5 or 10 years. 
+Based on the acf plots and the pattern in the Tilton with significant autocorrelation at 5 years with a possible cyclic pattern, we decided to test for cycling with frequency 5 or 10 years. 
 
 ```{r}
 TT <- dim(sub_dat)[2] #number of time steps
@@ -387,7 +347,7 @@ plot.mod10 <- autoplot(fit10, plot.type="fitted.ytT")
 ```
 
 
-Here we're looking at Model 9. 
+Here we look at Model 9. 
 ```{r}
 library(broom)
 df <- tidy(fit9) %>% #confidence estimates
@@ -432,10 +392,10 @@ ggplot(df, aes(x=type, y=estimate, col=lag)) +
 The same analysis but with an equal variance covariance matrix estimated for Q still highlights the potential for a 10 year cycle, this time with the Tilton River. 
 
 ------------------------------------------------------------------------
-Evaluate AICc for seasonality against our current best model 7. 
+Evaluate AICc for seasonality against our current best model 3. 
 
 ```{r}
-aic <- c(fit7$AICc, fit9$AICc, fit10$AICc )
+aic <- c(fit3$AICc, fit9$AICc, fit10$AICc )
 aic-min(aic) #delta AICc 
 ```
 
@@ -456,17 +416,17 @@ mod.list11 <- list(
   d = covariates_10
 )
 
-fit11 <- MARSS(sub_dat, model=mod.list11)
+fit11 <- MARSS(sub_dat, model=mod.list11, control = list(maxit=1000) )
 ```
 
 ```{r}
-aic <- c(fit7$AICc, fit11$AICc )
+aic <- c(fit3$AICc, fit11$AICc )
 aic-min(aic) #delta AICc 
 ```
 
 Narrowing down to just a 10 year cycle improved the model, but the seasonality still doesn't help the model as a covariate. 
 
-Ultimately, the best model for predicting historical data for Coho salmon is Model 7: sub-grouping the grays and chinook rivers and the lower gorge tributaries based on a correlation analysis.
+Ultimately, the best model for predicting historical data for Coho salmon is Model 3 which treats all populations idependently. 
 
 # Fit the best model
 
@@ -476,6 +436,41 @@ Future directions should include evaluating the correlation between all the regi
 
 ## Miranda's attempt at fitting our best model...but probably shouldn't include because it isn't complete and doesn't really make biological sense to continue without further work detailed above. 
 ```{r}
+
+mod.list.test <- list(B = matrix(1), 
+                   U = matrix("u"), 
+                   Q = matrix("q"), # 1 X
+                   Z = matrix(1, 23, 1), 
+                   A = "scaling", 
+                   R = "diagonal and unequal", # single column of 1s for Y
+                   x0 = matrix("mu"), 
+                   tinitx = 0)
+
+
+
+mod.list.full <- list(B = matrix(1), 
+                   U = matrix("u"), 
+                   Q = matrix("q"), # 1 X
+                   Z = matrix(1, 23, 1), 
+                   A = "scaling", 
+                   R = "diagonal and unequal", # single column of 1s for Y
+                   x0 = matrix("mu"), 
+                   tinitx = 0)
+
+
+fit.test <- MARSS(dat, model = mod.list.test)
+fit_full <- MARSS(dat, model = mod.list.full, control = list(maxit=5000))
+
+autoplot(fit_full, plot.type="fitted.ytT")
+```
+
+
+extra code for now
+```{r}
+
+
+
+
 mod.list.test <- list(B = matrix(1), 
                    U = matrix("u"), 
                    Q = matrix("q"), # 1 X
@@ -485,27 +480,40 @@ mod.list.test <- list(B = matrix(1),
                    x0 = matrix("mu"), 
                    tinitx = 0)
 
-mod.list.full <- list(Q = "unconstrained", # 1 X
-                  Z = factor(c("STCU", "STCU", 
-                                "STCU", "GCL", 
-                                "GCL", "STCU")), 
-                   A = "scaling", 
-                   R = "diagonal and unequal", # single column of 1s for Y
-                   tinitx = 0)
 
-
-fit.test <- MARSS(dat, model = mod.list.test)
-fit_full <- MARSS(dat, model = mod.list.full, control = list(maxit=1000))
-
-#autoplot(fit7, plot.type="fitted.ytT")
 ```
 
+**States**
+
+Your abundance estimate is the "x" or "state" estimates. You can get this from
+```
+fit$states
+```
+or 
+```
+tsSmooth(fit)
+```
+where `fit` is from `fit <- MARSS()`
+
+Estimate of the mean of the spawner counts based on your x model.
+```
+autoplot(fit, plot.type="fitted.ytT")
+```
 
 # Results
 
+
+### General Questions
+
+Each group has the same general tasks, but you will adapt them as you work on the data.
+
+1. Create estimates of spawner abundance for all missing years and provide estimates of the decline from the historical abundance.
+
+2. Evaluate support for the major population groups. Are the populations in the groups more correlated than outside the groups?
+
 # Discussion
 
-
+ Assume that "historical" means the earliest years available for your group.
 ----------------------------------------------------------------
 
 
