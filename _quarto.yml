@@ -21,6 +21,9 @@ book:
     - part: Analyzing multivariate salmon data with MARSS
       chapters: 
         - Lab-2/Lab2-MARSS.Rmd
+    - part: Dynamic Factor Analysis
+      chapters: 
+        - Lab-3/Lab-3-DFA.Rmd
 
   site-url: https://atsa-es.github.io/fish550-2023/
   repo-url: https://github.com/atsa-es/fish550-2023
