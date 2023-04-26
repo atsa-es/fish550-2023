@@ -202,7 +202,7 @@ for(i in 1:length(Z.models)){
     for(U.model in u2){
     fit.model = c(list(Z=Z.models[[i]], Q=Q.model, U=U.model), mod.list)
     fit = MARSS(dat, model=fit.model,
-                silent=TRUE, control=list(maxit=5000))
+                silent=TRUE, control=list(maxit=3000))
     out=data.frame(H=names(Z.models)[i], Q=Q.model,U=U.model,
                    logLik=fit$logLik, AICc=fit$AICc, num.param=fit$num.params,
                    m=length(unique(Z.models[[i]])),
@@ -230,7 +230,7 @@ The best model (as supported by AICc) includes 9 states (individual populations)
 
 ```{r}
 
-best_mod <- fits[[6]]
+best_mod <- fits[[12]]
 best_mod
 
 autoplot(best_mod, plot.type="fitted.ytT")

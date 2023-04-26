@@ -1,0 +1,88 @@
+---
+title: "Lab 3 - Common trends in plankton data"
+subtitle: "Dynamic Factor Analysis (DFA)"
+author: "Nick Chambers, Terrance Wang, Zoe Rand"
+date: May 2, 2023
+output: 
+  html_document:
+    code-folding: true
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include = FALSE}
+options(dplyr.summarise.inform = FALSE)
+```
+
+***
+
+# Data
+
+Describe what plankton groups and covariates you used and indicate any temporal subsetting you chose. 
+
+
+## Load the data
+
+```{r load_data}
+## load MARSS for data and analyses
+library(MARSS)
+
+## load the raw data (there are 3 datasets contained here)
+data(lakeWAplankton, package = "MARSS")
+
+## we want `lakeWAplanktonTrans`, which has been transformed
+## so the 0's are replaced with NA's and the data z-scored
+all_dat <- lakeWAplanktonTrans
+```
+
+## Wrangle the data
+
+* You can choose any taxa to include in your analyses, but make sure there are at least 5 groups. You can mix phytoplankton and zooplankton, if you'd like, but justify any choices you make. 
+
+* You will want to subset the data to a time period with adequate observations for the taxa of interest. Your time window should include at lest 5 years (60 months).
+
+```{r wrangle_data}
+## add some code here
+head(all_dat)
+colnames(all_dat)
+```
+
+
+# General tasks
+
+Each group has the same general tasks, but you will adapt them as you work on the data.
+
+1) Find the most parsimonious model among a set that examines the effects of environmental covariates and/or an indicator of seasonality, varying numbers of trends, and different forms of variance-covariance matrices for the observation errors.
+
+2) Plot trends and individual loadings for the model identified in task (1) above.
+
+3) Plot model fits and uncertainty intervals for the model identified in task (1) above.
+
+4) Describe the effects of environmental or dummy variables on (possibly seasonal) patterns in the data.
+
+
+# Methods
+
+Please address the following in your methods:
+
+* Which plankton taxa did you choose and how did you choose them?
+   
+* What time period(s) did you examine and why?
+
+* What environmental or dummy variables did you include and why?
+
+* What forms of models did you fit (ie, write them out in matrix form)?
+
+* What sort of model diagnostics did you use to examine model assumptions?
+
+
+# Results
+
+
+# Discussion
+
+
+# Team contributions
+
+Example: "All team members helped decide on the goal and ran the analyses for the individual regions. Team members 2 & 3 wrote most of the code for the analysis. Team member 1 worked on the plotting section of the report using and adapting code that team member 3 wrote. All team members helped edit the report and wrote the discussion together."
+

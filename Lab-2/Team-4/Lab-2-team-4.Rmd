@@ -56,7 +56,7 @@ dat[is.infinite(dat)] <- NA
 ```
 ```{r}
 
-#knitr::include_graphics(~/FISH550/fish550-2023/Lab-2/Data_Images/"Middle Columbia River sockeye.png")
+knitr::include_graphics("C:/GitHub/fish550-2023/Lab-2/Data_Images/Middle Columbia River sockeye.png")
 
 ```
 
