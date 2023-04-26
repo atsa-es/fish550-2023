@@ -7,6 +7,8 @@ knitr::opts_chunk$set(echo = TRUE, comment=NA, cache=TRUE,
 
 
 ## ----message=FALSE-----------------------------------------------------------------------------
+library(devtools)
+devtools::install_github("atsa-es/atsalibrary")
 library(atsalibrary)
 library(ggplot2)
 library(MARSS)
