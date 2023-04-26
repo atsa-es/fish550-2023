@@ -86,17 +86,9 @@ sub_dat <- dat[rownames(dat) %in% mod_rivers, ]
 ```
 
 # Methods
-We tested many models and a variety of assumptions, many of which varied by model. For all models we assumed that A was a scaling parameter. 
+We tested many models and a variety of assumptions, many of which varied by model. For all models we assumed that A was a scaling parameter.
 
-* Describe your assumptions about the x and how the data time series are related to x.
-
-   - How are the x and y (data) related? 1 x for 1 y or will you assume 1 x for all y or 1 x for each major population group? How will you choose? 
-
-   
-
-
-
-Here we made a variety of assumptions and used them to generate five models to test which set of assumptions would produce the best fit to the data. 
+Below we made a variety of assumptions and used them to generate five models to test which set of assumptions would produce the best fit to the data. 
 
 ```{r}
 
