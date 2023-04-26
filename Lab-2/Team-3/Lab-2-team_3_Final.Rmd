@@ -377,7 +377,7 @@ ggplot(df, aes(x=type, y=estimate, col=lag)) +
 
 The same analysis but with an equal variance covariance matrix estimated for Q still highlights the potential for a 10 year cycle, this time with the Tilton River. 
 
-------------------------------------------------------------------------
+
 Evaluate AICc for seasonality against our current best model 3. 
 
 ```{r}
@@ -432,7 +432,7 @@ mod.list.full <- list(B = matrix(1),
                    x0 = matrix("mu"), 
                    tinitx = 0)
 
-fit_full <- MARSS(dat, model = mod.list.full, control = list(maxit=5000))
+fit_full <- MARSS(dat, model = mod.list.full, control = list(maxit=1000))
 
 ```
 
