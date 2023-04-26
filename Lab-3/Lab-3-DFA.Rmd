@@ -1,6 +1,6 @@
 ---
-title: "Lab 3 - Common trends in plankton data"
-subtitle: "Dynamic Factor Analysis (DFA)"
+title: Lab Intro
+subtitle: "Lab 3 Common trends in plankton data"
 author: "Mark Scheuerell"
 date: "April 20, 2023"
 output: 
