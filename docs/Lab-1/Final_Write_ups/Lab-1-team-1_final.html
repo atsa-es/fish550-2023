@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.335">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Nick Chambers (SAFS), Liz Elmstrom (SAFS), Maria Kuruvilla (QERM)">
+
+<title>Fish 550 Spring 2023 - 3&nbsp; Team 1</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../Lab-1/Final_Write_ups/Lab-1-team-2_final.html" rel="next">
+<link href="../../Lab-1/Lab1-ARIMA.html" rel="prev">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Team 1</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../../">Fish 550 Spring 2023</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/atsa-es/fish550-2023" title="Source Code" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../index.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Labs</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">Forecasting with ARIMA models</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lab-1/Lab1-ARIMA.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Lab Intro</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lab-1/Final_Write_ups/Lab-1-team-1_final.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Team 1</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lab-1/Final_Write_ups/Lab-1-team-2_final.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Team 2</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lab-1/Final_Write_ups/Lab-1-team-3_final.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Team 3</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lab-1/Final_Write_ups/Lab-1-team-4_final.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Team 4</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">Analyzing multivariate salmon data with MARSS</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lab-2/Lab2-MARSS.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Lab Intro</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#question-your-team-will-address" id="toc-question-your-team-will-address" class="nav-link active" data-scroll-target="#question-your-team-will-address"><span class="toc-section-number">4</span>  Question your team will address</a></li>
+  <li><a href="#method-you-will-use" id="toc-method-you-will-use" class="nav-link" data-scroll-target="#method-you-will-use"><span class="toc-section-number">5</span>  Method you will use</a>
+  <ul class="collapse">
+  <li><a href="#initial-plan" id="toc-initial-plan" class="nav-link" data-scroll-target="#initial-plan"><span class="toc-section-number">5.1</span>  Initial plan</a></li>
+  <li><a href="#what-you-actually-did" id="toc-what-you-actually-did" class="nav-link" data-scroll-target="#what-you-actually-did"><span class="toc-section-number">5.2</span>  What you actually did</a></li>
+  </ul></li>
+  <li><a href="#preliminary-dataset-exploration" id="toc-preliminary-dataset-exploration" class="nav-link" data-scroll-target="#preliminary-dataset-exploration"><span class="toc-section-number">6</span>  Preliminary dataset exploration</a>
+  <ul class="collapse">
+  <li><a href="#read-in-and-explore-data-liz" id="toc-read-in-and-explore-data-liz" class="nav-link" data-scroll-target="#read-in-and-explore-data-liz"><span class="toc-section-number">6.1</span>  Read in and explore data (Liz)</a></li>
+  </ul></li>
+  <li><a href="#data-diagnostics" id="toc-data-diagnostics" class="nav-link" data-scroll-target="#data-diagnostics"><span class="toc-section-number">7</span>  Data diagnostics</a>
+  <ul class="collapse">
+  <li><a href="#plot-the-data-liz" id="toc-plot-the-data-liz" class="nav-link" data-scroll-target="#plot-the-data-liz"><span class="toc-section-number">7.1</span>  Plot the data (Liz)</a></li>
+  <li><a href="#use-acf-and-pacf-maria" id="toc-use-acf-and-pacf-maria" class="nav-link" data-scroll-target="#use-acf-and-pacf-maria"><span class="toc-section-number">7.2</span>  Use ACF and PACF (Maria)</a></li>
+  <li><a href="#test-for-stationarity-nick-liz" id="toc-test-for-stationarity-nick-liz" class="nav-link" data-scroll-target="#test-for-stationarity-nick-liz"><span class="toc-section-number">7.3</span>  Test for stationarity (Nick &amp; Liz)</a></li>
+  <li><a href="#difference-tests-liz" id="toc-difference-tests-liz" class="nav-link" data-scroll-target="#difference-tests-liz"><span class="toc-section-number">7.4</span>  Difference tests (Liz)</a></li>
+  </ul></li>
+  <li><a href="#modeling-and-results" id="toc-modeling-and-results" class="nav-link" data-scroll-target="#modeling-and-results"><span class="toc-section-number">8</span>  Modeling and results</a>
+  <ul class="collapse">
+  <li><a href="#dividing-the-data-into-test-and-train-maria" id="toc-dividing-the-data-into-test-and-train-maria" class="nav-link" data-scroll-target="#dividing-the-data-into-test-and-train-maria"><span class="toc-section-number">8.1</span>  Dividing the data into test and train (Maria)</a></li>
+  <li><a href="#fit-arima-models-maria" id="toc-fit-arima-models-maria" class="nav-link" data-scroll-target="#fit-arima-models-maria"><span class="toc-section-number">8.2</span>  Fit ARIMA models (Maria)</a></li>
+  <li><a href="#plot-forecasts-from-auto.arima-liz" id="toc-plot-forecasts-from-auto.arima-liz" class="nav-link" data-scroll-target="#plot-forecasts-from-auto.arima-liz"><span class="toc-section-number">8.3</span>  Plot forecasts from auto.arima (Liz)</a></li>
+  <li><a href="#chosing-our-own-arima-structure-liz" id="toc-chosing-our-own-arima-structure-liz" class="nav-link" data-scroll-target="#chosing-our-own-arima-structure-liz"><span class="toc-section-number">8.4</span>  Chosing our own ARIMA structure (Liz)</a></li>
+  <li><a href="#check-accuracy-nick" id="toc-check-accuracy-nick" class="nav-link" data-scroll-target="#check-accuracy-nick"><span class="toc-section-number">8.5</span>  Check accuracy (Nick)</a></li>
+  <li><a href="#check-residuals-nick" id="toc-check-residuals-nick" class="nav-link" data-scroll-target="#check-residuals-nick"><span class="toc-section-number">8.6</span>  Check residuals (Nick)</a></li>
+  </ul></li>
+  <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion"><span class="toc-section-number">9</span>  Discussion</a></li>
+  <li><a href="#team-member-contributions" id="toc-team-member-contributions" class="nav-link" data-scroll-target="#team-member-contributions"><span class="toc-section-number">10</span>  Team member contributions</a></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/atsa-es/fish550-2023/edit/main/Lab-1/Final_Write_ups/Lab-1-team-1_final.Rmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/atsa-es/fish550-2023/blob/main/Lab-1/Final_Write_ups/Lab-1-team-1_final.Rmd" class="toc-action">View source</a></p><p><a href="https://github.com/atsa-es/fish550-2023/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title d-none d-lg-block"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Team 1</span></h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+<p class="subtitle lead">Lab 1 Forecasting with ARIMA models</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Nick Chambers (SAFS), Liz Elmstrom (SAFS), Maria Kuruvilla (QERM) </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="question-your-team-will-address" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Question your team will address</h1>
+<!-- * fit ARIMA models (note you'll want to log the abundance data). You can fit other models in addition ot ARIMA if you want. -->
+<!-- * do diagnostics for ARIMA models -->
+<!-- * make forecasts -->
+<!-- * test how good your forecasts or compare forecasts (many options here) -->
+<!-- We will look at the total forecasts for each river system.  -->
+<!-- "Compare the accuracy of total abundance forecasts using ARIMA models for Bristol Bay sockeye rivers and compare to the AKFW and UW FRI forecasts." -->
+<!-- Could also test accuracy based on training data length...  -->
+<!-- "Compare the forecasts of total North Pacific pink and chum using 5, 10, 15, and 20 years of training data. Does forecast accuracy increase with more training data?" -->
+<p>In this report we sought to explore how ARIMA models perform when forecasting fish abundance in the near term (5-year forecasts).</p>
+<p>More specifically, we ask do ARIMA models produce more accurate 5-year forecasts than the Fisheries Research Institute (FRI) for Sockeye in select Bristol Bay Rivers?</p>
+</section>
+<section id="method-you-will-use" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Method you will use</h1>
+<p>We will fit multiple ARIMA models to the Bristol Bay sockeye data and compare forecasts among these models (using RMSE) and visually compare the forecasts against the FRI forecast.</p>
+<section id="initial-plan" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="initial-plan"><span class="header-section-number">5.1</span> Initial plan</h2>
+<!-- Describe what you plan to do to address your question. Note this example is with Ruggerone & Irvine data but your team will use the Bristol Bay data. -->
+<!-- Example, "We will fit ARIMA models to 1960-1980 data on pink salmon in 2 regions in Alaska and 2 regions in E Asia. We will make 1981-1985  forecasts (5 year) and compare the accuracy of the forecasts to the actual values. We will measure accuracy with mean squared error. We will use the forecast package to fit the ARIMA models." -->
+<p>We divided the rivers among the team members to do the initial exploratory analysis and testing for stationarity. We then tried forecasting (5 years) for all rivers using the best model suggested by auto.arima().</p>
+</section>
+<section id="what-you-actually-did" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="what-you-actually-did"><span class="header-section-number">5.2</span> What you actually did</h2>
+<!-- Example, "We were able to do our plan fairly quickly, so after writing the basic code, we divided up all 12 regions in Ruggerone & Irvine and each team member did 4 regions. We compared the accuracy of forecasts for different time periods using 20-years for training and 5-year forecasts each time. We compared the RMSE, MAE, and MAPE accuracy measures." -->
+<p>We finally chose three rivers to work with - Kvichak, Wood and Nugashak. We split the data into training data (1963-2015) and testing data (2016-2020) and performed forecasts using the auto.arima function. In addition to forecasting with the model suggested by auto.arima, we explored additional top models suggested by the auto.arima function with trace == TRUE. We then compared the accuracy of these modeled forecasts using RMSE. We also plotted the FRI forecast to visually compare the model forecast to the FRI forecast.</p>
+</section>
+</section>
+<section id="preliminary-dataset-exploration" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Preliminary dataset exploration</h1>
+<section id="read-in-and-explore-data-liz" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="read-in-and-explore-data-liz"><span class="header-section-number">6.1</span> Read in and explore data (Liz)</h2>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="Lab-1-team-1_final_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="Lab-1-team-1_final_files/figure-html/unnamed-chunk-3-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="Lab-1-team-1_final_files/figure-html/unnamed-chunk-3-3.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>After exploring the larger dataset, we chose to explore temporal sockeye dynamics (specifically, total sockeye abundance) in three rivers– the Kvichak, the Nushagak, and the Wood.</p>
+<p>Specifically, we seek to – 1) identify autocorrelation structures and stationarity for each of the total sockeye abundance time series, 2) compare ARIMA models, forecasts, and forecast accuracies for 5 year forecasts from 2015-2020, and 3) visually compare to these forecasts to forecasts from UW Fisheries Research Institute.</p>
+<p>We did not compare our models to ADFW forecasts since the ADFW forecasts occur prior to our 5-year forecasts (2015-2020).</p>
+</section>
+</section>
+<section id="data-diagnostics" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Data diagnostics</h1>
+<section id="plot-the-data-liz" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="plot-the-data-liz"><span class="header-section-number">7.1</span> Plot the data (Liz)</h2>
+<p>Plot the data and discuss any obvious problems with stationarity from your visual test.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="Lab-1-team-1_final_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Based on these plots, we hypothesize that data will be non-stationary for the Kvichak and stationary for the Nushagak and the Wood around a trend.</p>
+</section>
+<section id="use-acf-and-pacf-maria" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="use-acf-and-pacf-maria"><span class="header-section-number">7.2</span> Use ACF and PACF (Maria)</h2>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="Lab-1-team-1_final_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="Lab-1-team-1_final_files/figure-html/unnamed-chunk-5-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="Lab-1-team-1_final_files/figure-html/unnamed-chunk-5-3.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="Lab-1-team-1_final_files/figure-html/unnamed-chunk-5-4.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="Lab-1-team-1_final_files/figure-html/unnamed-chunk-5-5.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="Lab-1-team-1_final_files/figure-html/unnamed-chunk-5-6.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>The acf plots for Wood river is slowly decaying and the pacf plot shows significance at lag 1. There might be AR1 structure in the data.</p>
+<p>The pacf plots for Kvichak river is slowly decaying and the pacf plot shows significance at lags 1,2,4, and 6. There might be MA structure in the data.</p>
+<p>The acf plots for Nushagak river is slowly decaying and the pacf plot shows significance at lags 1 and 6. There might be AR structure in the data.</p>
+</section>
+<section id="test-for-stationarity-nick-liz" class="level2" data-number="7.3">
+<h2 data-number="7.3" class="anchored" data-anchor-id="test-for-stationarity-nick-liz"><span class="header-section-number">7.3</span> Test for stationarity (Nick &amp; Liz)</h2>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>          adf kpss_level kpss_trend
+Kvichak  0.01       0.10        0.1
+Nushagak 0.01       0.01        0.1
+Wood     0.01       0.01        0.1</code></pre>
+</div>
+</div>
+<p>The stationarity tests show that the Kvichak River time series is stationary.</p>
+<p>When testing for stationarity around a level using the KPSS test, the Nushagak and the Wood test as non-stationary. However, when we change the null to include a trend, we find that both of these rivers test as stationary around a trend.</p>
+</section>
+<section id="difference-tests-liz" class="level2" data-number="7.4">
+<h2 data-number="7.4" class="anchored" data-anchor-id="difference-tests-liz"><span class="header-section-number">7.4</span> Difference tests (Liz)</h2>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1</code></pre>
+</div>
+</div>
+<p>According to these tests, The Kvichak does not need differencing. The Nushagak and the Wood should be differenced by 1. This level of differencing should remove the upward trend or “bias” in the Nushagak and Wood Rivers.</p>
+</section>
+</section>
+<section id="modeling-and-results" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Modeling and results</h1>
+<section id="dividing-the-data-into-test-and-train-maria" class="level2" data-number="8.1">
+<h2 data-number="8.1" class="anchored" data-anchor-id="dividing-the-data-into-test-and-train-maria"><span class="header-section-number">8.1</span> Dividing the data into test and train (Maria)</h2>
+<div class="cell">
+
+</div>
+</section>
+<section id="fit-arima-models-maria" class="level2" data-number="8.2">
+<h2 data-number="8.2" class="anchored" data-anchor-id="fit-arima-models-maria"><span class="header-section-number">8.2</span> Fit ARIMA models (Maria)</h2>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Series: train_Kv 
+ARIMA(0,0,1) with non-zero mean 
+
+Coefficients:
+         ma1    mean
+      0.4784  8.8150
+s.e.  0.1166  0.1922
+
+sigma^2 = 0.9421:  log likelihood = -72.73
+AIC=151.47   AICc=151.96   BIC=157.38</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Series: train_Nu 
+ARIMA(0,1,1) 
+
+Coefficients:
+          ma1
+      -0.5194
+s.e.   0.1324
+
+sigma^2 = 0.5102:  log likelihood = -55.94
+AIC=115.88   AICc=116.13   BIC=119.79</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Series: train_Wood 
+ARIMA(0,1,1) 
+
+Coefficients:
+          ma1
+      -0.5434
+s.e.   0.1460
+
+sigma^2 = 0.2091:  log likelihood = -32.77
+AIC=69.54   AICc=69.78   BIC=73.44</code></pre>
+</div>
+</div>
+<p>The best model according to model selection criterion (AICc) for the Kvichak river is an ARIMA(0,0,1) with a non-zero mean. The best model for the Nushagak and the Wood river is an ARIMA (0,1,1).</p>
+</section>
+<section id="plot-forecasts-from-auto.arima-liz" class="level2" data-number="8.3">
+<h2 data-number="8.3" class="anchored" data-anchor-id="plot-forecasts-from-auto.arima-liz"><span class="header-section-number">8.3</span> Plot forecasts from auto.arima (Liz)</h2>
+<p>Below are plots of the total abundance measurements and their 5-year forecasts. The red points refer to Fishery Research Institutes model forecasts. The black points refer to actual data.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="Lab-1-team-1_final_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="Lab-1-team-1_final_files/figure-html/unnamed-chunk-10-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="Lab-1-team-1_final_files/figure-html/unnamed-chunk-10-3.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Though these test as the best models using the auto.arima() function, we can clearly see that these models do not necessarily provide the best forecasts for the rivers of study. This is particularly apparent for the Nushagak and for the Wood River– the two rivers that include an upward trend or “bias”.</p>
+</section>
+<section id="chosing-our-own-arima-structure-liz" class="level2" data-number="8.4">
+<h2 data-number="8.4" class="anchored" data-anchor-id="chosing-our-own-arima-structure-liz"><span class="header-section-number">8.4</span> Chosing our own ARIMA structure (Liz)</h2>
+<p>Here we play around with different ARIMA structures on our own. Though not shown in the code, we investigated other top models using the auto.arima() function with trace = TRUE. We then tested the three top models based on AICc for the Kvichak. For the Nushagak and the Wood, we tested the two top models based on AICc, plus the best model with an added drift component.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="Lab-1-team-1_final_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="Lab-1-team-1_final_files/figure-html/unnamed-chunk-11-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="Lab-1-team-1_final_files/figure-html/unnamed-chunk-11-3.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Based on these plots, we might decide to alter our model selection for the Nushagak and the Wood and change our chosen model to ARIMA(0,1,1) <em>with drift</em>.</p>
+<p>Though we could change our model for the Kvichak, the model chosen by auto.arima (ARIMA(0,0,1)) seems to behave (at least visually) essentially the same as the other top models.</p>
+<p>TO better inform this decision, below we check the accuracies for each of the models (n = 9).</p>
+</section>
+<section id="check-accuracy-nick" class="level2" data-number="8.5">
+<h2 data-number="8.5" class="anchored" data-anchor-id="check-accuracy-nick"><span class="header-section-number">8.5</span> Check accuracy (Nick)</h2>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>                     [,1]
+Kvichak (0,0,1) 0.2717361
+Kvichak (1,0,1) 0.2814976
+Kvichak (0,0,2) 0.3125752</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                               [,1]
+Nushagak (0,1,1)          1.1181456
+Nushagak (0,1,1) w/ drift 0.9992743
+Nushagak (1,1,1)          1.1409033</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                           [,1]
+Wood (0,1,1)          0.8953588
+Wood (0,1,1) w/ drift 0.8143552
+Wood (1,1,1)          0.8689846</code></pre>
+</div>
+</div>
+<p>The best models for each river were selected by choosing the model with the lowest RMSE. The best model for the Kvichak was an ARIMA(0,0,1) with non zero mean, the best model for the Nushagak was ARIMA(0,1,1) with drift and the best model for the Wood was ARIMA(0,1,1) with drift.</p>
+</section>
+<section id="check-residuals-nick" class="level2" data-number="8.6">
+<h2 data-number="8.6" class="anchored" data-anchor-id="check-residuals-nick"><span class="header-section-number">8.6</span> Check residuals (Nick)</h2>
+<p>We used the model with the lower RMSE moving forward.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="Lab-1-team-1_final_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Ljung-Box test
+
+data:  Residuals from ARIMA(0,0,1) with non-zero mean
+Q* = 26.979, df = 9, p-value = 0.00141
+
+Model df: 1.   Total lags used: 10</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Ljung-Box test
+
+data:  Residuals from ARIMA(0,0,1) with non-zero mean
+Q* = 26.979, df = 9, p-value = 0.00141
+
+Model df: 1.   Total lags used: 10</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="Lab-1-team-1_final_files/figure-html/unnamed-chunk-13-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Ljung-Box test
+
+data:  Residuals from ARIMA(0,1,1) with drift
+Q* = 18.363, df = 9, p-value = 0.03119
+
+Model df: 1.   Total lags used: 10</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Ljung-Box test
+
+data:  Residuals from ARIMA(0,1,1) with drift
+Q* = 18.363, df = 9, p-value = 0.03119
+
+Model df: 1.   Total lags used: 10</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="Lab-1-team-1_final_files/figure-html/unnamed-chunk-13-3.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Ljung-Box test
+
+data:  Residuals from ARIMA(0,1,1) with drift
+Q* = 11.626, df = 9, p-value = 0.2352
+
+Model df: 1.   Total lags used: 10</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Ljung-Box test
+
+data:  Residuals from ARIMA(0,1,1) with drift
+Q* = 11.626, df = 9, p-value = 0.2352
+
+Model df: 1.   Total lags used: 10</code></pre>
+</div>
+</div>
+<p>The residuals for the Kvichak River are significantly auto-correlated even though only two lags show significance on the correlogram. The Nushagak also has significantly auto correlated residuals and only the Wood passes the Ljung-Box test for having non auto correlated residuals.</p>
+</section>
+</section>
+<section id="discussion" class="level1" data-number="9">
+<h1 data-number="9"><span class="header-section-number">9</span> Discussion</h1>
+<p>The ARIMA models we tested produced reasonable estimates for one to three years but tended to miss long term trends in the data. This was especially true for the Wood and Nushagak Rivers which had sharp upward trends in abundance after 2015 that our forecasts did not predict. Rather, our models underpredicted the actual run size in each river. The FRI forecasts were notably better than those generated by our ARIMA models in the Wood and Nushagak Rivers but were unable to capture the large increase in run sizes in recent years. Our forecasts for the Kvichak were much closer to both the FRI forecasts and estimated run sizes, although still generally under predicted across the years tested.</p>
+<p>For the Wood and Nushagak Rivers the auto.arima function selected a model <em>without</em> drift as the best fit using AIC. When we compared the three best models for each river using the accuracy function a model <em>with</em> drift was chosen based on its lower RMSE value. These models with drift produced a somewhat better visual fit than those chosen by auto.arima but still resulted in underestimates of the run size in all years during the forecasting period. The better visual fit or our model in the Kvichak may be because the run size in the Kvichak has remained relatively stable without the increasing trend visible in the other two rivers. Both the Nushagak and Wood required differencing to remove an increasing trend in the data and this appeared to have a smoothing effect on longer forecasts vs non-differenced model runs. This smoothing may have contributed to the models for the Wood and Nushagak Rivers missing the increasing trend that occurred after 2015. This is also likely driven by the order of our ARIMA models, which only consider the previous time step to create forecasts, and thus do not perform well when predicting across multiple years (particularly when trends starkly increase or decrease). Further, these models neglect to include any environmental covariates that may help predict interannual variation at longer time steps. Had we run the models to only predict one time step forward the models likely would have performed better than relying on multiple year predictions.</p>
+<p>The autocorrelation present in the residuals for the Kvichak indicates that some structure still exists in the data which is not explained by our models. While few lags are significant there appears to be a repeating sinusoidal pattern in the correlogram. A similar pattern may be present in the Nushagak but it is less apparent in the correlogram, however the Nushagak residuals still show significant autocorrelation. The Wood river has no significant autocorrelation in the residuals and there appears to be the least amount of structure present in the correlogram of any of the rivers tested. This suggests that the ARIMA model may be a better fit to the Wood River system, which is a surprising result as the Kvichak has the best visual fit of the three systems tested.</p>
+<p>Based on our tests here ARIMA models seem best suited to predict short term changes in abundance and were poorly suited for estimating long term trends. As a management tool for Bristol Bay Sockeye they may still be appropriate for establishing annual biological goals for fishery management as only one time step forward would be needed.</p>
+</section>
+<section id="team-member-contributions" class="level1" data-number="10">
+<h1 data-number="10"><span class="header-section-number">10</span> Team member contributions</h1>
+<p>All team members looked at the data and worked together to decide on a question to answer. The code was split up into several sections and each team member had specific sections to write, although there was a lot of collaboration in drafting these sections. Liz and Maria went to office hours for trouble shooting of code and to ask questions. All team members contributed to accuracy tests and model selection. Nick wrote a first draft of the discussion and all team members provided helpful edits.</p>
+
+
+<!-- -->
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../Lab-1/Lab1-ARIMA.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Lab Intro</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../../Lab-1/Final_Write_ups/Lab-1-team-2_final.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Team 2</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb20" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> Team 1</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> Lab 1 Forecasting with ARIMA models</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Nick Chambers (SAFS), Liz Elmstrom (SAFS), Maria Kuruvilla (QERM)"</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="an">output:</span><span class="co"> </span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="co">  html_document:</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="co">    code-folding: true</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="co">    toc_float: true</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a><span class="in">```{r include=FALSE}</span></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tseries)</span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(forecast)</span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(zoo)</span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggpubr)</span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">dplyr.summarise.inform =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a><span class="fu"># Question your team will address</span></span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- * fit ARIMA models (note you'll want to log the abundance data). You can fit other models in addition ot ARIMA if you want. --&gt;</span></span>
+<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- * do diagnostics for ARIMA models --&gt;</span></span>
+<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- * make forecasts --&gt;</span></span>
+<span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- * test how good your forecasts or compare forecasts (many options here) --&gt;</span></span>
+<span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-30"><a href="#cb20-30" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- We will look at the total forecasts for each river system.  --&gt;</span></span>
+<span id="cb20-31"><a href="#cb20-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-32"><a href="#cb20-32" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- "Compare the accuracy of total abundance forecasts using ARIMA models for Bristol Bay sockeye rivers and compare to the AKFW and UW FRI forecasts." --&gt;</span></span>
+<span id="cb20-33"><a href="#cb20-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-34"><a href="#cb20-34" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- Could also test accuracy based on training data length...  --&gt;</span></span>
+<span id="cb20-35"><a href="#cb20-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-36"><a href="#cb20-36" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- "Compare the forecasts of total North Pacific pink and chum using 5, 10, 15, and 20 years of training data. Does forecast accuracy increase with more training data?" --&gt;</span></span>
+<span id="cb20-37"><a href="#cb20-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-38"><a href="#cb20-38" aria-hidden="true" tabindex="-1"></a>In this report we sought to explore how ARIMA models perform when forecasting fish abundance in the near term (5-year forecasts).</span>
+<span id="cb20-39"><a href="#cb20-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-40"><a href="#cb20-40" aria-hidden="true" tabindex="-1"></a>More specifically, we ask do ARIMA models produce more accurate 5-year forecasts than the Fisheries Research Institute (FRI) for Sockeye in select Bristol Bay Rivers? </span>
+<span id="cb20-41"><a href="#cb20-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-42"><a href="#cb20-42" aria-hidden="true" tabindex="-1"></a><span class="fu"># Method you will use</span></span>
+<span id="cb20-43"><a href="#cb20-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-44"><a href="#cb20-44" aria-hidden="true" tabindex="-1"></a>We will fit multiple ARIMA models to the Bristol Bay sockeye data and compare forecasts among these models (using RMSE) and visually compare the forecasts against the FRI forecast. </span>
+<span id="cb20-45"><a href="#cb20-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-46"><a href="#cb20-46" aria-hidden="true" tabindex="-1"></a><span class="fu">## Initial plan</span></span>
+<span id="cb20-47"><a href="#cb20-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-48"><a href="#cb20-48" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- Describe what you plan to do to address your question. Note this example is with Ruggerone &amp; Irvine data but your team will use the Bristol Bay data. --&gt;</span></span>
+<span id="cb20-49"><a href="#cb20-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-50"><a href="#cb20-50" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- Example, "We will fit ARIMA models to 1960-1980 data on pink salmon in 2 regions in Alaska and 2 regions in E Asia. We will make 1981-1985  forecasts (5 year) and compare the accuracy of the forecasts to the actual values. We will measure accuracy with mean squared error. We will use the forecast package to fit the ARIMA models." --&gt;</span></span>
+<span id="cb20-51"><a href="#cb20-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-52"><a href="#cb20-52" aria-hidden="true" tabindex="-1"></a>We divided the rivers among the team members to do the initial exploratory analysis and testing for stationarity. We then tried forecasting (5 years) for all rivers using the best model suggested by auto.arima(). </span>
+<span id="cb20-53"><a href="#cb20-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-54"><a href="#cb20-54" aria-hidden="true" tabindex="-1"></a><span class="fu">## What you actually did</span></span>
+<span id="cb20-55"><a href="#cb20-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-56"><a href="#cb20-56" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- Example, "We were able to do our plan fairly quickly, so after writing the basic code, we divided up all 12 regions in Ruggerone &amp; Irvine and each team member did 4 regions. We compared the accuracy of forecasts for different time periods using 20-years for training and 5-year forecasts each time. We compared the RMSE, MAE, and MAPE accuracy measures." --&gt;</span></span>
+<span id="cb20-57"><a href="#cb20-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-58"><a href="#cb20-58" aria-hidden="true" tabindex="-1"></a>We finally chose three rivers to work with - Kvichak, Wood and Nugashak. We split the data into training data (1963-2015) and testing data (2016-2020) and performed forecasts using the auto.arima function. In addition to forecasting with the model suggested by auto.arima, we explored additional top models suggested by the auto.arima function with trace == TRUE. We then compared the accuracy of these modeled forecasts using RMSE. We also plotted the FRI forecast to visually compare the model forecast to the FRI forecast. </span>
+<span id="cb20-59"><a href="#cb20-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-60"><a href="#cb20-60" aria-hidden="true" tabindex="-1"></a><span class="fu"># Preliminary dataset exploration</span></span>
+<span id="cb20-61"><a href="#cb20-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-62"><a href="#cb20-62" aria-hidden="true" tabindex="-1"></a><span class="fu">## Read in and explore data (Liz)</span></span>
+<span id="cb20-63"><a href="#cb20-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-64"><a href="#cb20-64" aria-hidden="true" tabindex="-1"></a><span class="in">```{r include=FALSE}</span></span>
+<span id="cb20-65"><a href="#cb20-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-66"><a href="#cb20-66" aria-hidden="true" tabindex="-1"></a>bb_data <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"Lab-1"</span>, <span class="st">"Data_Images"</span>, <span class="st">"bristol_bay_data_plus_covariates.rds"</span>))</span>
+<span id="cb20-67"><a href="#cb20-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-68"><a href="#cb20-68" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"colnames: "</span>, <span class="fu">colnames</span>(bb_data), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb20-69"><a href="#cb20-69" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"system (river): "</span>, <span class="fu">unique</span>(bb_data<span class="sc">$</span>system), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb20-70"><a href="#cb20-70" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"age groups: "</span>, <span class="fu">unique</span>(bb_data<span class="sc">$</span>age_group), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb20-71"><a href="#cb20-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-72"><a href="#cb20-72" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-73"><a href="#cb20-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-76"><a href="#cb20-76" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb20-77"><a href="#cb20-77" aria-hidden="true" tabindex="-1"></a>bb_data <span class="sc">%&gt;%</span> </span>
+<span id="cb20-78"><a href="#cb20-78" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(system, ret_yr) <span class="sc">%&gt;%</span></span>
+<span id="cb20-79"><a href="#cb20-79" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">total =</span> <span class="fu">sum</span>(ret, <span class="at">na.rm=</span><span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb20-80"><a href="#cb20-80" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>ret_yr, <span class="at">y=</span><span class="fu">log</span>(total))) <span class="sc">+</span> </span>
+<span id="cb20-81"><a href="#cb20-81" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
+<span id="cb20-82"><a href="#cb20-82" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggtitle</span>(<span class="st">"log abundance by river"</span>) <span class="sc">+</span></span>
+<span id="cb20-83"><a href="#cb20-83" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span>system)</span>
+<span id="cb20-84"><a href="#cb20-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-85"><a href="#cb20-85" aria-hidden="true" tabindex="-1"></a>bb_data <span class="sc">%&gt;%</span></span>
+<span id="cb20-86"><a href="#cb20-86" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(system, ret_yr) <span class="sc">%&gt;%</span></span>
+<span id="cb20-87"><a href="#cb20-87" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">total =</span> <span class="fu">sum</span>(forecast.adfw, <span class="at">na.rm=</span><span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb20-88"><a href="#cb20-88" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>ret_yr, <span class="at">y=</span><span class="fu">log</span>(total))) <span class="sc">+</span></span>
+<span id="cb20-89"><a href="#cb20-89" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb20-90"><a href="#cb20-90" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggtitle</span>(<span class="st">"ADFW log abundance by river"</span>) <span class="sc">+</span></span>
+<span id="cb20-91"><a href="#cb20-91" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span>system)</span>
+<span id="cb20-92"><a href="#cb20-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-93"><a href="#cb20-93" aria-hidden="true" tabindex="-1"></a>bb_data <span class="sc">%&gt;%</span> </span>
+<span id="cb20-94"><a href="#cb20-94" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(system, ret_yr) <span class="sc">%&gt;%</span></span>
+<span id="cb20-95"><a href="#cb20-95" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">total =</span> <span class="fu">sum</span>(forecast.fri, <span class="at">na.rm=</span><span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb20-96"><a href="#cb20-96" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>ret_yr, <span class="at">y=</span><span class="fu">log</span>(total))) <span class="sc">+</span> </span>
+<span id="cb20-97"><a href="#cb20-97" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
+<span id="cb20-98"><a href="#cb20-98" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggtitle</span>(<span class="st">"FRI log abundance by river"</span>) <span class="sc">+</span></span>
+<span id="cb20-99"><a href="#cb20-99" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span>system)</span>
+<span id="cb20-100"><a href="#cb20-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-101"><a href="#cb20-101" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-102"><a href="#cb20-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-103"><a href="#cb20-103" aria-hidden="true" tabindex="-1"></a>After exploring the larger dataset, we chose to explore temporal sockeye dynamics (specifically, total sockeye abundance) in three rivers-- the Kvichak, the Nushagak, and the Wood. </span>
+<span id="cb20-104"><a href="#cb20-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-105"><a href="#cb20-105" aria-hidden="true" tabindex="-1"></a>Specifically, we seek to --</span>
+<span id="cb20-106"><a href="#cb20-106" aria-hidden="true" tabindex="-1"></a>1) identify autocorrelation structures and stationarity for each of the total sockeye abundance time series, </span>
+<span id="cb20-107"><a href="#cb20-107" aria-hidden="true" tabindex="-1"></a>2) compare ARIMA models, forecasts, and forecast accuracies for 5 year forecasts from 2015-2020, and </span>
+<span id="cb20-108"><a href="#cb20-108" aria-hidden="true" tabindex="-1"></a>3) visually compare to these forecasts to forecasts from UW Fisheries Research Institute. </span>
+<span id="cb20-109"><a href="#cb20-109" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-110"><a href="#cb20-110" aria-hidden="true" tabindex="-1"></a>We did not compare our models to ADFW forecasts since the ADFW forecasts occur prior to our 5-year forecasts (2015-2020).</span>
+<span id="cb20-111"><a href="#cb20-111" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-112"><a href="#cb20-112" aria-hidden="true" tabindex="-1"></a><span class="fu"># Data diagnostics </span></span>
+<span id="cb20-113"><a href="#cb20-113" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-114"><a href="#cb20-114" aria-hidden="true" tabindex="-1"></a><span class="fu">## Plot the data (Liz)</span></span>
+<span id="cb20-115"><a href="#cb20-115" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-116"><a href="#cb20-116" aria-hidden="true" tabindex="-1"></a>Plot the data and discuss any obvious problems with stationarity from your visual test.</span>
+<span id="cb20-117"><a href="#cb20-117" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-120"><a href="#cb20-120" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb20-121"><a href="#cb20-121" aria-hidden="true" tabindex="-1"></a><span class="co">#Sum and log returns for each river and year</span></span>
+<span id="cb20-122"><a href="#cb20-122" aria-hidden="true" tabindex="-1"></a>lndata <span class="ot">&lt;-</span> bb_data <span class="sc">%&gt;%</span></span>
+<span id="cb20-123"><a href="#cb20-123" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(system, ret_yr) <span class="sc">%&gt;%</span></span>
+<span id="cb20-124"><a href="#cb20-124" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">lntotal =</span> <span class="fu">log</span>(<span class="fu">sum</span>(ret, <span class="at">na.rm=</span><span class="cn">TRUE</span>)))</span>
+<span id="cb20-125"><a href="#cb20-125" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-126"><a href="#cb20-126" aria-hidden="true" tabindex="-1"></a><span class="co"># Choosing sites CHANGE THIS BASED ON WHAT WE PICK</span></span>
+<span id="cb20-127"><a href="#cb20-127" aria-hidden="true" tabindex="-1"></a>our_rivers <span class="ot">&lt;-</span> <span class="fu">filter</span>(lndata, system <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">'Kvichak'</span>, <span class="st">'Wood'</span>, <span class="st">'Nushagak'</span>))</span>
+<span id="cb20-128"><a href="#cb20-128" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-129"><a href="#cb20-129" aria-hidden="true" tabindex="-1"></a><span class="co"># Plotting three rivers</span></span>
+<span id="cb20-130"><a href="#cb20-130" aria-hidden="true" tabindex="-1"></a>our_rivers <span class="sc">%&gt;%</span> </span>
+<span id="cb20-131"><a href="#cb20-131" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>ret_yr, <span class="at">y=</span>lntotal)) <span class="sc">+</span> </span>
+<span id="cb20-132"><a href="#cb20-132" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
+<span id="cb20-133"><a href="#cb20-133" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggtitle</span>(<span class="st">"log abundance by river"</span>) <span class="sc">+</span></span>
+<span id="cb20-134"><a href="#cb20-134" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span>system)<span class="sc">+</span><span class="fu">theme_bw</span>()</span>
+<span id="cb20-135"><a href="#cb20-135" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-136"><a href="#cb20-136" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-137"><a href="#cb20-137" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-138"><a href="#cb20-138" aria-hidden="true" tabindex="-1"></a>Based on these plots, we hypothesize that data will be non-stationary for the Kvichak and stationary for the Nushagak and the Wood around a trend. </span>
+<span id="cb20-139"><a href="#cb20-139" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-140"><a href="#cb20-140" aria-hidden="true" tabindex="-1"></a><span class="fu">## Use ACF and PACF (Maria)</span></span>
+<span id="cb20-141"><a href="#cb20-141" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-144"><a href="#cb20-144" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb20-145"><a href="#cb20-145" aria-hidden="true" tabindex="-1"></a>data_ts_Kv <span class="ot">&lt;-</span> <span class="fu">ts</span>(our_rivers<span class="sc">$</span>lntotal[our_rivers<span class="sc">$</span>system <span class="sc">==</span> <span class="st">"Kvichak"</span>],</span>
+<span id="cb20-146"><a href="#cb20-146" aria-hidden="true" tabindex="-1"></a>                      <span class="at">start=</span>our_rivers<span class="sc">$</span>ret_yr[our_rivers<span class="sc">$</span>system <span class="sc">==</span> <span class="st">"Kvichak"</span>][<span class="dv">1</span>])</span>
+<span id="cb20-147"><a href="#cb20-147" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-148"><a href="#cb20-148" aria-hidden="true" tabindex="-1"></a>data_ts_Wood <span class="ot">&lt;-</span> <span class="fu">ts</span>(our_rivers<span class="sc">$</span>lntotal[our_rivers<span class="sc">$</span>system <span class="sc">==</span> <span class="st">"Wood"</span>],</span>
+<span id="cb20-149"><a href="#cb20-149" aria-hidden="true" tabindex="-1"></a>                      <span class="at">start=</span>our_rivers<span class="sc">$</span>ret_yr[our_rivers<span class="sc">$</span>system <span class="sc">==</span> <span class="st">"Wood"</span>][<span class="dv">1</span>])</span>
+<span id="cb20-150"><a href="#cb20-150" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-151"><a href="#cb20-151" aria-hidden="true" tabindex="-1"></a>data_ts_Nu <span class="ot">&lt;-</span> <span class="fu">ts</span>(our_rivers<span class="sc">$</span>lntotal[our_rivers<span class="sc">$</span>system <span class="sc">==</span> <span class="st">"Nushagak"</span>],</span>
+<span id="cb20-152"><a href="#cb20-152" aria-hidden="true" tabindex="-1"></a>                      <span class="at">start=</span>our_rivers<span class="sc">$</span>ret_yr[our_rivers<span class="sc">$</span>system <span class="sc">==</span> <span class="st">"Nushagak"</span>][<span class="dv">1</span>])</span>
+<span id="cb20-153"><a href="#cb20-153" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-154"><a href="#cb20-154" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-155"><a href="#cb20-155" aria-hidden="true" tabindex="-1"></a><span class="fu">acf</span>(data_ts_Wood)</span>
+<span id="cb20-156"><a href="#cb20-156" aria-hidden="true" tabindex="-1"></a><span class="fu">pacf</span>(data_ts_Wood)</span>
+<span id="cb20-157"><a href="#cb20-157" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-158"><a href="#cb20-158" aria-hidden="true" tabindex="-1"></a><span class="fu">acf</span>(data_ts_Kv)</span>
+<span id="cb20-159"><a href="#cb20-159" aria-hidden="true" tabindex="-1"></a><span class="fu">pacf</span>(data_ts_Kv)</span>
+<span id="cb20-160"><a href="#cb20-160" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-161"><a href="#cb20-161" aria-hidden="true" tabindex="-1"></a><span class="fu">acf</span>(data_ts_Nu)</span>
+<span id="cb20-162"><a href="#cb20-162" aria-hidden="true" tabindex="-1"></a><span class="fu">pacf</span>(data_ts_Nu)</span>
+<span id="cb20-163"><a href="#cb20-163" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-164"><a href="#cb20-164" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-165"><a href="#cb20-165" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-166"><a href="#cb20-166" aria-hidden="true" tabindex="-1"></a>The acf plots for Wood river is slowly decaying and the pacf plot shows significance at lag 1. There might be AR1 structure in the data.</span>
+<span id="cb20-167"><a href="#cb20-167" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-168"><a href="#cb20-168" aria-hidden="true" tabindex="-1"></a>The pacf plots for Kvichak river is slowly decaying and the pacf plot shows significance at lags 1,2,4, and 6. There might be MA structure in the data.</span>
+<span id="cb20-169"><a href="#cb20-169" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-170"><a href="#cb20-170" aria-hidden="true" tabindex="-1"></a>The acf plots for Nushagak river is slowly decaying and the pacf plot shows significance at lags 1 and 6. There might be AR structure in the data.</span>
+<span id="cb20-171"><a href="#cb20-171" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-172"><a href="#cb20-172" aria-hidden="true" tabindex="-1"></a><span class="fu">## Test for stationarity (Nick &amp; Liz)</span></span>
+<span id="cb20-173"><a href="#cb20-173" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-176"><a href="#cb20-176" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb20-177"><a href="#cb20-177" aria-hidden="true" tabindex="-1"></a><span class="co">#The Dickey fuller test- looks for evidence that the t.s. are a random walk. The null hypothesis for both tests is that the data are non-stationary. We want to REJECT the null hypothesis for this test, so we want a p-value of less that 0.05 (or smaller). If we reject the null, it IS stationary. </span></span>
+<span id="cb20-178"><a href="#cb20-178" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-179"><a href="#cb20-179" aria-hidden="true" tabindex="-1"></a><span class="co">#The KPSS test- The null hypothesis for the KPSS test is that the data are stationary. For this test, we do NOT want to reject the null hypothesis. In other words, we want the p-value to be greater than 0.05 not less than 0.05.</span></span>
+<span id="cb20-180"><a href="#cb20-180" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-181"><a href="#cb20-181" aria-hidden="true" tabindex="-1"></a>adf.list <span class="ot">&lt;-</span> kpss.list <span class="ot">&lt;-</span> kpss.trend <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb20-182"><a href="#cb20-182" aria-hidden="true" tabindex="-1"></a>p.vals <span class="ot">&lt;-</span> kp.vals.lev <span class="ot">&lt;-</span> kp.vals.tre <span class="ot">&lt;-</span>  <span class="fu">vector</span>()</span>
+<span id="cb20-183"><a href="#cb20-183" aria-hidden="true" tabindex="-1"></a>River <span class="ot">&lt;-</span> <span class="fu">unique</span>(our_rivers<span class="sc">$</span>system)</span>
+<span id="cb20-184"><a href="#cb20-184" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-185"><a href="#cb20-185" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(River)){</span>
+<span id="cb20-186"><a href="#cb20-186" aria-hidden="true" tabindex="-1"></a>  sub<span class="ot">&lt;-</span><span class="fu">subset</span>(our_rivers,our_rivers<span class="sc">$</span>system<span class="sc">==</span>River[i])</span>
+<span id="cb20-187"><a href="#cb20-187" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb20-188"><a href="#cb20-188" aria-hidden="true" tabindex="-1"></a>  <span class="fu">suppressWarnings</span>(adf.list[[i]] <span class="ot">&lt;-</span> <span class="fu">adf.test</span>(sub<span class="sc">$</span>lntotal, <span class="at">k =</span> <span class="dv">0</span>))</span>
+<span id="cb20-189"><a href="#cb20-189" aria-hidden="true" tabindex="-1"></a>  <span class="fu">suppressWarnings</span>(kpss.list[[i]] <span class="ot">&lt;-</span> <span class="fu">kpss.test</span>(sub<span class="sc">$</span>lntotal, <span class="at">null =</span> <span class="st">"Level"</span>))</span>
+<span id="cb20-190"><a href="#cb20-190" aria-hidden="true" tabindex="-1"></a>  <span class="fu">suppressWarnings</span>(kpss.trend[[i]] <span class="ot">&lt;-</span> <span class="fu">kpss.test</span>(sub<span class="sc">$</span>lntotal, <span class="at">null =</span> <span class="st">"Trend"</span>))</span>
+<span id="cb20-191"><a href="#cb20-191" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb20-192"><a href="#cb20-192" aria-hidden="true" tabindex="-1"></a>  p.vals[[i]] <span class="ot">&lt;-</span> adf.list[[i]]<span class="sc">$</span>p.value <span class="co"># Should be less than .05</span></span>
+<span id="cb20-193"><a href="#cb20-193" aria-hidden="true" tabindex="-1"></a>  kp.vals.lev[i] <span class="ot">&lt;-</span> kpss.list[[i]]<span class="sc">$</span>p.value <span class="co"># Should be greater than .05</span></span>
+<span id="cb20-194"><a href="#cb20-194" aria-hidden="true" tabindex="-1"></a>  kp.vals.tre[i] <span class="ot">&lt;-</span> kpss.trend[[i]]<span class="sc">$</span>p.value <span class="co"># Should be greater than .05</span></span>
+<span id="cb20-195"><a href="#cb20-195" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb20-196"><a href="#cb20-196" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-197"><a href="#cb20-197" aria-hidden="true" tabindex="-1"></a><span class="co">#For the ADF test, we want to REJECT the null hypothesis, so we want a p-value less than 0.05</span></span>
+<span id="cb20-198"><a href="#cb20-198" aria-hidden="true" tabindex="-1"></a><span class="co">#For the KPSS test, we want to ACCEPT the null hypothesis, so we want a p-value greater than 0.05</span></span>
+<span id="cb20-199"><a href="#cb20-199" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-200"><a href="#cb20-200" aria-hidden="true" tabindex="-1"></a>station_mat <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="at">data =</span><span class="fu">c</span>(p.vals,kp.vals.lev,kp.vals.tre), <span class="dv">3</span>, <span class="dv">3</span>)</span>
+<span id="cb20-201"><a href="#cb20-201" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(station_mat) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"adf"</span>,<span class="st">"kpss_level"</span>,<span class="st">"kpss_trend"</span>)</span>
+<span id="cb20-202"><a href="#cb20-202" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(station_mat) <span class="ot">&lt;-</span> River</span>
+<span id="cb20-203"><a href="#cb20-203" aria-hidden="true" tabindex="-1"></a>station_mat</span>
+<span id="cb20-204"><a href="#cb20-204" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-205"><a href="#cb20-205" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-206"><a href="#cb20-206" aria-hidden="true" tabindex="-1"></a>The stationarity tests show that the Kvichak River time series is stationary. </span>
+<span id="cb20-207"><a href="#cb20-207" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-208"><a href="#cb20-208" aria-hidden="true" tabindex="-1"></a>When testing for stationarity around a level using the KPSS test, the Nushagak and the Wood test as non-stationary. However, when we change the null to include a trend, we find that both of these rivers test as stationary around a trend. </span>
+<span id="cb20-209"><a href="#cb20-209" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-210"><a href="#cb20-210" aria-hidden="true" tabindex="-1"></a><span class="fu">## Difference tests (Liz)</span></span>
+<span id="cb20-211"><a href="#cb20-211" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-214"><a href="#cb20-214" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb20-215"><a href="#cb20-215" aria-hidden="true" tabindex="-1"></a>kv <span class="ot">&lt;-</span> <span class="fu">filter</span>(lndata, system <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Kvichak"</span>))</span>
+<span id="cb20-216"><a href="#cb20-216" aria-hidden="true" tabindex="-1"></a><span class="fu">ndiffs</span>(kv<span class="sc">$</span>lntotal, <span class="at">test=</span><span class="st">'kpss'</span>)</span>
+<span id="cb20-217"><a href="#cb20-217" aria-hidden="true" tabindex="-1"></a><span class="fu">ndiffs</span>(kv<span class="sc">$</span>lntotal, <span class="at">test=</span><span class="st">'adf'</span>)</span>
+<span id="cb20-218"><a href="#cb20-218" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-219"><a href="#cb20-219" aria-hidden="true" tabindex="-1"></a>nu <span class="ot">&lt;-</span> <span class="fu">filter</span>(lndata, system <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Nushagak"</span>))</span>
+<span id="cb20-220"><a href="#cb20-220" aria-hidden="true" tabindex="-1"></a><span class="fu">ndiffs</span>(nu<span class="sc">$</span>lntotal, <span class="at">test=</span><span class="st">'kpss'</span>)</span>
+<span id="cb20-221"><a href="#cb20-221" aria-hidden="true" tabindex="-1"></a><span class="fu">ndiffs</span>(nu<span class="sc">$</span>lntotal, <span class="at">test=</span><span class="st">'adf'</span>)</span>
+<span id="cb20-222"><a href="#cb20-222" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-223"><a href="#cb20-223" aria-hidden="true" tabindex="-1"></a>wo <span class="ot">&lt;-</span> <span class="fu">filter</span>(lndata, system <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Wood"</span>))</span>
+<span id="cb20-224"><a href="#cb20-224" aria-hidden="true" tabindex="-1"></a><span class="fu">ndiffs</span>(wo<span class="sc">$</span>lntotal, <span class="at">test=</span><span class="st">'kpss'</span>)</span>
+<span id="cb20-225"><a href="#cb20-225" aria-hidden="true" tabindex="-1"></a><span class="fu">ndiffs</span>(wo<span class="sc">$</span>lntotal, <span class="at">test=</span><span class="st">'adf'</span>)</span>
+<span id="cb20-226"><a href="#cb20-226" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-227"><a href="#cb20-227" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-228"><a href="#cb20-228" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-229"><a href="#cb20-229" aria-hidden="true" tabindex="-1"></a>According to these tests, The Kvichak does not need differencing. The Nushagak and the Wood should be differenced by 1. This level of differencing should remove the upward trend or "bias" in the Nushagak and Wood Rivers. </span>
+<span id="cb20-230"><a href="#cb20-230" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-231"><a href="#cb20-231" aria-hidden="true" tabindex="-1"></a><span class="fu"># Modeling and results</span></span>
+<span id="cb20-232"><a href="#cb20-232" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-233"><a href="#cb20-233" aria-hidden="true" tabindex="-1"></a><span class="fu">## Dividing the data into test and train (Maria)</span></span>
+<span id="cb20-234"><a href="#cb20-234" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-237"><a href="#cb20-237" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb20-238"><a href="#cb20-238" aria-hidden="true" tabindex="-1"></a>data_ts_Wood <span class="ot">&lt;-</span> <span class="fu">ts</span>(our_rivers<span class="sc">$</span>lntotal[our_rivers<span class="sc">$</span>system <span class="sc">==</span> <span class="st">"Wood"</span>],</span>
+<span id="cb20-239"><a href="#cb20-239" aria-hidden="true" tabindex="-1"></a>                      <span class="at">start=</span>our_rivers<span class="sc">$</span>ret_yr[our_rivers<span class="sc">$</span>system <span class="sc">==</span> <span class="st">"Wood"</span>][<span class="dv">1</span>])</span>
+<span id="cb20-240"><a href="#cb20-240" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-241"><a href="#cb20-241" aria-hidden="true" tabindex="-1"></a>train_Wood <span class="ot">&lt;-</span> <span class="fu">window</span>(data_ts_Wood, <span class="dv">1963</span>, <span class="dv">2015</span>)</span>
+<span id="cb20-242"><a href="#cb20-242" aria-hidden="true" tabindex="-1"></a>test_Wood <span class="ot">&lt;-</span> <span class="fu">window</span>(data_ts_Wood, <span class="dv">2016</span>, <span class="dv">2020</span>)</span>
+<span id="cb20-243"><a href="#cb20-243" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-244"><a href="#cb20-244" aria-hidden="true" tabindex="-1"></a>data_ts_Kv <span class="ot">&lt;-</span> <span class="fu">ts</span>(our_rivers<span class="sc">$</span>lntotal[our_rivers<span class="sc">$</span>system <span class="sc">==</span> <span class="st">"Kvichak"</span>],</span>
+<span id="cb20-245"><a href="#cb20-245" aria-hidden="true" tabindex="-1"></a>                      <span class="at">start=</span>our_rivers<span class="sc">$</span>ret_yr[our_rivers<span class="sc">$</span>system <span class="sc">==</span> <span class="st">"Kvichak"</span>][<span class="dv">1</span>])</span>
+<span id="cb20-246"><a href="#cb20-246" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-247"><a href="#cb20-247" aria-hidden="true" tabindex="-1"></a>train_Kv <span class="ot">&lt;-</span> <span class="fu">window</span>(data_ts_Kv, <span class="dv">1963</span>, <span class="dv">2015</span>)</span>
+<span id="cb20-248"><a href="#cb20-248" aria-hidden="true" tabindex="-1"></a>test_Kv <span class="ot">&lt;-</span> <span class="fu">window</span>(data_ts_Kv, <span class="dv">2016</span>, <span class="dv">2020</span>)</span>
+<span id="cb20-249"><a href="#cb20-249" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-250"><a href="#cb20-250" aria-hidden="true" tabindex="-1"></a>data_ts_Nu <span class="ot">&lt;-</span> <span class="fu">ts</span>(our_rivers<span class="sc">$</span>lntotal[our_rivers<span class="sc">$</span>system <span class="sc">==</span> <span class="st">"Nushagak"</span>],</span>
+<span id="cb20-251"><a href="#cb20-251" aria-hidden="true" tabindex="-1"></a>                      <span class="at">start=</span>our_rivers<span class="sc">$</span>ret_yr[our_rivers<span class="sc">$</span>system <span class="sc">==</span> <span class="st">"Nushagak"</span>][<span class="dv">1</span>])</span>
+<span id="cb20-252"><a href="#cb20-252" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-253"><a href="#cb20-253" aria-hidden="true" tabindex="-1"></a>train_Nu <span class="ot">&lt;-</span> <span class="fu">window</span>(data_ts_Nu, <span class="dv">1963</span>, <span class="dv">2015</span>)</span>
+<span id="cb20-254"><a href="#cb20-254" aria-hidden="true" tabindex="-1"></a>test_Nu <span class="ot">&lt;-</span> <span class="fu">window</span>(data_ts_Nu, <span class="dv">2016</span>, <span class="dv">2020</span>)</span>
+<span id="cb20-255"><a href="#cb20-255" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-256"><a href="#cb20-256" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-257"><a href="#cb20-257" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-258"><a href="#cb20-258" aria-hidden="true" tabindex="-1"></a><span class="fu">## Fit ARIMA models (Maria)</span></span>
+<span id="cb20-259"><a href="#cb20-259" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-262"><a href="#cb20-262" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb20-263"><a href="#cb20-263" aria-hidden="true" tabindex="-1"></a>mod_Kv <span class="ot">&lt;-</span> <span class="fu">auto.arima</span>(train_Kv)</span>
+<span id="cb20-264"><a href="#cb20-264" aria-hidden="true" tabindex="-1"></a>mod_Kv</span>
+<span id="cb20-265"><a href="#cb20-265" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-266"><a href="#cb20-266" aria-hidden="true" tabindex="-1"></a>mod_Nu <span class="ot">&lt;-</span> <span class="fu">auto.arima</span>(train_Nu)</span>
+<span id="cb20-267"><a href="#cb20-267" aria-hidden="true" tabindex="-1"></a>mod_Nu</span>
+<span id="cb20-268"><a href="#cb20-268" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-269"><a href="#cb20-269" aria-hidden="true" tabindex="-1"></a>mod_Wood <span class="ot">&lt;-</span> <span class="fu">auto.arima</span>(train_Wood)</span>
+<span id="cb20-270"><a href="#cb20-270" aria-hidden="true" tabindex="-1"></a>mod_Wood</span>
+<span id="cb20-271"><a href="#cb20-271" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-272"><a href="#cb20-272" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-273"><a href="#cb20-273" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-274"><a href="#cb20-274" aria-hidden="true" tabindex="-1"></a>The best model according to model selection criterion (AICc) for the Kvichak river is an ARIMA(0,0,1) with a non-zero mean. The best model for the Nushagak and the Wood river is an ARIMA (0,1,1). </span>
+<span id="cb20-275"><a href="#cb20-275" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-276"><a href="#cb20-276" aria-hidden="true" tabindex="-1"></a><span class="fu">## Plot forecasts from auto.arima (Liz)</span></span>
+<span id="cb20-277"><a href="#cb20-277" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-278"><a href="#cb20-278" aria-hidden="true" tabindex="-1"></a>Below are plots of the total abundance measurements and their 5-year forecasts. The red points refer to Fishery Research Institutes model forecasts. The black points refer to actual data. </span>
+<span id="cb20-279"><a href="#cb20-279" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-282"><a href="#cb20-282" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb20-283"><a href="#cb20-283" aria-hidden="true" tabindex="-1"></a>fri_fore <span class="ot">&lt;-</span> bb_data <span class="sc">%&gt;%</span></span>
+<span id="cb20-284"><a href="#cb20-284" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(system, ret_yr) <span class="sc">%&gt;%</span></span>
+<span id="cb20-285"><a href="#cb20-285" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">lntotal =</span> <span class="fu">log</span>(<span class="fu">sum</span>(forecast.fri, <span class="at">na.rm=</span><span class="cn">TRUE</span>)))<span class="sc">%&gt;%</span></span>
+<span id="cb20-286"><a href="#cb20-286" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(ret_yr <span class="sc">%in%</span> <span class="dv">2015</span><span class="sc">:</span><span class="dv">2020</span>)</span>
+<span id="cb20-287"><a href="#cb20-287" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-288"><a href="#cb20-288" aria-hidden="true" tabindex="-1"></a>kv_fri_fore <span class="ot">&lt;-</span> fri_fore <span class="sc">%&gt;%</span> <span class="fu">filter</span>(system <span class="sc">%in%</span> <span class="st">'Kvichak'</span>)</span>
+<span id="cb20-289"><a href="#cb20-289" aria-hidden="true" tabindex="-1"></a>kv_fr <span class="ot">&lt;-</span> <span class="fu">forecast</span>(mod_Kv, <span class="at">h=</span><span class="dv">5</span>)</span>
+<span id="cb20-290"><a href="#cb20-290" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(kv_fr) <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>x, <span class="at">y=</span>y), <span class="at">data=</span><span class="fu">fortify</span>(test_Kv))<span class="sc">+</span></span>
+<span id="cb20-291"><a href="#cb20-291" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>ret_yr, <span class="at">y=</span>lntotal), <span class="at">data =</span> kv_fri_fore, <span class="at">col =</span> <span class="st">"red"</span>)<span class="sc">+</span></span>
+<span id="cb20-292"><a href="#cb20-292" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Kvichak total sockeye abundance (log)"</span>)</span>
+<span id="cb20-293"><a href="#cb20-293" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-294"><a href="#cb20-294" aria-hidden="true" tabindex="-1"></a>nu_fri_fore <span class="ot">&lt;-</span> fri_fore <span class="sc">%&gt;%</span> <span class="fu">filter</span>(system <span class="sc">%in%</span> <span class="st">'Nushagak'</span>)</span>
+<span id="cb20-295"><a href="#cb20-295" aria-hidden="true" tabindex="-1"></a>nu_fr <span class="ot">&lt;-</span> <span class="fu">forecast</span>(mod_Nu, <span class="at">h=</span><span class="dv">5</span>)</span>
+<span id="cb20-296"><a href="#cb20-296" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(nu_fr) <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>x, <span class="at">y=</span>y), <span class="at">data=</span><span class="fu">fortify</span>(test_Nu))<span class="sc">+</span></span>
+<span id="cb20-297"><a href="#cb20-297" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>ret_yr, <span class="at">y=</span>lntotal), <span class="at">data =</span> nu_fri_fore, <span class="at">col=</span><span class="st">'red'</span>)<span class="sc">+</span></span>
+<span id="cb20-298"><a href="#cb20-298" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Nushagak total sockeye abundance (log)"</span>)</span>
+<span id="cb20-299"><a href="#cb20-299" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-300"><a href="#cb20-300" aria-hidden="true" tabindex="-1"></a>wo_fri_fore <span class="ot">&lt;-</span> fri_fore <span class="sc">%&gt;%</span> <span class="fu">filter</span>(system <span class="sc">%in%</span> <span class="st">'Wood'</span>)</span>
+<span id="cb20-301"><a href="#cb20-301" aria-hidden="true" tabindex="-1"></a>wo_fr <span class="ot">&lt;-</span> <span class="fu">forecast</span>(mod_Wood, <span class="at">h=</span><span class="dv">5</span>)</span>
+<span id="cb20-302"><a href="#cb20-302" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(wo_fr) <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>x, <span class="at">y=</span>y), <span class="at">data=</span><span class="fu">fortify</span>(test_Wood))<span class="sc">+</span></span>
+<span id="cb20-303"><a href="#cb20-303" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>ret_yr, <span class="at">y=</span>lntotal), <span class="at">data =</span> wo_fri_fore, <span class="at">col =</span> <span class="st">"red"</span>)<span class="sc">+</span></span>
+<span id="cb20-304"><a href="#cb20-304" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Wood total sockeye abundance (log)"</span>)</span>
+<span id="cb20-305"><a href="#cb20-305" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-306"><a href="#cb20-306" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-307"><a href="#cb20-307" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-308"><a href="#cb20-308" aria-hidden="true" tabindex="-1"></a>Though these test as the best models using the auto.arima() function, we can clearly see that these models do not necessarily provide the best forecasts for the rivers of study. This is particularly apparent for the Nushagak and for the Wood River-- the two rivers that include an upward trend or "bias". </span>
+<span id="cb20-309"><a href="#cb20-309" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-310"><a href="#cb20-310" aria-hidden="true" tabindex="-1"></a><span class="fu">## Chosing our own ARIMA structure (Liz)</span></span>
+<span id="cb20-311"><a href="#cb20-311" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-312"><a href="#cb20-312" aria-hidden="true" tabindex="-1"></a>Here we play around with different ARIMA structures on our own. Though not shown in the code, we investigated other top models using the auto.arima() function with trace = TRUE. We then tested the three top models based on AICc for the Kvichak. For the Nushagak and the Wood, we tested the two top models based on AICc, plus the best model with an added drift component. </span>
+<span id="cb20-313"><a href="#cb20-313" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-316"><a href="#cb20-316" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb20-317"><a href="#cb20-317" aria-hidden="true" tabindex="-1"></a><span class="co"># Chosing our own arima structure in a for loop. Probably a cleaner way to do this. </span></span>
+<span id="cb20-318"><a href="#cb20-318" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-319"><a href="#cb20-319" aria-hidden="true" tabindex="-1"></a>kv_mod_list <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>), <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">1</span>), <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">2</span>))<span class="do">## List of mods to test. First option is what auto.arima chose</span></span>
+<span id="cb20-320"><a href="#cb20-320" aria-hidden="true" tabindex="-1"></a>kv_fits <span class="ot">&lt;-</span> kv_fore <span class="ot">&lt;-</span> kv_plots <span class="ot">&lt;-</span> <span class="fu">list</span>()<span class="co"># lists to store things in</span></span>
+<span id="cb20-321"><a href="#cb20-321" aria-hidden="true" tabindex="-1"></a>kv_err_list <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="dv">0</span>) <span class="co">#lists for error structure</span></span>
+<span id="cb20-322"><a href="#cb20-322" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-323"><a href="#cb20-323" aria-hidden="true" tabindex="-1"></a>nu_mod_list <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">1</span>), <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">1</span>), <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>))</span>
+<span id="cb20-324"><a href="#cb20-324" aria-hidden="true" tabindex="-1"></a>nu_fits <span class="ot">&lt;-</span> nu_fore <span class="ot">&lt;-</span> nu_plots <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb20-325"><a href="#cb20-325" aria-hidden="true" tabindex="-1"></a>nu_err_list <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="dv">0</span>)</span>
+<span id="cb20-326"><a href="#cb20-326" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-327"><a href="#cb20-327" aria-hidden="true" tabindex="-1"></a>wo_mod_list <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">1</span>), <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">1</span>), <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>))</span>
+<span id="cb20-328"><a href="#cb20-328" aria-hidden="true" tabindex="-1"></a>wo_fits <span class="ot">&lt;-</span> wo_fore <span class="ot">&lt;-</span> wo_plots <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb20-329"><a href="#cb20-329" aria-hidden="true" tabindex="-1"></a>wo_err_list <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="dv">0</span>)</span>
+<span id="cb20-330"><a href="#cb20-330" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-331"><a href="#cb20-331" aria-hidden="true" tabindex="-1"></a>drift <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="cn">FALSE</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span>)<span class="do">## adding drift</span></span>
+<span id="cb20-332"><a href="#cb20-332" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-333"><a href="#cb20-333" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>){</span>
+<span id="cb20-334"><a href="#cb20-334" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Kvichak</span></span>
+<span id="cb20-335"><a href="#cb20-335" aria-hidden="true" tabindex="-1"></a>  kv_fits[[i]] <span class="ot">&lt;-</span> <span class="fu">Arima</span>(train_Kv, <span class="at">order =</span> kv_mod_list[[i]])<span class="co"># loops through list, fits model, and stores in 'fits'</span></span>
+<span id="cb20-336"><a href="#cb20-336" aria-hidden="true" tabindex="-1"></a>  kv_fore[[i]] <span class="ot">&lt;-</span> <span class="fu">forecast</span>(kv_fits[[i]], <span class="at">h=</span><span class="dv">5</span>) <span class="co"># forecasts</span></span>
+<span id="cb20-337"><a href="#cb20-337" aria-hidden="true" tabindex="-1"></a>  kv_plots[[i]] <span class="ot">&lt;-</span> (<span class="fu">autoplot</span>(kv_fore[[i]]) <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>x, <span class="at">y=</span>y), <span class="at">data=</span><span class="fu">fortify</span>(test_Kv))<span class="sc">+</span> <span class="co">#forecast plots</span></span>
+<span id="cb20-338"><a href="#cb20-338" aria-hidden="true" tabindex="-1"></a>          <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>ret_yr, <span class="at">y=</span>lntotal), <span class="at">data =</span> kv_fri_fore, <span class="at">col =</span> <span class="st">"red"</span>))</span>
+<span id="cb20-339"><a href="#cb20-339" aria-hidden="true" tabindex="-1"></a>  kv_err_list[[i]] <span class="ot">&lt;-</span> <span class="fu">accuracy</span>(<span class="fu">forecast</span>(kv_fore[[i]], <span class="at">h =</span> <span class="dv">5</span>), test_Kv) <span class="co"># puts accuracy data into list</span></span>
+<span id="cb20-340"><a href="#cb20-340" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Nushagak</span></span>
+<span id="cb20-341"><a href="#cb20-341" aria-hidden="true" tabindex="-1"></a>  nu_fits[[i]] <span class="ot">&lt;-</span> <span class="fu">Arima</span>(train_Nu, <span class="at">order =</span> nu_mod_list[[i]], <span class="at">include.drift =</span> drift[[i]])</span>
+<span id="cb20-342"><a href="#cb20-342" aria-hidden="true" tabindex="-1"></a>  nu_fore[[i]] <span class="ot">&lt;-</span> <span class="fu">forecast</span>(nu_fits[[i]], <span class="at">h=</span><span class="dv">5</span>)</span>
+<span id="cb20-343"><a href="#cb20-343" aria-hidden="true" tabindex="-1"></a>  nu_plots[[i]] <span class="ot">&lt;-</span> (<span class="fu">autoplot</span>(nu_fore[[i]]) <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>x, <span class="at">y=</span>y), <span class="at">data=</span><span class="fu">fortify</span>(test_Nu))<span class="sc">+</span> <span class="co">#forecast plots</span></span>
+<span id="cb20-344"><a href="#cb20-344" aria-hidden="true" tabindex="-1"></a>          <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>ret_yr, <span class="at">y=</span>lntotal), <span class="at">data =</span> nu_fri_fore, <span class="at">col =</span> <span class="st">"red"</span>))</span>
+<span id="cb20-345"><a href="#cb20-345" aria-hidden="true" tabindex="-1"></a>  nu_err_list[[i]] <span class="ot">&lt;-</span> <span class="fu">accuracy</span>(<span class="fu">forecast</span>(nu_fore[[i]], <span class="at">h =</span> <span class="dv">5</span>), test_Nu) </span>
+<span id="cb20-346"><a href="#cb20-346" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Wood</span></span>
+<span id="cb20-347"><a href="#cb20-347" aria-hidden="true" tabindex="-1"></a>  wo_fits[[i]] <span class="ot">&lt;-</span> <span class="fu">Arima</span>(train_Wood, <span class="at">order =</span> wo_mod_list[[i]], <span class="at">include.drift =</span> drift[[i]])</span>
+<span id="cb20-348"><a href="#cb20-348" aria-hidden="true" tabindex="-1"></a>  wo_fore[[i]] <span class="ot">&lt;-</span> <span class="fu">forecast</span>(wo_fits[[i]], <span class="at">h=</span><span class="dv">5</span>)</span>
+<span id="cb20-349"><a href="#cb20-349" aria-hidden="true" tabindex="-1"></a>  wo_plots[[i]] <span class="ot">&lt;-</span> (<span class="fu">autoplot</span>(wo_fore[[i]]) <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>x, <span class="at">y=</span>y), <span class="at">data=</span><span class="fu">fortify</span>(test_Wood))<span class="sc">+</span></span>
+<span id="cb20-350"><a href="#cb20-350" aria-hidden="true" tabindex="-1"></a>          <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>ret_yr, <span class="at">y=</span>lntotal), <span class="at">data =</span> wo_fri_fore, <span class="at">col =</span> <span class="st">"red"</span>))</span>
+<span id="cb20-351"><a href="#cb20-351" aria-hidden="true" tabindex="-1"></a>  wo_err_list[[i]] <span class="ot">&lt;-</span> <span class="fu">accuracy</span>(<span class="fu">forecast</span>(wo_fore[[i]], <span class="at">h =</span> <span class="dv">5</span>), test_Wood)  </span>
+<span id="cb20-352"><a href="#cb20-352" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb20-353"><a href="#cb20-353" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-354"><a href="#cb20-354" aria-hidden="true" tabindex="-1"></a><span class="fu">ggarrange</span>(<span class="at">plotlist =</span> kv_plots, <span class="at">ncol =</span> <span class="dv">2</span>, <span class="at">nrow =</span><span class="dv">2</span>)</span>
+<span id="cb20-355"><a href="#cb20-355" aria-hidden="true" tabindex="-1"></a><span class="fu">ggarrange</span>(<span class="at">plotlist =</span> nu_plots, <span class="at">ncol =</span> <span class="dv">2</span>, <span class="at">nrow =</span><span class="dv">2</span>)</span>
+<span id="cb20-356"><a href="#cb20-356" aria-hidden="true" tabindex="-1"></a><span class="fu">ggarrange</span>(<span class="at">plotlist =</span> wo_plots, <span class="at">ncol =</span> <span class="dv">2</span>, <span class="at">nrow =</span><span class="dv">2</span>)</span>
+<span id="cb20-357"><a href="#cb20-357" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-358"><a href="#cb20-358" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-359"><a href="#cb20-359" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-360"><a href="#cb20-360" aria-hidden="true" tabindex="-1"></a>Based on these plots, we might decide to alter our model selection for the Nushagak and the Wood and change our chosen model to ARIMA(0,1,1) *with drift*. </span>
+<span id="cb20-361"><a href="#cb20-361" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-362"><a href="#cb20-362" aria-hidden="true" tabindex="-1"></a>Though we could change our model for the Kvichak, the model chosen by auto.arima (ARIMA(0,0,1)) seems to behave (at least visually) essentially the same as the other top models.</span>
+<span id="cb20-363"><a href="#cb20-363" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-364"><a href="#cb20-364" aria-hidden="true" tabindex="-1"></a>TO better inform this decision, below we check the accuracies for each of the models (n = 9).</span>
+<span id="cb20-365"><a href="#cb20-365" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-366"><a href="#cb20-366" aria-hidden="true" tabindex="-1"></a><span class="fu">## Check accuracy (Nick)</span></span>
+<span id="cb20-369"><a href="#cb20-369" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb20-370"><a href="#cb20-370" aria-hidden="true" tabindex="-1"></a><span class="co">#lists from forecast::accuracy for each river produced above</span></span>
+<span id="cb20-371"><a href="#cb20-371" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-372"><a href="#cb20-372" aria-hidden="true" tabindex="-1"></a><span class="co">#kv_err_list</span></span>
+<span id="cb20-373"><a href="#cb20-373" aria-hidden="true" tabindex="-1"></a>kv_RMSE <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="at">data =</span><span class="fu">c</span>(kv_err_list[[<span class="dv">1</span>]][<span class="dv">4</span>],kv_err_list[[<span class="dv">2</span>]][<span class="dv">4</span>],kv_err_list[[<span class="dv">3</span>]][<span class="dv">4</span>]))</span>
+<span id="cb20-374"><a href="#cb20-374" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(kv_RMSE) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Kvichak (0,0,1)"</span>, <span class="st">"Kvichak (1,0,1)"</span>, <span class="st">"Kvichak (0,0,2)"</span>)</span>
+<span id="cb20-375"><a href="#cb20-375" aria-hidden="true" tabindex="-1"></a>kv_RMSE</span>
+<span id="cb20-376"><a href="#cb20-376" aria-hidden="true" tabindex="-1"></a><span class="co">#best model is model 1 - (0,0,1) with non zero mean</span></span>
+<span id="cb20-377"><a href="#cb20-377" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-378"><a href="#cb20-378" aria-hidden="true" tabindex="-1"></a><span class="co">#nu_err_list</span></span>
+<span id="cb20-379"><a href="#cb20-379" aria-hidden="true" tabindex="-1"></a>nu_RMSE <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="at">data =</span><span class="fu">c</span>(nu_err_list[[<span class="dv">1</span>]][<span class="dv">4</span>],nu_err_list[[<span class="dv">2</span>]][<span class="dv">4</span>],nu_err_list[[<span class="dv">3</span>]][<span class="dv">4</span>]))</span>
+<span id="cb20-380"><a href="#cb20-380" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(nu_RMSE) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Nushagak (0,1,1)"</span>, <span class="st">"Nushagak (0,1,1) w/ drift"</span>, <span class="st">"Nushagak (1,1,1)"</span>)</span>
+<span id="cb20-381"><a href="#cb20-381" aria-hidden="true" tabindex="-1"></a>nu_RMSE</span>
+<span id="cb20-382"><a href="#cb20-382" aria-hidden="true" tabindex="-1"></a><span class="co"># best model is model 2 - (0,1,1) with drift</span></span>
+<span id="cb20-383"><a href="#cb20-383" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-384"><a href="#cb20-384" aria-hidden="true" tabindex="-1"></a><span class="co">#wo_err_list</span></span>
+<span id="cb20-385"><a href="#cb20-385" aria-hidden="true" tabindex="-1"></a>wo_RMSE <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="at">data =</span><span class="fu">c</span>(wo_err_list[[<span class="dv">1</span>]][<span class="dv">4</span>],wo_err_list[[<span class="dv">2</span>]][<span class="dv">4</span>],wo_err_list[[<span class="dv">3</span>]][<span class="dv">4</span>]))</span>
+<span id="cb20-386"><a href="#cb20-386" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(wo_RMSE) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Wood (0,1,1)"</span>, <span class="st">"Wood (0,1,1) w/ drift"</span>, <span class="st">"Wood (1,1,1)"</span>)</span>
+<span id="cb20-387"><a href="#cb20-387" aria-hidden="true" tabindex="-1"></a>wo_RMSE</span>
+<span id="cb20-388"><a href="#cb20-388" aria-hidden="true" tabindex="-1"></a><span class="co">#best model is model 2 - (0,1,1) with drift</span></span>
+<span id="cb20-389"><a href="#cb20-389" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-390"><a href="#cb20-390" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-391"><a href="#cb20-391" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-392"><a href="#cb20-392" aria-hidden="true" tabindex="-1"></a>The best models for each river were selected by choosing the model with the lowest RMSE. The best model for the Kvichak was an ARIMA(0,0,1) with non zero mean, the best model for the Nushagak was ARIMA(0,1,1) with drift and the best model for the Wood was ARIMA(0,1,1) with drift. </span>
+<span id="cb20-393"><a href="#cb20-393" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-394"><a href="#cb20-394" aria-hidden="true" tabindex="-1"></a><span class="fu">## Check residuals (Nick)</span></span>
+<span id="cb20-395"><a href="#cb20-395" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-396"><a href="#cb20-396" aria-hidden="true" tabindex="-1"></a>We used the model with the lower RMSE moving forward. </span>
+<span id="cb20-397"><a href="#cb20-397" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-400"><a href="#cb20-400" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb20-401"><a href="#cb20-401" aria-hidden="true" tabindex="-1"></a><span class="co">#kvichak</span></span>
+<span id="cb20-402"><a href="#cb20-402" aria-hidden="true" tabindex="-1"></a><span class="co">#select model 1</span></span>
+<span id="cb20-403"><a href="#cb20-403" aria-hidden="true" tabindex="-1"></a>forecast<span class="sc">::</span><span class="fu">checkresiduals</span>(kv_fore[[<span class="dv">1</span>]]) <span class="co"># plots the residuals, acf and histogram</span></span>
+<span id="cb20-404"><a href="#cb20-404" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-405"><a href="#cb20-405" aria-hidden="true" tabindex="-1"></a>forecast<span class="sc">::</span><span class="fu">checkresiduals</span>(kv_fore[[<span class="dv">1</span>]], <span class="at">plot =</span> <span class="cn">FALSE</span>) <span class="co">#runs the Ljung- Box test</span></span>
+<span id="cb20-406"><a href="#cb20-406" aria-hidden="true" tabindex="-1"></a><span class="co">#The null hypothesis for this test is no autocorrelation. We do not want to reject the null. we fail to reject the null if p&gt;.05</span></span>
+<span id="cb20-407"><a href="#cb20-407" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-408"><a href="#cb20-408" aria-hidden="true" tabindex="-1"></a> <span class="do">### Kvichak Results </span><span class="al">###</span></span>
+<span id="cb20-409"><a href="#cb20-409" aria-hidden="true" tabindex="-1"></a><span class="co">#p-value for ARIMA(0,0,1) with non zero mean is .00141 so we reject the null and the residuals are autocorrelated</span></span>
+<span id="cb20-410"><a href="#cb20-410" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-411"><a href="#cb20-411" aria-hidden="true" tabindex="-1"></a><span class="co">#Nushagak</span></span>
+<span id="cb20-412"><a href="#cb20-412" aria-hidden="true" tabindex="-1"></a><span class="co">#select model 1</span></span>
+<span id="cb20-413"><a href="#cb20-413" aria-hidden="true" tabindex="-1"></a>forecast<span class="sc">::</span><span class="fu">checkresiduals</span>(nu_fore[[<span class="dv">2</span>]]) </span>
+<span id="cb20-414"><a href="#cb20-414" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-415"><a href="#cb20-415" aria-hidden="true" tabindex="-1"></a>forecast<span class="sc">::</span><span class="fu">checkresiduals</span>(nu_fore[[<span class="dv">2</span>]], <span class="at">plot =</span> <span class="cn">FALSE</span>) </span>
+<span id="cb20-416"><a href="#cb20-416" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-417"><a href="#cb20-417" aria-hidden="true" tabindex="-1"></a><span class="do">### Nushagak Results </span><span class="al">###</span></span>
+<span id="cb20-418"><a href="#cb20-418" aria-hidden="true" tabindex="-1"></a><span class="co">#p-value for ARIMA(0,1,1) with drift is .031 so we reject the null and the residuals are autocorrelated</span></span>
+<span id="cb20-419"><a href="#cb20-419" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-420"><a href="#cb20-420" aria-hidden="true" tabindex="-1"></a><span class="co">#Wood</span></span>
+<span id="cb20-421"><a href="#cb20-421" aria-hidden="true" tabindex="-1"></a><span class="co">#Select model 2</span></span>
+<span id="cb20-422"><a href="#cb20-422" aria-hidden="true" tabindex="-1"></a>forecast<span class="sc">::</span><span class="fu">checkresiduals</span>(wo_fore[[<span class="dv">2</span>]]) </span>
+<span id="cb20-423"><a href="#cb20-423" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-424"><a href="#cb20-424" aria-hidden="true" tabindex="-1"></a>forecast<span class="sc">::</span><span class="fu">checkresiduals</span>(wo_fore[[<span class="dv">2</span>]], <span class="at">plot =</span> <span class="cn">FALSE</span>) </span>
+<span id="cb20-425"><a href="#cb20-425" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-426"><a href="#cb20-426" aria-hidden="true" tabindex="-1"></a><span class="do">### Wood Results </span><span class="al">###</span></span>
+<span id="cb20-427"><a href="#cb20-427" aria-hidden="true" tabindex="-1"></a><span class="co">#p-value for ARIMA(0,1,1) drift is .23 so we fail to reject the null and the residuals are not autocorrelated</span></span>
+<span id="cb20-428"><a href="#cb20-428" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-429"><a href="#cb20-429" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-430"><a href="#cb20-430" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-431"><a href="#cb20-431" aria-hidden="true" tabindex="-1"></a>The residuals for the Kvichak River are significantly auto-correlated even though only two lags show significance on the correlogram. The Nushagak also has significantly auto correlated residuals and only the Wood passes the Ljung-Box test for having non auto correlated residuals. </span>
+<span id="cb20-432"><a href="#cb20-432" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-433"><a href="#cb20-433" aria-hidden="true" tabindex="-1"></a><span class="fu"># Discussion</span></span>
+<span id="cb20-434"><a href="#cb20-434" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-435"><a href="#cb20-435" aria-hidden="true" tabindex="-1"></a>The ARIMA models we tested produced reasonable estimates for one to three years but tended to miss long term trends in the data. This was especially true for the Wood and Nushagak Rivers which had sharp upward trends in abundance after 2015 that our forecasts did not predict. Rather, our models underpredicted the actual run size in each river. The FRI forecasts were notably better than those generated by our ARIMA models in the Wood and Nushagak Rivers but were unable to capture the large increase in run sizes in recent years. Our forecasts for the Kvichak were much closer to both the FRI forecasts and estimated run sizes, although still generally under predicted across the years tested. </span>
+<span id="cb20-436"><a href="#cb20-436" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-437"><a href="#cb20-437" aria-hidden="true" tabindex="-1"></a>For the Wood and Nushagak Rivers the auto.arima function selected a model *without* drift as the best fit using AIC. When we compared the three best models for each river using the accuracy function a model *with* drift was chosen based on its lower RMSE value. These models with drift produced a somewhat better visual fit than those chosen by auto.arima but still resulted in underestimates of the run size in all years during the forecasting period. The better visual fit or our model in the Kvichak may be because the run size in the Kvichak has remained relatively stable without the increasing trend visible in the other two rivers. Both the Nushagak and Wood required differencing to remove an increasing trend in the data and this appeared to have a smoothing effect on longer forecasts vs non-differenced model runs. This smoothing may have contributed to the models for the Wood and Nushagak Rivers missing the increasing trend that occurred after 2015. This is also likely driven by the order of our ARIMA models, which only consider the previous time step to create forecasts, and thus do not perform well when predicting across multiple years (particularly when trends starkly increase or decrease). Further, these models neglect to include any environmental covariates that may help predict interannual variation at longer time steps. Had we run the models to only predict one time step forward the models likely would have performed better than relying on multiple year predictions. </span>
+<span id="cb20-438"><a href="#cb20-438" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-439"><a href="#cb20-439" aria-hidden="true" tabindex="-1"></a>The autocorrelation present in the residuals for the Kvichak indicates that some structure still exists in the data which is not explained by our models. While few lags are significant there appears to be a repeating sinusoidal pattern in the correlogram. A similar pattern may be present in the Nushagak but it is less apparent in the correlogram, however the Nushagak residuals still show significant autocorrelation. The Wood river has no significant autocorrelation in the residuals and there appears to be the least amount of structure present in the correlogram of any of the rivers tested. This suggests that the ARIMA model may be a better fit to the Wood River system, which is a surprising result as the Kvichak has the best visual fit of the three systems tested. </span>
+<span id="cb20-440"><a href="#cb20-440" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-441"><a href="#cb20-441" aria-hidden="true" tabindex="-1"></a>Based on our tests here ARIMA models seem best suited to predict short term changes in abundance and were poorly suited for estimating long term trends. As a management tool for Bristol Bay Sockeye they may still be appropriate for establishing annual biological goals for fishery management as only one time step forward would be needed.</span>
+<span id="cb20-442"><a href="#cb20-442" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-443"><a href="#cb20-443" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-444"><a href="#cb20-444" aria-hidden="true" tabindex="-1"></a><span class="fu"># Team member contributions</span></span>
+<span id="cb20-445"><a href="#cb20-445" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-446"><a href="#cb20-446" aria-hidden="true" tabindex="-1"></a>All team members looked at the data and worked together to decide on a question to answer. The code was split up into several sections and each team member had specific sections to write, although there was a lot of collaboration in drafting these sections. Liz and Maria went to office hours for trouble shooting of code and to ask questions. All team members contributed to accuracy tests and model selection. Nick wrote a first draft of the discussion and all team members provided helpful edits. </span>
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+</body></html>

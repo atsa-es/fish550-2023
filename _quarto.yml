@@ -1,0 +1,44 @@
+project:
+  type: book
+  output-dir: docs
+
+book:
+  title: Fish 550 Spring 2023
+  subtitle: Team lab write-ups
+  author:
+    - name: Fish550 Spring Students
+      affiliations:
+        - name: University of Washington
+  chapters:
+    - index.qmd
+    - part: Forecasting with ARIMA models
+      chapters: 
+        - Lab-1/Lab1-ARIMA.Rmd
+        - Lab-1/Final_Write_ups/Lab-1-team-1_final.Rmd
+        - Lab-1/Final_Write_ups/Lab-1-team-2_final.Rmd
+        - Lab-1/Final_Write_ups/Lab-1-team-3_final.Rmd
+        - Lab-1/Final_Write_ups/Lab-1-team-4_final.Rmd
+    - part: Analyzing multivariate salmon data with MARSS
+      chapters: 
+        - Lab-2/Lab2-MARSS.Rmd
+
+  site-url: https://atsa-es.github.io/fish550-2023/
+  repo-url: https://github.com/atsa-es/fish550-2023
+  repo-actions: [edit, source, issue]
+  search: true
+
+#bibliography: references.bib
+
+execute:
+  echo: false
+  code-overflow: wrap
+  freeze: auto
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+    code-fold: true
+    code-tools: true
+
+
