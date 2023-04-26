@@ -2,5 +2,6 @@
 
 * Lab 1: Forecasting with ARIMA models
 * Lab 2: Interpolating with MARSS models
-* 
+* Lab 3: Dynamic Factor Analysis (DFA)
+* Lab 4: Hidden Markov Models
 

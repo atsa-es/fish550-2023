@@ -4,7 +4,7 @@
     "href": "index.html",
     "title": "Fish 550 Spring 2023",
     "section": "",
-    "text": "1 Labs\n\nLab 1: Forecasting with ARIMA models\nLab 2: Interpolating with MARSS models"
+    "text": "1 Labs\n\nLab 1: Forecasting with ARIMA models\nLab 2: Interpolating with MARSS models\nLab 3: Dynamic Factor Analysis (DFA)\nLab 4: Hidden Markov Models"
   },
   {
     "objectID": "Lab-1/Lab1-ARIMA.html#teams",
@@ -320,5 +320,33 @@
     "title": "7  Lab Intro",
     "section": "7.5 Resources",
     "text": "7.5 Resources\nChapter 7 MARSS models. ATSA Lab Book. https://atsa-es.github.io/atsa-labs/chap-mss.html\nChapter 8 MARSS models with covariate. ATSA Lab Book. https://atsa-es.github.io/atsa-labs/chap-msscov.html\nChapter 16 Modeling cyclic sockeye https://atsa-es.github.io/atsa-labs/chap-cyclic-sockeye.html"
+  },
+  {
+    "objectID": "Lab-3/Lab-3-DFA.html#background",
+    "href": "Lab-3/Lab-3-DFA.html#background",
+    "title": "8  Lab Intro",
+    "section": "8.1 Background",
+    "text": "8.1 Background\nFor this lab you will use dynamic factor analysis (DFA) to examine common temporal patterns in multivariate plankton data from Lake Washington. These data are a bit noisy and gappy, so you will need to make some choices about which species and time period(s) to examine."
+  },
+  {
+    "objectID": "Lab-3/Lab-3-DFA.html#teams",
+    "href": "Lab-3/Lab-3-DFA.html#teams",
+    "title": "8  Lab Intro",
+    "section": "8.2 Teams",
+    "text": "8.2 Teams\n\nLiz Elmstrom (SAFS), Dylan Hubl (SEFS)\nMaria Kuruvilla (QERM), Eric French (CEE), Madison Shipley (SAFS)\nNick Chambers (SAFS), Terrance Wang (SAFS), Zoe Rand (QERM)\nEmma Timmins-Schiffman (Genome Sci), Karl Veggerby (SAFS), Miranda Mudge (Molecular & Cellular)"
+  },
+  {
+    "objectID": "Lab-3/Lab-3-DFA.html#lake-washington-data",
+    "href": "Lab-3/Lab-3-DFA.html#lake-washington-data",
+    "title": "8  Lab Intro",
+    "section": "8.3 Lake Washington data",
+    "text": "8.3 Lake Washington data\nFor reference, here are the columns in the Lake Washington data set:\n\n8.3.1 Indices\n\nYear: year\n\nMonth: month as an integer\n\n\n\n8.3.2 Environmental data\n\nTemp: water temperature in degrees C\n\nTP: total phosphorous concentration in mg m-3\n\npH: pH.\n\n\n\n8.3.3 Phytoplankton\n\nCryptomonas: small brown or green algae (edible)\n\nDiatoms: small algae rich in silica (edible)\n\nGreens: general class of algae (edible)\n\nBluegreens: cyanobacteria that can fix nitrogen (inedible)\n\nUnicells: very small algae (edible)\n\nOther.algae: generic catch-all for atypical species (edible)\n\n\n\n8.3.4 Zooplankton\n\nConochilus: colonial form of rotifer (grazer)\n\nCyclops: cyclopoid copepod (grazer)\n\nDaphnia: cladoceran (grazer)\n\nDiaptomus: calanoid copepod (grazer)\n\nEpischura: very large calanoid copepod (predator)\n\nLeptodora: very large cladoceran (predator)\n\nNeomysis: opossum shrimp (predator)\n\nNon.daphnid.cladocerans: catch-all for other cladocerans (grazers)\nNon.colonial.rotifers: free-floating rotifers (grazers)"
+  },
+  {
+    "objectID": "Lab-3/Lab-3-DFA.html#resources",
+    "href": "Lab-3/Lab-3-DFA.html#resources",
+    "title": "8  Lab Intro",
+    "section": "8.4 Resources",
+    "text": "8.4 Resources\nLab materials from April 20 [online here]\nChapter 10 Dynamic Factor Analysis. ATSA Lab Book. [online here]"
   }
 ]
