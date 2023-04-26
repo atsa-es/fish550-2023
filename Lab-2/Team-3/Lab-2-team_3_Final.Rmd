@@ -185,7 +185,7 @@ corrmat <- diag(1/sqrt(diag(Q))) %*% Q %*% diag(1/sqrt(diag(Q)))
 corrplot(corrmat)
 
 ```
-T correlation matrix of 6 test regions shows high correlation between Tilton River and Grays and Chinook Rivers, indicating the potential of these regions behaving as 1 sub-population. This will be tested in the next section. 
+Correlation matrix of 6 test regions shows high correlation between Tilton River and Grays and Chinook Rivers, indicating the potential of these regions behaving as 1 sub-population. This will be tested in the next section. 
 
 #diagnostics
 
@@ -198,7 +198,7 @@ aic-min(aic) #delta AICc
 
 A comparison of delta AICc indicates that model 3 is the best fit for the data. There are no other models within delta AICc of 2.0 or less. There are two alternative models within delta AICc of 5.0, but no compelling reason to further those over the clearly top model. Model 3 was the best out of the five models tested, so we'll use that one to estimate historical abundances. This is not to say that model 3 is the best model possible for this data, only that it's the best model out of the 5 that we compared. 
 
-We then valuated the fit of states by looking at plots and residuals
+We then evaluated the fit of states by looking at plots and residuals
 
 ```{r}
 #model 3
@@ -210,7 +210,7 @@ autoplot(fit3, plot.type="residuals")
 
 ```
 
-# Test different regions as sub-groups: 
+# Test different regions as sub-groups 
 
 We also examined the potential for region to behave as sub-populations based on major population group, our initial correlation analysis, and some geographic assumptions about physical proximity and climate. 
 
