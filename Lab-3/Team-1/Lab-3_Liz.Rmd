@@ -1,0 +1,142 @@
+---
+title: "Lab 3 - Common trends in plankton data"
+subtitle: "Dynamic Factor Analysis (DFA)"
+author: "Person 1, Person 2, Person 3"
+date: April 20, 2023
+output: 
+  html_document:
+    code-folding: true
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include = FALSE}
+options(dplyr.summarise.inform = FALSE)
+```
+
+***
+# Data
+
+Describe what plankton groups and covariates you used and indicate any temporal subsetting you chose. 
+
+Notes from Dylan... 
+
+I took a look at the data for lab 3 and I think we should make a couple adjustments to our original plan to avoid having large gaps in our data. I think we should start our dataset in 1967 and end in 1986. This will avoid having any NA values in the covariates which would require some extra work for us to deal with. I'm not as committed to the extra ten years added on I just thought maybe a longer time series would give the models more data to use to get better confidence interval estimates. 
+
+We had originally selected Cryptomonas, diatoms, greens, daphnia, and cyclops as our focus. I think we should drop Cryptomonas and Daphnia and replace them with Unicells and non-colonial-rotifers. Crypto and daphnia both have a lot of missing values early in the dataset. Unicell and rotifers still meet the edible and grazer categories we were using.
+
+## Load the data
+
+```{r load_data}
+## load MARSS for data and analyses
+library(MARSS)
+library(dplyr)
+library(tidyverse)
+
+## load the raw data (there are 3 datasets contained here)
+data(lakeWAplankton, package = "MARSS")
+
+## we want `lakeWAplanktonTrans`, which has been transformed
+## so the 0's are replaced with NA's and the data z-scored
+all_dat <- lakeWAplanktonTrans
+```
+
+## Wrangle the data
+
+* You can choose any taxa to include in your analyses, but make sure there are at least 5 groups. You can mix phytoplankton and zooplankton, if you'd like, but justify any choices you make. 
+
+* You will want to subset the data to a time period with adequate observations for the taxa of interest. Your time window should include at lest 5 years (60 months).
+
+```{r explore_data}
+## add some code here
+
+cat("colnames: ", colnames(all_dat), "\n")
+
+#Phytoplankton
+phyto_long <- as_tibble(all_dat) %>%
+  pivot_longer(values_to = 'value', cols = Cryptomonas:Other.algae)
+
+ggplot(phyto_long, aes(x = Year, y= value), color=name) +
+  geom_point(size=2, pch= 21, na.rm = TRUE) +
+  theme_bw()+
+  facet_wrap(~name)+ ggtitle('Phytoplankton raw data')
+
+#Zooplankton
+zoop_long <- as_tibble(all_dat) %>%
+  pivot_longer(values_to = 'value', cols = Conochilus:Non.colonial.rotifers)
+
+ggplot(zoop_long, aes(x = Year, y= value), color=name) +
+  geom_point(size=2, pch= 21, na.rm = TRUE) +
+  theme_bw()+
+  facet_wrap(~name)+ ggtitle('Zooplankton raw data')
+
+#Covariates
+covar_long <- as_tibble(all_dat) %>%
+  pivot_longer(values_to = 'value', cols = Temp:pH)
+
+ggplot(covar_long, aes(x = Year, y= value), color=name) +
+  geom_point(size=2, pch= 21, na.rm = TRUE) +
+  theme_bw()+
+  facet_wrap(~name)+ ggtitle('Covariates raw data')
+
+```
+
+Filtering the data
+``` {r}
+## Selecting data
+cols_keep <- c('Year', 'Month' ,'Temp', 'TP' ,'pH'  ,'Diatoms', 'Greens'  ,'Unicells'  ,'Cyclops' ,'Non.colonial.rotifers')
+
+our_dat <- as_tibble(all_dat) %>%
+  select(all_of(cols_keep))%>%
+  filter(Year > 1966 & Year < 1986)
+
+## Testing with the blue green/phosphorous thought
+cols_keep2 <- c('Year', 'Month' ,'Temp', 'TP','Bluegreens', 'Greens'  ,'Diatoms', "Cryptomonas"  ,'Daphnia' ,'Diaptomus')
+
+liz_test_dat <- as_tibble(all_dat) %>%
+  select(all_of(cols_keep))
+
+```
+
+1967--1986
+
+
+
+# General tasks
+
+Each group has the same general tasks, but you will adapt them as you work on the data.
+
+1) Find the most parsimonious model among a set that examines the effects of environmental covariates and/or an indicator of seasonality, varying numbers of trends, and different forms of variance-covariance matrices for the observation errors.
+
+2) Plot trends and individual loadings for the model identified in task (1) above.
+
+3) Plot model fits and uncertainty intervals for the model identified in task (1) above.
+
+4) Describe the effects of environmental or dummy variables on (possibly seasonal) patterns in the data.
+
+
+# Methods
+
+Please address the following in your methods:
+
+* Which plankton taxa did you choose and how did you choose them?
+   
+* What time period(s) did you examine and why?
+
+* What environmental or dummy variables did you include and why?
+
+* What forms of models did you fit (ie, write them out in matrix form)?
+
+* What sort of model diagnostics did you use to examine model assumptions?
+
+
+# Results
+
+
+# Discussion
+
+
+# Team contributions
+
+Example: "All team members helped decide on the goal and ran the analyses for the individual regions. Team members 2 & 3 wrote most of the code for the analysis. Team member 1 worked on the plotting section of the report using and adapting code that team member 3 wrote. All team members helped edit the report and wrote the discussion together."
+
