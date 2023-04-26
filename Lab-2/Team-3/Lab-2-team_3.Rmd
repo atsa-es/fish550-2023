@@ -18,6 +18,7 @@ Clatskanie, and Grays/Chinook Rivers
 ```{r, echo=TRUE}
 library(tidyverse)
 library(MARSS)
+library(broom)
 
 # Load the data
 load(here::here("Lab-2", "Data_Images", "columbia-river.rda"))
@@ -448,44 +449,29 @@ mod.list.full <- list(B = matrix(1),
 
 fit_full <- MARSS(dat, model = mod.list.full, control = list(maxit=5000))
 
-autoplot(fit_full, plot.type="fitted.ytT")
 ```
 
 
-#States
+#Estimate historical abundance back to 1970
 
-Your abundance estimate is the "x" or "state" estimates. You can get this from
 ```{r}
-fit$states
-```
-or 
-```
-tsSmooth(fit)
-```
-where `fit` is from `fit <- MARSS()`
+autoplot(fit_full, plot.type="fitted.ytT")
 
-Estimate of the mean of the spawner counts based on your x model.
 ```
-autoplot(fit, plot.type="fitted.ytT")
-```
+
 
 # Results
 
+We tested numerous models as shown above. Based on our best model, model 3, there has been no significant decline in abundance across this ESU since 1970. We found some support for the idea that some populations are significantly correlated. However this support did not align with our initial assumptions that the correlation would be based on previously established MPG's. Insted we found that the Grays and Chinook Rivers were correlated with the Lower Gorge Tributaries in model 7. Since these populations are in different habitat types, Coastal vs. Cascade, and would be expected to covary with other more similar regions we did not see a biological reason to group these tributaries. However, additional information may present a valid rationale for why these groups would be correlated. 
 
-### General Questions
-
-Each group has the same general tasks, but you will adapt them as you work on the data.
-
-1. Create estimates of spawner abundance for all missing years and provide estimates of the decline from the historical abundance.
-
-2. Evaluate support for the major population groups. Are the populations in the groups more correlated than outside the groups?
+We also tested for cyclic patterns in the data. ACF plots showed a possible correlation in the Tilton River with significant autocorrelation at 5 years. Further tests using Fourier cycles revealed a possible significant cyclic pattern at ten years, although we were unable to generate confidence intervals due to a large number of missing years in the data. Despite this possible result, models including cycling did not significantly outperform model 3. 
 
 # Discussion
 
- Assume that "historical" means the earliest years available for your group.
+
 ----------------------------------------------------------------
 
 
 ## Contributions - add your contributions! 
 
-We tackled this lab by having multiple group meetings to brainstorm strategies, test code, and plan progress. Miranda adapted code from the Lab2-MARSS document to the Coho data, acted as scribe for testing code during group meetings, contributed ideas for selecting models to test, and annotated many of the models for report generation. 
+We tackled this lab by having multiple group meetings to brainstorm strategies, test code, and plan progress. Miranda adapted code from the Lab2-MARSS document to the Coho data, acted as scribe for testing code during group meetings, contributed ideas for selecting models to test, and annotated many of the models for report generation. Nick and Karl helped with group coding and Nick pulled the group code documents into one final doc and drafted model assumptions, results and discussion sections with help from the other team members. 
