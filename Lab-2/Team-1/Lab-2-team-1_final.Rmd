@@ -182,7 +182,7 @@ and ***R*** is the same as above.
 
 ## Code for analysis:
 
-1.  Hypothesis 1: 11 independent populations
+### 1.  Hypothesis 1: 11 independent populations
 
 ```{r}
 mod.list1 <- list(
@@ -213,7 +213,6 @@ plot(fit1, plot.type = "acf.std.model.resids.ytt1")
 
 ```
 
-#### Heading  {.tabset}
 ```{r, results='residuals model 1', echo=F}
 # for(i in 1:length(resid1)) {
 #   cat("#### ", headings[i], "\n")
@@ -348,13 +347,13 @@ hist.abund %>% filter(Pop != "Upper Cowlitz River - fall") %>%
 
 The form of the model does make a difference in the model outputs. For instance, in the first model, the populations of Sandy River spring and late fall are estimated to show an increase, while in the second model, it's estimated to decrease. Lewis River fall and Lower Cowlitz river fall and Toutle River fall, all show opposite trends in these two models as well.
 
-2.  Evaluate support for the major population groups. Are the populations in the groups more correlated than outside the groups?
+### 2.  Evaluate support for the major population groups. Are the populations in the groups more correlated than outside the groups?
 
 Look at the correlation plots for the best models for each hypothesis: model 1 for hypothesis 1 and model 4 for hypothesis 2
 
 Population correlations for Model 1
 
-```{r eval=FALSE, include=FALSE}
+```{r}
 library(corrplot)
 #different variances and covariances in process error
 mod.list1.unconst <- list(
@@ -364,15 +363,17 @@ mod.list1.unconst <- list(
 )
 fit1.unconst<-MARSS(chin_newdat, model=mod.list1.unconst, method = "BFGS")
 ```
-```{r eval=FALSE, include=FALSE}
+```{r}
 Q1.unconst <- coef(fit1.unconst, type="matrix")$Q
 corrmat1.unconst <- diag(1/sqrt(diag(Q1.unconst))) %*% Q1.unconst %*% diag(1/sqrt(diag(Q1.unconst)))
 corrplot(corrmat1.unconst)
 ```
+
 For model 1 (with Q changed to unconstrained so we can see a correlation matrix), abundances from the Clackamas fall (1) and Sandy River late fall (7) populations are highly positively correlated. These populations are very close geographically. In fact, populations 1-7 are all positively correlated; these are the fall run populations and may be influenced by the same environmental variables. Spring run populations demonstrate less association with each other and with the fall run fish. These results suggest that we could possibly group fall and late fall runs together, but there is little support for grouping the separate spring run populations.
 
+
 We can similarly look at an unconstrained Q if we group the populations:
-```{r eval=FALSE, include=FALSE}
+```{r}
 mod.list4.unconst <- list(
   U = "unequal",
   R = "diagonal and equal",
@@ -385,9 +386,12 @@ Q4.unconst <- coef(fit4.unconst, type="matrix")$Q
 corrmat4.unconst <- diag(1/sqrt(diag(Q4.unconst))) %*% Q4.unconst %*% diag(1/sqrt(diag(Q4.unconst)))
 corrplot(corrmat4.unconst)
 ```
+
 When the data are all collapsed by run timing, all runs show high positive correlation with each other. We know this is a false way to group the data, but we can try to fit a model with grouped fall & late fall runs and separate spring run populations.
 
-```{r eval=FALSE, include=FALSE}
+
+
+```{r}
 mod.list7 <- list(
   U = "unequal",
   R = "diagonal and equal",
@@ -400,7 +404,9 @@ Q7 <- coef(fit7, type="matrix")$Q
 corrmat7 <- diag(1/sqrt(diag(Q7))) %*% Q7 %*% diag(1/sqrt(diag(Q7)))
 corrplot(corrmat7)
 ```
+
 Check the fit of this model if Q is set to diagonal and unequal, which yields a lower AICc than the unconstrained Q for previous examples.
+
 
 ```{r}
 mod.list8 <- list(
@@ -415,7 +421,7 @@ autoplot(fit8, plot.type="fitted.ytT")
 ```
 The AICc is quite a bit higher than it was for our preferred models. We can also see that some of the fall populations (e.g. Upper Cowlitz) are not well represented with this model. 
 
-3.  Evaluate the evidence of cycling in the data. 
+### 3.  Evaluate the evidence of cycling in the data. 
 
 We want to subset the data so that we can have three rivers with no NAs. We are choosing Lewis river fall, Lewis river late fall and Lower Cowlitz river from 1964 to 2008.
 
