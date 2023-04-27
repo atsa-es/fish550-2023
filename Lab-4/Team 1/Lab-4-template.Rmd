@@ -1,6 +1,6 @@
 ---
 title: "Lab 4 - Hidden Markov Models"
-author: "Nick Chambers, Madison Shipley, Karl Veggerby"
+author: "Dylan Hub, Eric French, Zoe Rand"
 date: May 9, 2023
 output: 
   html_document:
@@ -22,50 +22,36 @@ Make sure to label your final write-up with "final" in the title so we know whic
 
 # Data
 
+As part of the California Current Integrated Ecosystem Report, NOAA
+scientists do annual updates of [stoplight charts for ecosystem
+indicators](https://www.fisheries.noaa.gov/west-coast/science-data/ocean-conditions-indicators-trends).
+
+We have included the `stoplight.csv` dataset for this week. One of the
+columns divides indicators into groups (e.g. Local Physical, Local
+Biological, etc). Please pick a type of indicators, and develop a 2- or
+3-state multivariate HMM. A few tips:
+
 Describe what plankton groups and covariates you used and indicate any temporal 
 subsetting you chose. Also describe any standardization, centering or scaling 
 that was used. 
 
 ## Load the data
 
-We have included the `stoplight.csv` dataset for this week. One of the
+One of the
 columns divides indicators into groups (e.g. Local Physical, Local
 Biological, etc). 
 
 ```{r load_data}
 stoplight <- read.csv(here::here("Lab-4", "stoplight.csv"))
-
-head(stoplight)
-names(stoplight)
-
 ```
 
 ## Wrangle the data
 
-### Objective tips 
-
-Keep this relatively simple. select five times series pick some responses, pick some drivers.
-
-Pass the model responses in as list of formulas-- family also has to be in the list 
-
-* Reference slides 55-60
-
 ```{r wrangle_data}
 ## add some code here
-class(stoplight)
-names(stoplight)
+# we will look at Copepod_richness, N_copepod, S_copepod
 
-#ecosystem indicators
-stoplight[,1]  
-years<-seq(1998:2021)
-
-#
-
-#five times series in response and keep things to your block 
-
-
-
-#pick some plankton, pick some drivers, 
+df <- rbind.data.frame(stoplight[stoplight$Ecosystem.Indicators == "Copepod_richness",],stoplight[stoplight$Ecosystem.Indicators == "N_copepod",],stoplight[stoplight$Ecosystem.Indicators == "S_copepod",])
 ```
 
 
@@ -83,25 +69,6 @@ A few tips:
 
 -   You're welcome to include covariates (year? Climate variables?) --
     but fitting a simple model without covariates is also totally fine
-    
-```{r}
-#EXAMPLE FROM LECTURE 
-
-set.seed(123)
-mod = depmix(list(L_stilbius ~ 1, L_ochotensis~1), 
-             nstates = 2, 
-             family = list(gaussian(),gaussian()),
-             data=calcofi)
-fitmod = fit(mod)
-
-#plotting 
-#plot first object 
-object<-posterior(fitmod)[,c("S1","S2")]
-
-#plot means of species in each state 
-#get a vector of elements (n=states), and use the above code and scale by the coeffients 
-
-```
 
 # Results
 

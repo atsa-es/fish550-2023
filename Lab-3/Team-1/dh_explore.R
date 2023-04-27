@@ -317,3 +317,27 @@ dev.off()
 ccf(proc_rot[1, ], proc_rot[2, ], lag.max = 12, main = "")
 ccf(proc_rot[1, ], proc_rot[3, ], lag.max = 12, main = "")
 ccf(proc_rot[2, ], proc_rot[3, ], lag.max = 12, main = "")
+#make unique combinations of covariate lists
+covar <- rbind(temp,Phos,ph,season)
+#rownames(covar) <- c("temp", "Phos", "ph", "season_cos", "season_sin") # do NOT name the rows it adds parameters?
+
+library(rje)
+combo <- powerSet(1:4)
+covar[combo[[6]],]
+#make sure cos and sin are always together as season
+for (i in 9:16) {
+  combo[[i]] <- c(combo[[i]],5)
+}
+combo  # [[1]] is empty so dont loop it
+
+#test this works
+
+dfa_global_test0 <- MARSS(need.av, model = mod_list2,control = cont_list, inits = init_list, form = "dfa",
+                         z.score = FALSE, covariates = rbind(temp,Phos,ph,season))
+dfa_global_test <- MARSS(need.av, model = mod_list2,control = cont_list, inits = init_list, form = "dfa",
+                    z.score = FALSE, covariates = covar[combos[[16]],])
+dfa_global_test2 <- MARSS(need.av, model = mod_list2,control = cont_list, inits = init_list, form = "dfa",
+                         z.score = FALSE, covariates = covar)
+
+
+
