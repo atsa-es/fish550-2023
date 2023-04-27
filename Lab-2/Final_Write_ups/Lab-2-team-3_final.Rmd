@@ -1,0 +1,468 @@
+# Lab 2: MARSS models
+
+Team member names: Miranda Mudge, Karl Veggerby, Nick Chambers
+
+# Data
+
+We were assigned the Lower Columbia Coho data set. We selected two rivers from each Major Population Group (MPG) to test the performance of several models. The selected populations are:
+
+Cascade MPG - 
+Tilton and Sandy Rivers
+
+Gorge MPG
+Upper and Lower Gorge Tributaries
+
+Coast MPG
+Clatskanie, and Grays/Chinook Rivers
+
+```{r, echo=TRUE}
+library(tidyverse)
+library(MARSS)
+library(broom)
+
+# Load the data
+load(here::here("Lab-2", "Data_Images", "columbia-river.rda"))
+```
+
+
+```{r, echo=TRUE}
+#plot the data
+esu <- unique(columbia.river$esu_dps)
+plotesu <- function(esuname){
+  df <- columbia.river %>% subset(esu_dps %in% esuname)
+ggplot(df, aes(x=spawningyear, y=log(value), color=majorpopgroup)) + 
+  geom_point(size=0.2, na.rm = TRUE) + 
+  theme(strip.text.x = element_text(size = 3)) +
+  theme(axis.text.x = element_text(size = 5, angle = 90)) +
+  facet_wrap(~esapopname) +
+  ggtitle(paste0(esuname, collapse="\n"))
+}
+
+plotesu(esu[4])
+
+```
+
+Wrangle the data.
+
+```{r, echo=TRUE}
+
+#format for visualization
+
+library(dplyr)
+esuname <- esu[4]
+
+dat <- columbia.river %>% 
+  subset(esu_dps == esuname) %>% # get only this ESU
+  mutate(log.spawner = log(value)) %>% # create a column called log.spawner
+  select(esapopname, spawningyear, log.spawner) %>% # get just the columns that I need
+  pivot_wider(names_from = "esapopname", values_from = "log.spawner") %>% 
+  column_to_rownames(var = "spawningyear") %>% # make the years rownames
+  as.matrix() %>% # turn into a matrix with year down the rows
+  t() # make time across the columns
+# MARSS complains if I don't do this
+dat[is.na(dat)] <- NA
+```
+
+Clean up the row names
+
+```{r}
+tmp <- rownames(dat)
+tmp <- stringr::str_replace(tmp, "Salmon, coho [(]Lower Columbia River ESU[)]", "")
+tmp <- stringr::str_trim(tmp)
+rownames(dat) <- tmp
+```
+
+Select a subset of rivers to test
+
+```{r}
+mod_rivers <- c("Sandy River - early and late", 
+           "Grays and Chinook Rivers - late", 
+           "Clatskanie River - late", 
+           "Lower Gorge Tributaries - late", 
+           "Tilton River - early and late" , 
+           "Oregon Upper Gorge Tributaries and Hood River - early")
+
+sub_dat <- dat[rownames(dat) %in% mod_rivers, ] 
+```
+
+# Methods
+We tested many models and a variety of assumptions, many of which varied by model. For all models we assumed that A was a scaling parameter.
+
+Below we made a variety of assumptions and used them to generate five models to test which set of assumptions would produce the best fit to the data. 
+
+```{r}
+
+# Model 1: all regions are behaving independently (x) but observations were collected similarly
+## each region has it's own drift where U = unequal 
+## variance is diagonal and equal due to similar methods for collecting observations
+## we leave Q unconstrained here, this gives the most flexibility for each population to be unique, but may not be the best approach as we assume they should be at least somewhat related due to geographic proximity
+mod.list1 <- list(
+  U = "unequal",
+  R = "diagonal and equal",
+  Q = "unconstrained"
+)
+
+# Model 2: all regions are reflecting 1 underlying state (x) with equal variance
+## 1 underlying state where U = equal
+## R is diagonal and equal due to similar methods for collecting observations
+## Q is again unconstrained but the U is equal so slighty less variation between populations than model 1
+mod.list2 <- list(
+  U = "equal",
+  R = "diagonal and equal",
+  Q = "unconstrained"
+)
+
+# Model 3: flexible model with unequal observation variance and a matrix for drift and state variance and one underlying state
+## set scaling on B as 1
+## U is matrix of estimated values
+## variance Q is constrained so that all populations vary together
+## variance R is diagonal and unequal to account for potential differences in observation error, ie different methods between regions
+## A intercept can change as needed 
+## Z matrix is based on our 6 selected populations and each is treated as different
+mod.list3 <- list(B = matrix(1), 
+                   U = matrix("u"), 
+                   Q = matrix("q"), # 1 X
+                   Z = matrix(1, 6, 1), 
+                   A = "scaling", 
+                   R = "diagonal and unequal", # single column of 1s for Y
+                   x0 = matrix("mu"), 
+                   tinitx = 0)
+
+# Model 4: flexible model for independent regions
+## B and Z scale to size of matrix, all 1's
+## U = bias = independent matrix set to size of dataframe
+## Q eaual variance in state with equal covariances
+## R variance is diagonal and equal due to similar methods for collecting observations
+
+mod.list4 <- list(B = diag(1,6), 
+                  U = matrix("u",6,1), 
+                  Q = "diagonal and unequal", 
+                  Z = diag(1,6), 
+                  A = "scaling", 
+                  R = "diagonal and equal", 
+                  x0 = "unequal", 
+                  tinitx = 0)
+
+# Model 5: keep it simple. Each region has an independent state, observation variance is the same, and one process variance with one covariance. 
+mod.list5 <- list(
+  U = "unequal",
+  R = "diagonal and equal",
+  Q = "equalvarcov"
+)
+```
+
+
+Here we fit the model.
+```{r}
+library(MARSS)
+fit1 <- MARSS(sub_dat, model=mod.list1, method="BFGS")
+fit2 <- MARSS(sub_dat, model=mod.list2, method="BFGS")
+fit3 <- MARSS(sub_dat, model=mod.list3)
+fit4 <- MARSS(sub_dat, model=mod.list4)
+fit5 <- MARSS(sub_dat, model=mod.list5, control = list(maxit=1000))
+
+```
+
+Here we plot the fit of the models to visually check the model performance
+
+```{r}
+plot.mod1 <- autoplot(fit1, plot.type="fitted.ytT")
+plot.mod2 <- autoplot(fit2, plot.type="fitted.ytT")
+plot.mod3 <- autoplot(fit3, plot.type="fitted.ytT")
+plot.mod4 <- autoplot(fit4, plot.type = "fitted.ytT")
+plot.mod5 <- autoplot(fit5, plot.type="fitted.ytT")
+```
+
+
+Here we further tested the model fit by examining the corrplot to see which rivers were most closely correlated to see if that fit with our assumptions.
+
+```{r}
+# change fit# to evaluate correlation between regions in different models 
+
+library(corrplot)
+Q <- coef(fit1, type="matrix")$Q
+corrmat <- diag(1/sqrt(diag(Q))) %*% Q %*% diag(1/sqrt(diag(Q)))
+corrplot(corrmat)
+
+```
+Correlation matrix of 6 test regions shows high correlation between Tilton River and Grays and Chinook Rivers, indicating the potential of these regions behaving as 1 sub-population. This will be tested in the next section. 
+
+#diagnostics
+
+Testing for model performance using AICc
+
+```{r}
+aic <- c(fit1$AICc, fit2$AICc, fit3$AICc, fit4$AICc, fit5$AICc)
+aic-min(aic) #delta AICc 
+```
+
+A comparison of delta AICc indicates that model 3 is the best fit for the data. There are no other models within delta AICc of 2.0 or less. There are two alternative models within delta AICc of 5.0, but no compelling reason to further those over the clearly top model. Model 3 was the best out of the five models tested, so we'll use that one to estimate historical abundances. This is not to say that model 3 is the best model possible for this data, only that it's the best model out of the 5 that we compared. 
+
+We then evaluated the fit of states by looking at plots and residuals
+
+```{r}
+#model 3
+fit3$states
+tsSmooth(fit3)
+autoplot(fit3, plot.type="fitted.ytT")
+autoplot(fit3, plot.type="residuals")
+
+
+```
+
+# Test different regions as sub-groups 
+
+We also examined the potential for region to behave as sub-populations based on major population group, our initial correlation analysis, and some geographic assumptions about physical proximity and climate. 
+
+Comparing 3 sub-populations: cascade, coast, and gorge based on their designated MPG
+```{r}
+mod.list6 <- list(#B = matrix(1), # B = "identity" 3x3 matrix
+                  # U = matrix("u"), #needs 3 rows U = "equal" or "unequal" # default = unequal
+                   Q = "unconstrained", # 1 X
+                   Z = factor(c("cascade", "cascade", 
+                                "coast", "coast", 
+                                "gorge", "gorge")), 
+                   A = "scaling", 
+                   R = "diagonal and unequal", # single column of 1s for Y
+                   #x0 = matrix("mu"), # x0 = default 
+                   tinitx = 0)
+
+
+fit6 <- MARSS(sub_dat, model = mod.list6)
+autoplot(fit6, plot.type="fitted.ytT")
+```
+ 
+Based on the correlation plot, the grays and chinook rivers and the lower gorge tributaries are highly correlated. We want to evaluate a model with these regions as a sub-population. 
+
+Comparing 2 sub-populations: grays/chinook rivers and lower gorge "GCL" and all other test regions "STCU"
+```{r}
+mod.list7 <- list(Q = "unconstrained", # 1 X
+                  Z = factor(c("STCU", "STCU", 
+                                "STCU", "GCL", 
+                                "GCL", "STCU")), 
+                   A = "scaling", 
+                   R = "diagonal and unequal", # single column of 1s for Y
+                   tinitx = 0)
+
+
+fit7 <- MARSS(sub_dat, model = mod.list7)
+autoplot(fit7, plot.type="fitted.ytT")
+```
+
+While the description "cascades" only describes a couple regions in our test set, we decided to test a model separating the general cascades from the 2 coast regions (Clatskaine and Gray/Chinook) because geographically there is a large separation. 
+
+Comparing 2 sub-populations: coast "coast" and all other test regions "casgor"
+
+```{r}
+mod.list8 <- list(Q = "unconstrained", # 1 X
+                  Z = factor(c("casgor", "casgor", 
+                                "coast", "coast", 
+                                "casgor", "casgor")), 
+                   A = "scaling", 
+                   R = "diagonal and unequal", # single column of 1s for Y
+                   tinitx = 0)
+
+
+fit8 <- MARSS(sub_dat, model = mod.list8)
+autoplot(fit8, plot.type="fitted.ytT")
+```
+
+## compare the new models using AICc
+
+```{r}
+aic <- c(fit3$AICc, fit6$AICc, fit7$AICc, fit8$AICc )
+aic-min(aic) #delta AICc 
+```
+
+Our new analysis of grouped populations indicates that some of the regions do behave as sub populations. The new best model builds off of the predictions from the correlation analysis, with the Grays/Chinook Rivers and the Lower Gorge Tributaries behaving as 1 sub-population. Additionally, the model treating major populaton groups as sub-populations performed better than our original model providing some possible evidence that grouping by MPG can improve the model fit to the data. However, the AICc value was only 1.56 better than our model without the grouping by MPG so it is not significantly better. 
+
+
+### Including cycling - using our coho data, full time series
+
+Because we know that coho abundance can be influenced by broad patterns in climate and ocean conditions we tested for underlying seasonality by looking for cycling in the data set and evaluated whether this might generate a better fitting model.To accomplish this, we incorporated seasonality as a covariate in a new model below. We tested 5 and 10 year cycles after looking back at our data, specifically of the Sandy River which has good the fewest missing values of the time series data. 
+
+
+# Plot the ACF and look for evidence of cycling
+```{r}
+par(mfrow=c(2,2))
+for(i in 1:4){
+  acf(sub_dat[i,], na.action=na.pass, main=rownames(sub_dat)[i])
+}
+```
+
+Based on the acf plots and the pattern in the Tilton with significant autocorrelation at 5 years with a possible cyclic pattern, we decided to test for cycling with frequency 5 or 10 years. 
+
+```{r}
+TT <- dim(sub_dat)[2] #number of time steps
+covariates <- rbind(
+  forecast::fourier(ts(1:TT, freq=5), K=1) |> t(),
+  forecast::fourier(ts(1:TT, freq=10), K=1) |> t()
+)
+str(TT)
+```
+
+## note renaming model
+Now let's fit a model with these covariates. Let's analyze the populations separately, so Q is diagonal.
+```{r}
+mod.list9 <- list(
+  Q = "unconstrained", # different varcov
+  U = "unequal",
+  R = "diagonal and equal",
+  D = "unconstrained",
+  d = covariates
+)
+
+mod.list10 <- list(
+  Q = "equalvarcov",
+  U = "unequal",
+  R = "diagonal and equal",
+  D = "unconstrained",
+  d = covariates
+)
+```
+
+
+```{r}
+fit9 <- MARSS(sub_dat, model=mod.list9)
+fit10 <- MARSS(sub_dat, model=mod.list10)
+
+
+plot.mod9 <- autoplot(fit9, plot.type="fitted.ytT")
+plot.mod10 <- autoplot(fit10, plot.type="fitted.ytT")
+
+```
+
+
+Here we look at Model 9. 
+```{r}
+library(broom)
+df <- tidy(fit9) %>% #confidence estimates
+  subset(stringr::str_sub(term,1,1)=="D") #only D parameters
+df$lag <- as.factor(rep(c(5,10), each=12)) #label lags
+df$river <- as.factor(rep(rownames(sub_dat),4)) #rownames on repeat
+df$sc <- rep(rep(c("S", "C"), each=6), 2) #each sin cos 6 times, 2 test freq
+df$type <- paste0(df$sc,df$lag)
+```
+
+# Plot the CI's and look for evidence of cycling
+```{r}
+ggplot(df, aes(x=type, y=estimate, col=lag)) + 
+  geom_point() +
+  geom_errorbar(aes(ymin=conf.low, ymax=conf.up), width=.2, position=position_dodge(.9)) +
+  geom_hline(yintercept = 0) +
+  facet_wrap(~river) +
+  ggtitle("The cycle estimates for Model 9")
+```
+
+The cosine estimates, particularly for the Upper Gorge Tributaries and Hood River, indicate the potential for a seasonal cycle that peaks every 10 years. We encountered a Hessian error in our code that prevented us from plotting confidence intervals for this data, likely due to many years of missing data.  
+
+Here we're looking at Model 10. 
+```{r}
+df <- tidy(fit10) %>% #confidence estimates
+  subset(stringr::str_sub(term,1,1)=="D") #only D parameters
+df$lag <- as.factor(rep(c(5,10), each=12)) #label lags
+df$river <- as.factor(rep(rownames(sub_dat),4)) #rownames on repeat
+df$sc <- rep(rep(c("S", "C"), each=6), 2) #each sin cos 6 times, 2 test freq
+df$type <- paste0(df$sc,df$lag)
+```
+
+```{r}
+ggplot(df, aes(x=type, y=estimate, col=lag)) + 
+  geom_point() +
+  geom_errorbar(aes(ymin=conf.low, ymax=conf.up), width=.2, position=position_dodge(.9)) +
+  geom_hline(yintercept = 0) +
+  facet_wrap(~river) +
+  ggtitle("The cycle estimates for Model 10")
+```
+
+The same analysis but with an equal variance covariance matrix estimated for Q still highlights the potential for a 10 year cycle, this time with the Tilton River. 
+
+
+Evaluate AICc for seasonality against our current best model 3. 
+
+```{r}
+aic <- c(fit3$AICc, fit9$AICc, fit10$AICc )
+aic-min(aic) #delta AICc 
+```
+
+The equal variance covariance matrix for Q was better, but still not as good as our current best model. Now we'll try building a model with just the 10 year cycle as that best explains the potential seasonality in the data, using the same code from above. 
+
+```{r}
+TT <- dim(sub_dat)[2] #number of time steps
+covariates_10 <- rbind(
+  forecast::fourier(ts(1:TT, freq=10), K=1) |> t()
+)
+str(TT)
+
+mod.list11 <- list(
+  Q = "equalvarcov",
+  U = "unequal",
+  R = "diagonal and equal",
+  D = "unconstrained",
+  d = covariates_10
+)
+
+fit11 <- MARSS(sub_dat, model=mod.list11, control = list(maxit=1000) )
+```
+
+```{r}
+aic <- c(fit3$AICc, fit11$AICc )
+aic-min(aic) #delta AICc 
+```
+
+Narrowing down to just a 10 year cycle improved the model, but the seasonality still doesn't help the model as a covariate. 
+
+Ultimately, the best model for predicting historical data for Coho salmon is Model 3 which treats all populations idependently. 
+
+# Fit the best model
+
+Here we predict historical data for all regions using our best model from the initial analysis. One caveat to this approach is that our correlation analysis was performed on a test set, with model 3 specifying Z based on this data. This yields the best model, but is more difficult to fit to historical data based on the information available to us now. 
+
+Future directions should include evaluating the correlation between all the regions to evaluate if other regions would fit into the same sub-group as the grays/chinook and lower gorge. Because there isn't an obvious indicator variable that separates these regions from other regions in our test set, more analysis is needed to identify what is driving this separation of states. 
+
+## Fitting the best model to the full data set
+```{r}
+
+mod.list.full <- list(B = matrix(1), 
+                   U = matrix("u"), 
+                   Q = matrix("q"), # 1 X
+                   Z = matrix(1, 23, 1), 
+                   A = "scaling", 
+                   R = "diagonal and unequal", # single column of 1s for Y
+                   x0 = matrix("mu"), 
+                   tinitx = 0)
+
+fit_full <- MARSS(dat, model = mod.list.full, control = list(maxit=1000))
+
+```
+
+
+#Estimate historical abundance back to 1970
+
+```{r}
+autoplot(fit_full, plot.type="fitted.ytT")
+
+```
+
+
+# Results
+
+We tested numerous models as shown above and model three was found to be the best. Model three assumed that all populations followed the same underlying state rather than separate groups have different underlying states. It also assumed a simple Q matrix since we had little biological reason or data to support indepenent variances and covariances between populations. 
+
+We also tested for cyclic patterns in the data. ACF plots showed a possible correlation in the Tilton River with significant autocorrelation at 5 years. Further tests using Fourier cycles revealed a possible significant cyclic pattern at ten years, although we were unable to generate confidence intervals due to a large number of missing years in the data. Despite this possible result, models including cycling did not significantly outperform model 3. 
+
+Based on our best model there has been no significant decline in abundance across this ESU since 1970. 
+
+# Discussion
+
+We did not find significant support for our initial hypothesis that populations withing MPG's would be more closely correlated than populations from other MPG's. While we found some support for the idea that some populations are correlated, it was limited to the Grays/Chinook Rivers and Lower Gorge Tributaries in model 7. Since these populations are in different habitat types, Coastal vs. Cascade, and would be expected to covary with other more similar regions we did not see a biological reason to group these tributaries. However, additional information may present a valid rationale for why these groups would be correlated. 
+
+Our weak evidence of ten year cycles could be related to the Pacific Decadal Oscillation (PDO) which occurs on ten year cycles. The relationship between PDO and salmon abundance began breaking down after large climatic shifts occured in the 1990's and NPGO has emerged as a better predictor of ocean effects on salmon. It is possible this ten year cycle was present but weak if it were stronger in the earlier data but less so in more recent data. Further work to examine if this relationship is present in the data could improve historical estimates when PDO was a better predictor of abundance. 
+
+While we did not find evidence of a decline in abundance for the period of record, most populations had little to no early data to draw upon and the model was based heavily on the Sandy River as one of only two populations in the ESU that had a long time series of data. Since we used a model that assumed a single underlying state it hindcast a very similar pattern for each population. This model could be improved significantly if additional population specific data were found as the model may no longer depend so heavily on a single watershed. 
+
+----------------------------------------------------------------
+
+## Contributions - add your contributions! 
+
+We tackled this lab by having multiple group meetings to brainstorm strategies, test code, and plan progress. Miranda adapted code from the Lab2-MARSS document to the Coho data, acted as scribe for testing code during group meetings, contributed ideas for selecting models to test, and annotated many of the models for report generation. Nick and Karl helped with group coding and Nick pulled the group code documents into one final doc and drafted model assumptions, results and discussion sections with help from the other team members. 

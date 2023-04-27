@@ -1,0 +1,546 @@
+# Lab 2: MARSS models
+
+Team member names: Emma Timmins-Schiffman, Maria Kuruvilla, Zoe Rand
+
+```{r include=FALSE}
+library(tidyverse)
+library(MARSS)
+library(broom)
+```
+
+# Data
+
+Describe what data set you will work with and any subsetting you decided on. For example, you may have decided to look only at a section of the ESU that your team was assigned.
+
+Load the data.
+
+```{r}
+load(here::here("Lab-2", "Data_Images", "columbia-river.rda"))
+```
+
+Look at the data.
+
+```{r}
+esu <- unique(columbia.river$esu_dps)
+esu
+plotesu <- function(esuname){
+  df <- columbia.river %>% subset(esu_dps %in% esuname)
+  ggplot(df, aes(x=spawningyear, y=log(value), color=majorpopgroup)) + 
+    geom_point(size=0.2, na.rm = TRUE) + 
+    theme(strip.text.x = element_text(size = 3)) +
+    theme(axis.text.x = element_text(size = 5, angle = 90)) +
+    facet_wrap(~esapopname) +
+    ggtitle(paste0(esuname, collapse="\n"))
+}
+#Chinook
+plotesu(esu[5])
+```
+
+Wrangle the data.
+
+We had some issues with one of the populations having duplicated entries, with some being NA and some having values, (Lower Gorge Tributaries - fall) and we also had a lot of ESA populations, so we decided to focus only on the Cascade populations.
+
+```{r}
+chin_c_r<-columbia.river %>% subset(esu_dps == esu[5])
+chin_c_r %>% 
+  filter(majorpopgroup %in% c("Cascade fall", "Cascade late fall", "Cascade spring")) %>% ggplot(aes(x=spawningyear, y=log(value), color=majorpopgroup)) + 
+    geom_point(size=0.2, na.rm = TRUE) + 
+    theme(strip.text.x = element_text(size = 3)) +
+    theme(axis.text.x = element_text(size = 5, angle = 90)) +
+    facet_wrap(~esapopname) +
+    ggtitle(paste0(esu[5], collapse="\n"))
+```
+
+Formatting data for MARSS:
+
+```{r}
+chin_newdat <- chin_c_r %>% 
+  filter(majorpopgroup %in% c("Cascade fall", "Cascade late fall", "Cascade spring")) %>% #just looking at cascade populations
+  mutate(log.spawner = log(value)) %>% # create a column called log.spawner
+  select(esapopname, spawningyear, log.spawner) %>% # get just the columns that I need
+  pivot_wider(names_from = esapopname, values_from = log.spawner) %>% 
+  column_to_rownames(var = "spawningyear") %>% # make the years rownames
+  as.matrix() %>% # turn into a matrix with year down the rows
+  t() # make time across the columns
+# MARSS complains if I don't do this
+chin_newdat[is.na(chin_newdat)] <- NA
+
+#clean up row names
+tmp <- rownames(chin_newdat)
+tmp <- stringr::str_replace(tmp, "Salmon, Chinook [(]Lower Columbia River ESU[)]", "")
+tmp <- stringr::str_trim(tmp)
+rownames(chin_newdat) <- tmp
+
+#look at data
+print(chin_newdat[,1:5])
+```
+
+# General Questions
+
+Each group has the same general tasks, but you will adapt them as you work on the data.
+
+1.  Create estimates of spawner abundance for all missing years and provide estimates of the decline from the historical abundance.
+
+2.  Evaluate support for the major population groups. Are the populations in the groups more correlated than outside the groups?
+
+3.  Evaluate the evidence of cycling in the data. *We will talk about how to do this on the Tuesday after lab.*
+
+# Methods
+
+Address the following in your methods
+
+*Describe your assumptions about the x and how the data time series are related to x.*
+
+-   We tested 2 different assumptions about how the data time series are related to x.
+
+    1.  All the esa populations are independent populations: this means that each data series (y) corresponds to an independent x series.
+
+    2.  There are 3 Cascade populations based on run timing, and the river surveys are all surveying these populations according to run time: this means that each data series (y) corresponds to the x series that relates to its run timing (major population group).
+
+        -   Within both of these, we tested independent process errors with different variances (Q is "diagonal and unequal"), as well as independent process errors with equal variances (Q is "diagonal and equal"), and equal variance covariance (Q is "equalvarcov").
+
+        -   We assumed that each population has its own growth rate (U is unequal).
+
+    *Write out assumptions in matrix form:*
+
+    1.  11 independent populations
+
+        $$
+        \begin{bmatrix} x_{t,1} \\ x_{t,2}\\ ... \\x_{t,11} \end{bmatrix} = \begin{bmatrix} x_{t-1,1} \\ x_{t-1,2}\\ ... \\x_{t-1,11} \end{bmatrix} + \begin{bmatrix} u_1 \\ u_2\\ ... \\u_{11} \end{bmatrix} + w_t \text{  where } w_t \sim MVN(0, \mathbf{Q})
+        $$
+
+    where:
+
+    $$
+    \mathbf{Q} = 
+    \begin{bmatrix} q_1 & 0  & ...& 0\\
+    0 & q_2 &  ...& 0\\
+    \vdots & 0 & \ddots & \vdots\\
+    0 & 0 & 0  & q_{11} \end{bmatrix}
+    $$
+
+    or:
+
+    $$
+    \mathbf{Q} = 
+    \begin{bmatrix} q & 0  & ...& 0\\
+    0 & q &  ...& 0\\
+    \vdots & 0 & \ddots & \vdots\\
+    0 & 0 & 0  & q \end{bmatrix}
+    $$
+
+    or:
+
+$$
+\mathbf{Q} = 
+\begin{bmatrix} q & p  & ...& p\\
+p & q &  ...& p\\
+\vdots & p & \ddots & \vdots\\
+p & p & p  & q \end{bmatrix}
+$$
+
+$$
+\begin{bmatrix} y_{t,1} \\ y_{t, 2} \\ \vdots \\y_{t,11} \end{bmatrix} = 
+\begin{bmatrix}1 & 0  & ...& 0\\
+0 & 1 &  ...& 0\\
+\vdots & 0 & \ddots & \vdots\\
+0 & 0 & 0  & 1\end{bmatrix} 
+\begin{bmatrix} x_{t,1} \\ x_{t, 2} \\ \vdots \\x_{t,11} \end{bmatrix} + \mathbf{a} + \mathbf{v_t} \text{ where } \mathbf{v_t} \sim MVN(0, \mathbf{R})
+$$
+
+where:
+
+$$
+\mathbf{R} = 
+\begin{bmatrix} r & 0  & ...& 0\\
+0 & r &  ...& 0\\
+\vdots & 0 & \ddots & \vdots\\
+0 & 0 & 0  & r \end{bmatrix}
+$$
+
+2.  3 independent populations according to run time
+
+$$
+\begin{bmatrix} x_{t,1} \\ x_{t,2}\\ x_{t,3} \end{bmatrix} = \begin{bmatrix} x_{t-1,1} \\ x_{t-1,2}\\ x_{t-1,3} \end{bmatrix} + \begin{bmatrix} u_1 \\ u_2\\ u_3 \end{bmatrix} + w_t \text{  where } w_t \sim MVN(0, \mathbf{Q})$$
+
+where ***Q*** is as above but is 3x3 instead of 11x11.
+
+$$
+\begin{bmatrix} y_{t,1} \\ y_{t, 2} \\ \vdots \\y_{t,11} \end{bmatrix} = 
+\begin{bmatrix}1 & 0  &  0\\
+1 & 0 &  0\\
+\vdots & 1 & \vdots\\
+0 & 1 & 0 \\ 
+\vdots & \vdots & \vdots\\
+\vdots & 0 & 1 \\
+\vdots & \vdots & \vdots \end{bmatrix} 
+\begin{bmatrix} x_{t,1} \\ x_{t, 2} \\x_{t,3} \end{bmatrix} + \mathbf{a} + \mathbf{v_t} \text{ where } \mathbf{v_t} \sim MVN(0, \mathbf{R})
+$$
+
+and ***R*** is the same as above.
+
+
+## Code for analysis:
+
+### 1.  Hypothesis 1: 11 independent populations
+
+```{r}
+mod.list1 <- list(
+  U = "unequal",
+  R = "diagonal and equal",
+  Q = "diagonal and unequal"
+)
+fit1<-MARSS(chin_newdat, model=mod.list1, method = "BFGS")
+
+```
+
+```{r}
+autoplot(fit1, plot.type="fitted.ytT")
+```
+```{r, include=FALSE}
+options(knitr.duplicate.label = "allow")
+```
+
+
+```{r}
+# resid1<-autoplot(fit1, plot.type="residuals")
+# headings<-c('Model innovation', "Cholesky standardized model smoothation", "Cholesky standaradized state smoothation", "Residuals normality test", "Cholesky standaradized model innnovation residuals acf")
+
+plot(fit1, plot.type = "model.resids.ytt1")
+plot(fit1, plot.type = "qqplot.std.model.resids.ytt1")
+plot(fit1, plot.type = "acf.std.model.resids.ytt1")
+
+
+```
+
+```{r, results='residuals model 1', echo=F}
+# for(i in 1:length(resid1)) {
+#   cat("#### ", headings[i], "\n")
+#   print(resid1[[i]])
+#   cat('\n\n')
+# }
+
+```
+
+
+```{r}
+mod.list2 <- list(
+  U = "unequal",
+  R = "diagonal and equal",
+  Q = "diagonal and equal"
+)
+fit2<-MARSS(chin_newdat, model=mod.list2, control = list(maxit = 2000))
+```
+
+```{r}
+autoplot(fit2, plot.type="fitted.ytT")
+```
+
+```{r}
+mod.list3 <- list(
+  U = "unequal",
+  R = "diagonal and equal",
+  Q = "equalvarcov"
+)
+fit3<-MARSS(chin_newdat, model=mod.list3, control = list(maxit = 2000))
+
+```
+
+```{r}
+autoplot(fit3, plot.type="fitted.ytT")
+```
+2. Hypothesis 2: 3 independent populations based on run timing
+```{r}
+mod.list4<-mod.list1
+rownames(chin_newdat)
+mod.list4$Z<-factor(c(rep("fa", 5), rep("l_fa", 2), rep("Sp", 4))) #creating factor based on run times
+#mod.list4
+fit4<-MARSS(chin_newdat, model = mod.list4, method = "BFGS")
+```
+
+```{r}
+autoplot(fit4, plot.type="fitted.ytT")
+
+```
+
+```{r}
+mod.list5<-mod.list4
+mod.list5$Q<-"diagonal and equal"
+fit5<-MARSS(chin_newdat, model = mod.list5, control = list(maxit = 2000))
+```
+
+```{r}
+autoplot(fit5, plot.type="fitted.ytT")
+```
+
+```{r}
+mod.list6<-mod.list4
+mod.list6$Q<-"equalvarcov"
+fit6<-MARSS(chin_newdat, model = mod.list6, control = list(maxit = 2000))
+```
+
+```{r}
+autoplot(fit6, plot.type="fitted.ytT")
+```
+
+# Results
+
+```{r}
+aic <- c(fit1$AICc, fit2$AICc, fit3$AICc, fit4$AICc, fit5$AICc, fit6$AICc)
+mods<-seq(1,6)
+aic.names<-paste("Model", mods, sep = " ")
+a<-matrix(c(aic, aic-min(aic)), nrow = 6, byrow = F)
+rownames(a)<-aic.names
+a<-a[order(a[,2],decreasing=FALSE),] #order by lowest AICc
+knitr::kable(a, col.names = c("AICc", "Delta AIC")) #make a pretty table
+```
+
+The first model we tested, where we had each population with its own x value and Q was diagonal and unequal, had the lowest AICc. Therefore, we used this model to look at historical abundance.
+
+1.  *Create estimates of spawner abundance for all missing years and provide estimates of the decline from the historical abundance.*
+
+Estimates of log abundance for each population:
+
+```{r}
+tibble("Pop" = rownames(chin_newdat),"Dat" = chin_newdat[,1], "Est" = fit1$states[,1])
+```
+
+Estimated percent change from historical abundance for each population
+
+```{r warning=FALSE}
+#percent change in log abundance 
+hist.abund<-tibble(Pop = rownames(chin_newdat), 
+                   Year1 = fit1$states[,1],
+                   Year58 = fit1$states[,58])
+                   
+hist.abund<-hist.abund %>% mutate(PChange = ((Year58 - Year1)/abs(Year1)) * 100)
+
+#the estimate for "Upper Cowlitz River - fall" initial population is super low (<1 in real scale), and so the percent change blows up (it's like 1000), so I took this out to make the plot easier to read. Also I think this is probably unrealistic. 
+hist.abund %>% filter(Pop != "Upper Cowlitz River - fall") %>%
+  ggplot() + geom_histogram(aes(x = Pop, y = PChange, fill = factor(c(rep("fa", 5), rep("l_fa", 2), rep("Sp", 3)))), stat = "identity") + 
+  geom_hline(aes(yintercept = 0), color = "red") + 
+  scale_fill_discrete(labels = c("Fall", "Late Fall", "Spring"), name = "Run") + 
+  labs(x = "Population", y="% Change From Hist. Abund.") + theme_minimal() + 
+  theme(axis.text.x = element_text(angle = 270, hjust = -0.1))
+```
+
+*Do your estimates differ depending on the assumptions you make about the structure of the data, i.e. you assumptions about the x's, Q, and U?*
+
+Using our second best model:
+
+```{r, warning = FALSE}
+hist.abund<-tibble(Pop = rownames(chin_newdat), 
+                   Year1 = fit3$states[,1],
+                   Year58 = fit3$states[,58])
+                   
+hist.abund<-hist.abund %>% mutate(PChange = ((Year58 - Year1)/abs(Year1)) * 100)
+
+#the estimate for "Upper Cowlitz River - fall" is still not great, so I took this out for this plot as well
+hist.abund %>% filter(Pop != "Upper Cowlitz River - fall") %>% 
+  ggplot() + geom_histogram(aes(x = Pop, y = PChange, fill = factor(c(rep("fa", 5), rep("l_fa", 2), rep("Sp", 3)))), stat = "identity") + 
+  geom_hline(aes(yintercept = 0), color = "red") + 
+  scale_fill_discrete(labels = c("Fall", "Late Fall", "Spring"), name = "Run") + 
+  labs(x = "Population", y="% Change From Hist. Abund.") + theme_minimal() + 
+  theme(axis.text.x = element_text(angle = 270, hjust = -0.1))
+
+```
+
+The form of the model does make a difference in the model outputs. For instance, in the first model, the populations of Sandy River spring and late fall are estimated to show an increase, while in the second model, it's estimated to decrease. Lewis River fall and Lower Cowlitz river fall and Toutle River fall, all show opposite trends in these two models as well.
+
+### 2.  Evaluate support for the major population groups. Are the populations in the groups more correlated than outside the groups?
+
+Look at the correlation plots for the best models for each hypothesis: model 1 for hypothesis 1 and model 4 for hypothesis 2
+
+Population correlations for Model 1
+
+```{r}
+library(corrplot)
+#different variances and covariances in process error
+mod.list1.unconst <- list(
+  U = "unequal",
+  R = "diagonal and equal",
+  Q = "unconstrained"
+)
+fit1.unconst<-MARSS(chin_newdat, model=mod.list1.unconst, method = "BFGS")
+```
+```{r}
+Q1.unconst <- coef(fit1.unconst, type="matrix")$Q
+corrmat1.unconst <- diag(1/sqrt(diag(Q1.unconst))) %*% Q1.unconst %*% diag(1/sqrt(diag(Q1.unconst)))
+corrplot(corrmat1.unconst)
+```
+
+For model 1 (with Q changed to unconstrained so we can see a correlation matrix), abundances from the Clackamas fall (1) and Sandy River late fall (7) populations are highly positively correlated. These populations are very close geographically. In fact, populations 1-7 are all positively correlated; these are the fall run populations and may be influenced by the same environmental variables. Spring run populations demonstrate less association with each other and with the fall run fish. These results suggest that we could possibly group fall and late fall runs together, but there is little support for grouping the separate spring run populations.
+
+
+We can similarly look at an unconstrained Q if we group the populations:
+```{r}
+mod.list4.unconst <- list(
+  U = "unequal",
+  R = "diagonal and equal",
+  Q = "unconstrained",
+  Z=factor(c(rep("fa", 5), rep("l_fa", 2), rep("Sp", 4)))
+)
+fit4.unconst<-MARSS(chin_newdat, model=mod.list4.unconst, method = "BFGS")
+
+Q4.unconst <- coef(fit4.unconst, type="matrix")$Q
+corrmat4.unconst <- diag(1/sqrt(diag(Q4.unconst))) %*% Q4.unconst %*% diag(1/sqrt(diag(Q4.unconst)))
+corrplot(corrmat4.unconst)
+```
+
+When the data are all collapsed by run timing, all runs show high positive correlation with each other. We know this is a false way to group the data, but we can try to fit a model with grouped fall & late fall runs and separate spring run populations.
+
+
+
+```{r}
+mod.list7 <- list(
+  U = "unequal",
+  R = "diagonal and equal",
+  Q = "unconstrained",
+  Z=factor(c(rep("fa", 7), 'Sp1', 'Sp2', 'Sp3', 'Sp4'))
+)
+fit7<-MARSS(chin_newdat, model=mod.list7, method = "BFGS")
+
+Q7 <- coef(fit7, type="matrix")$Q
+corrmat7 <- diag(1/sqrt(diag(Q7))) %*% Q7 %*% diag(1/sqrt(diag(Q7)))
+corrplot(corrmat7)
+```
+
+Check the fit of this model if Q is set to diagonal and unequal, which yields a lower AICc than the unconstrained Q for previous examples.
+
+
+```{r}
+mod.list8 <- list(
+  U = "unequal",
+  R = "diagonal and equal",
+  Q = "diagonal and unequal",
+  Z=factor(c(rep("fa", 7), 'Sp1', 'Sp2', 'Sp3', 'Sp4'))
+)
+fit8<-MARSS(chin_newdat, model=mod.list8, method = "BFGS")
+
+autoplot(fit8, plot.type="fitted.ytT")
+```
+The AICc is quite a bit higher than it was for our preferred models. We can also see that some of the fall populations (e.g. Upper Cowlitz) are not well represented with this model. 
+
+### 3.  Evaluate the evidence of cycling in the data. 
+
+We want to subset the data so that we can have three rivers with no NAs. We are choosing Lewis river fall, Lewis river late fall and Lower Cowlitz river from 1964 to 2008.
+
+```{r}
+chin_subset <- chin_newdat[c(2,3,6),1:45]
+print(chin_subset)
+```
+
+
+First we want to look at the ACF of each time series to see potential cycles. 
+
+```{r}
+
+par(mfrow=c(2,2))
+for(i in 1:3){
+  acf(chin_subset[i,], na.action=na.pass, main=rownames(chin_subset)[i])
+}
+
+
+```
+
+It looks like there might be a 4 year cycle in Lewis river fall. We can test 4 and 5 since Chinook are known to have 5 year cycles. 
+
+
+
+```{r}
+
+TT <- dim(chin_subset)[2] #number of time steps
+covariates <- rbind(
+  forecast::fourier(ts(1:TT, freq=4), K=1) |> t(),
+  forecast::fourier(ts(1:TT, freq=5), K=1) |> t()
+)
+
+```
+
+
+For now, we will choose the best model from the earlier part of the assignment for the MARSS model. However, the best model for the 3 river subset is likely to be different. We will then add the cycles as covariates in the model.
+
+```{r}
+mod.list_cycle <- list(
+  U = "unequal",
+  R = "diagonal and equal",
+  Q = "diagonal and unequal",
+  D = "unconstrained",
+  d = covariates
+)
+
+fit_cycle <- MARSS(chin_subset, model=mod.list_cycle, method = "BFGS")
+
+```
+
+We will get the estimates of the covariate effect and it's confidence intervals. 
+
+
+
+```{r}
+df <- tidy(fit_cycle) %>%
+  subset(stringr::str_sub(term,1,1)=="D") # we only want the covariate estimates
+#term is the parameter it is estimating
+df$lag <- as.factor(rep(4:5, each=6)) #estimating 2 (4 year and 5 year) cycles for 3 rivers 
+#6 because 2 parameters for each river (sine and cosine)
+df$river <- as.factor(rep(rownames(chin_subset),2)) # 2 for number of cycles
+df$sc <- rep(rep(c("S","C"), each=3), 2) # 3 for rivers # 2 for cycles
+df$type <- paste0(df$sc,df$lag)
+print(df)
+
+```
+
+
+Plot the results
+
+
+```{r}
+ggplot(df, aes(x=type, y=estimate, col=lag)) + 
+  geom_point() +
+  geom_errorbar(aes(ymin=conf.low, ymax=conf.up), width=.2, position=position_dodge(.9)) +
+  geom_hline(yintercept = 0) +
+  facet_wrap(~river) +
+  ggtitle("The cycle estimates with CIs")
+```
+
+
+
+It looks like Lewis river fall has a 4 year cycle. 
+
+
+To see whether the model with cycle fits the model without cycles better, we will specify another MARSS model without the fourier covariates.
+
+```{r}
+
+mod.list_wo_cycle <- list(
+  U = "unequal",
+  R = "diagonal and equal",
+  Q = "diagonal and unequal"
+)
+
+fit_wo_cycle <- MARSS(chin_subset, model=mod.list_wo_cycle, method = "BFGS")
+```
+
+
+AIC for model without cycles is 257 and for model with cycles is 284. There is more support for model without cycles even though we this is Chinook data.
+
+
+
+
+
+# Discussion
+
+We esimated that 6 of the 11 populations showed a decline from historical abundance, with two populations demonstrating a \>25% decline in log-abundance. However, other populations were estimated to be increasing, with the populations in the Upper Cowlitz river (both spring and fall) showing very large increases in abundance. However, we're not sure all of these results are reasonable, specially these levels of increase in the Upper Cowlitz river, and these results change with the different model formulations we tested. Though our best model had the lowest AICc, perhaps more models should be tested to confirm these results.
+
+Residuals for model 1 (hyp. 1) did not show an association with time; however, in the residuals for model 4 (best hyp. 2 model) some of the populations did still show an association with time. This further supports our selection of model 1 as our best model.
+
+We found that the population abundances of fall and late fall Chinook were positively correlated, with additional structure according to geographic proximity. Spring run populations showed higher differentiation from each other. However, when fall populations were grouped the model AICc was not improved. There is likely environmental and/or biological association among the fall and late fall run populations but they should be considered separate populations in our models.
+
+
+When we evaluated the evidence for 4 and 5 year cycling in Chinook salmon in a subset of the rivers (Lewis fall, Lewis late fall, and Lower Cowlitz fall), we found that there was some support for a 4 year cycle in Lewis fall data. However, the AIC was much lower for a model without cycles. It is possible that another model with cycles is better. 
+
+
+
+# Description of each team member's contributions
+
+All members contributed to developing the plan and methods for the analysis. ETS and ZR worked on the code for subsetting the data and fitting the models. ZR wrote the equations for the methods and worked on the results for the first question on historical abundance. ETS analyzed the results in terms of evidence for multiple populations. MK analyzed the evidence of cycling in the data. All team members contributed to the discussion and worked on the report together.
