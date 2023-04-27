@@ -1,5 +1,5 @@
 ---
-title: Team 1
+title: Team 1 - Lab 2
 subtitle: Lab 2 MARSS models
 author: "Emma Timmins-Schiffman, Maria Kuruvilla, Zoe Rand"
 output: 

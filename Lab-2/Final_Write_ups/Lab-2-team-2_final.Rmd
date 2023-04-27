@@ -1,7 +1,7 @@
 ---
-title: Team 2
+title: Team 2 - Lab 2
 subtitle: Lab 2 MARSS Models
-author: Liz Elmstrom (SAFS), Terrance Wang, Eric French
+author: Liz Elmstrom, Terrance Wang, Eric French
 date: April 20, 2023
 output: 
   html_document:

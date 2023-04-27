@@ -1,5 +1,5 @@
 ---
-title: Team 3
+title: Team 3 - Lab 2
 subtitle: Lab 2 MARSS models
 author: "Miranda Mudge, Karl Veggerby, Nick Chambers"
 output: 

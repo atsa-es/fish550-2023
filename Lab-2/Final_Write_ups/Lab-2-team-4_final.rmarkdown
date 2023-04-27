@@ -9,14 +9,15 @@ output:
     toc_float: true
 ---
 
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+
 # Data
 
 We are examining the sockeye population within the Middle Columbia River System. Within this system there are four major population groups. The Cascades, John Day, Walla Walla, and Yakima. The John Day group has the longest running dataset with records reaching back to 1959. The other major population groups generally start their datasets in the 1980's. A noteable exception is the Umatilla River within the Walla Walla group which also has data beginning in the 1960s. In general all of the salmon running times occur in the summer in the Middle Columbia River System.
+
 
 ```{r}
 library(tidyr)
@@ -30,7 +31,9 @@ library(knitr)
 load(here::here("Lab-2", "Data_Images", "columbia-river.rda"))
 ```
 
+
 We are only interested in the rivers in the Middle Columbia River Unit
+
 
 ```{r}
 
@@ -51,7 +54,9 @@ plotesu <- function(esuname){
 plotesu(esuname[1])
 ```
 
+
 Next, the data are arranged so the columns are the years and rows are unique rivers
+
 
 ```{r}
 esuname <- esuname[1]
@@ -70,7 +75,9 @@ any(is.infinite(dat))
 dat[is.infinite(dat)] <- NA
 ```
 
+
 Let's take a look at the Middle Columbia River area and formulate some hypotheses:
+
 
 ```{r}
 
@@ -78,6 +85,7 @@ here::here("Lab-2", "Team-4", "Middle Columbia River sockeye.png") |>
   knitr::include_graphics()
 
 ```
+
 
 # General Questions
 
@@ -261,6 +269,7 @@ R
 \end{pmatrix}
 $$
 
+
 ```{r}
 mod.list1 <- list(
   U = "unequal", #each of the rivers are estimated separately (different U)
@@ -272,13 +281,17 @@ m1 <- MARSS(dat, model=mod.list1, method="BFGS")
 
 ```
 
+
 The model converged! Let's take a look at the plots:
+
 
 ```{r}
 autoplot(m1)
 ```
 
+
 This model doesn't perform very well in areas that lack data, and, related, some of the QQ plots don't hold assumptions of normality. This makes sense, given that stream missing data have nothing to inform them. In the states plots, the areas with missing data are characterized by confidence intervals that balloon out. Let's look at the abundance estimates for this model.
+
 
 ```{r}
 
@@ -286,7 +299,9 @@ print(fit1_smooth<-tsSmooth(m1))
 
 ```
 
+
 Finally, let's look at the correlation plot.
+
 
 ```{r}
 
@@ -295,6 +310,7 @@ corrmat1 <- diag(1/sqrt(diag(Q1))) %*% Q1 %*% diag(1/sqrt(diag(Q1)))
 corrplot(corrmat1)
  
 ```
+
 
 ## Hypothesis 2
 
@@ -388,6 +404,7 @@ $$
 
 Set up the U and Z matrices
 
+
 ```{r}
 #give U values names to make it easier to read results
 #this hypothesis has 4 hidden states based on major groups
@@ -399,7 +416,9 @@ Z_mat2 <- matrix(c(rep(c(1,0,0,0),3),
                   rep(c(0,0,0,1),4)),15,4, byrow=TRUE)
 ```
 
+
 ###Hypothesis 2.1 The Q matrix for the variance of process errors is "diagonal and equal" meaning each state (x) model has the same process error but they are not correlated to each other.
+
 
 ```{r}
 
@@ -412,19 +431,25 @@ mod.list2.1 <- list(
 m2.1 <- MARSS(dat, model = mod.list2.1)
 ```
 
+
 The model converged with a better AICc than Hypothesis 1.
+
 
 ```{r}
 autoplot(m2.1)
 ```
 
+
 There are larged ballooned CIs on the missing data in hidden states fitted CI have the same balloon shaped CIs on missing data.There also appears to be some cyclic structure in the residuals. Yakima (X4) is the only system with a positive drift value on the hidden state's random walk. There is only one Q value output as all hidden states have the same one and there is no covariance/correlation between states. This model likely will not be a top contender when we evaluate based on AICs. Let's look at the estimates.
+
 
 ```{r}
 print(fit2.1_smooth<-tsSmooth(m2.1))
 ```
 
+
 And let's look at corrplot, it should be very familiar.
+
 
 ```{r}
 Q2.1 <- coef(m2.1, type = "matrix")$Q
@@ -434,6 +459,7 @@ corrplot(corrmat2.1)
 
 ```
 
+
 The Confidence Intervals in the sections of the underlying states (x) were very large in the sections where data was missing. This was also reflected in the plots showing the fitted values. Some structuring may also be present in the residuals. Six of the river systems have multiple significant lags when examining the ACF plots indicating the residuals display autocorrelation. The corrplot is fairly uninformative as we forced the model to be equal variance with no correlation. One interesting thing to note is that we allowed the "U" values to varying independently of each other and the Yakima group is the only one with a positive U value, indicating it is the only system with positive growth or at least increasing number of adults counted over time.
 
 ------------------------------------------------------------------------
@@ -441,6 +467,7 @@ The Confidence Intervals in the sections of the underlying states (x) were very 
 ### Hypothesis 2.2
 
 The Q matrix for the variance of process errors is "diagonal and unequal" meaning each of the four underlying states' process error can be different but they are not correlated to each other.
+
 
 ```{r}
 
@@ -453,11 +480,14 @@ mod.list2.2 <- list(
 m2.2 <- MARSS(dat, model = mod.list2.2)
 ```
 
+
 Our model converged with an AICc value that is a little better than the model where Q was diagonal and equal, indicating that allowing Q to vary improved the model fits to data.
+
 
 ```{r}
 autoplot(m2.2)
 ```
+
 
 We still see large CIs on the missing data in hidden states 1 (Cascades) and 4 (Yakima). The CI are tight in the John Day region, which is the most data rich stream. Again Yakima is the only positive drift value on the hidden state's random walk
 
@@ -465,11 +495,14 @@ The 4 varied Q values indicate that the hidden states are uncorrelated, and the 
 
 Next let's looks at the estimates:
 
+
 ```{r}
 print(fit2.1_smooth<-tsSmooth(m2.2))
 ```
 
+
 Lets look at the correlation plots
+
 
 ```{r}
 Q2.2 <- coef(m2.2, type = "matrix")$Q
@@ -478,6 +511,7 @@ corrplot(corrmat2.2)
 
 ```
 
+
 Again we see large balloon shaped confidence intervals in the sections of rivers that are missing data. This appears in both the estimated underlying states and the fitted value plots. The Walla Walla groups seems to have the widest confidence intervals of all of the river systems. Again six of the rivers have ACF plots with multiple significant lags. The Yakima Population group continues to be the only group with an underlying state which is estimated to have a positive drift. The variance-covariance matrix was allowed to vary the variance of each underlying state independently of one another, but we see that it estimated each to be equal.
 
 ------------------------------------------------------------------------
@@ -485,6 +519,7 @@ Again we see large balloon shaped confidence intervals in the sections of rivers
 ### Hypothesis 2.3
 
 The Q matrix for the variance of process errors is "equal variance and covariance" so they each have equal variance and they are all correlated equally to one another.
+
 
 ```{r}
 
@@ -497,21 +532,27 @@ mod.list2.3 <- list(
 m2.3 <- MARSS(dat, model = mod.list2.3)
 ```
 
+
 This model seemed to improve performance. Let's take a look at some plots:
+
 
 ```{r}
 autoplot(m2.3)
 ```
 
+
 This model fits each of the four states quite well, which indicates that the variability and the relationships between the different state variables are correlated.
 
 Let's looks at the estimates
+
 
 ```{r}
 print(fit2.1_smooth<-tsSmooth(m2.3))
 ```
 
+
 And the corrplot:
+
 
 ```{r}
 Q2.3 <- coef(m2.3, type = "matrix")$Q
@@ -521,6 +562,7 @@ corrplot(corrmat2.3)
 
 ```
 
+
 This is the first set of models in the Hypothesis Two group that has not generated balloon shaped confidence intervals on the underlying states or the fitted values plots. Indicating that we have a better model when we allow the models to be correlated with one another. We potentially see some structuring in the residuals. Fewer of the ACF plots show strong structuring in the residuals, some of the plots with significant lags onlt have a few and we see less of the sine wave shaped plots than in the previous Hypothesis Two models. The variance covariate plot was forced to be equal, but we see that correlation between the major groups is estimated to be quite high.
 
 ------------------------------------------------------------------------
@@ -528,6 +570,7 @@ This is the first set of models in the Hypothesis Two group that has not generat
 ### Hypothesis 2.4
 
 The Q matrix for the variance of process errors is "unconstrained". Meaning that each hidden state is allowed to vary separately as is the correlation between the underlying states.
+
 
 ```{r}
 
@@ -541,21 +584,27 @@ m2.4 <- MARSS(dat, model = mod.list2.4, method="BFGS")
 
 ```
 
+
 This model, with the unconstrained Q matrix, had a hard time converging, thus the Broyden-Fletcher-Goldfarb-Shanno method was used to help with optimization. Thus far, this model has the lowest AICc.
+
 
 ```{r}
 autoplot(m2.4)
 ```
 
+
 These model fits looks pretty well, with tight confidence intervals and the model is fitting the data well. All of the residuals looks like they are normal, and standardized residuals may show a bit of structure in a few graphs but otherwise white noise. Again X4 (Yakima) is the only positive drift value. On the hidden state's random walk John Day and Yakima have strongest correlation and then John Day and Cascades I expect this to be seen in the corrplot.
 
 Lets look at estimates:
+
 
 ```{r}
 print(fit2.1_smooth<-tsSmooth(m2.4))
 ```
 
+
 look at corrplot:
+
 
 ```{r}
 Q2.4 <- coef(m2.4, type = "matrix")$Q
@@ -563,6 +612,7 @@ corrmat2.4 <- diag(1/sqrt(diag(Q2.4))) %*% Q2.4 %*% diag(1/sqrt(diag(Q2.4)))
 corrplot(corrmat2.4)
 
 ```
+
 
 All groups are highly correlated with each other, which means there is likely a lot of connectivity between these four DPCs.
 
@@ -663,6 +713,7 @@ $$
 
 We start by establishing our U matrix and our Z matrix.
 
+
 ```{r}
 U_mat3 <- matrix(c("North","South"),2,1)
 #make Z matrix correspond to 2 hidden states
@@ -671,9 +722,11 @@ Z_mat3 <- matrix(c(rep(c(0,1),8),
                      
 ```
 
+
 ### Hypothesis 3.1
 
 The Q matrix for the variance of process errors is "diagonal and equal" meaning each state (x) model has the same process error but they are not correlated to each other.
+
 
 ```{r}
 mod.list3.1 <- list(
@@ -685,21 +738,27 @@ mod.list3.1 <- list(
 m3.1 <- MARSS(dat, model = mod.list3.1)
 ```
 
+
 This AICc is bad compared to Hypothesis 2. This is either because there is coorelation between the hidden states, as supported by hypothesis two, or the assumption that there are only two underlying states is incorrect. Plots
+
 
 ```{r}
 autoplot(m3.1)
 ```
 
+
 The southern area (John Day and Cascades) are more informed by data and the fits look ok. The northern area (Yakima and Walla Walla) have large confidence intercals in the early period. The models are fitting data pretty well for individual streams, and while residuals don't seem to have too much structure, some outliers seem to be present for the southern area. The Residuals normality tests are a little wobbly, which is troubling.
 
 Let's look at estimates:
+
 
 ```{r}
 print(fit3.1_smooth<-tsSmooth(m3.1))
 ```
 
+
 Our corrplots are as expected.
+
 
 ```{r}
 Q3.1 <- coef(m3.1, type = "matrix")$Q
@@ -707,11 +766,13 @@ corrmat3.1 <- diag(1/sqrt(diag(Q3.1))) %*% Q3.1 %*% diag(1/sqrt(diag(Q3.1)))
 corrplot(corrmat3.1)
 ```
 
+
 This model probably isn't it. It's failing our normality tests, and while it seems to fit the data ok, it didn't perform as well as hypothesis 2. Let's see how our models improve with different, but uncorrelated process errors.
 
 ### Hypothesis 3.2
 
 The Q matrix for the variance of process errors is "diagonal and unequal" meaning each of the four underlying states' process error can be different but they are not correlated to each other.
+
 
 ```{r}
 mod.list3.2 <- list(
@@ -723,23 +784,29 @@ mod.list3.2 <- list(
 m3.2 <- MARSS(dat, model = mod.list3.2)
 ```
 
+
 This model also has a higher AICc than some of the other models, indicating that the assumption that process errors ARE correlated is likely a better assumption than the diagonal and unequal assumption for the Q matrix.
 
 Let's look at some plots:
+
 
 ```{r}
 autoplot(m3.1)
 ```
 
+
 This model isn't performing great, which is unsurprising given the lack of correlation in the process errors. The curvy QQ plots remain, and the model CIs are high where there is a lack of data.
 
 What are the estimates
+
 
 ```{r}
 print(fit3.2_smooth<-tsSmooth(m3.2))
 ```
 
+
 And the corr plot is as expected.
+
 
 ```{r}
 Q3.2 <- coef(m3.2, type = "matrix")$Q
@@ -747,9 +814,11 @@ corrmat3.2 <- diag(1/sqrt(diag(Q3.2))) %*% Q3.2 %*% diag(1/sqrt(diag(Q3.2)))
 corrplot(corrmat3.2)
 ```
 
+
 ### Hypothesis 3.3
 
 The Q matrix for the variance of process errors is "equal variance and covariance" so they each have equal variance and they are all correlated equally to one another. I would guess this model performs better than the other too, let's see!
+
 
 ```{r}
 mod.list3.3 <- list(
@@ -761,21 +830,27 @@ mod.list3.3 <- list(
 m3.3 <- MARSS(dat, model = mod.list3.3)
 ```
 
+
 The AICc is a little better! It seems our correlation hunch is further supported! Let's look at plots:
+
 
 ```{r}
 autoplot(m3.3)
 ```
 
+
 This model looks ok! The confidence intervals are wider where there is a lack of data, but we are not seeing them balloon out! The residuals don't seem to have clear structure, but there are some outliers, and generally the qq plots by stream appear to be pretty normal, but the two states have lifting at the left tail.
 
 Let's look at estimates:
+
 
 ```{r}
 print(fit3.3_smooth<-tsSmooth(m3.3))
 ```
 
+
 Let's look at the corrplots:
+
 
 ```{r}
 Q3.3 <- coef(m3.3, type = "matrix")$Q
@@ -783,11 +858,13 @@ corrmat3.3 <- diag(1/sqrt(diag(Q3.3))) %*% Q3.3 %*% diag(1/sqrt(diag(Q3.3)))
 corrplot(corrmat3.3)
 ```
 
+
 ### Hypothesis 3.4
 
 The Q matrix for the variance of process errors is "unconstrained". Meaning that each hidden state is allowed to vary separately as is the correlation between the underlying states.
 
 I'd expect this model to be the best of hypothesis three, as allowing correlation between the two states seems to improve performance.
+
 
 ```{r}
 mod.list3.4 <- list(
@@ -799,27 +876,34 @@ mod.list3.4 <- list(
 m3.4 <- MARSS(dat, model = mod.list3.4)
 ```
 
+
 This model performs the best of hypothesis 3 in terms of AICc.
 
 Let's look at plots.
+
 
 ```{r}
 autoplot(m3.4)
 ```
 
+
 This model isn't fitting all the data particularly well, and there is CLEAR structure in the residuals in X2 (John Day and Cascades). This model isn't gonna cut it, but let's look at the estimates:
+
 
 ```{r}
 print(fit3.4_smooth<-tsSmooth(m3.4))
 ```
 
+
 And finally the corrplots:
+
 
 ```{r}
 Q3.4 <- coef(m3.4, type = "matrix")$Q
 corrmat3.4 <- diag(1/sqrt(diag(Q3.4))) %*% Q3.4 %*% diag(1/sqrt(diag(Q3.4)))
 corrplot(corrmat3.4)
 ```
+
 
 This hypothesis didn't perform as well as anticipated. The two underlying states of nature didn't seem to inform each other very well, and while model fits seemed to improve when the process errors were allowed to correlate, some of the residuals had structure, and residuals didn't appear to be normal. While this hypothesis explored the north and south areas as being separate, hypothesis 2, with four distinct DPCs performed better.
 
@@ -923,6 +1007,7 @@ $$ Hypothesis 4.1: Q matrix is "diagonal and equal" meaning the two hidden, unde
 
 The Q matrix for the variance of process errors is "diagonal and equal" meaning each state (x) model has the same process error but they are not correlated to each other.
 
+
 ```{r}
 U_mat4 <- matrix(c("South_group","Yakima"),2,1)
 #make Z matrix correspond to 4 hidden states
@@ -940,11 +1025,14 @@ mod.list4.1 <- list(
 m4.1 <- MARSS(dat, model = mod.list4.1)
 ```
 
+
 On first look, this AICc does ok. Let's look at our plots.
+
 
 ```{r}
 autoplot(m4.1)
 ```
+
 
 HUGE CIs on hidden state of Yakima group where data is missing. Let's makes sense because with no correlation, the Yakima group isn't being informed by anything.
 
@@ -954,11 +1042,14 @@ QQ plots for Yakima are clearly not normal, but this is likely because of so muc
 
 Let's look at estimates:
 
+
 ```{r}
 print(fit4.1_smooth<-tsSmooth(m4.1))
 ```
 
+
 The corrplot is as expected.
+
 
 ```{r}
 Q4.1 <- coef(m4.1, type = "matrix")$Q
@@ -968,6 +1059,7 @@ corrplot(corrmat4.1)
 
 ```
 
+
 The confidence intervals on the underlying state and the fitted values have really big balloon shapes to them where data is missing from each system. The Yakima system, which was assumed to have its own underlying state in this hypothesis, has much large confidence intervals than all the other systems in the fitted values plot. The ACF plots do show that about half of the systems disply autocorrelation in their residuals. The Residuals normality test for the underlying states, X1 (all but Yakima) and X2 (Yakima), show that the residuals for the X2 are not normally distributed as they vary from the qqline to a great degree. The corrplot is relatively uninformative as we forced the Q matrix to be diagonal and equal.
 
 ------------------------------------------------------------------------
@@ -975,6 +1067,7 @@ The confidence intervals on the underlying state and the fitted values have real
 ### Hypothesis 4.2
 
 Q matrix is "diagonal and unequal", meaning the two hidden, underlying states will have the same variance but will not be allowed to be correlated to one another.
+
 
 ```{r}
 mod.list4.2 <- list(
@@ -986,21 +1079,27 @@ mod.list4.2 <- list(
 m4.2 <- MARSS(dat, model = mod.list4.2)
 ```
 
+
 This AICc isn't looking very promising.
+
 
 ```{r}
 autoplot(m4.2)
 ```
 
+
 This model looks pretty similarly to the last model, which is to say not great. There continues to be very large CIs on hidden state of Yakima group where data is missing, again because there is not data or any correlation from the other underlying state to inform it. The CIs for fitted values show the same pattern qqplots show more variation in the Yakima group.
 
 Let's look at the estimates:
+
 
 ```{r}
 print(fit4.2_smooth<-tsSmooth(m4.2))
 ```
 
+
 Let's look at the corrplot
+
 
 ```{r}
 Q4.2 <- coef(m4.2, type = "matrix")$Q
@@ -1010,6 +1109,7 @@ corrplot(corrmat4.2)
 
 ```
 
+
 This model, like the previous one, did not perform well with very large confidence intervals for X2 (Yakima), which is not surprising given that there wasn't much informing X2. The Yakima group only has large balloon shaped confidence intervals on its fitted values while the other river systems have some structure to their confidence intervals in sections with missing data. Very similar ACF plots to the other Hypothesis Four models, showing structuring and multiple significant lags in approximately half of the plots. The variance was allowed to vary independently between the two underlying states but they were estimated to be very similar to one another
 
 ------------------------------------------------------------------------
@@ -1017,6 +1117,7 @@ This model, like the previous one, did not perform well with very large confiden
 ### Hypothesis 4.3
 
 The Q matrix is "equal variance and covariance". This will result in both of the hidden, underlying states having the same variance and they will be correlated to one another. This model should perform better than the previous models.
+
 
 ```{r}
 mod.list4.3 <- list(
@@ -1028,27 +1129,34 @@ mod.list4.3 <- list(
 m4.3 <- MARSS(dat, model = mod.list4.3)
 ```
 
+
 This model did in fact perform better based on AICc! Let's look at our plots:
+
 
 ```{r}
 autoplot(m4.3)
 ```
 
+
 This model looks much better, with tighter confidence levels that are being informed with the correlated process errors. However, there is a clear residual pattern in X2 (Yakima) which also has a wiggly QQ plot. Meanwhile X1 has a fat left tail.
 
 Let's look at the estimates:
+
 
 ```{r}
 print(fit4.3_smooth<-tsSmooth(m4.3))
 ```
 
+
 Let's look at the corrplots
+
 
 ```{r}
 Q4.3 <- coef(m4.3, type = "matrix")$Q
 corrmat4.3 <- diag(1/sqrt(diag(Q4.3))) %*% Q4.3 %*% diag(1/sqrt(diag(Q4.3)))
 corrplot(corrmat4.3)
 ```
+
 
 The confidence intervals for the underlying states and the fitted values now fit the estimated abundance in each river well rather than being oval shaped over any missing values. There were very similar ACF plots to the other models in this model with about half of them showing sine wave patterns. The variance-covariance matrix was forced to be equal.
 
@@ -1057,6 +1165,7 @@ The confidence intervals for the underlying states and the fitted values now fit
 ### Hypothesis 4.4
 
 The Q matrix is "unconstrained". Meaning the two hidden, underlying states will be allowed to vary independently of one another and correlation is allowed to vary between the two states.
+
 
 ```{r}
 mod.list4.4 <- list(
@@ -1068,21 +1177,27 @@ mod.list4.4 <- list(
 m4.4 <- MARSS(dat, model = mod.list4.4)
 ```
 
+
 This model did just a little worse than the model with a U matrix that had equal variance and covariance. Let's look at plots:
+
 
 ```{r}
 autoplot(m4.4)
 ```
 
+
 While this model does ok in some streams, it's missing data in places, X2 (Yakima) has a clear residual structure and the QQ plot is very wiggly. X1 (the rest) does ok, but there are some outliers and the QQ plot continues to have a fat left tail.
 
 Let's look at estimates:
+
 
 ```{r}
 print(fit4.4_smooth<-tsSmooth(m4.4))
 ```
 
+
 Finally we'll look at corrplots. As hinted at by the model output there is very high correlation even though this was an unconstrained model.
+
 
 ```{r}
 Q4.4 <- coef(m4.4, type = "matrix")$Q
@@ -1091,11 +1206,13 @@ corrplot(corrmat4.4)
 
 ```
 
+
 The confidence intervals on the underlying state and the fitted values fit the estimated abundances well in areas with missing data. QQplots for X1 (all but Yakima) had a fat left tail and X2 (Yakima) had a lot of structure in the residuals and wiggly QQ plots. The AFC plots show many of the streams have autocorrelated residuals. Even though this hypothesis allowed the Q matrix to be unconstrained, it still estimated variances and covariances that were essentially equal to the "equal variance and covariance" hypothesis.
 
 ------------------------------------------------------------------------
 
 ## AICc Results and Selected Model
+
 
 ```{r}
 mods <- c("1","2.1","2.2","2.3","2.4","3.1","3.2", "3.3", "3.4","4.1","4.2","4.3","4.4")
@@ -1105,6 +1222,7 @@ tab <- cbind.data.frame(mods, aic, daic)
 kable(tab, col.names = c("Hypothesis", "AICc", "delta AICc"))
 ```
 
+
 The best model is Hypothesis 2.4 where it is assumed that the four main population groups form separate sub-populations. In this hypothesis we are utilizing 4 separate underlying states to model the observations from each of the main population groups. The Q matrix for the variance of process errors is "unconstrained". Meaning that each hidden state is allowed to vary separately as is the correlation between the underlying states.
 
 ## Cycling considerations for best model
@@ -1112,6 +1230,7 @@ The best model is Hypothesis 2.4 where it is assumed that the four main populati
 ### Simple Cycling
 
 First we try a simple approach as outlined in example code and assume a periodicity of about four years, as seen in some of the ACF plots.
+
 
 ```{r}
 
@@ -1131,23 +1250,28 @@ m <- dim(Z)[2]
 m_test <- MARSS(dat, model = mod.list_test, inits = list(x0 = matrix(0,m, 1)))
 ```
 
+
 This model struggled to converge and did pretty poorly in terms of AICc.
 
 Let's look at some plots:
+
 
 ```{r}
 plot_test<-autoplot(m_test)
 ```
 
+
 To be honest, with the U matrix equal to 0, I'm unsure what states we're looking at. But they get worse as we go from X1, to X2, to X3 in terms of CI, residual patterns and QQ plots. Additionally, some of the models are completly missing data.
 
 Corrplot is as expectd with the Q matrix set to diagonal and unequal.
+
 
 ```{r}
 Qtest <- coef(m_test, type = "matrix")$Q
 corrmat_test <- diag(1/sqrt(diag(Qtest))) %*% Qtest %*% diag(1/sqrt(diag(Qtest)))
 corrplot(corrmat_test)
 ```
+
 
 This model isn't it. Let's move onto a model based on our best performer with cycling considerations.
 
@@ -1159,6 +1283,7 @@ For this section, we're going to explore 2 cycling options, 4 years and 9 years,
 
 We'll use the U and Z matrices from Hypothesis 2:
 
+
 ```{r}
 U_cyl <- matrix(c("Cascades","JohnDay","Walla","Yakima"),4,1)
 
@@ -1168,7 +1293,9 @@ Z_cyl <- matrix(c(rep(c(1,0,0,0),3),
                   rep(c(0,0,0,1),4)),15,4, byrow=TRUE)
 ```
 
+
 And we'll set up a co-variate matrix to allow for some cycling and set up our model list with Q unconstrained, and D unconstrained.
+
 
 ```{r}
 d_cyl <- matrix(0,2,TT)
@@ -1189,21 +1316,26 @@ m <- dim(Z_cyl)[2]
 m_cyl_4 <- MARSS(dat, model = mod.list, inits = list(x0 = matrix(0, m, 1)))
 ```
 
+
 Wow, this model AICc is BAD.
+
 
 ```{r}
 autoplot(m_cyl_4)
 ```
 
+
 Well, this model does very poorly. The model is missing data, there are residual patterns in all four states, the QQ plots aren't all terrible but not totally normal and there is some temporal correlation in the ACFs.
 
 Let's look at the corrplot:
+
 
 ```{r}
 Q_4 <- coef(m_cyl_4, type = "matrix")$Q
 corrmat_4 <- diag(1/sqrt(diag(Q_4))) %*% Q_4 %*% diag(1/sqrt(diag(Q_4)))
 corrplot(corrmat_4)
 ```
+
 
 The unconstrained Q matrix shows that there is a fair amount of correlation between states. This model overall is MUCH WORSE than no cycling.
 
@@ -1212,6 +1344,7 @@ Will different cycling assumptions perform any better?
 #### Nine Years
 
 And we'll set up a co-variate matrix and change the p to 9.
+
 
 ```{r}
 d_cyl <- matrix(0,2,TT)
@@ -1234,15 +1367,19 @@ m <- dim(Z_cyl)[2]
 m_cyl_9 <- MARSS(dat, model = mod.list, inits = list(x0 = matrix(0, m, 1)))
 ```
 
+
 This model converged, but still has a bad AIC. this model AICc is BAD.
+
 
 ```{r}
 autoplot(m_cyl_9)
 ```
 
+
 This model performs similarly to the last model. Cycling my 9 years doesn't seem to have improved anything.
 
 Let's look at the corrplot: They are pretty similar to the last model.
+
 
 ```{r}
 Q_9 <- coef(m_cyl_9, type = "matrix")$Q
@@ -1250,7 +1387,9 @@ corrmat_9 <- diag(1/sqrt(diag(Q_9))) %*% Q_9 %*% diag(1/sqrt(diag(Q_9)))
 corrplot(corrmat_9)
 ```
 
+
 ### AICc Results for Cycling
+
 
 ```{r}
 mods_cyl <- c("2.4","m_test","m_cyl_4", "m_cyl_9")
@@ -1259,6 +1398,7 @@ daic_cyl <- aic_cyl-min(aic_cyl)
 tab2 <- cbind.data.frame(mods_cyl, aic_cyl, daic_cyl)
 kable(tab2, col.names = c("Hypothesis", "AICc", "delta AICc"))
 ```
+
 
 The cycling assumptions tested in this excersize clearly worsened model fits.
 
@@ -1275,3 +1415,4 @@ Ultimately, the model that assumed four states performed the best, and from this
 Dylan: Hypothesis conceptualization, code for hypothesis 2 and 4, matrix display code, and AICc comparison methods. Madison: Hypothesis 1 and 3, cycling code, and Rmarkdown formatting.
 
 Both Dylan and Madi helped to write the report.
+
