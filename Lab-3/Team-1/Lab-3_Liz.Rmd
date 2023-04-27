@@ -14,6 +14,9 @@ output:
 options(dplyr.summarise.inform = FALSE)
 ```
 
+<<<<<<< HEAD
+------------------------------------------------------------------------
+=======
 ***
 
 # General tasks
@@ -46,14 +49,15 @@ Please address the following in your methods:
 * What forms of models did you fit (ie, write them out in matrix form)?
 
 * What sort of model diagnostics did you use to examine model assumptions?
+>>>>>>> 7a10de05fae46f4a9ee8c7ab5cb664ece5f72782
 
 # Data
 
-Describe what plankton groups and covariates you used and indicate any temporal subsetting you chose. 
+Describe what plankton groups and covariates you used and indicate any temporal subsetting you chose.
 
-Notes from Dylan... 
+Notes from Dylan...
 
-I took a look at the data for lab 3 and I think we should make a couple adjustments to our original plan to avoid having large gaps in our data. I think we should start our dataset in 1967 and end in 1986. This will avoid having any NA values in the covariates which would require some extra work for us to deal with. I'm not as committed to the extra ten years added on I just thought maybe a longer time series would give the models more data to use to get better confidence interval estimates. 
+I took a look at the data for lab 3 and I think we should make a couple adjustments to our original plan to avoid having large gaps in our data. I think we should start our dataset in 1967 and end in 1986. This will avoid having any NA values in the covariates which would require some extra work for us to deal with. I'm not as committed to the extra ten years added on I just thought maybe a longer time series would give the models more data to use to get better confidence interval estimates.
 
 We had originally selected Cryptomonas, diatoms, greens, daphnia, and cyclops as our focus. I think we should drop Cryptomonas and Daphnia and replace them with Unicells and non-colonial-rotifers. Crypto and daphnia both have a lot of missing values early in the dataset. Unicell and rotifers still meet the edible and grazer categories we were using.
 
@@ -75,9 +79,9 @@ all_dat <- lakeWAplanktonTrans
 
 ## Explore the data
 
-* You can choose any taxa to include in your analyses, but make sure there are at least 5 groups. You can mix phytoplankton and zooplankton, if you'd like, but justify any choices you make. 
+-   You can choose any taxa to include in your analyses, but make sure there are at least 5 groups. You can mix phytoplankton and zooplankton, if you'd like, but justify any choices you make.
 
-* You will want to subset the data to a time period with adequate observations for the taxa of interest. Your time window should include at lest 5 years (60 months).
+-   You will want to subset the data to a time period with adequate observations for the taxa of interest. Your time window should include at lest 5 years (60 months).
 
 ```{r explore_data}
 ## add some code here
@@ -113,6 +117,13 @@ ggplot(covar_long, aes(x = Year, y= value), color=name) +
 
 ```
 
+<<<<<<< HEAD
+Filtering the data
+
+```{r}
+## Selecting data
+cols_keep <- c('Year', 'Month' ,'Temp', 'TP' ,'pH'  ,'Diatoms', 'Greens'  ,'Unicells'  ,'Cyclops' ,'Non.colonial.rotifers')
+=======
 ## Wrangle the data
 
 We want diatoms, greens, unicells, cyclops and non-colonial rotifers. 
@@ -124,6 +135,7 @@ We want diatoms, greens, unicells, cyclops and non-colonial rotifers.
 #   select(all_of(cols_keep))%>%
 #   filter(Year > 1966 & Year < 1987)%>%
 #   as.matrix()
+>>>>>>> 7a10de05fae46f4a9ee8c7ab5cb664ece5f72782
 
 #we only want 5 of them
 crit <- all_dat[c(61:300),c(1:5,7,8,10,13,20)]
@@ -148,18 +160,31 @@ plankton_z <- zscore(plankton_ts)
 
 # DFA Model Selection
 
+<<<<<<< HEAD
+# General tasks
+=======
 ## Step 1- Fit global model with all covariates and number of trends
 
 We are keeping R to diagonal and equal based on the sample design. The default DFA setting within MARSS sets our Z matrix, A to scaling and Q to identity. 
 
 ``` {r}
 #set up observation model parameters
+>>>>>>> 7a10de05fae46f4a9ee8c7ab5cb664ece5f72782
 
 #covariates
 #create a matrix for each of the covariates
 covar_ts <- t(crit[,3:5])
 colnames(covar_ts) <- crit[,1]
 
+<<<<<<< HEAD
+1)  Find the most parsimonious model among a set that examines the effects of environmental covariates and/or an indicator of seasonality, varying numbers of trends, and different forms of variance-covariance matrices for the observation errors.
+
+2)  Plot trends and individual loadings for the model identified in task (1) above.
+
+3)  Plot model fits and uncertainty intervals for the model identified in task (1) above.
+
+4)  Describe the effects of environmental or dummy variables on (possibly seasonal) patterns in the data.
+=======
 covar_z <- zscore(covar_ts) ## If we zscore the response, do we also zscore covariates?
 
 #make a season matrix
@@ -177,6 +202,7 @@ init_list <- list(x0 = matrix(rep(0, mm), mm, 1))
 
 #Setting latent trends to 3 and R to diagonal and equal
 mod_list = list(m = 3, R = "diagonal and equal", A = "zero") # If we zscore, A goes to zero (Also prob the same for demean? Not sure.)
+>>>>>>> 7a10de05fae46f4a9ee8c7ab5cb664ece5f72782
 
 # Model iterations
 cont_list <- list(maxit = 3000, allow.degen = TRUE)
@@ -185,6 +211,17 @@ cont_list <- list(maxit = 3000, allow.degen = TRUE)
 dfa_global <- MARSS(plankton_z, model = mod_list, control = cont_list, inits = init_list, form = "dfa",
                     z.score = FALSE, covariates = d)
 
+<<<<<<< HEAD
+-   Which plankton taxa did you choose and how did you choose them?
+
+-   What time period(s) did you examine and why?
+
+-   What environmental or dummy variables did you include and why?
+
+-   What forms of models did you fit (ie, write them out in matrix form)?
+
+-   What sort of model diagnostics did you use to examine model assumptions?
+=======
 ```
 
 ## Step 2- Testing number of trends
@@ -316,14 +353,12 @@ for(i in (1:nrow(parameter_options))){
   
 }
 ```
+>>>>>>> 7a10de05fae46f4a9ee8c7ab5cb664ece5f72782
 
 # Results
 
-
 # Discussion
-
 
 # Team contributions
 
 Example: "All team members helped decide on the goal and ran the analyses for the individual regions. Team members 2 & 3 wrote most of the code for the analysis. Team member 1 worked on the plotting section of the report using and adapting code that team member 3 wrote. All team members helped edit the report and wrote the discussion together."
-
