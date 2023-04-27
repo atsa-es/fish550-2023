@@ -11,7 +11,7 @@ output:
 ---
 
 ```{r hw6p1-setup, echo=FALSE}
-knitr::opts_knit$set(unnamed.chunk.label = "hw6-",
+knitr::opts_knit$set(unnamed.chunk.label = "lab4-",
                      message=FALSE,
                      warning=FALSE)
 ```
@@ -56,7 +56,7 @@ lecture](https://atsa-es.github.io/atsa/Lectures/Week%205/lec_10_hmm.html#1).
     vignette](https://cran.r-project.org/web/packages/depmixS4/vignettes/depmixS4.pdf).
 
 2.  Try fitting the model 10-20 times. Does the likelihood seem
-    reasonably stable? (Note `logLik()` gets you the log-likelihood from
+    reasonably stable? (Note `logLik()` in `depmixS4` gets you the log-likelihood from
     model fits in R).
 
 3.  What is the transition matrix for the best model? What are the
