@@ -13,7 +13,12 @@ output:
 options(dplyr.summarise.inform = FALSE)
 ```
 
-Make sure to put a copy of your final lab write up in the Final_Write_ups folder on the repo.
+* Team 1: Dylan Hubl, Eric French, Zoe Rand
+* Team 2: Maria Kuruvilla, Miranda Mudge
+* Team 3: Nick Chambers, Madison Shipley, Karl Veggerby
+* Team 4: Liz Elmstrom, Terrance Wang, Emma Timmins-Schiffman
+
+Make sure to label your final write-up with "final" in the title so we know which one is the final one.
 
 # Data
 
