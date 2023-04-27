@@ -22,22 +22,13 @@ Make sure to label your final write-up with "final" in the title so we know whic
 
 # Data
 
-As part of the California Current Integrated Ecosystem Report, NOAA
-scientists do annual updates of [stoplight charts for ecosystem
-indicators](https://www.fisheries.noaa.gov/west-coast/science-data/ocean-conditions-indicators-trends).
-
-We have included the `stoplight.csv` dataset for this week. One of the
-columns divides indicators into groups (e.g. Local Physical, Local
-Biological, etc). Please pick a type of indicators, and develop a 2- or
-3-state multivariate HMM. A few tips:
-
 Describe what plankton groups and covariates you used and indicate any temporal 
 subsetting you chose. Also describe any standardization, centering or scaling 
 that was used. 
 
 ## Load the data
 
-One of the
+We have included the `stoplight.csv` dataset for this week. One of the
 columns divides indicators into groups (e.g. Local Physical, Local
 Biological, etc). 
 

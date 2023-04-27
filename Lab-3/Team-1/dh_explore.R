@@ -17,7 +17,8 @@ crit <- all_dat[c(61:300),c(1:5,7,8,10,13,20)]
 
 need <- t(crit[,6:10])
 colnames(need) <- crit[,1]
-need
+rownames(need) <- c("Diatoms", "Greens", "Unicells", "Cyclops", "Rotifers")
+
 
 #get the number of time series (y)
 n_ts <- nrow(need)
@@ -99,6 +100,10 @@ H_inv <- varimax(Z_est)$rotmat
 Z_rot = Z_est %*% H_inv
 ## rotate processes
 proc_rot = solve(H_inv) %*% dfa_1$states
+
+######################################
+# plot the states and their loading  #
+######################################
 
 ylbl <- rownames(need.av)
 w_ts <- seq(dim(need.av)[2])
@@ -217,16 +222,17 @@ sin_t <- sin(2 * pi * seq(TT)/12)
 season <- rbind(cos_t,sin_t)
 dim(season)
 
-#try it with all covariates
+#try it with all covariates, arg. form="dfa" creates model list for you besides m and R
+
 mod_list2 <- list(m=3, R = "diagonal and equal")
 cont_list <- list(maxit = 3000, allow.degen = TRUE)
 dfa_global <- MARSS(need.av, model = mod_list2,control = cont_list, inits = init_list, form = "dfa",
                     z.score = FALSE, covariates = rbind(temp,Phos,ph,season))
 
-#get model fits for global model
+#get model fits for global model and plot them
 mod_fit2 <- get_DFA_fits(dfa_global, dd = rbind(temp,Phos,ph,season))
-par(mfrow = c(n_ts, 1), mai = c(0.5, 0.7, 0.1, 0.1), omi = c(0, 
-                                                             0, 0, 0))
+par(mfrow = c(n_ts, 1), mai = c(0.5, 0.7, 0.1, 0.1),
+        omi = c(0,0, 0, 0))
 for (i in 1:n_ts) {
   up <- mod_fit2$up[i, ]
   mn <- mod_fit2$ex[i, ]
@@ -240,7 +246,74 @@ for (i in 1:n_ts) {
   lines(w_ts, lo, col = "darkgray")
 }
 
-#look at AIC
+#########look at AIC###########
 print(cbind(model = c("no covars", "global"), 
             AICc = round(c(dfa_1$AICc, dfa_global$AICc))), 
       quote = FALSE)
+
+
+################look at Z and D matrix########################
+coef(dfa_global, type = "matrix")$D
+coef(dfa_global, type = "matrix")$Z
+
+########################
+#   Plot the loadings  #
+########################
+
+## get the estimated ZZ
+Z_est <- coef(dfa_global, type = "matrix")$Z
+## get the inverse of the rotation matrix
+H_inv <- varimax(Z_est)$rotmat
+# rotate factor loadings
+Z_rot = Z_est %*% H_inv
+## rotate processes
+proc_rot = solve(H_inv) %*% dfa_global$states
+
+ylbl <- rownames(need.av)
+w_ts <- seq(dim(need.av)[2])
+layout(matrix(c(1, 2, 3, 4, 5, 6), mm, 2), widths = c(2, 1))
+## par(mfcol=c(mm,2), mai = c(0.5,0.5,0.5,0.1), omi =
+## c(0,0,0,0))
+par(mai = c(0.25, 0.5, 0.25, 0.1), omi = c(0, 0, 0, 0))
+
+## plot the processes
+for (i in 1:mm) {
+  ylm <- c(-1, 1) * max(abs(proc_rot[i, ]))
+  ## set up plot area
+  plot(w_ts, proc_rot[i, ], type = "n", bty = "L", ylim = ylm, 
+       xlab = "", ylab = "", xaxt = "n")
+  ## draw zero-line
+  abline(h = 0, col = "gray")
+  ## plot trend line
+  lines(w_ts, proc_rot[i, ], lwd = 2)
+  lines(w_ts, proc_rot[i, ], lwd = 2)
+  ## add panel labels
+  mtext(paste("State", i), side = 3, line = 0.5)
+  axis(1, 12 * (0:dim(need.av)[2]) + 1, yr_start + 0:dim(need.av)[2])
+}
+## plot the loadings
+minZ <- 0
+ylm <- c(-1, 1) * max(abs(Z_rot))
+for (i in 1:mm) {
+  plot(c(1:n_ts)[abs(Z_rot[, i]) > minZ], as.vector(Z_rot[abs(Z_rot[, 
+                                                                    i]) > minZ, i]), type = "h", lwd = 2, xlab = "", ylab = "", 
+       xaxt = "n", ylim = ylm, xlim = c(0.5, n_ts + 0.5), col = clr)
+  for (j in 1:n_ts) {
+    if (Z_rot[j, i] > minZ) {
+      text(j, -0.03, ylbl[j], srt = 90, adj = 1, cex = 1.2, 
+           col = clr[j])
+    }
+    if (Z_rot[j, i] < -minZ) {
+      text(j, 0.03, ylbl[j], srt = 90, adj = 0, cex = 1.2, 
+           col = clr[j])
+    }
+    abline(h = 0, lwd = 1.5, col = "gray")
+  }
+  mtext(paste("Factor loadings on state", i), side = 3, line = 0.5)
+}
+
+dev.off()
+#look at cross correlation between states
+ccf(proc_rot[1, ], proc_rot[2, ], lag.max = 12, main = "")
+ccf(proc_rot[1, ], proc_rot[3, ], lag.max = 12, main = "")
+ccf(proc_rot[2, ], proc_rot[3, ], lag.max = 12, main = "")

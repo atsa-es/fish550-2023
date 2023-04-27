@@ -1,12 +1,14 @@
 ---
-title: Lab 2 MARSS Models
-author: Liz Elmstrom (SAFS), Terrance Wang, Eric French
-date: April 20, 2023
-output: 
+title: "Lab 2 MARSS Models"
+author: "Liz Elmstrom (SAFS), Terrance Wang, Eric French"
+date: "April 20, 2023"
+output:
   html_document:
-    code-folding: true
-    toc: true
-    toc_float: true
+    code-folding: yes
+    toc: yes
+    toc_float: yes
+  pdf_document:
+    toc: yes
 ---
 
 # General Questions
