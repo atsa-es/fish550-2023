@@ -24,6 +24,9 @@ book:
     - part: Dynamic Factor Analysis
       chapters: 
         - Lab-3/Lab-3-DFA.Rmd
+    - part: Hidden Markov Models
+      chapters: 
+        - Lab-4/Lab-4-HMM.Rmd
 
   site-url: https://atsa-es.github.io/fish550-2023/
   repo-url: https://github.com/atsa-es/fish550-2023

@@ -2,34 +2,38 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://atsa-es.github.io/fish550-2023/index.html</loc>
-    <lastmod>2023-04-26T22:36:17.597Z</lastmod>
+    <lastmod>2023-04-27T02:27:59.050Z</lastmod>
   </url>
   <url>
     <loc>https://atsa-es.github.io/fish550-2023/Lab-1/Lab1-ARIMA.html</loc>
-    <lastmod>2023-04-26T22:36:17.599Z</lastmod>
+    <lastmod>2023-04-27T02:27:59.065Z</lastmod>
   </url>
   <url>
     <loc>https://atsa-es.github.io/fish550-2023/Lab-1/Final_Write_ups/Lab-1-team-1_final.html</loc>
-    <lastmod>2023-04-26T22:36:17.601Z</lastmod>
+    <lastmod>2023-04-27T02:27:59.088Z</lastmod>
   </url>
   <url>
     <loc>https://atsa-es.github.io/fish550-2023/Lab-1/Final_Write_ups/Lab-1-team-2_final.html</loc>
-    <lastmod>2023-04-26T22:36:17.603Z</lastmod>
+    <lastmod>2023-04-27T02:27:59.119Z</lastmod>
   </url>
   <url>
     <loc>https://atsa-es.github.io/fish550-2023/Lab-1/Final_Write_ups/Lab-1-team-3_final.html</loc>
-    <lastmod>2023-04-26T22:36:17.616Z</lastmod>
+    <lastmod>2023-04-27T02:27:59.283Z</lastmod>
   </url>
   <url>
     <loc>https://atsa-es.github.io/fish550-2023/Lab-1/Final_Write_ups/Lab-1-team-4_final.html</loc>
-    <lastmod>2023-04-26T22:36:17.618Z</lastmod>
+    <lastmod>2023-04-27T02:27:59.305Z</lastmod>
   </url>
   <url>
     <loc>https://atsa-es.github.io/fish550-2023/Lab-2/Lab2-MARSS.html</loc>
-    <lastmod>2023-04-26T22:36:17.619Z</lastmod>
+    <lastmod>2023-04-27T02:27:59.326Z</lastmod>
   </url>
   <url>
     <loc>https://atsa-es.github.io/fish550-2023/Lab-3/Lab-3-DFA.html</loc>
-    <lastmod>2023-04-26T22:36:17.620Z</lastmod>
+    <lastmod>2023-04-27T02:27:59.334Z</lastmod>
+  </url>
+  <url>
+    <loc>https://atsa-es.github.io/fish550-2023/Lab-4/Lab-4-HMM.html</loc>
+    <lastmod>2023-04-27T02:27:59.341Z</lastmod>
   </url>
 </urlset>
