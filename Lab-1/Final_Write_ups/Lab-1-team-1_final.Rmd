@@ -1,7 +1,7 @@
 ---
-title: Team 1
+title: Team 1 - Lab 1
 subtitle: Lab 1 Forecasting with ARIMA models
-author: "Nick Chambers (SAFS), Liz Elmstrom (SAFS), Maria Kuruvilla (QERM)"
+author: "Nick Chambers, Liz Elmstrom, Maria Kuruvilla"
 output: 
   html_document:
     code-folding: true

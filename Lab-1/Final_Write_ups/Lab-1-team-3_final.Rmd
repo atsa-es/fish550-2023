@@ -1,7 +1,7 @@
 ---
-title: Team 3
+title: Team 3 - Lab 1
 subtitle: Lab 1 Forecasting with ARIMA models
-author: "Zoe Rand (QERM), Madison Shipley (SAFS), Emma Timmins-Schiffman (Genome Sci)"
+author: "Zoe Rand, Madison Shipley, Emma Timmins-Schiffman"
 output: 
   html_document:
     code-folding: true
@@ -19,10 +19,6 @@ library(forecast)
 library(here)
 library(cowplot)
 ```
-
-# Team Members
-
-Team member names: Zoe Rand (QERM), Madison Shipley (SAFS), Emma Timmins-Schiffman (Genome Sci)
 
 # Data
 

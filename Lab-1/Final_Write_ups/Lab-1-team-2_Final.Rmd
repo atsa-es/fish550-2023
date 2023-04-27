@@ -1,16 +1,13 @@
 ---
-title: Team 2
+title: Team 2 - Lab 1
 subtitle: Lab 1 Forecasting with ARIMA models
-author: "Eric French (Civil), Dylan Hubl (ESRM), Miranda Mudge (Molecular & Cell Bio)"
+author: "Eric French, Dylan Hubl, Miranda Mudge"
 output: 
   html_document:
     code-folding: true
     toc: true
     toc_float: true
 ---
-# Lab 1: ARIMA models
-
-Team member names: Eric French (Civil), Dylan Hubl (ESRM), Miranda Mudge (Molecular & Cell Bio)
 
 # Data
 

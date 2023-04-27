@@ -6,9 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Nick Chambers (SAFS), Liz Elmstrom (SAFS), Maria Kuruvilla (QERM)">
+<meta name="author" content="Nick Chambers, Liz Elmstrom, Maria Kuruvilla">
 
-<title>Fish 550 Spring 2023 - 3&nbsp; Team 1</title>
+<title>Fish 550 Spring 2023 - 3&nbsp; Team 1 - Lab 1</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -108,7 +108,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../Lab-1/Lab1-ARIMA.html">Forecasting with ARIMA models</a></li><li class="breadcrumb-item"><a href="../../Lab-1/Final_Write_ups/Lab-1-team-1_final.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Team 1</span></a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../Lab-1/Lab1-ARIMA.html">Forecasting with ARIMA models</a></li><li class="breadcrumb-item"><a href="../../Lab-1/Final_Write_ups/Lab-1-team-1_final.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Team 1 - Lab 1</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -160,25 +160,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../Lab-1/Final_Write_ups/Lab-1-team-1_final.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Team 1</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Team 1 - Lab 1</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../Lab-1/Final_Write_ups/Lab-1-team-2_final.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Team 2</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Team 2 - Lab 1</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../Lab-1/Final_Write_ups/Lab-1-team-3_final.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Team 3</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Team 3 - Lab 1</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../Lab-1/Final_Write_ups/Lab-1-team-4_final.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Team 4</span></span></a>
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Team 4 - Lab 1</span></span></a>
   </div>
 </li>
       </ul>
@@ -268,34 +268,34 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#question-your-team-will-address" id="toc-question-your-team-will-address" class="nav-link active" data-scroll-target="#question-your-team-will-address"><span class="header-section-number">4</span> Question your team will address</a></li>
-  <li><a href="#method-you-will-use" id="toc-method-you-will-use" class="nav-link" data-scroll-target="#method-you-will-use"><span class="header-section-number">5</span> Method you will use</a>
+  <li><a href="#question-your-team-will-address" id="toc-question-your-team-will-address" class="nav-link active" data-scroll-target="#question-your-team-will-address">Question your team will address</a></li>
+  <li><a href="#method-you-will-use" id="toc-method-you-will-use" class="nav-link" data-scroll-target="#method-you-will-use">Method you will use</a>
   <ul class="collapse">
-  <li><a href="#initial-plan" id="toc-initial-plan" class="nav-link" data-scroll-target="#initial-plan"><span class="header-section-number">5.1</span> Initial plan</a></li>
-  <li><a href="#what-you-actually-did" id="toc-what-you-actually-did" class="nav-link" data-scroll-target="#what-you-actually-did"><span class="header-section-number">5.2</span> What you actually did</a></li>
+  <li><a href="#initial-plan" id="toc-initial-plan" class="nav-link" data-scroll-target="#initial-plan">Initial plan</a></li>
+  <li><a href="#what-you-actually-did" id="toc-what-you-actually-did" class="nav-link" data-scroll-target="#what-you-actually-did">What you actually did</a></li>
   </ul></li>
-  <li><a href="#preliminary-dataset-exploration" id="toc-preliminary-dataset-exploration" class="nav-link" data-scroll-target="#preliminary-dataset-exploration"><span class="header-section-number">6</span> Preliminary dataset exploration</a>
+  <li><a href="#preliminary-dataset-exploration" id="toc-preliminary-dataset-exploration" class="nav-link" data-scroll-target="#preliminary-dataset-exploration">Preliminary dataset exploration</a>
   <ul class="collapse">
-  <li><a href="#read-in-and-explore-data-liz" id="toc-read-in-and-explore-data-liz" class="nav-link" data-scroll-target="#read-in-and-explore-data-liz"><span class="header-section-number">6.1</span> Read in and explore data (Liz)</a></li>
+  <li><a href="#read-in-and-explore-data-liz" id="toc-read-in-and-explore-data-liz" class="nav-link" data-scroll-target="#read-in-and-explore-data-liz">Read in and explore data (Liz)</a></li>
   </ul></li>
-  <li><a href="#data-diagnostics" id="toc-data-diagnostics" class="nav-link" data-scroll-target="#data-diagnostics"><span class="header-section-number">7</span> Data diagnostics</a>
+  <li><a href="#data-diagnostics" id="toc-data-diagnostics" class="nav-link" data-scroll-target="#data-diagnostics">Data diagnostics</a>
   <ul class="collapse">
-  <li><a href="#plot-the-data-liz" id="toc-plot-the-data-liz" class="nav-link" data-scroll-target="#plot-the-data-liz"><span class="header-section-number">7.1</span> Plot the data (Liz)</a></li>
-  <li><a href="#use-acf-and-pacf-maria" id="toc-use-acf-and-pacf-maria" class="nav-link" data-scroll-target="#use-acf-and-pacf-maria"><span class="header-section-number">7.2</span> Use ACF and PACF (Maria)</a></li>
-  <li><a href="#test-for-stationarity-nick-liz" id="toc-test-for-stationarity-nick-liz" class="nav-link" data-scroll-target="#test-for-stationarity-nick-liz"><span class="header-section-number">7.3</span> Test for stationarity (Nick &amp; Liz)</a></li>
-  <li><a href="#difference-tests-liz" id="toc-difference-tests-liz" class="nav-link" data-scroll-target="#difference-tests-liz"><span class="header-section-number">7.4</span> Difference tests (Liz)</a></li>
+  <li><a href="#plot-the-data-liz" id="toc-plot-the-data-liz" class="nav-link" data-scroll-target="#plot-the-data-liz">Plot the data (Liz)</a></li>
+  <li><a href="#use-acf-and-pacf-maria" id="toc-use-acf-and-pacf-maria" class="nav-link" data-scroll-target="#use-acf-and-pacf-maria">Use ACF and PACF (Maria)</a></li>
+  <li><a href="#test-for-stationarity-nick-liz" id="toc-test-for-stationarity-nick-liz" class="nav-link" data-scroll-target="#test-for-stationarity-nick-liz">Test for stationarity (Nick &amp; Liz)</a></li>
+  <li><a href="#difference-tests-liz" id="toc-difference-tests-liz" class="nav-link" data-scroll-target="#difference-tests-liz">Difference tests (Liz)</a></li>
   </ul></li>
-  <li><a href="#modeling-and-results" id="toc-modeling-and-results" class="nav-link" data-scroll-target="#modeling-and-results"><span class="header-section-number">8</span> Modeling and results</a>
+  <li><a href="#modeling-and-results" id="toc-modeling-and-results" class="nav-link" data-scroll-target="#modeling-and-results">Modeling and results</a>
   <ul class="collapse">
-  <li><a href="#dividing-the-data-into-test-and-train-maria" id="toc-dividing-the-data-into-test-and-train-maria" class="nav-link" data-scroll-target="#dividing-the-data-into-test-and-train-maria"><span class="header-section-number">8.1</span> Dividing the data into test and train (Maria)</a></li>
-  <li><a href="#fit-arima-models-maria" id="toc-fit-arima-models-maria" class="nav-link" data-scroll-target="#fit-arima-models-maria"><span class="header-section-number">8.2</span> Fit ARIMA models (Maria)</a></li>
-  <li><a href="#plot-forecasts-from-auto.arima-liz" id="toc-plot-forecasts-from-auto.arima-liz" class="nav-link" data-scroll-target="#plot-forecasts-from-auto.arima-liz"><span class="header-section-number">8.3</span> Plot forecasts from auto.arima (Liz)</a></li>
-  <li><a href="#chosing-our-own-arima-structure-liz" id="toc-chosing-our-own-arima-structure-liz" class="nav-link" data-scroll-target="#chosing-our-own-arima-structure-liz"><span class="header-section-number">8.4</span> Chosing our own ARIMA structure (Liz)</a></li>
-  <li><a href="#check-accuracy-nick" id="toc-check-accuracy-nick" class="nav-link" data-scroll-target="#check-accuracy-nick"><span class="header-section-number">8.5</span> Check accuracy (Nick)</a></li>
-  <li><a href="#check-residuals-nick" id="toc-check-residuals-nick" class="nav-link" data-scroll-target="#check-residuals-nick"><span class="header-section-number">8.6</span> Check residuals (Nick)</a></li>
+  <li><a href="#dividing-the-data-into-test-and-train-maria" id="toc-dividing-the-data-into-test-and-train-maria" class="nav-link" data-scroll-target="#dividing-the-data-into-test-and-train-maria">Dividing the data into test and train (Maria)</a></li>
+  <li><a href="#fit-arima-models-maria" id="toc-fit-arima-models-maria" class="nav-link" data-scroll-target="#fit-arima-models-maria">Fit ARIMA models (Maria)</a></li>
+  <li><a href="#plot-forecasts-from-auto.arima-liz" id="toc-plot-forecasts-from-auto.arima-liz" class="nav-link" data-scroll-target="#plot-forecasts-from-auto.arima-liz">Plot forecasts from auto.arima (Liz)</a></li>
+  <li><a href="#chosing-our-own-arima-structure-liz" id="toc-chosing-our-own-arima-structure-liz" class="nav-link" data-scroll-target="#chosing-our-own-arima-structure-liz">Chosing our own ARIMA structure (Liz)</a></li>
+  <li><a href="#check-accuracy-nick" id="toc-check-accuracy-nick" class="nav-link" data-scroll-target="#check-accuracy-nick">Check accuracy (Nick)</a></li>
+  <li><a href="#check-residuals-nick" id="toc-check-residuals-nick" class="nav-link" data-scroll-target="#check-residuals-nick">Check residuals (Nick)</a></li>
   </ul></li>
-  <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion"><span class="header-section-number">9</span> Discussion</a></li>
-  <li><a href="#team-member-contributions" id="toc-team-member-contributions" class="nav-link" data-scroll-target="#team-member-contributions"><span class="header-section-number">10</span> Team member contributions</a></li>
+  <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion">Discussion</a></li>
+  <li><a href="#team-member-contributions" id="toc-team-member-contributions" class="nav-link" data-scroll-target="#team-member-contributions">Team member contributions</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/atsa-es/fish550-2023/edit/main/Lab-1/Final_Write_ups/Lab-1-team-1_final.Rmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/atsa-es/fish550-2023/blob/main/Lab-1/Final_Write_ups/Lab-1-team-1_final.Rmd" class="toc-action">View source</a></p><p><a href="https://github.com/atsa-es/fish550-2023/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
@@ -304,7 +304,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<div class="quarto-title-block"><div><h1 class="title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Team 1</span></h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+<div class="quarto-title-block"><div><h1 class="title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Team 1 - Lab 1</span></h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
 <p class="subtitle lead">Lab 1 Forecasting with ARIMA models</p>
 </div>
 
@@ -315,7 +315,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Author</div>
     <div class="quarto-title-meta-contents">
-             <p>Nick Chambers (SAFS), Liz Elmstrom (SAFS), Maria Kuruvilla (QERM) </p>
+             <p>Nick Chambers, Liz Elmstrom, Maria Kuruvilla </p>
           </div>
   </div>
     
@@ -326,8 +326,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </header>
 
-<section id="question-your-team-will-address" class="level1" data-number="4">
-<h1 data-number="4"><span class="header-section-number">4</span> Question your team will address</h1>
+<section id="question-your-team-will-address" class="level1">
+<h1>Question your team will address</h1>
 <!-- * fit ARIMA models (note you'll want to log the abundance data). You can fit other models in addition ot ARIMA if you want. -->
 <!-- * do diagnostics for ARIMA models -->
 <!-- * make forecasts -->
@@ -339,25 +339,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>In this report we sought to explore how ARIMA models perform when forecasting fish abundance in the near term (5-year forecasts).</p>
 <p>More specifically, we ask do ARIMA models produce more accurate 5-year forecasts than the Fisheries Research Institute (FRI) for Sockeye in select Bristol Bay Rivers?</p>
 </section>
-<section id="method-you-will-use" class="level1" data-number="5">
-<h1 data-number="5"><span class="header-section-number">5</span> Method you will use</h1>
+<section id="method-you-will-use" class="level1">
+<h1>Method you will use</h1>
 <p>We will fit multiple ARIMA models to the Bristol Bay sockeye data and compare forecasts among these models (using RMSE) and visually compare the forecasts against the FRI forecast.</p>
-<section id="initial-plan" class="level2" data-number="5.1">
-<h2 data-number="5.1" class="anchored" data-anchor-id="initial-plan"><span class="header-section-number">5.1</span> Initial plan</h2>
+<section id="initial-plan" class="level2">
+<h2 class="anchored" data-anchor-id="initial-plan">Initial plan</h2>
 <!-- Describe what you plan to do to address your question. Note this example is with Ruggerone & Irvine data but your team will use the Bristol Bay data. -->
 <!-- Example, "We will fit ARIMA models to 1960-1980 data on pink salmon in 2 regions in Alaska and 2 regions in E Asia. We will make 1981-1985  forecasts (5 year) and compare the accuracy of the forecasts to the actual values. We will measure accuracy with mean squared error. We will use the forecast package to fit the ARIMA models." -->
 <p>We divided the rivers among the team members to do the initial exploratory analysis and testing for stationarity. We then tried forecasting (5 years) for all rivers using the best model suggested by auto.arima().</p>
 </section>
-<section id="what-you-actually-did" class="level2" data-number="5.2">
-<h2 data-number="5.2" class="anchored" data-anchor-id="what-you-actually-did"><span class="header-section-number">5.2</span> What you actually did</h2>
+<section id="what-you-actually-did" class="level2">
+<h2 class="anchored" data-anchor-id="what-you-actually-did">What you actually did</h2>
 <!-- Example, "We were able to do our plan fairly quickly, so after writing the basic code, we divided up all 12 regions in Ruggerone & Irvine and each team member did 4 regions. We compared the accuracy of forecasts for different time periods using 20-years for training and 5-year forecasts each time. We compared the RMSE, MAE, and MAPE accuracy measures." -->
 <p>We finally chose three rivers to work with - Kvichak, Wood and Nugashak. We split the data into training data (1963-2015) and testing data (2016-2020) and performed forecasts using the auto.arima function. In addition to forecasting with the model suggested by auto.arima, we explored additional top models suggested by the auto.arima function with trace == TRUE. We then compared the accuracy of these modeled forecasts using RMSE. We also plotted the FRI forecast to visually compare the model forecast to the FRI forecast.</p>
 </section>
 </section>
-<section id="preliminary-dataset-exploration" class="level1" data-number="6">
-<h1 data-number="6"><span class="header-section-number">6</span> Preliminary dataset exploration</h1>
-<section id="read-in-and-explore-data-liz" class="level2" data-number="6.1">
-<h2 data-number="6.1" class="anchored" data-anchor-id="read-in-and-explore-data-liz"><span class="header-section-number">6.1</span> Read in and explore data (Liz)</h2>
+<section id="preliminary-dataset-exploration" class="level1">
+<h1>Preliminary dataset exploration</h1>
+<section id="read-in-and-explore-data-liz" class="level2">
+<h2 class="anchored" data-anchor-id="read-in-and-explore-data-liz">Read in and explore data (Liz)</h2>
 <div class="cell">
 <div class="cell-output-display">
 <p><img src="Lab-1-team-1_final_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
@@ -374,10 +374,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>We did not compare our models to ADFW forecasts since the ADFW forecasts occur prior to our 5-year forecasts (2015-2020).</p>
 </section>
 </section>
-<section id="data-diagnostics" class="level1" data-number="7">
-<h1 data-number="7"><span class="header-section-number">7</span> Data diagnostics</h1>
-<section id="plot-the-data-liz" class="level2" data-number="7.1">
-<h2 data-number="7.1" class="anchored" data-anchor-id="plot-the-data-liz"><span class="header-section-number">7.1</span> Plot the data (Liz)</h2>
+<section id="data-diagnostics" class="level1">
+<h1>Data diagnostics</h1>
+<section id="plot-the-data-liz" class="level2">
+<h2 class="anchored" data-anchor-id="plot-the-data-liz">Plot the data (Liz)</h2>
 <p>Plot the data and discuss any obvious problems with stationarity from your visual test.</p>
 <div class="cell">
 <div class="cell-output-display">
@@ -386,8 +386,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>Based on these plots, we hypothesize that data will be non-stationary for the Kvichak and stationary for the Nushagak and the Wood around a trend.</p>
 </section>
-<section id="use-acf-and-pacf-maria" class="level2" data-number="7.2">
-<h2 data-number="7.2" class="anchored" data-anchor-id="use-acf-and-pacf-maria"><span class="header-section-number">7.2</span> Use ACF and PACF (Maria)</h2>
+<section id="use-acf-and-pacf-maria" class="level2">
+<h2 class="anchored" data-anchor-id="use-acf-and-pacf-maria">Use ACF and PACF (Maria)</h2>
 <div class="cell">
 <div class="cell-output-display">
 <p><img src="Lab-1-team-1_final_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
@@ -412,8 +412,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>The pacf plots for Kvichak river is slowly decaying and the pacf plot shows significance at lags 1,2,4, and 6. There might be MA structure in the data.</p>
 <p>The acf plots for Nushagak river is slowly decaying and the pacf plot shows significance at lags 1 and 6. There might be AR structure in the data.</p>
 </section>
-<section id="test-for-stationarity-nick-liz" class="level2" data-number="7.3">
-<h2 data-number="7.3" class="anchored" data-anchor-id="test-for-stationarity-nick-liz"><span class="header-section-number">7.3</span> Test for stationarity (Nick &amp; Liz)</h2>
+<section id="test-for-stationarity-nick-liz" class="level2">
+<h2 class="anchored" data-anchor-id="test-for-stationarity-nick-liz">Test for stationarity (Nick &amp; Liz)</h2>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>          adf kpss_level kpss_trend
@@ -425,8 +425,8 @@ Wood     0.01       0.01        0.1</code></pre>
 <p>The stationarity tests show that the Kvichak River time series is stationary.</p>
 <p>When testing for stationarity around a level using the KPSS test, the Nushagak and the Wood test as non-stationary. However, when we change the null to include a trend, we find that both of these rivers test as stationary around a trend.</p>
 </section>
-<section id="difference-tests-liz" class="level2" data-number="7.4">
-<h2 data-number="7.4" class="anchored" data-anchor-id="difference-tests-liz"><span class="header-section-number">7.4</span> Difference tests (Liz)</h2>
+<section id="difference-tests-liz" class="level2">
+<h2 class="anchored" data-anchor-id="difference-tests-liz">Difference tests (Liz)</h2>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0</code></pre>
@@ -450,13 +450,13 @@ Wood     0.01       0.01        0.1</code></pre>
 <p>According to these tests, The Kvichak does not need differencing. The Nushagak and the Wood should be differenced by 1. This level of differencing should remove the upward trend or “bias” in the Nushagak and Wood Rivers.</p>
 </section>
 </section>
-<section id="modeling-and-results" class="level1" data-number="8">
-<h1 data-number="8"><span class="header-section-number">8</span> Modeling and results</h1>
-<section id="dividing-the-data-into-test-and-train-maria" class="level2" data-number="8.1">
-<h2 data-number="8.1" class="anchored" data-anchor-id="dividing-the-data-into-test-and-train-maria"><span class="header-section-number">8.1</span> Dividing the data into test and train (Maria)</h2>
+<section id="modeling-and-results" class="level1">
+<h1>Modeling and results</h1>
+<section id="dividing-the-data-into-test-and-train-maria" class="level2">
+<h2 class="anchored" data-anchor-id="dividing-the-data-into-test-and-train-maria">Dividing the data into test and train (Maria)</h2>
 </section>
-<section id="fit-arima-models-maria" class="level2" data-number="8.2">
-<h2 data-number="8.2" class="anchored" data-anchor-id="fit-arima-models-maria"><span class="header-section-number">8.2</span> Fit ARIMA models (Maria)</h2>
+<section id="fit-arima-models-maria" class="level2">
+<h2 class="anchored" data-anchor-id="fit-arima-models-maria">Fit ARIMA models (Maria)</h2>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>Series: train_Kv 
@@ -497,8 +497,8 @@ AIC=69.54   AICc=69.78   BIC=73.44</code></pre>
 </div>
 <p>The best model according to model selection criterion (AICc) for the Kvichak river is an ARIMA(0,0,1) with a non-zero mean. The best model for the Nushagak and the Wood river is an ARIMA (0,1,1).</p>
 </section>
-<section id="plot-forecasts-from-auto.arima-liz" class="level2" data-number="8.3">
-<h2 data-number="8.3" class="anchored" data-anchor-id="plot-forecasts-from-auto.arima-liz"><span class="header-section-number">8.3</span> Plot forecasts from auto.arima (Liz)</h2>
+<section id="plot-forecasts-from-auto.arima-liz" class="level2">
+<h2 class="anchored" data-anchor-id="plot-forecasts-from-auto.arima-liz">Plot forecasts from auto.arima (Liz)</h2>
 <p>Below are plots of the total abundance measurements and their 5-year forecasts. The red points refer to Fishery Research Institutes model forecasts. The black points refer to actual data.</p>
 <div class="cell">
 <div class="cell-output-display">
@@ -513,8 +513,8 @@ AIC=69.54   AICc=69.78   BIC=73.44</code></pre>
 </div>
 <p>Though these test as the best models using the auto.arima() function, we can clearly see that these models do not necessarily provide the best forecasts for the rivers of study. This is particularly apparent for the Nushagak and for the Wood River– the two rivers that include an upward trend or “bias”.</p>
 </section>
-<section id="chosing-our-own-arima-structure-liz" class="level2" data-number="8.4">
-<h2 data-number="8.4" class="anchored" data-anchor-id="chosing-our-own-arima-structure-liz"><span class="header-section-number">8.4</span> Chosing our own ARIMA structure (Liz)</h2>
+<section id="chosing-our-own-arima-structure-liz" class="level2">
+<h2 class="anchored" data-anchor-id="chosing-our-own-arima-structure-liz">Chosing our own ARIMA structure (Liz)</h2>
 <p>Here we play around with different ARIMA structures on our own. Though not shown in the code, we investigated other top models using the auto.arima() function with trace = TRUE. We then tested the three top models based on AICc for the Kvichak. For the Nushagak and the Wood, we tested the two top models based on AICc, plus the best model with an added drift component.</p>
 <div class="cell">
 <div class="cell-output-display">
@@ -531,8 +531,8 @@ AIC=69.54   AICc=69.78   BIC=73.44</code></pre>
 <p>Though we could change our model for the Kvichak, the model chosen by auto.arima (ARIMA(0,0,1)) seems to behave (at least visually) essentially the same as the other top models.</p>
 <p>TO better inform this decision, below we check the accuracies for each of the models (n = 9).</p>
 </section>
-<section id="check-accuracy-nick" class="level2" data-number="8.5">
-<h2 data-number="8.5" class="anchored" data-anchor-id="check-accuracy-nick"><span class="header-section-number">8.5</span> Check accuracy (Nick)</h2>
+<section id="check-accuracy-nick" class="level2">
+<h2 class="anchored" data-anchor-id="check-accuracy-nick">Check accuracy (Nick)</h2>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>                     [,1]
@@ -555,8 +555,8 @@ Wood (1,1,1)          0.8689846</code></pre>
 </div>
 <p>The best models for each river were selected by choosing the model with the lowest RMSE. The best model for the Kvichak was an ARIMA(0,0,1) with non zero mean, the best model for the Nushagak was ARIMA(0,1,1) with drift and the best model for the Wood was ARIMA(0,1,1) with drift.</p>
 </section>
-<section id="check-residuals-nick" class="level2" data-number="8.6">
-<h2 data-number="8.6" class="anchored" data-anchor-id="check-residuals-nick"><span class="header-section-number">8.6</span> Check residuals (Nick)</h2>
+<section id="check-residuals-nick" class="level2">
+<h2 class="anchored" data-anchor-id="check-residuals-nick">Check residuals (Nick)</h2>
 <p>We used the model with the lower RMSE moving forward.</p>
 <div class="cell">
 <div class="cell-output-display">
@@ -626,15 +626,15 @@ Model df: 1.   Total lags used: 10</code></pre>
 <p>The residuals for the Kvichak River are significantly auto-correlated even though only two lags show significance on the correlogram. The Nushagak also has significantly auto correlated residuals and only the Wood passes the Ljung-Box test for having non auto correlated residuals.</p>
 </section>
 </section>
-<section id="discussion" class="level1" data-number="9">
-<h1 data-number="9"><span class="header-section-number">9</span> Discussion</h1>
+<section id="discussion" class="level1">
+<h1>Discussion</h1>
 <p>The ARIMA models we tested produced reasonable estimates for one to three years but tended to miss long term trends in the data. This was especially true for the Wood and Nushagak Rivers which had sharp upward trends in abundance after 2015 that our forecasts did not predict. Rather, our models underpredicted the actual run size in each river. The FRI forecasts were notably better than those generated by our ARIMA models in the Wood and Nushagak Rivers but were unable to capture the large increase in run sizes in recent years. Our forecasts for the Kvichak were much closer to both the FRI forecasts and estimated run sizes, although still generally under predicted across the years tested.</p>
 <p>For the Wood and Nushagak Rivers the auto.arima function selected a model <em>without</em> drift as the best fit using AIC. When we compared the three best models for each river using the accuracy function a model <em>with</em> drift was chosen based on its lower RMSE value. These models with drift produced a somewhat better visual fit than those chosen by auto.arima but still resulted in underestimates of the run size in all years during the forecasting period. The better visual fit or our model in the Kvichak may be because the run size in the Kvichak has remained relatively stable without the increasing trend visible in the other two rivers. Both the Nushagak and Wood required differencing to remove an increasing trend in the data and this appeared to have a smoothing effect on longer forecasts vs non-differenced model runs. This smoothing may have contributed to the models for the Wood and Nushagak Rivers missing the increasing trend that occurred after 2015. This is also likely driven by the order of our ARIMA models, which only consider the previous time step to create forecasts, and thus do not perform well when predicting across multiple years (particularly when trends starkly increase or decrease). Further, these models neglect to include any environmental covariates that may help predict interannual variation at longer time steps. Had we run the models to only predict one time step forward the models likely would have performed better than relying on multiple year predictions.</p>
 <p>The autocorrelation present in the residuals for the Kvichak indicates that some structure still exists in the data which is not explained by our models. While few lags are significant there appears to be a repeating sinusoidal pattern in the correlogram. A similar pattern may be present in the Nushagak but it is less apparent in the correlogram, however the Nushagak residuals still show significant autocorrelation. The Wood river has no significant autocorrelation in the residuals and there appears to be the least amount of structure present in the correlogram of any of the rivers tested. This suggests that the ARIMA model may be a better fit to the Wood River system, which is a surprising result as the Kvichak has the best visual fit of the three systems tested.</p>
 <p>Based on our tests here ARIMA models seem best suited to predict short term changes in abundance and were poorly suited for estimating long term trends. As a management tool for Bristol Bay Sockeye they may still be appropriate for establishing annual biological goals for fishery management as only one time step forward would be needed.</p>
 </section>
-<section id="team-member-contributions" class="level1" data-number="10">
-<h1 data-number="10"><span class="header-section-number">10</span> Team member contributions</h1>
+<section id="team-member-contributions" class="level1">
+<h1>Team member contributions</h1>
 <p>All team members looked at the data and worked together to decide on a question to answer. The code was split up into several sections and each team member had specific sections to write, although there was a lot of collaboration in drafting these sections. Liz and Maria went to office hours for trouble shooting of code and to ask questions. All team members contributed to accuracy tests and model selection. Nick wrote a first draft of the discussion and all team members provided helpful edits.</p>
 
 
@@ -937,14 +937,14 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   </div>
   <div class="nav-page nav-page-next">
       <a href="../../Lab-1/Final_Write_ups/Lab-1-team-2_final.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Team 2</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Team 2 - Lab 1</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
 <div class="sourceCode" id="cb20" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> Team 1</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> Team 1 - Lab 1</span></span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> Lab 1 Forecasting with ARIMA models</span></span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Nick Chambers (SAFS), Liz Elmstrom (SAFS), Maria Kuruvilla (QERM)"</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Nick Chambers, Liz Elmstrom, Maria Kuruvilla"</span></span>
 <span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="an">output:</span><span class="co"> </span></span>
 <span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="co">  html_document:</span></span>
 <span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="co">    code-folding: true</span></span>

@@ -1,7 +1,7 @@
 ---
-title: Team 4
+title: Team 4 - Lab 1
 subtitle: Lab 1 Forecasting with ARIMA models
-author: "Terrance Wang (SAFS), Karl Veggerby (SAFS)"
+author: "Terrance Wang, Karl Veggerby"
 output: 
   html_document:
     code-folding: true
@@ -16,11 +16,6 @@ library(tseries)
 library(knitr)
 options(dplyr.summarise.inform = FALSE)
 ```
-
-# Lab 1: ARIMA models
-
-Team member names: Terrance Wang (SAFS), Karl Veggerby (SAFS)
-
 
 # Data
 

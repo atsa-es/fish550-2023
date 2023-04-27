@@ -54,5 +54,6 @@ format:
     toc: true
     code-fold: true
     code-tools: true
+    number-depth: 0
 
 
