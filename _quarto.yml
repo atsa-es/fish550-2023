@@ -2,6 +2,10 @@ project:
   type: book
   output-dir: docs
 
+comments:
+  giscus: 
+    repo: atsa-es/fish550-2023
+    
 book:
   title: Fish 550 Spring 2023
   subtitle: Team lab write-ups
