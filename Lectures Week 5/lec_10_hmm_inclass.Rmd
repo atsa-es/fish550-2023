@@ -70,13 +70,14 @@ temp_sd = c(0.2, 0.2)
 
 # Generate temperature time series here
 temp <- rnorm(200, temp_mean[x], temp_sd[x])
-plot(ts(temp))
+
 ```
 
 5.  Plot the simulated temperature time series. Does this match your expectations?
 
 ```{r}
 # Plot code
+plot(ts(temp))
 ```
 
 ## Adding a covariate on the observations
@@ -90,6 +91,12 @@ The mean temperature vector you just used can be thought about as an intercept, 
 set.seed(123)
 upwelling = rnorm(length(x), 0, 1)
 upwelling_coef = -0.05
+
+# Generate temperature time series here
+temp_upi <- temp + upwelling_coef * upwelling
+plot(ts(temp_upi))
+lines(ts(temp), col="red")
+
 
 ```
 
@@ -152,7 +159,40 @@ surv_dat = MARSS::SalmonSurvCUI
 
 1. Fit a HMM to this model using the depmixS4 package. Fit a 2-state model initially
 
+```{r}
+set.seed(121)
+fitmod1 <- depmix(logit.s ~ 1,
+                 nstates = 2,
+                 transition =  ~1,
+                 family = gaussian(),
+                 data = surv_dat)
+fit1 <- fit(fitmod1)
+
+fitmod2 <- depmix(logit.s ~ 1 + year,
+                 nstates = 2,
+                 transition =  ~1,
+                 family = gaussian(),
+                 data = surv_dat)
+fit2 <- fit(fitmod2)
+
+fitmod3 <- depmix(logit.s ~ 1,
+                 nstates = 2,
+                 transition =  ~1 + year,
+                 family = gaussian(),
+                 data = surv_dat)
+fit3 <- fit(fitmod3)
+```
+
 2. Extract the transition probabilities -- what do these mean?  
+
+```{r}
+summary(fit)
+```
+
+```{r}
+matrix(getpars(fit)[3:6], 2,2, byrow=TRUE)
+```
+
 3. How would you change the code to include either `year` or `CUI.apr` as a covariate in the state model?  
 
 Next, we'll work on applying the same example with hmmTMB.
