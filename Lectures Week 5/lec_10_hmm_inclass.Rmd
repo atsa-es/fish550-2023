@@ -53,6 +53,7 @@ Hint: there are a number of ways that you can think about simulating the states,
 
 ```{r}
 # Plot code
+plot(ts(x))
 ```
 
 ## Adding means and observation error
@@ -65,9 +66,10 @@ Hint: it might help to have these as 2-element vectors
 
 ```{r}
 temp_mean = c(3.4, 5.1)
-tem_sd = c(0.2, 0.2)
+temp_sd = c(0.2, 0.2)
 
 # Generate temperature time series here
+
 ```
 
 5.  Plot the simulated temperature time series. Does this match your expectations?
