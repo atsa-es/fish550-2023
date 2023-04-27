@@ -30,6 +30,8 @@ Question: what can we say about this system? Which state(s) are we more likely t
 m = matrix(0, 2, 2)
 
 # Initialize elements
+m <- matrix(c(0.9, 0.1, 0.3, 0.7), 2, 2, byrow=TRUE)
+m
 ```
 
 2.  Let's initialize our HMM in state 1. Now simulate 200 time steps, using the matrix `m`. As a check, if elements 191:200 are c(1, 1, 1, 1, 2, 2, 2, 2, 2, 2), you've probably got this right!
@@ -39,9 +41,13 @@ set.seed(5)
 x = 1
 
 # Generate state vector here
+for(t in 2:200){
+  x[t] <- sample(1:2, size=1, prob=m[x[t-1],])
+}
+x[191:200]
 ```
 
-Hint: there are a number of ways that you can think about simualating the states, which are discrete (they can be 0 - 1 or 1 - 2). I like to use the `sample()` function, but you can also look at others, including `purrr::rbernoulli()`, `stats::rbinom()`. If you use `rbinom()` or `sample()`, what should you use for the `prob` argument?
+Hint: there are a number of ways that you can think about simulating the states, which are discrete (they can be 0 - 1 or 1 - 2). I like to use the `sample()` function, but you can also look at others, including `purrr::rbernoulli()`, `stats::rbinom()`. If you use `rbinom()` or `sample()`, what should you use for the `prob` argument?
 
 3.  Plot the state vector as a time series. Does this match your expectations?
 
