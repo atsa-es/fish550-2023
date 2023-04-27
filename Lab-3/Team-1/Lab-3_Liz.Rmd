@@ -247,8 +247,6 @@ for (R in R_list) {
 }
 model.data
 
-as_tibble(model.data) %>%
-  sort(AICc)
 
 ```
 
