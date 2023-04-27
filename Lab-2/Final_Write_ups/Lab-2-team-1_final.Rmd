@@ -1,6 +1,14 @@
-# Lab 2: MARSS models
+---
+title: Team 1
+subtitle: Lab 2 MARSS models
+author: "Emma Timmins-Schiffman, Maria Kuruvilla, Zoe Rand"
+output: 
+  html_document:
+    code-folding: true
+    toc: true
+    toc_float: true
+---
 
-Team member names: Emma Timmins-Schiffman, Maria Kuruvilla, Zoe Rand
 
 ```{r include=FALSE}
 library(tidyverse)

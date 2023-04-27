@@ -1,9 +1,14 @@
 ---
-title: 'Lab 2: MARSS Models'
+title: Team 4
+subtitle: Lab 2 MARSS models
 author: "Madison Heller-Shipley, Dylan Hubl"
-date: "2023-04-26"
-output: html_document
+output: 
+  html_document:
+    code-folding: true
+    toc: true
+    toc_float: true
 ---
+
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)

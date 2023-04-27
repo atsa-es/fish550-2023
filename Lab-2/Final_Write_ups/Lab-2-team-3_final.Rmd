@@ -1,6 +1,13 @@
-# Lab 2: MARSS models
-
-Team member names: Miranda Mudge, Karl Veggerby, Nick Chambers
+---
+title: Team 3
+subtitle: Lab 2 MARSS models
+author: "Miranda Mudge, Karl Veggerby, Nick Chambers"
+output: 
+  html_document:
+    code-folding: true
+    toc: true
+    toc_float: true
+---
 
 # Data
 
