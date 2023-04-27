@@ -8,18 +8,23 @@ output:
     code-folding: true
     toc: true
     toc_float: true
+bibliography: references.bib
 ---
 
 ```{r setup, include = FALSE}
 options(dplyr.summarise.inform = FALSE)
 ```
 
-***
+------------------------------------------------------------------------
+
+```{r, warning = FALSE, message = FALSE}
+library(tidyverse)
+library(zoo)
+```
 
 # Data
 
-Describe what plankton groups and covariates you used and indicate any temporal subsetting you chose. 
-
+We decided to model 4 groups of zooplankton: Cyclops, Diaptomus, Epischura, and Neomysis. We chose to test environemtnal covariates (temp, pH, TP), as well as phytoplankton abundances as covariates(cryptomonas, diatoms, greens, unicells, other.algae) since the zooplankton we chose are copepods and mysids, and therefore may be impacted by the type of phytoplankton present. We used data from the start of the time series (1962) until 1985, because the Neomysis data gets very patchy after the 1980s and we didn't want this to cause issues with model fitting.
 
 ## Load the data
 
@@ -33,56 +38,116 @@ data(lakeWAplankton, package = "MARSS")
 ## we want `lakeWAplanktonTrans`, which has been transformed
 ## so the 0's are replaced with NA's and the data z-scored
 all_dat <- lakeWAplanktonTrans
+
 ```
 
 ## Wrangle the data
 
-* You can choose any taxa to include in your analyses, but make sure there are at least 5 groups. You can mix phytoplankton and zooplankton, if you'd like, but justify any choices you make. 
+-   You can choose any taxa to include in your analyses, but make sure there are at least 5 groups. You can mix phytoplankton and zooplankton, if you'd like, but justify any choices you make.
 
-* You will want to subset the data to a time period with adequate observations for the taxa of interest. Your time window should include at lest 5 years (60 months).
+-   You will want to subset the data to a time period with adequate observations for the taxa of interest. Your time window should include at lest 5 years (60 months).
 
-```{r wrangle_data}
-## add some code here
-head(all_dat)
-colnames(all_dat)
+### Zooplankton
+
+```{r plot_data, warning=FALSE}
+## plotting the taxa of interest
+all_dat %>% as_tibble() %>%
+  mutate(Date = as.yearmon(paste(Year, Month), "%Y %m")) %>%
+  select(c("Date", "Cyclops", "Diaptomus", "Epischura", "Neomysis")) %>% 
+  pivot_longer(-c(Date), names_to = "Species", values_to = "Vals") %>%
+  ggplot(aes(x = Date, y = Vals, color = Species)) + geom_point() + 
+  geom_line() + facet_wrap(~Species) + scale_x_yearmon(format = "%Y") + 
+  theme_minimal() + labs(y = "Abundance Index", x = "Year") + theme(legend.position =  "none")
+
 ```
 
+```{r wrangle_data_1}
+#using data up to 1985
+spp<-c("Cyclops", "Diaptomus", "Epischura", "Neomysis")
+dat_1985<-all_dat[all_dat[, "Year"] <= 1985,]
+dat_zoo_1985<-dat_1985[, spp]
+#head(dat_zoo_1985)
+dat_zoo<-t(dat_zoo_1985)
+```
+
+```{r wrangle_data_2}
+## get number of time series
+N_ts <- dim(dat_zoo)[1]
+
+## get length of time series
+TT <- dim(dat_zoo)[2] 
+
+## mean of each taxon
+y_bar <- apply(dat_zoo, 1, mean, na.rm = TRUE)
+
+## subtract the means
+dat <- dat_zoo - y_bar
+
+## assign new row names
+rownames(dat) <- spp
+```
+
+### Covariates
+
+```{r wrangle_cov }
+#temp, pH, TP, cryptomonas, diatoms, greens, unicells, other.algae 
+covs<-colnames(dat_1985)[c(3:8,10:11)]
+cov_dat<-t(dat_1985[,covs])
+#head(cov_dat)
+#dummy seasonal affect
+cos_t <- cos(2 * pi * seq(TT) / 12)
+sin_t <- sin(2 * pi * seq(TT) / 12)
+dd <- rbind(cos_t, sin_t)
+
+```
+
+```{r cov_corr}
+#looking at any correlation issues for covariates
+pairs(dat_1985[,covs])
+library(corrplot)
+corrplot(cor(dat_1985[,covs], use = "pairwise.complete.obs"), addCoef.col = "blue")
+```
 
 # General tasks
 
 Each group has the same general tasks, but you will adapt them as you work on the data.
 
-1) Find the most parsimonious model among a set that examines the effects of environmental covariates and/or an indicator of seasonality, varying numbers of trends, and different forms of variance-covariance matrices for the observation errors.
+1)  Find the most parsimonious model among a set that examines the effects of environmental covariates and/or an indicator of seasonality, varying numbers of trends, and different forms of variance-covariance matrices for the observation errors.
 
-2) Plot trends and individual loadings for the model identified in task (1) above.
+2)  Plot trends and individual loadings for the model identified in task (1) above.
 
-3) Plot model fits and uncertainty intervals for the model identified in task (1) above.
+3)  Plot model fits and uncertainty intervals for the model identified in task (1) above.
 
-4) Describe the effects of environmental or dummy variables on (possibly seasonal) patterns in the data.
-
+4)  Describe the effects of environmental or dummy variables on (possibly seasonal) patterns in the data.
 
 # Methods
 
 Please address the following in your methods:
 
-* Which plankton taxa did you choose and how did you choose them?
-   
-* What time period(s) did you examine and why?
+-   Which plankton taxa did you choose and how did you choose them?
 
-* What environmental or dummy variables did you include and why?
+-   What time period(s) did you examine and why?
 
-* What forms of models did you fit (ie, write them out in matrix form)?
+-   What environmental or dummy variables did you include and why?
 
-* What sort of model diagnostics did you use to examine model assumptions?
+-   What forms of models did you fit (ie, write them out in matrix form)?
 
+-   What sort of model diagnostics did you use to examine model assumptions?
+
+### Data:
+
+We chose to model four zooplankton taxa :Cyclops, Diaptomus, Epischura, and Neomysis. We chose these because they are similar types of zooplankton (copepods and mysids) which are known to be selective about the types of phytoplankton they consume [@hansen1997]. We used data from 1962-1985, because there is very little Neomysis data after 1985. We tested environmental covariates, including temperature, pH, and phosphorus concentrations as well as a seasonal dummy variable. We were also interested in the affect of phytoplankton abundance on these species, so we tested abundance indexes of diatoms, greens, unicells, and other.algae as potential covariates as well.
+
+### Model:
+
+### Diagnostics:
 
 # Results
 
-
 # Discussion
-
 
 # Team contributions
 
 Example: "All team members helped decide on the goal and ran the analyses for the individual regions. Team members 2 & 3 wrote most of the code for the analysis. Team member 1 worked on the plotting section of the report using and adapting code that team member 3 wrote. All team members helped edit the report and wrote the discussion together."
 
+# References
