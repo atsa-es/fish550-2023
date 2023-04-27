@@ -69,7 +69,8 @@ temp_mean = c(3.4, 5.1)
 temp_sd = c(0.2, 0.2)
 
 # Generate temperature time series here
-
+temp <- rnorm(200, temp_mean[x], temp_sd[x])
+plot(ts(temp))
 ```
 
 5.  Plot the simulated temperature time series. Does this match your expectations?
