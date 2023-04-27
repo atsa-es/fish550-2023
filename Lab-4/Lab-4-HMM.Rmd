@@ -30,6 +30,7 @@ package.
 
 ```{r read-data, message=FALSE, warning=FALSE}
 library(dplyr)
+library(rsoi)
 #install.packages("rsoi")
 pdo <- rsoi::download_pdo()
 ```
