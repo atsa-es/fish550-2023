@@ -1,0 +1,1908 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.340">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Liz Elmstrom (SAFS), Terrance Wang, Eric French">
+<meta name="dcterms.date" content="2023-04-20">
+
+<title>Fish 550 Spring 2023 - 9&nbsp; Team 2</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../Lab-2/Final_Write_ups/Lab-2-team-3_final.html" rel="next">
+<link href="../../Lab-2/Final_Write_ups/Lab-2-team-1_final.html" rel="prev">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../Lab-2/Lab2-MARSS.html">Analyzing multivariate salmon data with MARSS</a></li><li class="breadcrumb-item"><a href="../../Lab-2/Final_Write_ups/Lab-2-team-2_final.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Team 2</span></a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../../">Fish 550 Spring 2023</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/atsa-es/fish550-2023" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Labs</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text">Forecasting with ARIMA models</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lab-1/Lab1-ARIMA.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Lab Intro</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lab-1/Final_Write_ups/Lab-1-team-1_final.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Team 1</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lab-1/Final_Write_ups/Lab-1-team-2_final.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Team 2</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lab-1/Final_Write_ups/Lab-1-team-3_final.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Team 3</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lab-1/Final_Write_ups/Lab-1-team-4_final.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Team 4</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text">Analyzing multivariate salmon data with MARSS</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lab-2/Lab2-MARSS.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Lab Intro</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lab-2/Final_Write_ups/Lab-2-team-1_final.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Team 1</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lab-2/Final_Write_ups/Lab-2-team-2_final.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Team 2</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lab-2/Final_Write_ups/Lab-2-team-3_final.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Team 3</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lab-2/Final_Write_ups/Lab-2-team-4_final.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Team 4</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text">Dynamic Factor Analysis</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lab-3/Lab-3-DFA.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Lab Intro</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text">Hidden Markov Models</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lab-4/Lab-4-HMM.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Lab Intro</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#general-questions" id="toc-general-questions" class="nav-link active" data-scroll-target="#general-questions"><span class="header-section-number">10</span> General Questions</a></li>
+  <li><a href="#methods" id="toc-methods" class="nav-link" data-scroll-target="#methods"><span class="header-section-number">11</span> Methods</a></li>
+  <li><a href="#data-exploration" id="toc-data-exploration" class="nav-link" data-scroll-target="#data-exploration"><span class="header-section-number">12</span> Data exploration</a></li>
+  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results"><span class="header-section-number">13</span> Results</a>
+  <ul class="collapse">
+  <li><a href="#the-simplest-model" id="toc-the-simplest-model" class="nav-link" data-scroll-target="#the-simplest-model"><span class="header-section-number">13.1</span> The simplest model</a></li>
+  <li><a href="#the-most-flexible-model" id="toc-the-most-flexible-model" class="nav-link" data-scroll-target="#the-most-flexible-model"><span class="header-section-number">13.2</span> The most flexible model</a></li>
+  <li><a href="#model-assumptions" id="toc-model-assumptions" class="nav-link" data-scroll-target="#model-assumptions"><span class="header-section-number">13.3</span> Model Assumptions</a></li>
+  <li><a href="#marss-model-selection" id="toc-marss-model-selection" class="nav-link" data-scroll-target="#marss-model-selection"><span class="header-section-number">13.4</span> MARSS Model Selection</a></li>
+  <li><a href="#inspecting-the-best-model-spatial-group-unconstrained-q-equal-u" id="toc-inspecting-the-best-model-spatial-group-unconstrained-q-equal-u" class="nav-link" data-scroll-target="#inspecting-the-best-model-spatial-group-unconstrained-q-equal-u"><span class="header-section-number">13.5</span> Inspecting the best model (spatial group, unconstrained Q, equal U)</a></li>
+  <li><a href="#comparing-best-model-to-the-most-flexible-model" id="toc-comparing-best-model-to-the-most-flexible-model" class="nav-link" data-scroll-target="#comparing-best-model-to-the-most-flexible-model"><span class="header-section-number">13.6</span> Comparing best model to the most flexible model</a></li>
+  </ul></li>
+  <li><a href="#seasonality-as-a-covariate" id="toc-seasonality-as-a-covariate" class="nav-link" data-scroll-target="#seasonality-as-a-covariate"><span class="header-section-number">14</span> Seasonality as a covariate</a>
+  <ul class="collapse">
+  <li><a href="#initial-model-fitting" id="toc-initial-model-fitting" class="nav-link" data-scroll-target="#initial-model-fitting"><span class="header-section-number">14.1</span> Initial model fitting</a></li>
+  <li><a href="#evaluating-the-effect-of-different-cycles" id="toc-evaluating-the-effect-of-different-cycles" class="nav-link" data-scroll-target="#evaluating-the-effect-of-different-cycles"><span class="header-section-number">14.2</span> Evaluating the effect of different cycles</a></li>
+  <li><a href="#comparing-models-with-and-without-5-year-cycles" id="toc-comparing-models-with-and-without-5-year-cycles" class="nav-link" data-scroll-target="#comparing-models-with-and-without-5-year-cycles"><span class="header-section-number">14.3</span> Comparing models with and without 5 year cycles</a></li>
+  </ul></li>
+  <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion"><span class="header-section-number">15</span> Discussion</a></li>
+  <li><a href="#description-of-each-team-members-contributions" id="toc-description-of-each-team-members-contributions" class="nav-link" data-scroll-target="#description-of-each-team-members-contributions"><span class="header-section-number">16</span> Description of each team member’s contributions</a></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/atsa-es/fish550-2023/edit/main/Lab-2/Final_Write_ups/Lab-2-team-2_final.Rmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/atsa-es/fish550-2023/blob/main/Lab-2/Final_Write_ups/Lab-2-team-2_final.Rmd" class="toc-action">View source</a></p><p><a href="https://github.com/atsa-es/fish550-2023/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Team 2</span></h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+<p class="subtitle lead">Lab 2 MARSS Models</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Liz Elmstrom (SAFS), Terrance Wang, Eric French </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">April 20, 2023</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="general-questions" class="level1" data-number="10">
+<h1 data-number="10"><span class="header-section-number">10</span> General Questions</h1>
+<p>Each group has the same general tasks, but you will adapt them as you work on the data.</p>
+<ol type="1">
+<li><p>Create estimates of spawner abundance for all missing years and provide estimates of the decline from the historical abundance.</p></li>
+<li><p>Evaluate support for the major population groups. Are the populations in the groups more correlated than outside the groups?</p></li>
+<li><p>Evaluate the evidence of cycling in the data. <em>We will talk about how to do this on the Tuesday after lab.</em></p></li>
+</ol>
+<p>We analyzed the Steelhead (Lower Columbia ESU). We decided to exclude the Gorge Tributary winter run because there was only 1 short time series, and focused the 9 remaining runs that belonged to Cascade major population group.</p>
+</section>
+<section id="methods" class="level1" data-number="11">
+<h1 data-number="11"><span class="header-section-number">11</span> Methods</h1>
+<p>We tested 5 different population groups hypotheses: one population, individual populations, run timing groups, spatial groups, and correlation groups.</p>
+<p>One population <span class="math display">\[
+\begin{bmatrix} y_{1} \\ y_{2} \\ \vdots \\y_{9} \end{bmatrix}_{t} =
+\begin{bmatrix}1\\
+1\\
+\vdots\\
+\\
+1\end{bmatrix}
+x_{t}  + \mathbf{a} + \mathbf{v_t} \text{ where } \mathbf{v_t} \sim MVN(0, \mathbf{R})
+\]</span></p>
+<p><span class="math display">\[
+\begin{bmatrix} x \end{bmatrix}_{t} =
+\begin{bmatrix}1\\
+\end{bmatrix}
+x_{t-1}  + u + w_t \text{ where } w_t \sim N(0,q)
+\]</span></p>
+<p>Individual populations <span class="math display">\[
+\begin{bmatrix} y_{1} \\ y_{2} \\ \vdots \\y_{9} \end{bmatrix}_{t} =
+I_{9}
+\begin{bmatrix} x_{1} \\ x_{2} \\ \vdots \\x_{9} \end{bmatrix}_{t} + \mathbf{a} + \mathbf{v_t} \text{ where } \mathbf{v_t} \sim MVN(0, \mathbf{R})
+\]</span> <span class="math display">\[
+\begin{bmatrix} x_{1} \\
+x_{2} \\
+\vdots \\
+x_{9}
+\end{bmatrix}_{t}
+=
+I_{9}
+\begin{bmatrix} x_{1} \\
+x_{2} \\
+\vdots \\
+x_{9}
+\end{bmatrix}_{t-1}  + \begin{bmatrix}u_{1}\\u_{2}\\ \vdots \\u_{9} \end{bmatrix}  + \mathbf{w_t} \text{ where } \mathbf{w_t} \sim MVN(0, \mathbf{Q})
+\]</span> Run Timing Groups, Spatial Groups, Correlation Groups We provide the Z matrices for the 3 groupings below. <span class="math display">\[
+\begin{equation*}
+\begin{array}{rcccc}
+&amp;Run Timing&amp;Spatial&amp;Correlation\\
+&amp;\text{summer winter}&amp;\text{Coweeman E-Fork-Lewis Kalama Cowlitz Washougal}&amp;\text{Coweeman Kalama Cowlitz}\\
+\hline
+\begin{array}{r}\text{Coweeman - W}\\ \text{Fork E Lewis - W} \\ \text{Kalama - S} \\ \text{Kalama - W} \\
+\text{Lower Cowlitz - W} \\ \text{Toutle - W} \\ \text{Tilton - W} \\ \text{Upper Cowlitz - W} \\ \text{Washougal - W}\end{array}&amp;
+\begin{bmatrix}
+0 &amp; 1 \\
+0 &amp; 1 \\
+1 &amp; 0 \\
+0 &amp; 1 \\
+0 &amp; 1 \\
+0 &amp; 1 \\
+0 &amp; 1 \\
+0 &amp; 1 \\
+0 &amp; 1 \\
+\end{bmatrix}&amp;
+\begin{bmatrix}
+1 &amp; 0 &amp; 0 &amp; 0 &amp;0 \\
+0 &amp; 1 &amp; 0 &amp; 0 &amp;0 \\
+0 &amp; 0 &amp; 1 &amp; 0 &amp;0 \\
+0 &amp; 0 &amp; 1 &amp; 0 &amp;0 \\
+0 &amp; 0 &amp; 0 &amp; 1 &amp;0 \\
+1 &amp; 0 &amp; 0 &amp; 0 &amp;0 \\
+0 &amp; 0 &amp; 0 &amp; 1 &amp;0 \\
+1 &amp; 0 &amp; 0 &amp; 0 &amp;0 \\
+0 &amp; 0 &amp; 0 &amp; 0 &amp;1 \\
+\end{bmatrix}&amp;
+\begin{bmatrix}
+1 &amp; 0 &amp; 0 \\
+1 &amp; 0 &amp; 0 \\
+0 &amp; 1 &amp; 0 \\
+0 &amp; 1 &amp; 0 \\
+0 &amp; 0 &amp; 1 \\
+1 &amp; 0 &amp; 0 \\
+0 &amp; 0 &amp; 1 \\
+0 &amp; 0 &amp; 1 \\
+1 &amp; 0 &amp; 0
+\end{bmatrix}&amp;
+\end{array}
+\end{equation*}
+\]</span></p>
+<p>We assume that all models have identical observation errors, thus a diagonal and equal R matrix. <span class="math display">\[
+\mathbf{R} =
+\begin{bmatrix} r &amp; 0  &amp; ...&amp; 0\\
+0 &amp; r &amp;  ...&amp; 0\\
+\vdots &amp; 0 &amp; \ddots &amp; \vdots\\
+0 &amp; 0 &amp; 0  &amp; r \end{bmatrix}
+\]</span> For each model we test both equal and unequal biases for the states. We also assumed all states were correlated over time and test both equal var-cov and unconstrained process errors for each state.</p>
+<p>Equal Bias <span class="math display">\[
+\mathbf{u} =
+\begin{bmatrix} u\\
+\vdots\\
+u\end{bmatrix}
+\]</span> Unequal Bias <span class="math display">\[
+\mathbf{u} =
+\begin{bmatrix} u_{1}\\
+\vdots\\
+u_{i}\end{bmatrix} \text{where i is # of states}
+\]</span></p>
+<p>Equal Variance-Covariance <span class="math display">\[
+\begin{equation}
+\mathbf{Q}=\begin{bmatrix}
+    q &amp; c &amp; ... &amp; c \\
+    c &amp; q &amp; \ddots &amp; \vdots\\
+    \vdots &amp; c &amp; \ddots &amp; c \\
+    c &amp; c &amp; ... &amp; q \end{bmatrix}
+\end{equation}
+\text{where # of rows is equal to # of states}
+\]</span> Unconstrained <span class="math display">\[
+\begin{equation}
+\mathbf{Q}=\begin{bmatrix}
+    q_{1}&amp; c_{1,2} &amp; ... &amp; c_{1,i} \\
+    c_{1,2} &amp; q_{2} &amp; \ddots &amp; c_{2,i}\\
+    \vdots &amp; \ddots &amp; \ddots &amp; \vdots \\
+    c_{1,i} &amp; ... &amp; c_{i-1,i} &amp; q_{i} \end{bmatrix}
+\end{equation}
+\text{where # of rows is equal to # of states}
+\]</span></p>
+</section>
+<section id="data-exploration" class="level1" data-number="12">
+<h1 data-number="12"><span class="header-section-number">12</span> Data exploration</h1>
+<p>Load the data.</p>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.2     ✔ readr     2.1.4
+✔ forcats   1.0.0     ✔ stringr   1.5.0
+✔ ggplot2   3.4.2     ✔ tibble    3.2.1
+✔ lubridate 1.9.2     ✔ tidyr     1.3.0
+✔ purrr     1.0.1     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors
+
+Attaching package: 'janitor'
+
+
+The following objects are masked from 'package:stats':
+
+    chisq.test, fisher.test
+
+
+Registered S3 method overwritten by 'quantmod':
+  method            from
+  as.zoo.data.frame zoo </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Steelhead (Middle Columbia River DPS)"     
+[2] "Steelhead (Upper Columbia River DPS)"      
+[3] "Steelhead (Lower Columbia River DPS)"      
+[4] "Salmon, coho (Lower Columbia River ESU)"   
+[5] "Salmon, Chinook (Lower Columbia River ESU)"</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>colnames:  species esu_dps majorpopgroup esapopname commonpopname run spawningyear value value_type </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "Steelhead (Lower Columbia River DPS) Kalama River - summer"           
+ [2] "Steelhead (Lower Columbia River DPS) Coweeman River - winter"         
+ [3] "Steelhead (Lower Columbia River DPS) East Fork Lewis River - winter"  
+ [4] "Steelhead (Lower Columbia River DPS) Kalama River - winter"           
+ [5] "Steelhead (Lower Columbia River DPS) Lower Cowlitz River - winter"    
+ [6] "Steelhead (Lower Columbia River DPS) South Fork Toutle River - winter"
+ [7] "Steelhead (Lower Columbia River DPS) Tilton River - winter"           
+ [8] "Steelhead (Lower Columbia River DPS) Upper Cowlitz River - winter"    
+ [9] "Steelhead (Lower Columbia River DPS) Washougal River - winter"        
+[10] "Steelhead (Lower Columbia River DPS) Upper Gorge Tributaries - winter"</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "Kalama Summer Steelhead"                  
+ [2] "Coweeman Winter Steelhead"                
+ [3] "East Fork Lewis Winter Steelhead"         
+ [4] "Kalama Winter Steelhead"                  
+ [5] "Lower Cowlitz Winter Steelhead"           
+ [6] "South Fork Toutle Winter Steelhead"       
+ [7] "Tilton Winter Steelhead"                  
+ [8] "Upper Cowlitz and Cispus Winter Steelhead"
+ [9] "Washougal Winter Steelhead"               
+[10] "Upper Gorge (Columbia) Winter Steelhead"  </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "Kalama River - summer"            "Coweeman River - winter"         
+ [3] "East Fork Lewis River - winter"   "Kalama River - winter"           
+ [5] "Lower Cowlitz River - winter"     "South Fork Toutle River - winter"
+ [7] "Tilton River - winter"            "Upper Cowlitz River - winter"    
+ [9] "Washougal River - winter"         "Upper Gorge Tributaries - winter"</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="Lab-2-team-2_final_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Wrangle the data.</p>
+</section>
+<section id="results" class="level1" data-number="13">
+<h1 data-number="13"><span class="header-section-number">13</span> Results</h1>
+<section id="the-simplest-model" class="level2" data-number="13.1">
+<h2 data-number="13.1" class="anchored" data-anchor-id="the-simplest-model"><span class="header-section-number">13.1</span> The simplest model</h2>
+<p>Fitting the most simple model to help determine the need to group populations: One big population with different observations (populations).</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Success! abstol and log-log tests passed at 38 iterations.
+Alert: conv.test.slope.tol is 0.5.
+Test with smaller values (&lt;0.1) to ensure convergence.
+
+MARSS fit is
+Estimation method: kem 
+Convergence test: conv.test.slope.tol = 0.5, abstol = 0.001
+Estimation converged in 38 iterations. 
+Log-likelihood: -247.9172 
+AIC: 519.8343   AICc: 521.1792   
+ 
+                                 Estimate
+A.east_fork_lewis_river_winter   -0.51303
+A.kalama_river_summer             0.58517
+A.kalama_river_winter             0.82974
+A.lower_cowlitz_river_winter      0.28048
+A.south_fork_toutle_river_winter  0.33119
+A.tilton_river_winter            -0.21650
+A.upper_cowlitz_river_winter      0.21896
+A.washougal_river_winter         -0.38030
+R.diag                            0.38503
+U.u                              -0.00853
+Q.q                               0.04702
+x0.mu                             5.81906
+Initial states (x0) defined at t=0
+
+Standard errors have not been calculated. 
+Use MARSSparamCIs to compute CIs and bias estimates.</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="Lab-2-team-2_final_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>plot type =  fitted.ytT  Observations with fitted values</code></pre>
+</div>
+</div>
+<p>We see that the simple model is not the best at fitting the population estimates for many of the populations (e.g., Upper Cowlitz winter, East Fork Lewis winter). Many of the residuals do not appear to be stationary.</p>
+</section>
+<section id="the-most-flexible-model" class="level2" data-number="13.2">
+<h2 data-number="13.2" class="anchored" data-anchor-id="the-most-flexible-model"><span class="header-section-number">13.2</span> The most flexible model</h2>
+<p>Fitting the most flexible model to help determine spatial Z hypotheses: Individual populations with an unconstrained Q matrix and unequal U</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Success! abstol and log-log tests passed at 792 iterations.
+Alert: conv.test.slope.tol is 0.5.
+Test with smaller values (&lt;0.1) to ensure convergence.
+
+MARSS fit is
+Estimation method: kem 
+Convergence test: conv.test.slope.tol = 0.5, abstol = 0.001
+Estimation converged in 792 iterations. 
+Log-likelihood: -162.2543 
+AIC: 452.5085   AICc: 498.7308   
+ 
+                                    Estimate
+R.diag                               0.07004
+U.X.coweeman_river_winter            0.05643
+U.X.east_fork_lewis_river_winter     0.06603
+U.X.kalama_river_summer              0.05382
+U.X.kalama_river_winter              0.01357
+U.X.lower_cowlitz_river_winter       0.05480
+U.X.south_fork_toutle_river_winter   0.05081
+U.X.tilton_river_winter              0.03231
+U.X.upper_cowlitz_river_winter       0.10266
+U.X.washougal_river_winter           0.08353
+Q.(1,1)                              0.18254
+Q.(2,1)                              0.20888
+Q.(3,1)                             -0.06669
+Q.(4,1)                             -0.01073
+Q.(5,1)                              0.07385
+Q.(6,1)                              0.21461
+Q.(7,1)                              0.01004
+Q.(8,1)                             -0.00336
+Q.(9,1)                              0.20057
+Q.(2,2)                              0.30487
+Q.(3,2)                             -0.16277
+Q.(4,2)                             -0.03323
+Q.(5,2)                              0.18199
+Q.(6,2)                              0.23406
+Q.(7,2)                              0.13516
+Q.(8,2)                              0.10168
+Q.(9,2)                              0.23761
+Q.(3,3)                              0.21954
+Q.(4,3)                              0.11641
+Q.(5,3)                             -0.08252
+Q.(6,3)                             -0.01588
+Q.(7,3)                             -0.04973
+Q.(8,3)                              0.00917
+Q.(9,3)                             -0.04761
+Q.(4,4)                              0.09583
+Q.(5,4)                              0.04185
+Q.(6,4)                              0.04127
+Q.(7,4)                              0.08378
+Q.(8,4)                              0.11758
+Q.(9,4)                              0.02286
+Q.(5,5)                              0.28695
+Q.(6,5)                              0.13628
+Q.(7,5)                              0.36189
+Q.(8,5)                              0.24063
+Q.(9,5)                              0.11017
+Q.(6,6)                              0.29428
+Q.(7,6)                              0.09380
+Q.(8,6)                              0.04003
+Q.(9,6)                              0.24779
+Q.(7,7)                              0.50421
+Q.(8,7)                              0.34139
+Q.(9,7)                              0.05553
+Q.(8,8)                              0.47369
+Q.(9,8)                              0.08841
+Q.(9,9)                              0.24231
+x0.X.coweeman_river_winter           3.59695
+x0.X.east_fork_lewis_river_winter    2.23471
+x0.X.kalama_river_summer             6.15197
+x0.X.kalama_river_winter             6.56522
+x0.X.lower_cowlitz_river_winter      2.71630
+x0.X.south_fork_toutle_river_winter  3.85807
+x0.X.tilton_river_winter             2.83736
+x0.X.upper_cowlitz_river_winter      1.29622
+x0.X.washougal_river_winter          2.30745
+Initial states (x0) defined at t=0
+
+Standard errors have not been calculated. 
+Use MARSSparamCIs to compute CIs and bias estimates.</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>MARSSresiduals.tT reported warnings. See msg element or attribute of returned residuals object.</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="Lab-2-team-2_final_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>plot type =  fitted.ytT  Observations with fitted values</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>corrplot 0.92 loaded</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="Lab-2-team-2_final_files/figure-html/unnamed-chunk-6-2.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Some of the populations are correlated. This implies it would be reasonable to test for equal variance covariance, along with some other population structures.</p>
+<p>We opted to test this in a for loop to compare multiple spatial structures, u options, and two options for Q.</p>
+</section>
+<section id="model-assumptions" class="level2" data-number="13.3">
+<h2 data-number="13.3" class="anchored" data-anchor-id="model-assumptions"><span class="header-section-number">13.3</span> Model Assumptions</h2>
+<p>Below we setting up population grouping hypotheses (Z matrices), correlation structures, drift or “bias” terms, and the fixed model list.</p>
+</section>
+<section id="marss-model-selection" class="level2" data-number="13.4">
+<h2 data-number="13.4" class="anchored" data-anchor-id="marss-model-selection"><span class="header-section-number">13.4</span> MARSS Model Selection</h2>
+<p>Run MARSS models.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>                   H             Q       U    logLik     AICc num.param m
+16    spatial_groups unconstrained   equal -200.3077 459.0557        26 5
+15    spatial_groups unconstrained unequal -199.6277 467.9469        30 5
+14    spatial_groups   equalvarcov   equal -221.5804 470.7365        13 5
+6   indiv_population   equalvarcov   equal -223.3296 474.2350        13 9
+13    spatial_groups   equalvarcov unequal -221.2383 479.1726        17 5
+8   indiv_population unconstrained   equal -167.4589 480.8753        56 9
+5   indiv_population   equalvarcov unequal -221.2639 488.6713        21 9
+18       corr_groups   equalvarcov   equal -233.1729 493.9216        13 3
+20       corr_groups unconstrained   equal -229.2451 495.1862        17 3
+17       corr_groups   equalvarcov unequal -232.9357 497.9674        15 3
+7   indiv_population unconstrained unequal -162.2543 498.7308        64 9
+19       corr_groups unconstrained unequal -229.1000 499.5778        19 3
+10 run_timing_groups   equalvarcov   equal -244.9572 517.4901        13 2
+12 run_timing_groups unconstrained   equal -244.8224 519.4708        14 2
+9  run_timing_groups   equalvarcov unequal -244.8625 519.5512        14 2
+1     one_population   equalvarcov unequal -247.9172 521.1792        12 1
+2     one_population   equalvarcov   equal -247.9172 521.1792        12 1
+3     one_population unconstrained unequal -247.9172 521.1792        12 1
+4     one_population unconstrained   equal -247.9172 521.1792        12 1
+11 run_timing_groups unconstrained unequal -244.7254 521.5469        15 2
+   num.iter converged delta.AICc     rel.like   AIC.weight
+16      378      TRUE   0.000000 1.000000e+00 9.850231e-01
+15      374      TRUE   8.891254 1.172975e-02 1.155407e-02
+14       63      TRUE  11.680779 2.907709e-03 2.864161e-03
+6        77      TRUE  15.179270 5.056657e-04 4.980924e-04
+13       75      TRUE  20.116881 4.282276e-05 4.218141e-05
+8       797      TRUE  21.819604 1.827819e-05 1.800444e-05
+5       683      TRUE  29.615606 3.707258e-07 3.651735e-07
+18       69      TRUE  34.865945 2.685073e-08 2.644859e-08
+20       60      TRUE  36.130531 1.426773e-08 1.405405e-08
+17       87      TRUE  38.911736 3.551599e-09 3.498407e-09
+7       792      TRUE  39.675076 2.424749e-09 2.388433e-09
+19       60      TRUE  40.522114 1.587577e-09 1.563800e-09
+10       31      TRUE  58.434441 2.047021e-13 2.016363e-13
+12       57      TRUE  60.415106 7.603724e-14 7.489844e-14
+9        31      TRUE  60.495478 7.304222e-14 7.194827e-14
+1        38      TRUE  62.123467 3.236387e-14 3.187916e-14
+2        38      TRUE  62.123467 3.236387e-14 3.187916e-14
+3        38      TRUE  62.123467 3.236387e-14 3.187916e-14
+4        38      TRUE  62.123467 3.236387e-14 3.187916e-14
+11       57      TRUE  62.491240 2.692773e-14 2.652443e-14</code></pre>
+</div>
+</div>
+<p>The best model (as supported by AICc) includes 5 states (our “spatial populations” model) that are correlated with unique variance and covariance terms (unconstrained Q) with the same drift term (U)</p>
+</section>
+<section id="inspecting-the-best-model-spatial-group-unconstrained-q-equal-u" class="level2" data-number="13.5">
+<h2 data-number="13.5" class="anchored" data-anchor-id="inspecting-the-best-model-spatial-group-unconstrained-q-equal-u"><span class="header-section-number">13.5</span> Inspecting the best model (spatial group, unconstrained Q, equal U)</h2>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>
+MARSS fit is
+Estimation method: kem 
+Convergence test: conv.test.slope.tol = 0.5, abstol = 0.001
+Estimation converged in 378 iterations. 
+Log-likelihood: -200.3077 
+AIC: 452.6153   AICc: 459.0557   
+ 
+                                 Estimate
+A.kalama_river_winter             0.24416
+A.south_fork_toutle_river_winter  0.38706
+A.tilton_river_winter            -0.75459
+A.upper_cowlitz_river_winter     -0.19777
+R.diag                            0.15851
+U.1                               0.03097
+Q.(1,1)                           0.22524
+Q.(2,1)                           0.17195
+Q.(3,1)                          -0.01570
+Q.(4,1)                           0.02272
+Q.(5,1)                           0.17217
+Q.(2,2)                           0.19999
+Q.(3,2)                          -0.07064
+Q.(4,2)                           0.12119
+Q.(5,2)                           0.16006
+Q.(3,3)                           0.09252
+Q.(4,3)                           0.00657
+Q.(5,3)                          -0.01488
+Q.(4,4)                           0.38669
+Q.(5,4)                           0.11117
+Q.(5,5)                           0.15486
+x0.coweeman                       3.81220
+x0.ef_lewis                       2.92567
+x0.kalama                         6.30723
+x0.cowlitz                        2.50039
+x0.washougal                      3.25935
+Initial states (x0) defined at t=0
+
+Standard errors have not been calculated. 
+Use MARSSparamCIs to compute CIs and bias estimates.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>MARSSresiduals.tT reported warnings. See msg element or attribute of returned residuals object.</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="Lab-2-team-2_final_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>plot type =  fitted.ytT  Observations with fitted values</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>MARSSresiduals.tt1 reported warnings. See msg element of returned residuals object.</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="Lab-2-team-2_final_files/figure-html/unnamed-chunk-9-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>plot type = acf.std.model.resids.ytt1</code></pre>
+</div>
+</div>
+<p>In our best model, we do see some autocorrelation in our residuals. In the next section, we will try to include a covariate of season into our best model and see if this improves the model fit.</p>
+</section>
+<section id="comparing-best-model-to-the-most-flexible-model" class="level2" data-number="13.6">
+<h2 data-number="13.6" class="anchored" data-anchor-id="comparing-best-model-to-the-most-flexible-model"><span class="header-section-number">13.6</span> Comparing best model to the most flexible model</h2>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>MARSSresiduals.tT reported warnings. See msg element or attribute of returned residuals object.</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="Lab-2-team-2_final_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>plot type =  fitted.ytT  Observations with fitted values</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>MARSSresiduals.tT reported warnings. See msg element or attribute of returned residuals object.</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="Lab-2-team-2_final_files/figure-html/unnamed-chunk-10-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>plot type =  fitted.ytT  Observations with fitted values</code></pre>
+</div>
+</div>
+<p>Do our estimates differ depending on the assumptions of the structure of the data, i.e.&nbsp;our assumptions about the x’s, Q, and U?</p>
+<p>Definitely! The more flexible model (individual states, unequal bias term) produces more variable forecasts (with some populations increasing or decreasing through time). Our spatial model (5 states, equal bias term) provides relatively stable forecasts across populations, likely due to the “equal” bias term.</p>
+</section>
+</section>
+<section id="seasonality-as-a-covariate" class="level1" data-number="14">
+<h1 data-number="14"><span class="header-section-number">14</span> Seasonality as a covariate</h1>
+<p>In this next section, we test for age structured cycling of steelhead populations or “season” in our best “spatial” model.</p>
+<section id="initial-model-fitting" class="level2" data-number="14.1">
+<h2 data-number="14.1" class="anchored" data-anchor-id="initial-model-fitting"><span class="header-section-number">14.1</span> Initial model fitting</h2>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Success! abstol and log-log tests passed at 393 iterations.
+Alert: conv.test.slope.tol is 0.5.
+Test with smaller values (&lt;0.1) to ensure convergence.
+
+MARSS fit is
+Estimation method: kem 
+Convergence test: conv.test.slope.tol = 0.5, abstol = 0.001
+Estimation converged in 393 iterations. 
+Log-likelihood: -171.8029 
+AIC: 503.6058   AICc: 582.6302   
+ 
+                                         Estimate
+A.kalama_river_winter                    0.252970
+A.south_fork_toutle_river_winter         0.343256
+A.tilton_river_winter                   -0.903094
+A.upper_cowlitz_river_winter            -0.320282
+R.diag                                   0.122966
+U.1                                      0.031019
+Q.(1,1)                                  0.151655
+Q.(2,1)                                  0.103304
+Q.(3,1)                                 -0.006630
+Q.(4,1)                                  0.048822
+Q.(5,1)                                  0.076574
+Q.(2,2)                                  0.137173
+Q.(3,2)                                 -0.063070
+Q.(4,2)                                  0.146876
+Q.(5,2)                                  0.073604
+Q.(3,3)                                  0.094141
+Q.(4,3)                                 -0.012518
+Q.(5,3)                                  0.003246
+Q.(4,4)                                  0.396928
+Q.(5,4)                                  0.114513
+Q.(5,5)                                  0.060789
+x0.coweeman                              4.260305
+x0.ef_lewis                              3.498555
+x0.kalama                                6.221230
+x0.cowlitz                               2.861678
+x0.washougal                             3.978254
+D.(coweeman_river_winter,S1-3)           0.186021
+D.(east_fork_lewis_river_winter,S1-3)    0.157392
+D.(kalama_river_summer,S1-3)            -0.072940
+D.(kalama_river_winter,S1-3)             0.022498
+D.(lower_cowlitz_river_winter,S1-3)     -0.184966
+D.(south_fork_toutle_river_winter,S1-3)  0.144443
+D.(tilton_river_winter,S1-3)            -0.052278
+D.(upper_cowlitz_river_winter,S1-3)     -0.160372
+D.(washougal_river_winter,S1-3)          0.197520
+D.(coweeman_river_winter,C1-3)          -0.044046
+D.(east_fork_lewis_river_winter,C1-3)    0.089743
+D.(kalama_river_summer,C1-3)            -0.000429
+D.(kalama_river_winter,C1-3)            -0.021383
+D.(lower_cowlitz_river_winter,C1-3)     -0.275540
+D.(south_fork_toutle_river_winter,C1-3)  0.127018
+D.(tilton_river_winter,C1-3)             0.088516
+D.(upper_cowlitz_river_winter,C1-3)      0.266990
+D.(washougal_river_winter,C1-3)          0.040757
+D.(coweeman_river_winter,S1-4)          -0.117197
+D.(east_fork_lewis_river_winter,S1-4)   -0.040715
+D.(kalama_river_summer,S1-4)            -0.022386
+D.(kalama_river_winter,S1-4)             0.071430
+D.(lower_cowlitz_river_winter,S1-4)     -0.451392
+D.(south_fork_toutle_river_winter,S1-4) -0.068067
+D.(tilton_river_winter,S1-4)             0.122578
+D.(upper_cowlitz_river_winter,S1-4)      0.059695
+D.(washougal_river_winter,S1-4)         -0.219913
+D.(coweeman_river_winter,C1-4)           0.124410
+D.(east_fork_lewis_river_winter,C1-4)    0.127488
+D.(kalama_river_summer,C1-4)            -0.066523
+D.(kalama_river_winter,C1-4)             0.155787
+D.(lower_cowlitz_river_winter,C1-4)     -0.246952
+D.(south_fork_toutle_river_winter,C1-4)  0.068655
+D.(tilton_river_winter,C1-4)             0.125492
+D.(upper_cowlitz_river_winter,C1-4)      0.103936
+D.(washougal_river_winter,C1-4)          0.195852
+D.(coweeman_river_winter,S1-5)          -0.163883
+D.(east_fork_lewis_river_winter,S1-5)   -0.082063
+D.(kalama_river_summer,S1-5)             0.128463
+D.(kalama_river_winter,S1-5)             0.068320
+D.(lower_cowlitz_river_winter,S1-5)      0.409315
+D.(south_fork_toutle_river_winter,S1-5) -0.009286
+D.(tilton_river_winter,S1-5)            -0.386147
+D.(upper_cowlitz_river_winter,S1-5)      0.087418
+D.(washougal_river_winter,S1-5)         -0.069609
+D.(coweeman_river_winter,C1-5)          -0.120105
+D.(east_fork_lewis_river_winter,C1-5)   -0.286216
+D.(kalama_river_summer,C1-5)             0.054608
+D.(kalama_river_winter,C1-5)             0.173239
+D.(lower_cowlitz_river_winter,C1-5)      0.255956
+D.(south_fork_toutle_river_winter,C1-5) -0.358093
+D.(tilton_river_winter,C1-5)            -0.154457
+D.(upper_cowlitz_river_winter,C1-5)     -0.001424
+D.(washougal_river_winter,C1-5)         -0.363120
+Initial states (x0) defined at t=0
+
+Standard errors have not been calculated. 
+Use MARSSparamCIs to compute CIs and bias estimates.</code></pre>
+</div>
+</div>
+</section>
+<section id="evaluating-the-effect-of-different-cycles" class="level2" data-number="14.2">
+<h2 data-number="14.2" class="anchored" data-anchor-id="evaluating-the-effect-of-different-cycles"><span class="header-section-number">14.2</span> Evaluating the effect of different cycles</h2>
+<p>We can then plot the effects of each cycle estimate.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="Lab-2-team-2_final_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>These estimates suggest that there is some evidence of cycling at the 5 year interval in the East Fork Lewis, the South Fork Toutle, the Tilton, and the Washougal River steelhead populations.</p>
+<p>This, however, increases our AICc quite a bit, from 459.0557 in our original best model to 582.6302. Now let’s try just including 5 year cycles and compare this AICc to our best model.</p>
+</section>
+<section id="comparing-models-with-and-without-5-year-cycles" class="level2" data-number="14.3">
+<h2 data-number="14.3" class="anchored" data-anchor-id="comparing-models-with-and-without-5-year-cycles"><span class="header-section-number">14.3</span> Comparing models with and without 5 year cycles</h2>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Success! abstol and log-log tests passed at 386 iterations.
+Alert: conv.test.slope.tol is 0.5.
+Test with smaller values (&lt;0.1) to ensure convergence.
+
+MARSS fit is
+Estimation method: kem 
+Convergence test: conv.test.slope.tol = 0.5, abstol = 0.001
+Estimation converged in 386 iterations. 
+Log-likelihood: -187.2444 
+AIC: 462.4888   AICc: 482.2888   
+ 
+                                        Estimate
+A.kalama_river_winter                    0.24684
+A.south_fork_toutle_river_winter         0.36821
+A.tilton_river_winter                   -0.78743
+A.upper_cowlitz_river_winter            -0.19833
+R.diag                                   0.14171
+U.1                                      0.03266
+Q.(1,1)                                  0.18084
+Q.(2,1)                                  0.12142
+Q.(3,1)                                 -0.00192
+Q.(4,1)                                  0.00550
+Q.(5,1)                                  0.11653
+Q.(2,2)                                  0.14378
+Q.(3,2)                                 -0.05419
+Q.(4,2)                                  0.11406
+Q.(5,2)                                  0.10159
+Q.(3,3)                                  0.08860
+Q.(4,3)                                  0.00342
+Q.(5,3)                                  0.00379
+Q.(4,4)                                  0.41381
+Q.(5,4)                                  0.10054
+Q.(5,5)                                  0.09813
+x0.coweeman                              4.00994
+x0.ef_lewis                              3.25543
+x0.kalama                                6.23754
+x0.cowlitz                               2.83372
+x0.washougal                             3.65518
+D.(coweeman_river_winter,S1-5)          -0.12553
+D.(east_fork_lewis_river_winter,S1-5)   -0.01908
+D.(kalama_river_summer,S1-5)             0.12381
+D.(kalama_river_winter,S1-5)             0.06702
+D.(lower_cowlitz_river_winter,S1-5)      0.01015
+D.(south_fork_toutle_river_winter,S1-5)  0.02201
+D.(tilton_river_winter,S1-5)            -0.40277
+D.(upper_cowlitz_river_winter,S1-5)      0.07656
+D.(washougal_river_winter,S1-5)         -0.04601
+D.(coweeman_river_winter,C1-5)          -0.12431
+D.(east_fork_lewis_river_winter,C1-5)   -0.27756
+D.(kalama_river_summer,C1-5)             0.05680
+D.(kalama_river_winter,C1-5)             0.16503
+D.(lower_cowlitz_river_winter,C1-5)     -0.10268
+D.(south_fork_toutle_river_winter,C1-5) -0.34589
+D.(tilton_river_winter,C1-5)            -0.09048
+D.(upper_cowlitz_river_winter,C1-5)      0.06995
+D.(washougal_river_winter,C1-5)         -0.30581
+Initial states (x0) defined at t=0
+
+Standard errors have not been calculated. 
+Use MARSSparamCIs to compute CIs and bias estimates.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 482.2888 459.0557</code></pre>
+</div>
+</div>
+<p>Interesting– This greatly improves our AICc, but the model without cycles still test as the best model.</p>
+<p>Next we compare the fits of the best spatial model and the spatial model with cycling.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>MARSSresiduals.tT reported warnings. See msg element or attribute of returned residuals object.</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="Lab-2-team-2_final_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>plot type =  fitted.ytT  Observations with fitted values</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>MARSSresiduals.tT reported warnings. See msg element or attribute of returned residuals object.</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="Lab-2-team-2_final_files/figure-html/unnamed-chunk-14-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>plot type =  fitted.ytT  Observations with fitted values</code></pre>
+</div>
+</div>
+<p>Adding a 5 year cycling component does not have significant changes to the fit during years of data, but it does have a big impact on the hindcast and forecast fits.</p>
+<p>Next we compare the residuals of our best model and our model with 5 year cycles.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>MARSSresiduals.tt1 reported warnings. See msg element of returned residuals object.</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="Lab-2-team-2_final_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>MARSSresiduals.tt1 reported warnings. See msg element of returned residuals object.</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="Lab-2-team-2_final_files/figure-html/unnamed-chunk-15-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>MARSSresiduals.tt1 reported warnings. See msg element of returned residuals object.</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="Lab-2-team-2_final_files/figure-html/unnamed-chunk-15-3.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>plot type = acf.std.model.resids.ytt1</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>MARSSresiduals.tt1 reported warnings. See msg element of returned residuals object.</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="Lab-2-team-2_final_files/figure-html/unnamed-chunk-15-4.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>plot type = acf.std.model.resids.ytt1</code></pre>
+</div>
+</div>
+<p>When comparing the residual and ACF plots of the spatial model w/o cycling and the spatial model w/ cycling, we do see some of the residual and ACF plots improve. For example, around lag 10 in the Kalama River winter population, the autocorrelation reduces relative the spatial model w/o cycling. The residual plots also remove some of the cycling patterns in a few groups (e.g., Tilton River, South Fork Toutle). However, the cyclic covariates in the process does not completely remove the residuals’ cycling patterns; positive values tend to follow positive ones.</p>
+</section>
+</section>
+<section id="discussion" class="level1" data-number="15">
+<h1 data-number="15"><span class="header-section-number">15</span> Discussion</h1>
+<p>Our best model was our “spatial” group model, which was designed based on the spatial proximity of the subwatersheds of study and their steelhead populations. This grouped 9 steelhead populations together to form 5 populations or 5 “hidden states” of steelhead abundance dynamics through time. This implies that steelhead populations located closer in space or within the same catchment share temporal variation in their abundance dynamics, suggesting that populations are largely influenced by similar river or watershed characteristics (e.g., habitat quality or availability) and not so much run timing. All run populations seem to have increased since the earliest year of data, though some populations seem to have decreased slightly in recent years (e.g., Washougal, Cowlitz, East Fork Lewis). Our best performing model seems to fit the data well with no major problems in the residuals, with the exception of cycling.</p>
+<p>We found some evidence for 5 year cycles, though it did not lower the AIC relative to the spatial model. This makes sense since steelhead (relative to other salmonids) do not exhibit as much cycling. Even within these 9 runs, we see some runs (e.g.&nbsp;Kalama winter) show more cycling patterns than others (e.g.&nbsp;Upper Cowlitz winter) do. A reason why AIC does not support adding 5 year cycles to all runs is that not all runs need cycling and the addition of parameters for these runs is superfluous. Cycling did somewhat improve autocorrelation in our model residuals by reducing the number of statistically significant ACF lags.</p>
+<p>Future improvements to our best performing spatial model would be to include cycling in only populations that strong seasonal patterns. This, however, involves “hand-baking” a series of upper C matrices and was outside the scope of this study.</p>
+</section>
+<section id="description-of-each-team-members-contributions" class="level1" data-number="16">
+<h1 data-number="16"><span class="header-section-number">16</span> Description of each team member’s contributions</h1>
+<p>Liz worked on the model with 9 states, the spatial model, correlation model, model selection process, and cycling model. Terrance worked on the methods, matrix notations, simple model with 1 state, and run timing model. Eric worked on adding the cycling component and model selection of cycling period. All group members worked on the discussion and interpretation.</p>
+
+
+<!-- -->
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../Lab-2/Final_Write_ups/Lab-2-team-1_final.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Team 1</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../../Lab-2/Final_Write_ups/Lab-2-team-3_final.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Team 3</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb36" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> Team 2</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> Lab 2 MARSS Models</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> Liz Elmstrom (SAFS), Terrance Wang, Eric French</span></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> April 20, 2023</span></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a><span class="an">output:</span><span class="co"> </span></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a><span class="co">  html_document:</span></span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a><span class="co">    code-folding: true</span></span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a><span class="co">    toc_float: true</span></span>
+<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a><span class="fu"># General Questions</span></span>
+<span id="cb36-14"><a href="#cb36-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-15"><a href="#cb36-15" aria-hidden="true" tabindex="-1"></a>Each group has the same general tasks, but you will adapt them as you work on the data.</span>
+<span id="cb36-16"><a href="#cb36-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-17"><a href="#cb36-17" aria-hidden="true" tabindex="-1"></a><span class="ss">1.  </span>Create estimates of spawner abundance for all missing years and provide estimates of the decline from the historical abundance.</span>
+<span id="cb36-18"><a href="#cb36-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-19"><a href="#cb36-19" aria-hidden="true" tabindex="-1"></a><span class="ss">2.  </span>Evaluate support for the major population groups. Are the populations in the groups more correlated than outside the groups?</span>
+<span id="cb36-20"><a href="#cb36-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-21"><a href="#cb36-21" aria-hidden="true" tabindex="-1"></a><span class="ss">3.  </span>Evaluate the evidence of cycling in the data. *We will talk about how to do this on the Tuesday after lab.*</span>
+<span id="cb36-22"><a href="#cb36-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-23"><a href="#cb36-23" aria-hidden="true" tabindex="-1"></a>We analyzed the Steelhead (Lower Columbia ESU). We decided to exclude the Gorge Tributary winter run because there was only 1 short time series, and focused the 9 remaining runs that belonged to Cascade major population group. </span>
+<span id="cb36-24"><a href="#cb36-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-25"><a href="#cb36-25" aria-hidden="true" tabindex="-1"></a><span class="fu"># Methods</span></span>
+<span id="cb36-26"><a href="#cb36-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-27"><a href="#cb36-27" aria-hidden="true" tabindex="-1"></a>We tested 5 different population groups hypotheses: one population, individual populations, run timing groups, spatial groups, and correlation groups. </span>
+<span id="cb36-28"><a href="#cb36-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-29"><a href="#cb36-29" aria-hidden="true" tabindex="-1"></a>One population</span>
+<span id="cb36-30"><a href="#cb36-30" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb36-31"><a href="#cb36-31" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix} y_{1} <span class="sc">\\</span> y_{2} <span class="sc">\\</span> \vdots <span class="sc">\\</span>y_{9} \end{bmatrix}_{t} = </span>
+<span id="cb36-32"><a href="#cb36-32" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix}1<span class="sc">\\</span></span>
+<span id="cb36-33"><a href="#cb36-33" aria-hidden="true" tabindex="-1"></a>1<span class="sc">\\</span></span>
+<span id="cb36-34"><a href="#cb36-34" aria-hidden="true" tabindex="-1"></a>\vdots<span class="sc">\\</span></span>
+<span id="cb36-35"><a href="#cb36-35" aria-hidden="true" tabindex="-1"></a><span class="sc">\\</span> </span>
+<span id="cb36-36"><a href="#cb36-36" aria-hidden="true" tabindex="-1"></a>1\end{bmatrix} </span>
+<span id="cb36-37"><a href="#cb36-37" aria-hidden="true" tabindex="-1"></a> x_{t}  + \mathbf{a} + \mathbf{v_t} \text{ where } \mathbf{v_t} \sim MVN(0, \mathbf{R})</span>
+<span id="cb36-38"><a href="#cb36-38" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb36-39"><a href="#cb36-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-40"><a href="#cb36-40" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb36-41"><a href="#cb36-41" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix} x \end{bmatrix}_{t} = </span>
+<span id="cb36-42"><a href="#cb36-42" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix}1<span class="sc">\\</span></span>
+<span id="cb36-43"><a href="#cb36-43" aria-hidden="true" tabindex="-1"></a>\end{bmatrix} </span>
+<span id="cb36-44"><a href="#cb36-44" aria-hidden="true" tabindex="-1"></a> x_{t-1}  + u + w_t \text{ where } w_t \sim N(0,q)</span>
+<span id="cb36-45"><a href="#cb36-45" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb36-46"><a href="#cb36-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-47"><a href="#cb36-47" aria-hidden="true" tabindex="-1"></a>Individual populations</span>
+<span id="cb36-48"><a href="#cb36-48" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb36-49"><a href="#cb36-49" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix} y_{1} <span class="sc">\\</span> y_{2} <span class="sc">\\</span> \vdots <span class="sc">\\</span>y_{9} \end{bmatrix}_{t} = </span>
+<span id="cb36-50"><a href="#cb36-50" aria-hidden="true" tabindex="-1"></a>I_{9}</span>
+<span id="cb36-51"><a href="#cb36-51" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix} x_{1} <span class="sc">\\</span> x_{2} <span class="sc">\\</span> \vdots <span class="sc">\\</span>x_{9} \end{bmatrix}_{t} + \mathbf{a} + \mathbf{v_t} \text{ where } \mathbf{v_t} \sim MVN(0, \mathbf{R})</span>
+<span id="cb36-52"><a href="#cb36-52" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb36-53"><a href="#cb36-53" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb36-54"><a href="#cb36-54" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix} x_{1} <span class="sc">\\</span></span>
+<span id="cb36-55"><a href="#cb36-55" aria-hidden="true" tabindex="-1"></a>x_{2} <span class="sc">\\</span> </span>
+<span id="cb36-56"><a href="#cb36-56" aria-hidden="true" tabindex="-1"></a>\vdots <span class="sc">\\</span></span>
+<span id="cb36-57"><a href="#cb36-57" aria-hidden="true" tabindex="-1"></a>x_{9}</span>
+<span id="cb36-58"><a href="#cb36-58" aria-hidden="true" tabindex="-1"></a>\end{bmatrix}_{t}</span>
+<span id="cb36-59"><a href="#cb36-59" aria-hidden="true" tabindex="-1"></a>= </span>
+<span id="cb36-60"><a href="#cb36-60" aria-hidden="true" tabindex="-1"></a>I_{9}</span>
+<span id="cb36-61"><a href="#cb36-61" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix} x_{1} <span class="sc">\\</span></span>
+<span id="cb36-62"><a href="#cb36-62" aria-hidden="true" tabindex="-1"></a>x_{2} <span class="sc">\\</span> </span>
+<span id="cb36-63"><a href="#cb36-63" aria-hidden="true" tabindex="-1"></a>\vdots <span class="sc">\\</span></span>
+<span id="cb36-64"><a href="#cb36-64" aria-hidden="true" tabindex="-1"></a>x_{9}</span>
+<span id="cb36-65"><a href="#cb36-65" aria-hidden="true" tabindex="-1"></a>\end{bmatrix}_{t-1}  + \begin{bmatrix}u_{1}\\u_{2}\\ \vdots \\u_{9} \end{bmatrix}  + \mathbf{w_t} \text{ where } \mathbf{w_t} \sim MVN(0, \mathbf{Q})</span>
+<span id="cb36-66"><a href="#cb36-66" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb36-67"><a href="#cb36-67" aria-hidden="true" tabindex="-1"></a>Run Timing Groups, Spatial Groups, Correlation Groups</span>
+<span id="cb36-68"><a href="#cb36-68" aria-hidden="true" tabindex="-1"></a>We provide the Z matrices for the 3 groupings below. </span>
+<span id="cb36-69"><a href="#cb36-69" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb36-70"><a href="#cb36-70" aria-hidden="true" tabindex="-1"></a>\begin{equation*}</span>
+<span id="cb36-71"><a href="#cb36-71" aria-hidden="true" tabindex="-1"></a>\begin{array}{rcccc}</span>
+<span id="cb36-72"><a href="#cb36-72" aria-hidden="true" tabindex="-1"></a>&amp;Run Timing&amp;Spatial&amp;Correlation<span class="sc">\\</span></span>
+<span id="cb36-73"><a href="#cb36-73" aria-hidden="true" tabindex="-1"></a>&amp;\text{summer winter}&amp;\text{Coweeman E-Fork-Lewis Kalama Cowlitz Washougal}&amp;\text{Coweeman Kalama Cowlitz}<span class="sc">\\</span></span>
+<span id="cb36-74"><a href="#cb36-74" aria-hidden="true" tabindex="-1"></a>\hline</span>
+<span id="cb36-75"><a href="#cb36-75" aria-hidden="true" tabindex="-1"></a>\begin{array}{r}\text{Coweeman - W}<span class="sc">\\</span> \text{Fork E Lewis - W} <span class="sc">\\</span> \text{Kalama - S} <span class="sc">\\</span> \text{Kalama - W} <span class="sc">\\</span> </span>
+<span id="cb36-76"><a href="#cb36-76" aria-hidden="true" tabindex="-1"></a>\text{Lower Cowlitz - W} <span class="sc">\\</span> \text{Toutle - W} <span class="sc">\\</span> \text{Tilton - W} <span class="sc">\\</span> \text{Upper Cowlitz - W} <span class="sc">\\</span> \text{Washougal - W}\end{array}&amp;</span>
+<span id="cb36-77"><a href="#cb36-77" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix}</span>
+<span id="cb36-78"><a href="#cb36-78" aria-hidden="true" tabindex="-1"></a>0 &amp; 1 <span class="sc">\\</span></span>
+<span id="cb36-79"><a href="#cb36-79" aria-hidden="true" tabindex="-1"></a>0 &amp; 1 <span class="sc">\\</span></span>
+<span id="cb36-80"><a href="#cb36-80" aria-hidden="true" tabindex="-1"></a>1 &amp; 0 <span class="sc">\\</span></span>
+<span id="cb36-81"><a href="#cb36-81" aria-hidden="true" tabindex="-1"></a>0 &amp; 1 <span class="sc">\\</span></span>
+<span id="cb36-82"><a href="#cb36-82" aria-hidden="true" tabindex="-1"></a>0 &amp; 1 <span class="sc">\\</span></span>
+<span id="cb36-83"><a href="#cb36-83" aria-hidden="true" tabindex="-1"></a>0 &amp; 1 <span class="sc">\\</span></span>
+<span id="cb36-84"><a href="#cb36-84" aria-hidden="true" tabindex="-1"></a>0 &amp; 1 <span class="sc">\\</span></span>
+<span id="cb36-85"><a href="#cb36-85" aria-hidden="true" tabindex="-1"></a>0 &amp; 1 <span class="sc">\\</span></span>
+<span id="cb36-86"><a href="#cb36-86" aria-hidden="true" tabindex="-1"></a>0 &amp; 1 <span class="sc">\\</span></span>
+<span id="cb36-87"><a href="#cb36-87" aria-hidden="true" tabindex="-1"></a>\end{bmatrix}&amp;</span>
+<span id="cb36-88"><a href="#cb36-88" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix}</span>
+<span id="cb36-89"><a href="#cb36-89" aria-hidden="true" tabindex="-1"></a>1 &amp; 0 &amp; 0 &amp; 0 &amp;0 <span class="sc">\\</span></span>
+<span id="cb36-90"><a href="#cb36-90" aria-hidden="true" tabindex="-1"></a>0 &amp; 1 &amp; 0 &amp; 0 &amp;0 <span class="sc">\\</span></span>
+<span id="cb36-91"><a href="#cb36-91" aria-hidden="true" tabindex="-1"></a>0 &amp; 0 &amp; 1 &amp; 0 &amp;0 <span class="sc">\\</span></span>
+<span id="cb36-92"><a href="#cb36-92" aria-hidden="true" tabindex="-1"></a>0 &amp; 0 &amp; 1 &amp; 0 &amp;0 <span class="sc">\\</span></span>
+<span id="cb36-93"><a href="#cb36-93" aria-hidden="true" tabindex="-1"></a>0 &amp; 0 &amp; 0 &amp; 1 &amp;0 <span class="sc">\\</span></span>
+<span id="cb36-94"><a href="#cb36-94" aria-hidden="true" tabindex="-1"></a>1 &amp; 0 &amp; 0 &amp; 0 &amp;0 <span class="sc">\\</span></span>
+<span id="cb36-95"><a href="#cb36-95" aria-hidden="true" tabindex="-1"></a>0 &amp; 0 &amp; 0 &amp; 1 &amp;0 <span class="sc">\\</span></span>
+<span id="cb36-96"><a href="#cb36-96" aria-hidden="true" tabindex="-1"></a>1 &amp; 0 &amp; 0 &amp; 0 &amp;0 <span class="sc">\\</span></span>
+<span id="cb36-97"><a href="#cb36-97" aria-hidden="true" tabindex="-1"></a>0 &amp; 0 &amp; 0 &amp; 0 &amp;1 <span class="sc">\\</span> </span>
+<span id="cb36-98"><a href="#cb36-98" aria-hidden="true" tabindex="-1"></a>\end{bmatrix}&amp;</span>
+<span id="cb36-99"><a href="#cb36-99" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix}</span>
+<span id="cb36-100"><a href="#cb36-100" aria-hidden="true" tabindex="-1"></a>1 &amp; 0 &amp; 0 <span class="sc">\\</span></span>
+<span id="cb36-101"><a href="#cb36-101" aria-hidden="true" tabindex="-1"></a>1 &amp; 0 &amp; 0 <span class="sc">\\</span></span>
+<span id="cb36-102"><a href="#cb36-102" aria-hidden="true" tabindex="-1"></a>0 &amp; 1 &amp; 0 <span class="sc">\\</span></span>
+<span id="cb36-103"><a href="#cb36-103" aria-hidden="true" tabindex="-1"></a>0 &amp; 1 &amp; 0 <span class="sc">\\</span></span>
+<span id="cb36-104"><a href="#cb36-104" aria-hidden="true" tabindex="-1"></a>0 &amp; 0 &amp; 1 <span class="sc">\\</span></span>
+<span id="cb36-105"><a href="#cb36-105" aria-hidden="true" tabindex="-1"></a>1 &amp; 0 &amp; 0 <span class="sc">\\</span></span>
+<span id="cb36-106"><a href="#cb36-106" aria-hidden="true" tabindex="-1"></a>0 &amp; 0 &amp; 1 <span class="sc">\\</span></span>
+<span id="cb36-107"><a href="#cb36-107" aria-hidden="true" tabindex="-1"></a>0 &amp; 0 &amp; 1 <span class="sc">\\</span></span>
+<span id="cb36-108"><a href="#cb36-108" aria-hidden="true" tabindex="-1"></a>1 &amp; 0 &amp; 0</span>
+<span id="cb36-109"><a href="#cb36-109" aria-hidden="true" tabindex="-1"></a>\end{bmatrix}&amp;</span>
+<span id="cb36-110"><a href="#cb36-110" aria-hidden="true" tabindex="-1"></a>\end{array}</span>
+<span id="cb36-111"><a href="#cb36-111" aria-hidden="true" tabindex="-1"></a>\end{equation*}</span>
+<span id="cb36-112"><a href="#cb36-112" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb36-113"><a href="#cb36-113" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-114"><a href="#cb36-114" aria-hidden="true" tabindex="-1"></a>We assume that all models have identical observation errors, thus a diagonal and equal R matrix. </span>
+<span id="cb36-115"><a href="#cb36-115" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb36-116"><a href="#cb36-116" aria-hidden="true" tabindex="-1"></a>\mathbf{R} = </span>
+<span id="cb36-117"><a href="#cb36-117" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix} r &amp; 0  &amp; ...&amp; 0<span class="sc">\\</span></span>
+<span id="cb36-118"><a href="#cb36-118" aria-hidden="true" tabindex="-1"></a>0 &amp; r &amp;  ...&amp; 0<span class="sc">\\</span></span>
+<span id="cb36-119"><a href="#cb36-119" aria-hidden="true" tabindex="-1"></a>\vdots &amp; 0 &amp; \ddots &amp; \vdots<span class="sc">\\</span></span>
+<span id="cb36-120"><a href="#cb36-120" aria-hidden="true" tabindex="-1"></a>0 &amp; 0 &amp; 0  &amp; r \end{bmatrix}</span>
+<span id="cb36-121"><a href="#cb36-121" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb36-122"><a href="#cb36-122" aria-hidden="true" tabindex="-1"></a>For each model we test both equal and unequal biases for the states. We also assumed all states were correlated over time and test both equal var-cov and unconstrained process errors for each state.</span>
+<span id="cb36-123"><a href="#cb36-123" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-124"><a href="#cb36-124" aria-hidden="true" tabindex="-1"></a>Equal Bias</span>
+<span id="cb36-125"><a href="#cb36-125" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb36-126"><a href="#cb36-126" aria-hidden="true" tabindex="-1"></a>\mathbf{u} = </span>
+<span id="cb36-127"><a href="#cb36-127" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix} u<span class="sc">\\</span></span>
+<span id="cb36-128"><a href="#cb36-128" aria-hidden="true" tabindex="-1"></a>\vdots<span class="sc">\\</span></span>
+<span id="cb36-129"><a href="#cb36-129" aria-hidden="true" tabindex="-1"></a>u\end{bmatrix}</span>
+<span id="cb36-130"><a href="#cb36-130" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb36-131"><a href="#cb36-131" aria-hidden="true" tabindex="-1"></a>Unequal Bias</span>
+<span id="cb36-132"><a href="#cb36-132" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb36-133"><a href="#cb36-133" aria-hidden="true" tabindex="-1"></a>\mathbf{u} = </span>
+<span id="cb36-134"><a href="#cb36-134" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix} u_{1}<span class="sc">\\</span></span>
+<span id="cb36-135"><a href="#cb36-135" aria-hidden="true" tabindex="-1"></a>\vdots<span class="sc">\\</span></span>
+<span id="cb36-136"><a href="#cb36-136" aria-hidden="true" tabindex="-1"></a>u_{i}\end{bmatrix} \text{where i is # of states} </span>
+<span id="cb36-137"><a href="#cb36-137" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb36-138"><a href="#cb36-138" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-139"><a href="#cb36-139" aria-hidden="true" tabindex="-1"></a>Equal Variance-Covariance</span>
+<span id="cb36-140"><a href="#cb36-140" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb36-141"><a href="#cb36-141" aria-hidden="true" tabindex="-1"></a>\begin{equation}</span>
+<span id="cb36-142"><a href="#cb36-142" aria-hidden="true" tabindex="-1"></a>\mathbf{Q}=\begin{bmatrix}</span>
+<span id="cb36-143"><a href="#cb36-143" aria-hidden="true" tabindex="-1"></a>    q &amp; c &amp; ... &amp; c <span class="sc">\\</span></span>
+<span id="cb36-144"><a href="#cb36-144" aria-hidden="true" tabindex="-1"></a>    c &amp; q &amp; \ddots &amp; \vdots<span class="sc">\\</span></span>
+<span id="cb36-145"><a href="#cb36-145" aria-hidden="true" tabindex="-1"></a>    \vdots &amp; c &amp; \ddots &amp; c <span class="sc">\\</span></span>
+<span id="cb36-146"><a href="#cb36-146" aria-hidden="true" tabindex="-1"></a>    c &amp; c &amp; ... &amp; q \end{bmatrix}</span>
+<span id="cb36-147"><a href="#cb36-147" aria-hidden="true" tabindex="-1"></a>\end{equation} </span>
+<span id="cb36-148"><a href="#cb36-148" aria-hidden="true" tabindex="-1"></a>\text{where # of rows is equal to # of states} </span>
+<span id="cb36-149"><a href="#cb36-149" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb36-150"><a href="#cb36-150" aria-hidden="true" tabindex="-1"></a>Unconstrained</span>
+<span id="cb36-151"><a href="#cb36-151" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb36-152"><a href="#cb36-152" aria-hidden="true" tabindex="-1"></a>\begin{equation}</span>
+<span id="cb36-153"><a href="#cb36-153" aria-hidden="true" tabindex="-1"></a>\mathbf{Q}=\begin{bmatrix}</span>
+<span id="cb36-154"><a href="#cb36-154" aria-hidden="true" tabindex="-1"></a>    q_{1}&amp; c_{1,2} &amp; ... &amp; c_{1,i} <span class="sc">\\</span></span>
+<span id="cb36-155"><a href="#cb36-155" aria-hidden="true" tabindex="-1"></a>    c_{1,2} &amp; q_{2} &amp; \ddots &amp; c_{2,i}<span class="sc">\\</span></span>
+<span id="cb36-156"><a href="#cb36-156" aria-hidden="true" tabindex="-1"></a>    \vdots &amp; \ddots &amp; \ddots &amp; \vdots <span class="sc">\\</span></span>
+<span id="cb36-157"><a href="#cb36-157" aria-hidden="true" tabindex="-1"></a>    c_{1,i} &amp; ... &amp; c_{i-1,i} &amp; q_{i} \end{bmatrix}</span>
+<span id="cb36-158"><a href="#cb36-158" aria-hidden="true" tabindex="-1"></a>\end{equation} </span>
+<span id="cb36-159"><a href="#cb36-159" aria-hidden="true" tabindex="-1"></a>\text{where # of rows is equal to # of states} </span>
+<span id="cb36-160"><a href="#cb36-160" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb36-161"><a href="#cb36-161" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-162"><a href="#cb36-162" aria-hidden="true" tabindex="-1"></a><span class="fu"># Data exploration</span></span>
+<span id="cb36-163"><a href="#cb36-163" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-164"><a href="#cb36-164" aria-hidden="true" tabindex="-1"></a>Load the data.</span>
+<span id="cb36-165"><a href="#cb36-165" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-168"><a href="#cb36-168" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb36-169"><a href="#cb36-169" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb36-170"><a href="#cb36-170" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb36-171"><a href="#cb36-171" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(janitor)</span>
+<span id="cb36-172"><a href="#cb36-172" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MARSS)</span>
+<span id="cb36-173"><a href="#cb36-173" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(forecast)</span>
+<span id="cb36-174"><a href="#cb36-174" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span>
+<span id="cb36-175"><a href="#cb36-175" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-176"><a href="#cb36-176" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"Lab-2"</span>, <span class="st">"Data_Images"</span>, <span class="st">"columbia-river.rda"</span>))</span>
+<span id="cb36-177"><a href="#cb36-177" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-178"><a href="#cb36-178" aria-hidden="true" tabindex="-1"></a><span class="co">#Evolutionary Significant Units</span></span>
+<span id="cb36-179"><a href="#cb36-179" aria-hidden="true" tabindex="-1"></a>esu <span class="ot">&lt;-</span> <span class="fu">unique</span>(columbia.river<span class="sc">$</span>esu_dps)</span>
+<span id="cb36-180"><a href="#cb36-180" aria-hidden="true" tabindex="-1"></a>esu</span>
+<span id="cb36-181"><a href="#cb36-181" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb36-182"><a href="#cb36-182" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-185"><a href="#cb36-185" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb36-186"><a href="#cb36-186" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> columbia.river <span class="sc">%&gt;%</span> <span class="fu">subset</span>(esu_dps <span class="sc">%in%</span> <span class="st">"Steelhead (Lower Columbia River DPS)"</span>)</span>
+<span id="cb36-187"><a href="#cb36-187" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-188"><a href="#cb36-188" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"colnames: "</span>, <span class="fu">colnames</span>(df), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb36-189"><a href="#cb36-189" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-190"><a href="#cb36-190" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(df<span class="sc">$</span>esapopname)</span>
+<span id="cb36-191"><a href="#cb36-191" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(df<span class="sc">$</span>commonpopname)</span>
+<span id="cb36-192"><a href="#cb36-192" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-193"><a href="#cb36-193" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>esapopname2 <span class="ot">&lt;-</span> stringr<span class="sc">::</span><span class="fu">str_replace</span>(df<span class="sc">$</span>esapopname, <span class="st">"Steelhead [(]Lower Columbia River DPS[)] "</span>, <span class="st">""</span>)</span>
+<span id="cb36-194"><a href="#cb36-194" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(df<span class="sc">$</span>esapopname2)</span>
+<span id="cb36-195"><a href="#cb36-195" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-196"><a href="#cb36-196" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">x=</span>spawningyear, <span class="at">y=</span><span class="fu">log</span>(value), <span class="at">color=</span>majorpopgroup)) <span class="sc">+</span> </span>
+<span id="cb36-197"><a href="#cb36-197" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size=</span><span class="dv">2</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">+</span> </span>
+<span id="cb36-198"><a href="#cb36-198" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">strip.text.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">3</span>)) <span class="sc">+</span></span>
+<span id="cb36-199"><a href="#cb36-199" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">5</span>, <span class="at">angle =</span> <span class="dv">90</span>)) <span class="sc">+</span></span>
+<span id="cb36-200"><a href="#cb36-200" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>esapopname2) <span class="sc">+</span></span>
+<span id="cb36-201"><a href="#cb36-201" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">'Lower Columbia Steelhead Populations'</span>)<span class="sc">+</span></span>
+<span id="cb36-202"><a href="#cb36-202" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">strip.text.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">10</span>))</span>
+<span id="cb36-203"><a href="#cb36-203" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-204"><a href="#cb36-204" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb36-205"><a href="#cb36-205" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-206"><a href="#cb36-206" aria-hidden="true" tabindex="-1"></a>Wrangle the data.</span>
+<span id="cb36-207"><a href="#cb36-207" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-210"><a href="#cb36-210" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb36-211"><a href="#cb36-211" aria-hidden="true" tabindex="-1"></a>esuname <span class="ot">&lt;-</span> esu[<span class="dv">3</span>]</span>
+<span id="cb36-212"><a href="#cb36-212" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> columbia.river <span class="sc">%&gt;%</span> </span>
+<span id="cb36-213"><a href="#cb36-213" aria-hidden="true" tabindex="-1"></a>  <span class="fu">subset</span>(esu_dps <span class="sc">==</span> esuname) <span class="sc">%&gt;%</span> <span class="co"># get only this ESU</span></span>
+<span id="cb36-214"><a href="#cb36-214" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">log.spawner =</span> <span class="fu">log</span>(value)) <span class="sc">%&gt;%</span> <span class="co"># create a column called log.spawner</span></span>
+<span id="cb36-215"><a href="#cb36-215" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(esapopname, spawningyear, log.spawner) <span class="sc">%&gt;%</span> <span class="co"># get just the columns that I need</span></span>
+<span id="cb36-216"><a href="#cb36-216" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> <span class="st">"esapopname"</span>, <span class="at">values_from =</span> <span class="st">"log.spawner"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb36-217"><a href="#cb36-217" aria-hidden="true" tabindex="-1"></a>  <span class="fu">column_to_rownames</span>(<span class="at">var =</span> <span class="st">"spawningyear"</span>) <span class="sc">%&gt;%</span> <span class="co"># make the years rownames</span></span>
+<span id="cb36-218"><a href="#cb36-218" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.matrix</span>() <span class="sc">%&gt;%</span> <span class="co"># turn into a matrix with year down the rows</span></span>
+<span id="cb36-219"><a href="#cb36-219" aria-hidden="true" tabindex="-1"></a>  <span class="fu">t</span>() <span class="co"># make time across the columns</span></span>
+<span id="cb36-220"><a href="#cb36-220" aria-hidden="true" tabindex="-1"></a>dat[<span class="fu">is.na</span>(dat)] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb36-221"><a href="#cb36-221" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-222"><a href="#cb36-222" aria-hidden="true" tabindex="-1"></a><span class="do">## Fixing row names</span></span>
+<span id="cb36-223"><a href="#cb36-223" aria-hidden="true" tabindex="-1"></a>tmp <span class="ot">&lt;-</span> <span class="fu">rownames</span>(dat)</span>
+<span id="cb36-224"><a href="#cb36-224" aria-hidden="true" tabindex="-1"></a>tmp <span class="ot">&lt;-</span> stringr<span class="sc">::</span><span class="fu">str_replace</span>(tmp, <span class="st">"Steelhead [(]Lower Columbia River DPS[)]"</span>, <span class="st">""</span>)</span>
+<span id="cb36-225"><a href="#cb36-225" aria-hidden="true" tabindex="-1"></a>tmp <span class="ot">&lt;-</span> <span class="fu">make_clean_names</span>(tmp)</span>
+<span id="cb36-226"><a href="#cb36-226" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(dat) <span class="ot">&lt;-</span> tmp</span>
+<span id="cb36-227"><a href="#cb36-227" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-228"><a href="#cb36-228" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> dat[<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>,]<span class="co"># remove upper gorge</span></span>
+<span id="cb36-229"><a href="#cb36-229" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> dat[ <span class="fu">order</span>(<span class="fu">row.names</span>(dat)), ]<span class="do">## sort</span></span>
+<span id="cb36-230"><a href="#cb36-230" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-231"><a href="#cb36-231" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb36-232"><a href="#cb36-232" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-233"><a href="#cb36-233" aria-hidden="true" tabindex="-1"></a><span class="fu"># Results</span></span>
+<span id="cb36-234"><a href="#cb36-234" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-235"><a href="#cb36-235" aria-hidden="true" tabindex="-1"></a><span class="fu">## The simplest model</span></span>
+<span id="cb36-236"><a href="#cb36-236" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-237"><a href="#cb36-237" aria-hidden="true" tabindex="-1"></a>Fitting the most simple model to help determine the need to group populations: One big population with different observations (populations). </span>
+<span id="cb36-238"><a href="#cb36-238" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-241"><a href="#cb36-241" aria-hidden="true" tabindex="-1"></a><span class="in">```{R}</span></span>
+<span id="cb36-242"><a href="#cb36-242" aria-hidden="true" tabindex="-1"></a>mod.list<span class="fl">.0</span> <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">B =</span> <span class="fu">matrix</span>(<span class="dv">1</span>), <span class="at">U =</span> <span class="fu">matrix</span>(<span class="st">"u"</span>), <span class="at">Q =</span> <span class="fu">matrix</span>(<span class="st">"q"</span>), </span>
+<span id="cb36-243"><a href="#cb36-243" aria-hidden="true" tabindex="-1"></a>    <span class="at">Z =</span> <span class="fu">matrix</span>(<span class="dv">1</span>, <span class="dv">9</span>, <span class="dv">1</span>), <span class="at">A =</span> <span class="st">"scaling"</span>, <span class="at">R =</span> <span class="st">"diagonal and equal"</span>, </span>
+<span id="cb36-244"><a href="#cb36-244" aria-hidden="true" tabindex="-1"></a>    <span class="at">x0 =</span> <span class="fu">matrix</span>(<span class="st">"mu"</span>), <span class="at">tinitx =</span> <span class="dv">0</span>)</span>
+<span id="cb36-245"><a href="#cb36-245" aria-hidden="true" tabindex="-1"></a>fit_simple <span class="ot">&lt;-</span> <span class="fu">MARSS</span>(dat, <span class="at">model=</span>mod.list<span class="fl">.0</span>, <span class="at">control=</span><span class="fu">list</span>(<span class="at">maxit=</span><span class="dv">1000</span>))</span>
+<span id="cb36-246"><a href="#cb36-246" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fit_simple, <span class="at">plot.type=</span><span class="st">"fitted.ytT"</span>)</span>
+<span id="cb36-247"><a href="#cb36-247" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-248"><a href="#cb36-248" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb36-249"><a href="#cb36-249" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-250"><a href="#cb36-250" aria-hidden="true" tabindex="-1"></a>We see that the simple model is not the best at fitting the population estimates for many of the populations (e.g., Upper Cowlitz winter, East Fork Lewis winter). Many of the residuals do not appear to be stationary.</span>
+<span id="cb36-251"><a href="#cb36-251" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-252"><a href="#cb36-252" aria-hidden="true" tabindex="-1"></a><span class="fu">## The most flexible model</span></span>
+<span id="cb36-253"><a href="#cb36-253" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-254"><a href="#cb36-254" aria-hidden="true" tabindex="-1"></a>Fitting the most flexible model to help determine spatial Z hypotheses: Individual populations with an unconstrained Q matrix and unequal U</span>
+<span id="cb36-255"><a href="#cb36-255" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-258"><a href="#cb36-258" aria-hidden="true" tabindex="-1"></a><span class="in">```{R}</span></span>
+<span id="cb36-259"><a href="#cb36-259" aria-hidden="true" tabindex="-1"></a>mod.list1 <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb36-260"><a href="#cb36-260" aria-hidden="true" tabindex="-1"></a>  <span class="at">U =</span> <span class="st">"unequal"</span>,</span>
+<span id="cb36-261"><a href="#cb36-261" aria-hidden="true" tabindex="-1"></a>  <span class="at">R =</span> <span class="st">"diagonal and equal"</span>,</span>
+<span id="cb36-262"><a href="#cb36-262" aria-hidden="true" tabindex="-1"></a>  <span class="at">Q =</span> <span class="st">"unconstrained"</span></span>
+<span id="cb36-263"><a href="#cb36-263" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb36-264"><a href="#cb36-264" aria-hidden="true" tabindex="-1"></a>fit1 <span class="ot">&lt;-</span> <span class="fu">MARSS</span>(dat, <span class="at">model=</span>mod.list1, <span class="at">control=</span><span class="fu">list</span>(<span class="at">maxit=</span><span class="dv">800</span>))</span>
+<span id="cb36-265"><a href="#cb36-265" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb36-266"><a href="#cb36-266" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-269"><a href="#cb36-269" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb36-270"><a href="#cb36-270" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fit1, <span class="at">plot.type=</span><span class="st">"fitted.ytT"</span>)</span>
+<span id="cb36-271"><a href="#cb36-271" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-272"><a href="#cb36-272" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(corrplot)</span>
+<span id="cb36-273"><a href="#cb36-273" aria-hidden="true" tabindex="-1"></a>Q <span class="ot">&lt;-</span> <span class="fu">coef</span>(fit1, <span class="at">type=</span><span class="st">"matrix"</span>)<span class="sc">$</span>Q</span>
+<span id="cb36-274"><a href="#cb36-274" aria-hidden="true" tabindex="-1"></a>corrmat <span class="ot">&lt;-</span> <span class="fu">diag</span>(<span class="dv">1</span><span class="sc">/</span><span class="fu">sqrt</span>(<span class="fu">diag</span>(Q))) <span class="sc">%*%</span> Q <span class="sc">%*%</span> <span class="fu">diag</span>(<span class="dv">1</span><span class="sc">/</span><span class="fu">sqrt</span>(<span class="fu">diag</span>(Q)))</span>
+<span id="cb36-275"><a href="#cb36-275" aria-hidden="true" tabindex="-1"></a><span class="fu">corrplot</span>(corrmat)</span>
+<span id="cb36-276"><a href="#cb36-276" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-277"><a href="#cb36-277" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb36-278"><a href="#cb36-278" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-279"><a href="#cb36-279" aria-hidden="true" tabindex="-1"></a>Some of the populations are correlated. This implies it would be reasonable to test for equal variance covariance, along with some other population structures.</span>
+<span id="cb36-280"><a href="#cb36-280" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-281"><a href="#cb36-281" aria-hidden="true" tabindex="-1"></a>We opted to test this in a for loop to compare multiple spatial structures, u options, and two options for Q.</span>
+<span id="cb36-282"><a href="#cb36-282" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-283"><a href="#cb36-283" aria-hidden="true" tabindex="-1"></a><span class="fu">## Model Assumptions</span></span>
+<span id="cb36-284"><a href="#cb36-284" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-285"><a href="#cb36-285" aria-hidden="true" tabindex="-1"></a>Below we setting up population grouping hypotheses (Z matrices), correlation structures, drift or "bias" terms, and the fixed model list.</span>
+<span id="cb36-286"><a href="#cb36-286" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-289"><a href="#cb36-289" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb36-290"><a href="#cb36-290" aria-hidden="true" tabindex="-1"></a><span class="co"># Here we evaluated the data support for the following hypotheses about Lower Columbia salmon river trends</span></span>
+<span id="cb36-291"><a href="#cb36-291" aria-hidden="true" tabindex="-1"></a><span class="co"># Each Z model is a hypothesis</span></span>
+<span id="cb36-292"><a href="#cb36-292" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-293"><a href="#cb36-293" aria-hidden="true" tabindex="-1"></a><span class="do">## Simple run timing groupings</span></span>
+<span id="cb36-294"><a href="#cb36-294" aria-hidden="true" tabindex="-1"></a><span class="co"># summer = kalama_river_summer</span></span>
+<span id="cb36-295"><a href="#cb36-295" aria-hidden="true" tabindex="-1"></a><span class="co"># winter = remaining population</span></span>
+<span id="cb36-296"><a href="#cb36-296" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-297"><a href="#cb36-297" aria-hidden="true" tabindex="-1"></a><span class="do">## Simple spatial groupings</span></span>
+<span id="cb36-298"><a href="#cb36-298" aria-hidden="true" tabindex="-1"></a><span class="co"># coweeman = coweeman and sf toutle</span></span>
+<span id="cb36-299"><a href="#cb36-299" aria-hidden="true" tabindex="-1"></a><span class="co"># ef_lewis = east fork lewis</span></span>
+<span id="cb36-300"><a href="#cb36-300" aria-hidden="true" tabindex="-1"></a><span class="co"># kalama = kalama summer and winter</span></span>
+<span id="cb36-301"><a href="#cb36-301" aria-hidden="true" tabindex="-1"></a><span class="co"># cowlitz = lower cowlitz, tilton, and upper cowlitz</span></span>
+<span id="cb36-302"><a href="#cb36-302" aria-hidden="true" tabindex="-1"></a><span class="co"># washougal = washougal</span></span>
+<span id="cb36-303"><a href="#cb36-303" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-304"><a href="#cb36-304" aria-hidden="true" tabindex="-1"></a><span class="do">## Correlation spatial groupings</span></span>
+<span id="cb36-305"><a href="#cb36-305" aria-hidden="true" tabindex="-1"></a><span class="co"># coweeman = coweema, ef_lewis, sf toutle, washougal</span></span>
+<span id="cb36-306"><a href="#cb36-306" aria-hidden="true" tabindex="-1"></a><span class="co"># kalama = kalama summer and winter</span></span>
+<span id="cb36-307"><a href="#cb36-307" aria-hidden="true" tabindex="-1"></a><span class="co"># cowlitz = lower cowlitz, tilton, and upper cowlitz</span></span>
+<span id="cb36-308"><a href="#cb36-308" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-309"><a href="#cb36-309" aria-hidden="true" tabindex="-1"></a>Z.models <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb36-310"><a href="#cb36-310" aria-hidden="true" tabindex="-1"></a>  <span class="at">H1 =</span> <span class="fu">matrix</span>(<span class="dv">1</span>,<span class="dv">9</span>,<span class="dv">1</span>), <span class="co">#one hidden population state</span></span>
+<span id="cb36-311"><a href="#cb36-311" aria-hidden="true" tabindex="-1"></a>  <span class="at">H2 =</span> <span class="fu">factor</span>(<span class="fu">c</span>(<span class="st">"coweeman"</span>,<span class="st">"ef_lewis"</span>, <span class="st">"kalama_sum"</span>,</span>
+<span id="cb36-312"><a href="#cb36-312" aria-hidden="true" tabindex="-1"></a>                <span class="st">'kalama_win'</span>, <span class="st">"low_cowlitz"</span>, <span class="st">"sf_toutle"</span>,</span>
+<span id="cb36-313"><a href="#cb36-313" aria-hidden="true" tabindex="-1"></a>                <span class="st">"tilton"</span>, <span class="st">"up_cowlitz"</span>, <span class="st">"washougal"</span>)), <span class="co">#states are defined by individual population</span></span>
+<span id="cb36-314"><a href="#cb36-314" aria-hidden="true" tabindex="-1"></a>  <span class="at">H3 =</span> <span class="fu">factor</span>(<span class="fu">c</span>(<span class="st">"winter"</span>,<span class="st">"winter"</span>, <span class="st">"summer"</span>,</span>
+<span id="cb36-315"><a href="#cb36-315" aria-hidden="true" tabindex="-1"></a>                <span class="st">'winter'</span>, <span class="st">"winter"</span>, <span class="st">"winter"</span>,</span>
+<span id="cb36-316"><a href="#cb36-316" aria-hidden="true" tabindex="-1"></a>                <span class="st">"winter"</span>, <span class="st">"winter"</span>, <span class="st">"winter"</span>)),<span class="co"># states defined by running timing grouping (n = 2)</span></span>
+<span id="cb36-317"><a href="#cb36-317" aria-hidden="true" tabindex="-1"></a>  <span class="at">H4 =</span> <span class="fu">factor</span>(<span class="fu">c</span>(<span class="st">"coweeman"</span>,<span class="st">"ef_lewis"</span>, <span class="st">"kalama"</span>,</span>
+<span id="cb36-318"><a href="#cb36-318" aria-hidden="true" tabindex="-1"></a>                <span class="st">'kalama'</span>, <span class="st">"cowlitz"</span>, <span class="st">"coweeman"</span>,</span>
+<span id="cb36-319"><a href="#cb36-319" aria-hidden="true" tabindex="-1"></a>                <span class="st">"cowlitz"</span>, <span class="st">"cowlitz"</span>, <span class="st">"washougal"</span>)),<span class="co"># states defined by spatial grouping (n = 5)</span></span>
+<span id="cb36-320"><a href="#cb36-320" aria-hidden="true" tabindex="-1"></a>  <span class="at">H5 =</span> <span class="fu">factor</span>(<span class="fu">c</span>(<span class="st">"coweeman"</span>,<span class="st">"coweeman"</span>, <span class="st">"kalama"</span>,</span>
+<span id="cb36-321"><a href="#cb36-321" aria-hidden="true" tabindex="-1"></a>                <span class="st">'kalama'</span>, <span class="st">"cowlitz"</span>, <span class="st">"coweeman"</span>,</span>
+<span id="cb36-322"><a href="#cb36-322" aria-hidden="true" tabindex="-1"></a>                <span class="st">"cowlitz"</span>, <span class="st">"cowlitz"</span>, <span class="st">"coweeman"</span>))<span class="co"># states defined by correlation (n = 3)</span></span>
+<span id="cb36-323"><a href="#cb36-323" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb36-324"><a href="#cb36-324" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-325"><a href="#cb36-325" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(Z.models) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"one_population"</span>,<span class="st">"indiv_population"</span>,<span class="st">"run_timing_groups"</span>,<span class="st">'spatial_groups'</span>,<span class="st">"corr_groups"</span>)</span>
+<span id="cb36-326"><a href="#cb36-326" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-327"><a href="#cb36-327" aria-hidden="true" tabindex="-1"></a><span class="co"># Also testing different process error varcovar matrices</span></span>
+<span id="cb36-328"><a href="#cb36-328" aria-hidden="true" tabindex="-1"></a>Q.models2 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"equalvarcov"</span>,<span class="st">"unconstrained"</span>)</span>
+<span id="cb36-329"><a href="#cb36-329" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-330"><a href="#cb36-330" aria-hidden="true" tabindex="-1"></a><span class="co"># Bias terms</span></span>
+<span id="cb36-331"><a href="#cb36-331" aria-hidden="true" tabindex="-1"></a>u2 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"unequal"</span>, <span class="st">'equal'</span>)</span>
+<span id="cb36-332"><a href="#cb36-332" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-333"><a href="#cb36-333" aria-hidden="true" tabindex="-1"></a><span class="co"># Setting fixed portion of mod list</span></span>
+<span id="cb36-334"><a href="#cb36-334" aria-hidden="true" tabindex="-1"></a>mod.list <span class="ot">=</span> <span class="fu">list</span>(</span>
+<span id="cb36-335"><a href="#cb36-335" aria-hidden="true" tabindex="-1"></a>  <span class="at">A =</span> <span class="st">"scaling"</span>,</span>
+<span id="cb36-336"><a href="#cb36-336" aria-hidden="true" tabindex="-1"></a>  <span class="at">R =</span> <span class="st">"diagonal and equal"</span>)</span>
+<span id="cb36-337"><a href="#cb36-337" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-338"><a href="#cb36-338" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb36-339"><a href="#cb36-339" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-340"><a href="#cb36-340" aria-hidden="true" tabindex="-1"></a><span class="fu">## MARSS Model Selection</span></span>
+<span id="cb36-341"><a href="#cb36-341" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-342"><a href="#cb36-342" aria-hidden="true" tabindex="-1"></a>Run MARSS models. </span>
+<span id="cb36-343"><a href="#cb36-343" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-346"><a href="#cb36-346" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb36-347"><a href="#cb36-347" aria-hidden="true" tabindex="-1"></a>out.tab <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb36-348"><a href="#cb36-348" aria-hidden="true" tabindex="-1"></a>fits <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb36-349"><a href="#cb36-349" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(Z.models)){</span>
+<span id="cb36-350"><a href="#cb36-350" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span>(Q.model <span class="cf">in</span> Q.models2){</span>
+<span id="cb36-351"><a href="#cb36-351" aria-hidden="true" tabindex="-1"></a>      <span class="cf">for</span>(U.model <span class="cf">in</span> u2){</span>
+<span id="cb36-352"><a href="#cb36-352" aria-hidden="true" tabindex="-1"></a>      fit.model <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">list</span>(<span class="at">Z=</span>Z.models[[i]], <span class="at">Q=</span>Q.model, <span class="at">U=</span>U.model), mod.list)</span>
+<span id="cb36-353"><a href="#cb36-353" aria-hidden="true" tabindex="-1"></a>      fit <span class="ot">=</span> <span class="fu">MARSS</span>(dat, <span class="at">model=</span>fit.model,</span>
+<span id="cb36-354"><a href="#cb36-354" aria-hidden="true" tabindex="-1"></a>                <span class="at">silent=</span><span class="cn">TRUE</span>, <span class="at">control=</span><span class="fu">list</span>(<span class="at">maxit=</span><span class="dv">3000</span>))</span>
+<span id="cb36-355"><a href="#cb36-355" aria-hidden="true" tabindex="-1"></a>      out<span class="ot">=</span><span class="fu">data.frame</span>(<span class="at">H=</span><span class="fu">names</span>(Z.models)[i],<span class="at">Q=</span>Q.model,<span class="at">U=</span>U.model,</span>
+<span id="cb36-356"><a href="#cb36-356" aria-hidden="true" tabindex="-1"></a>                   <span class="at">logLik=</span>fit<span class="sc">$</span>logLik, <span class="at">AICc=</span>fit<span class="sc">$</span>AICc, <span class="at">num.param=</span>fit<span class="sc">$</span>num.params,</span>
+<span id="cb36-357"><a href="#cb36-357" aria-hidden="true" tabindex="-1"></a>                   <span class="at">m=</span><span class="fu">length</span>(<span class="fu">unique</span>(Z.models[[i]])),</span>
+<span id="cb36-358"><a href="#cb36-358" aria-hidden="true" tabindex="-1"></a>                   <span class="at">num.iter=</span>fit<span class="sc">$</span>numIter, <span class="at">converged=</span><span class="sc">!</span>fit<span class="sc">$</span>convergence,</span>
+<span id="cb36-359"><a href="#cb36-359" aria-hidden="true" tabindex="-1"></a>                   <span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb36-360"><a href="#cb36-360" aria-hidden="true" tabindex="-1"></a>      out.tab<span class="ot">=</span><span class="fu">rbind</span>(out.tab,out)</span>
+<span id="cb36-361"><a href="#cb36-361" aria-hidden="true" tabindex="-1"></a>      fits<span class="ot">=</span><span class="fu">c</span>(fits,<span class="fu">list</span>(fit))</span>
+<span id="cb36-362"><a href="#cb36-362" aria-hidden="true" tabindex="-1"></a>      } </span>
+<span id="cb36-363"><a href="#cb36-363" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb36-364"><a href="#cb36-364" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb36-365"><a href="#cb36-365" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-366"><a href="#cb36-366" aria-hidden="true" tabindex="-1"></a>min.AICc <span class="ot">&lt;-</span> <span class="fu">order</span>(out.tab<span class="sc">$</span>AICc)</span>
+<span id="cb36-367"><a href="#cb36-367" aria-hidden="true" tabindex="-1"></a>out.tab<span class="fl">.1</span> <span class="ot">&lt;-</span> out.tab[min.AICc, ]</span>
+<span id="cb36-368"><a href="#cb36-368" aria-hidden="true" tabindex="-1"></a>out.tab<span class="fl">.1</span> <span class="ot">&lt;-</span> <span class="fu">cbind</span>(out.tab<span class="fl">.1</span>, <span class="at">delta.AICc =</span> out.tab<span class="fl">.1</span><span class="sc">$</span>AICc <span class="sc">-</span> out.tab<span class="fl">.1</span><span class="sc">$</span>AICc[<span class="dv">1</span>])</span>
+<span id="cb36-369"><a href="#cb36-369" aria-hidden="true" tabindex="-1"></a>out.tab<span class="fl">.1</span> <span class="ot">&lt;-</span> <span class="fu">cbind</span>(out.tab<span class="fl">.1</span>, <span class="at">rel.like =</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="dv">1</span> <span class="sc">*</span> out.tab<span class="fl">.1</span><span class="sc">$</span>delta.AICc<span class="sc">/</span><span class="dv">2</span>))</span>
+<span id="cb36-370"><a href="#cb36-370" aria-hidden="true" tabindex="-1"></a>out.tab<span class="fl">.1</span> <span class="ot">&lt;-</span> <span class="fu">cbind</span>(out.tab<span class="fl">.1</span>, <span class="at">AIC.weight =</span> out.tab<span class="fl">.1</span><span class="sc">$</span>rel.like<span class="sc">/</span><span class="fu">sum</span>(out.tab<span class="fl">.1</span><span class="sc">$</span>rel.like))</span>
+<span id="cb36-371"><a href="#cb36-371" aria-hidden="true" tabindex="-1"></a>out.tab<span class="fl">.1</span></span>
+<span id="cb36-372"><a href="#cb36-372" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-373"><a href="#cb36-373" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-374"><a href="#cb36-374" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb36-375"><a href="#cb36-375" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-376"><a href="#cb36-376" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-377"><a href="#cb36-377" aria-hidden="true" tabindex="-1"></a>The best model (as supported by AICc) includes 5 states (our "spatial populations" model) that are correlated with unique variance and covariance terms (unconstrained Q) with the same drift term (U)</span>
+<span id="cb36-378"><a href="#cb36-378" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-379"><a href="#cb36-379" aria-hidden="true" tabindex="-1"></a><span class="fu">## Inspecting the best model (spatial group, unconstrained Q, equal U)</span></span>
+<span id="cb36-382"><a href="#cb36-382" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb36-383"><a href="#cb36-383" aria-hidden="true" tabindex="-1"></a>best_mod <span class="ot">&lt;-</span> fits[[<span class="dv">16</span>]]</span>
+<span id="cb36-384"><a href="#cb36-384" aria-hidden="true" tabindex="-1"></a>best_mod</span>
+<span id="cb36-385"><a href="#cb36-385" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-386"><a href="#cb36-386" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(best_mod, <span class="at">plot.type =</span> <span class="st">"fitted.ytT"</span>)</span>
+<span id="cb36-387"><a href="#cb36-387" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(best_mod, <span class="at">plot.type =</span> <span class="st">"acf.std.model.resids.ytt1"</span>)</span>
+<span id="cb36-388"><a href="#cb36-388" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-389"><a href="#cb36-389" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb36-390"><a href="#cb36-390" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-391"><a href="#cb36-391" aria-hidden="true" tabindex="-1"></a>In our best model, we do see some autocorrelation in our residuals. In the next section, we will try to include a covariate of season into our best model and see if this improves the model fit. </span>
+<span id="cb36-392"><a href="#cb36-392" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-393"><a href="#cb36-393" aria-hidden="true" tabindex="-1"></a><span class="fu">## Comparing best model to the most flexible model</span></span>
+<span id="cb36-394"><a href="#cb36-394" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-397"><a href="#cb36-397" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb36-398"><a href="#cb36-398" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fit1, <span class="at">plot.type=</span><span class="st">"fitted.ytT"</span>)<span class="co">#flexible</span></span>
+<span id="cb36-399"><a href="#cb36-399" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-400"><a href="#cb36-400" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(best_mod, <span class="at">plot.type=</span><span class="st">"fitted.ytT"</span>)<span class="co">#best</span></span>
+<span id="cb36-401"><a href="#cb36-401" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-402"><a href="#cb36-402" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb36-403"><a href="#cb36-403" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-404"><a href="#cb36-404" aria-hidden="true" tabindex="-1"></a>Do our estimates differ depending on the assumptions of the structure of the data, i.e. our assumptions about the x's, Q, and U?</span>
+<span id="cb36-405"><a href="#cb36-405" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-406"><a href="#cb36-406" aria-hidden="true" tabindex="-1"></a>Definitely! The more flexible model (individual states, unequal bias term) produces more variable forecasts (with some populations increasing or decreasing through time). Our spatial model (5 states, equal bias term) provides relatively stable forecasts across populations, likely due to the "equal" bias term. </span>
+<span id="cb36-407"><a href="#cb36-407" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-408"><a href="#cb36-408" aria-hidden="true" tabindex="-1"></a><span class="fu"># Seasonality as a covariate</span></span>
+<span id="cb36-409"><a href="#cb36-409" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-410"><a href="#cb36-410" aria-hidden="true" tabindex="-1"></a>In this next section, we test for age structured cycling of steelhead populations or "season" in our best "spatial" model. </span>
+<span id="cb36-411"><a href="#cb36-411" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-412"><a href="#cb36-412" aria-hidden="true" tabindex="-1"></a><span class="fu">## Initial model fitting</span></span>
+<span id="cb36-415"><a href="#cb36-415" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb36-416"><a href="#cb36-416" aria-hidden="true" tabindex="-1"></a>Z.mat <span class="ot">&lt;-</span>  <span class="fu">factor</span>(<span class="fu">c</span>(<span class="st">"coweeman"</span>,<span class="st">"ef_lewis"</span>, <span class="st">"kalama"</span>,</span>
+<span id="cb36-417"><a href="#cb36-417" aria-hidden="true" tabindex="-1"></a>                <span class="st">'kalama'</span>, <span class="st">"cowlitz"</span>, <span class="st">"coweeman"</span>,</span>
+<span id="cb36-418"><a href="#cb36-418" aria-hidden="true" tabindex="-1"></a>                <span class="st">"cowlitz"</span>, <span class="st">"cowlitz"</span>, <span class="st">"washougal"</span>)) <span class="co">#Our best model Z matrix</span></span>
+<span id="cb36-419"><a href="#cb36-419" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-420"><a href="#cb36-420" aria-hidden="true" tabindex="-1"></a><span class="co"># Setting up 3-5 year cycles as a covariate</span></span>
+<span id="cb36-421"><a href="#cb36-421" aria-hidden="true" tabindex="-1"></a>TT <span class="ot">&lt;-</span> <span class="fu">dim</span>(dat)[<span class="dv">2</span>]</span>
+<span id="cb36-422"><a href="#cb36-422" aria-hidden="true" tabindex="-1"></a>covariates <span class="ot">&lt;-</span> <span class="fu">rbind</span>(</span>
+<span id="cb36-423"><a href="#cb36-423" aria-hidden="true" tabindex="-1"></a>  forecast<span class="sc">::</span><span class="fu">fourier</span>(<span class="fu">ts</span>(<span class="dv">1</span><span class="sc">:</span>TT, <span class="at">freq=</span><span class="dv">3</span>), <span class="at">K=</span><span class="dv">1</span>) <span class="sc">|&gt;</span> <span class="fu">t</span>(),</span>
+<span id="cb36-424"><a href="#cb36-424" aria-hidden="true" tabindex="-1"></a>  forecast<span class="sc">::</span><span class="fu">fourier</span>(<span class="fu">ts</span>(<span class="dv">1</span><span class="sc">:</span>TT, <span class="at">freq=</span><span class="dv">4</span>), <span class="at">K=</span><span class="dv">1</span>) <span class="sc">|&gt;</span> <span class="fu">t</span>(),</span>
+<span id="cb36-425"><a href="#cb36-425" aria-hidden="true" tabindex="-1"></a>  forecast<span class="sc">::</span><span class="fu">fourier</span>(<span class="fu">ts</span>(<span class="dv">1</span><span class="sc">:</span>TT, <span class="at">freq=</span><span class="dv">5</span>), <span class="at">K=</span><span class="dv">1</span>) <span class="sc">|&gt;</span> <span class="fu">t</span>()</span>
+<span id="cb36-426"><a href="#cb36-426" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb36-427"><a href="#cb36-427" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-428"><a href="#cb36-428" aria-hidden="true" tabindex="-1"></a>mod.list2 <span class="ot">=</span> <span class="fu">list</span>(</span>
+<span id="cb36-429"><a href="#cb36-429" aria-hidden="true" tabindex="-1"></a>  <span class="at">U =</span> <span class="st">"equal"</span>,</span>
+<span id="cb36-430"><a href="#cb36-430" aria-hidden="true" tabindex="-1"></a>  <span class="at">Q =</span> <span class="st">"unconstrained"</span>, </span>
+<span id="cb36-431"><a href="#cb36-431" aria-hidden="true" tabindex="-1"></a>  <span class="at">Z =</span> Z.mat,</span>
+<span id="cb36-432"><a href="#cb36-432" aria-hidden="true" tabindex="-1"></a>  <span class="at">A =</span> <span class="st">"scaling"</span>,</span>
+<span id="cb36-433"><a href="#cb36-433" aria-hidden="true" tabindex="-1"></a>  <span class="at">R =</span> <span class="st">"diagonal and equal"</span>,</span>
+<span id="cb36-434"><a href="#cb36-434" aria-hidden="true" tabindex="-1"></a>  <span class="at">D =</span> <span class="st">"unconstrained"</span>, <span class="co"># We include these in the D matrix because the age structure cycling of salmon typically affects our observations rather than the state</span></span>
+<span id="cb36-435"><a href="#cb36-435" aria-hidden="true" tabindex="-1"></a>  <span class="at">d =</span> covariates)</span>
+<span id="cb36-436"><a href="#cb36-436" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-437"><a href="#cb36-437" aria-hidden="true" tabindex="-1"></a>fit_season <span class="ot">&lt;-</span> <span class="fu">MARSS</span>(dat, <span class="at">model=</span>mod.list2)</span>
+<span id="cb36-438"><a href="#cb36-438" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-439"><a href="#cb36-439" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb36-440"><a href="#cb36-440" aria-hidden="true" tabindex="-1"></a><span class="fu">## Evaluating the effect of different cycles</span></span>
+<span id="cb36-441"><a href="#cb36-441" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-442"><a href="#cb36-442" aria-hidden="true" tabindex="-1"></a>We can then plot the effects of each cycle estimate. </span>
+<span id="cb36-443"><a href="#cb36-443" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-446"><a href="#cb36-446" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb36-447"><a href="#cb36-447" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">tidy</span>(fit_season) <span class="sc">%&gt;%</span></span>
+<span id="cb36-448"><a href="#cb36-448" aria-hidden="true" tabindex="-1"></a>  <span class="fu">subset</span>(stringr<span class="sc">::</span><span class="fu">str_sub</span>(term,<span class="dv">1</span>,<span class="dv">1</span>)<span class="sc">==</span><span class="st">"D"</span>)</span>
+<span id="cb36-449"><a href="#cb36-449" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>lag <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">rep</span>(<span class="dv">3</span><span class="sc">:</span><span class="dv">5</span>, <span class="at">each=</span><span class="dv">18</span>))</span>
+<span id="cb36-450"><a href="#cb36-450" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>river <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">rep</span>(<span class="fu">rownames</span>(dat),<span class="dv">3</span>))</span>
+<span id="cb36-451"><a href="#cb36-451" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>sc <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"S"</span>,<span class="st">"C"</span>), <span class="at">each=</span><span class="dv">9</span>), <span class="dv">3</span>)</span>
+<span id="cb36-452"><a href="#cb36-452" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>type <span class="ot">&lt;-</span> <span class="fu">paste0</span>(df<span class="sc">$</span>sc,df<span class="sc">$</span>lag)</span>
+<span id="cb36-453"><a href="#cb36-453" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-454"><a href="#cb36-454" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">x=</span>type, <span class="at">y=</span>estimate, <span class="at">col=</span>lag)) <span class="sc">+</span> </span>
+<span id="cb36-455"><a href="#cb36-455" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb36-456"><a href="#cb36-456" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">ymin=</span>conf.low, <span class="at">ymax=</span>conf.up), <span class="at">width=</span>.<span class="dv">2</span>, <span class="at">position=</span><span class="fu">position_dodge</span>(.<span class="dv">9</span>)) <span class="sc">+</span></span>
+<span id="cb36-457"><a href="#cb36-457" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>) <span class="sc">+</span></span>
+<span id="cb36-458"><a href="#cb36-458" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>river) <span class="sc">+</span></span>
+<span id="cb36-459"><a href="#cb36-459" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"The cycle estimates with CIs"</span>)</span>
+<span id="cb36-460"><a href="#cb36-460" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-461"><a href="#cb36-461" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb36-462"><a href="#cb36-462" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-463"><a href="#cb36-463" aria-hidden="true" tabindex="-1"></a>These estimates suggest that there is some evidence of cycling at the 5 year interval in the East Fork Lewis, the South Fork Toutle, the Tilton, and the Washougal River steelhead populations. </span>
+<span id="cb36-464"><a href="#cb36-464" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-465"><a href="#cb36-465" aria-hidden="true" tabindex="-1"></a>This, however, increases our AICc quite a bit, from 459.0557 in our original best model to 582.6302. Now let's try just including 5 year cycles and compare this AICc to our best model. </span>
+<span id="cb36-466"><a href="#cb36-466" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-467"><a href="#cb36-467" aria-hidden="true" tabindex="-1"></a><span class="fu">## Comparing models with and without 5 year cycles</span></span>
+<span id="cb36-468"><a href="#cb36-468" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-471"><a href="#cb36-471" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb36-472"><a href="#cb36-472" aria-hidden="true" tabindex="-1"></a>mod.list3 <span class="ot">=</span> <span class="fu">list</span>(</span>
+<span id="cb36-473"><a href="#cb36-473" aria-hidden="true" tabindex="-1"></a>  <span class="at">U =</span> <span class="st">"equal"</span>,</span>
+<span id="cb36-474"><a href="#cb36-474" aria-hidden="true" tabindex="-1"></a>  <span class="at">Q =</span> <span class="st">"unconstrained"</span>, </span>
+<span id="cb36-475"><a href="#cb36-475" aria-hidden="true" tabindex="-1"></a>  <span class="at">Z =</span> Z.mat,</span>
+<span id="cb36-476"><a href="#cb36-476" aria-hidden="true" tabindex="-1"></a>  <span class="at">A =</span> <span class="st">"scaling"</span>,</span>
+<span id="cb36-477"><a href="#cb36-477" aria-hidden="true" tabindex="-1"></a>  <span class="at">R =</span> <span class="st">"diagonal and equal"</span>,</span>
+<span id="cb36-478"><a href="#cb36-478" aria-hidden="true" tabindex="-1"></a>  <span class="at">D =</span> <span class="st">"unconstrained"</span>, <span class="co"># We include these in the D matrix because the age structure cycling of salmon typically affects our observations rather than the state</span></span>
+<span id="cb36-479"><a href="#cb36-479" aria-hidden="true" tabindex="-1"></a>  <span class="at">d =</span> covariates[<span class="dv">5</span><span class="sc">:</span><span class="dv">6</span>,]) <span class="co"># Specifying just 5 year cycles </span></span>
+<span id="cb36-480"><a href="#cb36-480" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-481"><a href="#cb36-481" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-482"><a href="#cb36-482" aria-hidden="true" tabindex="-1"></a>fit_5season <span class="ot">&lt;-</span> <span class="fu">MARSS</span>(dat, <span class="at">model=</span>mod.list3)</span>
+<span id="cb36-483"><a href="#cb36-483" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-484"><a href="#cb36-484" aria-hidden="true" tabindex="-1"></a>(mod_AICc <span class="ot">&lt;-</span> <span class="fu">c</span>(fit_5season<span class="sc">$</span>AICc, best_mod<span class="sc">$</span>AICc))</span>
+<span id="cb36-485"><a href="#cb36-485" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-486"><a href="#cb36-486" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb36-487"><a href="#cb36-487" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-488"><a href="#cb36-488" aria-hidden="true" tabindex="-1"></a>Interesting-- This greatly improves our AICc, but the model without cycles still test as the best model. </span>
+<span id="cb36-489"><a href="#cb36-489" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-490"><a href="#cb36-490" aria-hidden="true" tabindex="-1"></a>Next we compare the fits of the best spatial model and the spatial model with cycling.</span>
+<span id="cb36-493"><a href="#cb36-493" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb36-494"><a href="#cb36-494" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(best_mod, <span class="at">plot.type=</span><span class="st">"fitted.ytT"</span>)</span>
+<span id="cb36-495"><a href="#cb36-495" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fit_5season, <span class="at">plot.type=</span><span class="st">"fitted.ytT"</span>)</span>
+<span id="cb36-496"><a href="#cb36-496" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-497"><a href="#cb36-497" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb36-498"><a href="#cb36-498" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-499"><a href="#cb36-499" aria-hidden="true" tabindex="-1"></a>Adding a 5 year cycling component does not have significant changes to the fit during years of data, but it does have a big impact on the hindcast and forecast fits.</span>
+<span id="cb36-500"><a href="#cb36-500" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-501"><a href="#cb36-501" aria-hidden="true" tabindex="-1"></a>Next we compare the residuals of our best model and our model with 5 year cycles.</span>
+<span id="cb36-502"><a href="#cb36-502" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-505"><a href="#cb36-505" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb36-506"><a href="#cb36-506" aria-hidden="true" tabindex="-1"></a><span class="co"># Residuals of best model</span></span>
+<span id="cb36-507"><a href="#cb36-507" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">3</span>))</span>
+<span id="cb36-508"><a href="#cb36-508" aria-hidden="true" tabindex="-1"></a>resids <span class="ot">&lt;-</span> <span class="fu">MARSSresiduals</span>(best_mod, <span class="at">type =</span> <span class="st">"tt1"</span>)</span>
+<span id="cb36-509"><a href="#cb36-509" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>) {</span>
+<span id="cb36-510"><a href="#cb36-510" aria-hidden="true" tabindex="-1"></a>    <span class="fu">plot</span>(resids<span class="sc">$</span>model.residuals[i, ], <span class="at">ylab =</span> <span class="st">"model residuals"</span>, </span>
+<span id="cb36-511"><a href="#cb36-511" aria-hidden="true" tabindex="-1"></a>        <span class="at">xlab =</span> <span class="st">""</span>)</span>
+<span id="cb36-512"><a href="#cb36-512" aria-hidden="true" tabindex="-1"></a>    <span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">0</span>)</span>
+<span id="cb36-513"><a href="#cb36-513" aria-hidden="true" tabindex="-1"></a>    <span class="fu">title</span>(<span class="fu">rownames</span>(dat)[i])</span>
+<span id="cb36-514"><a href="#cb36-514" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb36-515"><a href="#cb36-515" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-516"><a href="#cb36-516" aria-hidden="true" tabindex="-1"></a><span class="co"># Residuals of best model + cycling</span></span>
+<span id="cb36-517"><a href="#cb36-517" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">3</span>))</span>
+<span id="cb36-518"><a href="#cb36-518" aria-hidden="true" tabindex="-1"></a>resids <span class="ot">&lt;-</span> <span class="fu">MARSSresiduals</span>(fit_5season, <span class="at">type =</span> <span class="st">"tt1"</span>)</span>
+<span id="cb36-519"><a href="#cb36-519" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>) {</span>
+<span id="cb36-520"><a href="#cb36-520" aria-hidden="true" tabindex="-1"></a>    <span class="fu">plot</span>(resids<span class="sc">$</span>model.residuals[i, ], <span class="at">ylab =</span> <span class="st">"model residuals"</span>, </span>
+<span id="cb36-521"><a href="#cb36-521" aria-hidden="true" tabindex="-1"></a>        <span class="at">xlab =</span> <span class="st">""</span>)</span>
+<span id="cb36-522"><a href="#cb36-522" aria-hidden="true" tabindex="-1"></a>    <span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">0</span>)</span>
+<span id="cb36-523"><a href="#cb36-523" aria-hidden="true" tabindex="-1"></a>    <span class="fu">title</span>(<span class="fu">rownames</span>(dat)[i])</span>
+<span id="cb36-524"><a href="#cb36-524" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb36-525"><a href="#cb36-525" aria-hidden="true" tabindex="-1"></a><span class="co"># ACF of residuals</span></span>
+<span id="cb36-526"><a href="#cb36-526" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(best_mod, <span class="at">plot.type =</span> <span class="st">"acf.std.model.resids.ytt1"</span>)</span>
+<span id="cb36-527"><a href="#cb36-527" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fit_5season, <span class="at">plot.type =</span> <span class="st">"acf.std.model.resids.ytt1"</span>)</span>
+<span id="cb36-528"><a href="#cb36-528" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-529"><a href="#cb36-529" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb36-530"><a href="#cb36-530" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-531"><a href="#cb36-531" aria-hidden="true" tabindex="-1"></a>When comparing the residual and ACF plots of the spatial model w/o cycling and the spatial model w/ cycling, we do see some of the residual and ACF plots improve. For example, around lag 10 in the Kalama River winter population, the autocorrelation reduces relative the spatial model w/o cycling. The residual plots also remove some of the cycling patterns in a few groups (e.g., Tilton River, South Fork Toutle). However, the cyclic covariates in the process does not completely remove the residuals' cycling patterns; positive values tend to follow positive ones. </span>
+<span id="cb36-532"><a href="#cb36-532" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-533"><a href="#cb36-533" aria-hidden="true" tabindex="-1"></a><span class="fu"># Discussion</span></span>
+<span id="cb36-534"><a href="#cb36-534" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-535"><a href="#cb36-535" aria-hidden="true" tabindex="-1"></a>Our best model was our "spatial" group model, which was designed based on the spatial proximity of the subwatersheds of study and their steelhead populations. This grouped 9 steelhead populations together to form 5 populations or 5 "hidden states" of steelhead abundance dynamics through time. This implies that steelhead populations located closer in space or within the same catchment share temporal variation in their abundance dynamics, suggesting that populations are largely influenced by similar river or watershed characteristics (e.g., habitat quality or availability) and not so much run timing. All run populations seem to have increased since the earliest year of data, though some populations seem to have decreased slightly in recent years (e.g., Washougal, Cowlitz, East Fork Lewis). Our best performing model seems to fit the data well with no major problems in the residuals, with the exception of cycling.   </span>
+<span id="cb36-536"><a href="#cb36-536" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-537"><a href="#cb36-537" aria-hidden="true" tabindex="-1"></a>We found some evidence for 5 year cycles, though it did not lower the AIC relative to the spatial model. This makes sense since steelhead (relative to other salmonids) do not exhibit as much cycling. Even within these 9 runs, we see some runs (e.g. Kalama winter) show more cycling patterns than others (e.g. Upper Cowlitz winter) do. A reason why AIC does not support adding 5 year cycles to all runs is that not all runs need cycling and the addition of parameters for these runs is superfluous. Cycling did somewhat improve autocorrelation in our model residuals by reducing the number of statistically significant ACF lags. </span>
+<span id="cb36-538"><a href="#cb36-538" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-539"><a href="#cb36-539" aria-hidden="true" tabindex="-1"></a>Future improvements to our best performing spatial model would be to include cycling in only populations that strong seasonal patterns. This, however, involves "hand-baking" a series of upper C matrices and was outside the scope of this study. </span>
+<span id="cb36-540"><a href="#cb36-540" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-541"><a href="#cb36-541" aria-hidden="true" tabindex="-1"></a><span class="fu"># Description of each team member's contributions</span></span>
+<span id="cb36-542"><a href="#cb36-542" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-543"><a href="#cb36-543" aria-hidden="true" tabindex="-1"></a>Liz worked on the model with 9 states, the spatial model, correlation model, model selection process, and cycling model. Terrance worked on the methods, matrix notations, simple model with 1 state, and run timing model. Eric worked on adding the cycling component and model selection of cycling period. All group members worked on the discussion and interpretation. </span>
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+</body></html>
