@@ -78,18 +78,12 @@ cntl.list<-list(maxit=100) #increase this later to 1000
 #fit the model
 dfa.fit1<-MARSS(plank.t, model=dfa.model1, control=cntl.list)
 
-autoplot(dfa.fit1)
+autoplot(dfa.fit3)
 #ACF shows quite a bit of autocorrelation - this needs to be addressed
 
 #compare AICc for 2, 3, or 4 underlying trends
 model.list<-list(m=2, R="diagonal and unequal")
 dfa.fit2<-MARSS(plank.t, model=model.list, z.score=T, form='dfa', control=cntl.list)
-
-#this was in the MARSS user guide but the object saved.res was never defined so I am skipping it
-#if(!saved.res) {
-#  model.list<-list(m=2, R="diagonal and equal")
-#  dfa.fit2<-MARSS(plank.t, model=model.list, z.score=T, form="dfa", control=big.maxit.cntl.list)
-#}
 
 model.list<-list(m=4, R="diagonal and unequal")
 dfa.fit3<-MARSS(plank.t, model=model.list, z.score=T, form='dfa', control=cntl.list)
@@ -232,3 +226,66 @@ ggplot(data = subset(d, name=="model")) +
 temp <- t(all_dat[,"Temp", drop = FALSE])
 TP <- t(all_dat[,"TP", drop = FALSE])
 
+mod_list = list(m = 4, R = "diagonal and unequal")
+dfa_temp <- MARSS(plank.t, model = mod_list, form = "dfa", z.score = FALSE,
+                  control=cntl.list, covariates = temp)
+dfa_TP <- MARSS(plank.t, model = mod_list, form = "dfa", z.score = FALSE,
+                control=cntl.list, covariates = TP)
+dfa_both <- MARSS(plank.t, model = mod_list, form = "dfa", z.score = FALSE,
+                  control=cntl.list, covariates = rbind(temp, TP))
+
+print(cbind(model = c("no covars", "Temp", "TP", "Temp & TP"),
+            AICc = round(c(dfa.fit3$AICc,
+                           dfa_temp$AICc,
+                           dfa_TP$AICc,
+                           dfa_both$AICc))),
+      quote = FALSE)
+
+model     AICc
+[1,] no covars 4629
+[2,] Temp      4508
+[3,] TP        4607
+[4,] Temp & TP 4477
+
+## create dummy sine and cosine waves
+cos_t <- cos(2 * pi * seq(TT) / 12)
+sin_t <- sin(2 * pi * seq(TT) / 12)
+dd <- rbind(cos_t, sin_t)
+
+## fit model
+dfa_seas <- MARSS(plank.t, model = mod_list, form = "dfa", z.score = FALSE,
+                  control = cntl.list, covariates = dd)
+
+dfa_TPseas <- MARSS(plank.t, model = mod_list, form = "dfa", z.score = FALSE,
+                  control=cntl.list, covariates = rbind(TP, dd))
+
+## get model fits & CI's
+mod_fit <- getDFAfits(dfa_TPseas)
+
+## plot the fits
+par(mfrow = c(N.ts, 1), mai = c(0.5, 0.7, 0.1, 0.1), omi = c(0, 0, 0, 0))
+for(i in 1:N.ts) {
+  up <- mod_fit$up[i,]
+  mn <- mod_fit$ex[i,]
+  lo <- mod_fit$lo[i,]
+  plot(w_ts, mn, type = "n",
+       xlab = "", ylab = ylbl[i],
+       xaxt = "n", cex.lab = 1.2,
+       ylim = c(min(lo), max(up)))
+  axis(1, 12 * (0:dim(plank.t)[2]) + 1, yr_frst + 0:dim(plank.t)[2])
+  points(w_ts, plank.t[i,], pch = 16, col = clr[i])
+  lines(w_ts, up, col = "darkgray")
+  lines(w_ts, mn, col = "black", lwd = 2)
+  lines(w_ts, lo, col = "darkgray")
+}
+
+print(cbind(model = c("no covars", "Temp", "TP", "Temp & TP", "Seasonality", "TP Seas"),
+            AICc = round(c(dfa.fit3$AICc,
+                           dfa_temp$AICc,
+                           dfa_TP$AICc,
+                           dfa_both$AICc,
+                           dfa_seas$AICc,
+                           dfa_TPseas$AICc))),
+      quote = FALSE)
+
+      
