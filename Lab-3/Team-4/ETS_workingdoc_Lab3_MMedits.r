@@ -92,10 +92,14 @@ dfa.fit3<-MARSS(plank.t, model=model.list, z.score=T, form='dfa', control=cntl.l
 print(cbind(model=c("3 trends", "2 trends", "4 trends"), AICc=round(c(dfa.fit1$AICc, dfa.fit2$AICc, dfa.fit3$AICc))), quote=F)
 
 #4 trends has lowest AIC
-model    AICc
-[1,] 2 trends 4818
-[2,] 3 trends 4930
-[3,] 4 trends 4629
+#model    AICc
+#[1,] 2 trends 4818
+#[2,] 3 trends 4930
+#[3,] 4 trends 4629
+
+# It looks like a 4 state model is best. 
+
+
 
 # get estimated ZZ
 Z_est <- coef(dfa.fit3, type = "matrix")$Z
@@ -241,11 +245,16 @@ print(cbind(model = c("no covars", "Temp", "TP", "Temp & TP"),
                            dfa_both$AICc))),
       quote = FALSE)
 
-model     AICc
-[1,] no covars 4629
-[2,] Temp      4508
-[3,] TP        4607
-[4,] Temp & TP 4477
+# model     AICc
+# [1,] no covars 4629
+# [2,] Temp      4508
+# [3,] TP        4607
+# [4,] Temp & TP 4477
+
+
+# It looks like temp and TP together are the best fit model.
+
+
 
 ## create dummy sine and cosine waves
 cos_t <- cos(2 * pi * seq(TT) / 12)
@@ -287,5 +296,39 @@ print(cbind(model = c("no covars", "Temp", "TP", "Temp & TP", "Seasonality", "TP
                            dfa_seas$AICc,
                            dfa_TPseas$AICc))),
       quote = FALSE)
+
+# It looks like TP and seasonality together are the best fit model.
+
+# Results and Discusssion
+
+# We first determined the optimal number of states by fitting multiple models, 
+# each with different numbers of states. The models were then compared via AICc to determine 
+# what number of states best fit the time series. 
+# 
+# The best fitting model had 4 separate states over the full period of time, there were no other competing
+# models based on delta AICc.
+# 
+# 
+# We then chose covariates and compared models with different combinations off
+# temperature, total phosphorus, a combination of temperature and total phosphorus, 
+# dummy sine and cosine waves to simulate seasonality, and total phosphorus combined with seasonality.
+# We did not fit a model with temperature and seasonality, as it was assumed that these two 
+# variables would be highly correlated, and thus shouldn't be modeled together as their effects 
+# wouldn't be able to be distinguished.
+# 
+# A model with total phosphorus combined with seasonality was the best fit according to delta AICc. 
+# 
+
+# However, the model fits do not appear to fit the data well when plotted. This perhaps indicates that 
+# Across the entire time series, there is no model that performs well over all areas. Breaking the time series up 
+# into smaller lengths and modeling those individually may help alleviate this problem, and highlight 
+# how the influence of different covariates changes over time. The lake has shifted away from a state off
+# eutrophication after raw sewage stopped bying pummped into the lake. The covariates that had dominate roles 
+# during eutrophication may not be the same afterwards. 
+# # 
+
+
+
+
 
       
