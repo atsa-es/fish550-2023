@@ -65,6 +65,7 @@ We had originally selected Cryptomonas, diatoms, greens, daphnia, and cyclops as
 library(MARSS)
 library(dplyr)
 library(tidyverse)
+library(rje)
 
 ## load the raw data (there are 3 datasets contained here)
 data(lakeWAplankton, package = "MARSS")
@@ -136,7 +137,7 @@ Filtering the data
 crit <- all_dat[c(61:300),c(1:5,7,8,10,13,20)]
 
 head(crit)
-
+tail(crit)
 plankton_ts <- t(crit[,6:10])
 colnames(plankton_ts) <- crit[,1]
 
@@ -153,6 +154,9 @@ plankton_z <- zscore(plankton_ts)
 
 ```
 
+We selected a window of years to include data from 1967 to 1986. We are interested in examining how populations of Diatoms, Greens, Unicells, Cyclops, and Non-colonial-rotifers are associated with one another and environmental factors such as temperature, pH of the water, amount of phosphorus in the water, and time of year.
+
+We standardized the observations of these populations by z scoring to allow the models to make better parameter estimates. We will z score the covariate data as well when we begin fitting models with covariates.
 # DFA Model Selection
 
 ## Step 1- Fit global model with all covariates and number of trends
@@ -167,15 +171,17 @@ We are keeping R to diagonal and equal based on the sample design. The default D
 covar_ts <- t(crit[,3:5])
 colnames(covar_ts) <- crit[,1]
 
-covar_z <- zscore(covar_ts) ## If we zscore the response, do we also zscore covariates?
+covar_z <- zscore(covar_ts) ## If we zscore the response, do we also zscore covariates? Mark says yes
 
 #make a season matrix
 cos_t <- cos(2 * pi * seq(TT)/12)
 sin_t <- sin(2 * pi * seq(TT)/12)
 season <- rbind(cos_t,sin_t)
+season_z <- zscore(season)
+
 #dim(season)
 
-d <- rbind(covar_ts,season)
+d <- rbind(covar_ts,season_z)
 # In this case, we are not altering the upper D matrix, so every covariate will have its own effect
 
 #tell MARSS what values to use to start with
@@ -193,6 +199,7 @@ dfa_global <- MARSS(plankton_z, model = mod_list, control = cont_list, inits = i
                     z.score = FALSE, covariates = d)
 
 ```
+The covariates including the season were zscored to ensure they each have a variance of 1. Which will help the model produce better estimates of the parameters.
 
 ## Step 2- Testing number of trends
 
@@ -230,13 +237,15 @@ out.tab.1
 
 Step 3 of model selection shows that we have three (at least) latent trends. So far our best model is still the global model. 
 
+I think an alternate wording would be: Using the global model to test various numbers of latent states resulted in a top model, as indicated by AIC scores, which has three latent trends. 
+
 We can alter the for loop to test for different R structures.... But not sure that other structures make sense.
 
 ```{r}
 ## for loop testing m and R adapted from the user manual
 
 m_list <- 1:3 # Latent trends to loop through
-R_list <- list("diagonal and equal", 'diagonal and unequal')# just tested two options for R, still took a long time
+R_list <- list("diagonal and equal", "diagonal and unequal")# just tested two options for R, still took a long time
 
 model.data <- data.frame(stringsAsFactors = FALSE)
 for (R in R_list) {
@@ -253,20 +262,70 @@ for (R in R_list) {
   }
 }
 model.data
+min.AICc_2 <- order(model.data$AICc)
+model.data <- model.data[min.AICc_2, ]
+model.data.delta <- cbind(model.data, delta.AICc = model.data$AICc - model.data$AICc[1])
+model.data.delta
+# potentially remove everything below this if we dont want to use any unconstrained models
+# m1 = MARSS(plankton_z, model = list(R = "unconstrained", m = 3, A = "zero"), control = cont_list, 
+#                  form = "dfa", z.score = FALSE, covariates = d)
+ 
+#table <- rbind(model.data,data.frame(R = "unconstrained", m = 3,fit.logLik = m1$logLik, AICc = #m1$AICc, num.param = m1$num.params, stringsAsFactors = FALSE))
+#min.AICc_2 <- order(table$AICc)
+#table <- table[min.AICc_2, ]
+#table.delta <- cbind(table, delta.AICc = table$AICc - table$AICc[1])
+#table.delta
+
+m3 = MARSS(plankton_z, model = list(R = "equalvarcov", m = 3, A = "zero"), control = cont_list, 
+                 form = "dfa", z.score = FALSE, covariates = d)
 
 
 ```
 
-Diagonal and unequal tests as a better R matrix, but not sure whether we justify trying this based on sample design? We could just show it and then say we stuck with R = diagonal and equal
+Diagonal and unequal tests as a better R matrix, but not sure whether we justify trying this based on sample design? We could just show it and then say we stuck with R = diagonal and equal. 
+
+What if we said diagonal and unequal as some of these species may be harder to count under the microscope than the others but being sampled together has no effect on the counts of others (no covariance)? That seems fairly legit to me.
+
+I tested unconstrained, m=3 and its the best then unconstrained, m=2 barely beats diag&unequal, m=3 but we would have a pretty complex model. I also tried equal variance covariance and its middle of the pack. I took a screen shot of the table with unconstrained, m=3 so we dont have to rerun it as its long.
+
+I think I will move forward with diag$unequal m=3.
 
 ## Step 3- Testing covariates 
+ 
+
+```{r}
+#use this to create every combo of rows in the covariate matrix possible
+combo <- powerSet(1:4)
+#make sure cos and sin are always together as season
+for (i in 9:16) {
+  combo[[i]] <- c(combo[[i]],5)
+}
+combo  # [[1]] is empty so dont loop it
+model.cov.data <- data.frame(stringsAsFactors = FALSE)
+for (i in c(2)) {
+    fit2 <- MARSS(plankton_z, model = list(R = "diagonal and unequal", m = 3, A = "zero"), 
+                control = cont_list, form = "dfa", z.score = FALSE, covariates = d[combo[[i]],])
+  
+   model.cov.data <- rbind(model.cov.data, data.frame(Covariates = toString(rownames(d)[combo[[i]]]),
+                      LogLik = fit$logLik, AICc=fit$AICc, num.param=fit$num.params,
+                      stringsAsFactors = FALSE))
+}
+model.cov.data
+min.AICc_3 <- order(model.cov.data$AICc)
+model.cov.data <- model.cov.data[min.AICc_3, ]
+covariate.table <- cbind(model.cov.data, delta.AICc = model.data$AICc - model.data$AICc[1])
+covariate.table
+rownames(d)[combo[[16]]]
+d
+```
 
 STOP this chunk doesn't fully run. 
 
-Just started to paste some of Lily's code into here in case. But idk might not be worth it. 
+Just started to paste some of Lily's code into here in case. But idk might not be worth it
+
+
 
 ```{r}
-
 ## trying to figure out an option to loop through different combinations of covariates
 
 RRR <- 'DE' #'UNC'
