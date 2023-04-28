@@ -89,9 +89,6 @@ init_list <- list(x0 = matrix(rep(0, mm), mm, 1))
 #run the model
 dfa_1 <- MARSS(y = need.av, model = mod_list, inits = init_list)
 
-z_load <- dfa_1$coef[c(1:10,6,6,11:13)]
-z_load_mat <- matrix(z_load,5,3)
-
 ## get the estimated ZZ
 Z_est <- coef(dfa_1, type = "matrix")$Z
 ## get the inverse of the rotation matrix
@@ -317,6 +314,10 @@ dev.off()
 ccf(proc_rot[1, ], proc_rot[2, ], lag.max = 12, main = "")
 ccf(proc_rot[1, ], proc_rot[3, ], lag.max = 12, main = "")
 ccf(proc_rot[2, ], proc_rot[3, ], lag.max = 12, main = "")
+
+
+
+
 #make unique combinations of covariate lists
 covar <- rbind(temp,Phos,ph,season)
 #rownames(covar) <- c("temp", "Phos", "ph", "season_cos", "season_sin") # do NOT name the rows it adds parameters?
@@ -340,9 +341,3 @@ dfa_global_test2 <- MARSS(need.av, model = mod_list2,control = cont_list, inits 
                          z.score = FALSE, covariates = covar)
 
 
-cos_t <- cos(2 * pi * seq(TT)/12)
-sin_t <- sin(2 * pi * seq(TT)/12)
-season <- rbind(cos_t,sin_t)
-season_z <- zscore(season)
-plot(season[1,], type = "l")
-lines(season_z[1,], col="red")
