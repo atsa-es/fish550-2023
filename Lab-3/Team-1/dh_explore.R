@@ -340,4 +340,9 @@ dfa_global_test2 <- MARSS(need.av, model = mod_list2,control = cont_list, inits 
                          z.score = FALSE, covariates = covar)
 
 
-
+cos_t <- cos(2 * pi * seq(TT)/12)
+sin_t <- sin(2 * pi * seq(TT)/12)
+season <- rbind(cos_t,sin_t)
+season_z <- zscore(season)
+plot(season[1,], type = "l")
+lines(season_z[1,], col="red")
