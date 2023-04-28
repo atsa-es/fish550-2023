@@ -409,15 +409,19 @@ mod_list <- list(Z = Z_mat, A = a, D = D, d = dd, R = r, B = B,
 init_list <- list(x0 = matrix(rep(0, mm), mm, 1))
 
 #run the model
-mod.list.basic <- list(R = "diagonal and unequal",m=3, A="zero")
-cont_list.basic <- list(maxit = 6000, allow.degen=TRUE)
+#mod.list.basic <- list(R = "diagonal and unequal",m=3, A="zero")
+#cont_list.basic <- list(maxit = 6000, allow.degen=TRUE)
 
-basic.mod <- MARSS(plankton_z, model = mod.list.basic, control = cont_list.basic, inits = init_list, form = "dfa",
-                    z.score = FALSE) #fails to converge
+#basic.mod <- MARSS(plankton_z, model = mod.list.basic, control = cont_list.basic, inits = #init_list, form = "dfa",
+ #                   z.score = FALSE)
+#FAILS TO CONVERGE
 
-cont_longer <- list(maxit = 5000, allow.degen = TRUE)
-basic.mod <- MARSS(y = plankton_z, model = mod_list, inits = init_list, control = cont_longer) #fails to converge
+#try two
+#cont_longer <- list(maxit = 6000, allow.degen = TRUE)
+#basic.mod <- MARSS(y = plankton_z, model = mod_list, inits = init_list, control = cont_longer)
+#FAILS TO CONVERGE
 
+#try three
 cont_BFGS <- list(maxit = 3000)
 basic.mod <- MARSS(plankton_z, model = list(R = "diagonal and unequal", m = 3,
                                            A = "zero"), control = cont_BFGS,
