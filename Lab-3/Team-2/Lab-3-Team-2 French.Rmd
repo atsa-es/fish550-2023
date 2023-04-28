@@ -1,0 +1,367 @@
+---
+title: "Lab 3 - Common trends in plankton data"
+subtitle: "Dynamic Factor Analysis (DFA)"
+author: "Person 1, Person 2, Person 3"
+date: April 20, 2023
+output: 
+  html_document:
+    code-folding: true
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include = FALSE}
+options(dplyr.summarise.inform = FALSE)
+library(MARSS)
+library(ggplot2)
+library(tidyverse)
+library(forecast)
+library(corrplot)
+```
+
+------------------------------------------------------------------------
+
+# Data
+
+
+
+Describe what plankton groups and covariates you used and indicate any temporal subsetting you chose.
+
+## Load the data
+
+```{r load_data}
+
+## load the raw data (there are 3 datasets contained here)
+data(lakeWAplankton, package = "MARSS")
+
+## we want `lakeWAplanktonTrans`, which has been transformed
+## so the 0's are replaced with NA's and the data z-scored
+all_dat <- lakeWAplanktonTrans
+```
+
+## Wrangle the data
+
+-   You can choose any taxa to include in your analyses, but make sure there are at least 5 groups. You can mix phytoplankton and zooplankton, if you'd like, but justify any choices you make.
+
+-   You will want to subset the data to a time period with adequate observations for the taxa of interest. Your time window should include at least 5 years (60 months).
+
+```{r wrangle_data}
+# set the window we wish to examine
+yr_frst <- 1962
+yr_last <- 1994
+init_dat <- all_dat[all_dat[, "Year"] >= yr_frst & 
+                       all_dat[, "Year"] <= yr_last,]
+
+# put the 5 response variables in the yt matrix, can be replace whenever
+# This represents multiple trophic levels
+# Primary prod: Diatoms & Other Algae
+# Grazers: Daphnia & Cyclops
+# Predators: Epischura
+plank_taxa <- c("Diatoms","Other.algae","Daphnia","Cyclops","Epischura")
+dat <- init_dat[,plank_taxa] %>%
+  t()
+## mean of each taxon
+y_bar <- apply(dat, 1, mean, na.rm = TRUE)
+## subtract the means
+plank_dat <- dat - y_bar
+## assign new column names
+spp <- rownames(plank_dat)
+rownames(plank_dat) <- spp
+
+# create a covariates matrix
+covnames <- c("Temp","TP") #pH has missing data points so it will only work in certain date ranges
+covar <- init_dat[,covnames] %>%
+  t()
+
+```
+
+## Explore the data
+
+Plot our 5 selected taxa
+```{r}
+## set plot colors
+clr <- c("brown", "blue", "darkgreen", "darkred", "purple")
+
+## initialize a counter
+cnt <- 1
+
+## set up plotting space & make plots
+par(mfrow = c(nrow(plank_dat), 1), mai = c(0.5, 0.7, 0.1, 0.1), omi = c(0, 0, 0, 0))
+mm = ncol(plank_dat)
+
+for(i in spp){
+  plot(plank_dat[i,],  bty = "L", xaxt = "n", pch = 16,
+       xlab = "",
+       ylab = "Abundance index", col=clr[cnt], type="b")
+  axis(1, 12 * (0:mm) + 1, yr_frst + 0:mm)
+  title(i)
+  cnt <- cnt + 1
+}
+```
+The plots are kind of hard to see, do they just not work well in .Rmd files?
+
+Plot the covariates
+```{r}
+## set plot colors
+clr <- c("brown", "blue", "darkgreen","purple")
+
+## initialize a counter
+cnt <- 1
+
+## set up plotting space & make plots
+par(mfrow = c(nrow(covar), 1), mai = c(0.5, 0.7, 0.1, 0.1), omi = c(0, 0, 0, 0))
+
+for(i in row.names(covar)){
+  plot(covar[i,],  bty = "L", xaxt = "n", pch = 16,
+       xlab = "",
+       ylab = "Value", col=clr[cnt], type="b")
+  axis(1, 12 * (0:mm) + 1, yr_frst + 0:mm)
+  title(i)
+  cnt <- cnt + 1
+}
+```
+Temperature and pH seems to follow the time of year closely. 
+Does this mean that using temperature as a covariate will make pH and seasonality redundant?
+
+First DFA test, using default settings for the model and 3 hidden states, 
+```{r}
+mod.list1 <- list(m = 3)
+testfit <- MARSS(plank_dat, model=mod.list1, form = "dfa", covariates = covar, z.score = FALSE, control=list(maxit=3000, allow.degen=TRUE))
+
+# Get Z Estimations and rotate the data
+## get the estimated ZZ
+Z_est <- coef(testfit, type = "matrix")$Z
+
+## get the inverse of the rotation matrix
+H_inv <- varimax(Z_est)$rotmat
+
+## rotate factor loadings
+Z_rot = Z_est %*% H_inv   
+
+## rotate processes
+proc_rot = solve(H_inv) %*% testfit$states
+```
+
+
+
+
+
+plot the results and loadings as shown in Mark's example
+```{r}
+plot(testfit, plot.type="fitted.ytT")
+
+N_ts <- nrow(plank_dat)
+m = ncol(Z_est)
+## plot labels
+ylbl <- plank_taxa
+w_ts <- seq(mm)
+
+## set up plot area
+layout(matrix(c(1,2,3,4,5,6), m, 2), widths = c(2,1))
+par(mai = c(0.5, 0.5, 0.5, 0.1), omi = c(0, 0, 0, 0))
+
+## plot the processes
+for(i in 1:m) {
+  ylm <- c(-1, 1) * max(abs(proc_rot[i,]))
+  ## set up plot area
+    plot(w_ts,proc_rot[i,], type = "n", bty = "L",
+         ylim = ylm, xlab = "", ylab = "", xaxt = "n")
+    ## draw zero-line
+    abline(h = 0, col = "gray")
+    ## plot trend line
+    lines(w_ts, proc_rot[i,], lwd = 2)
+    lines(w_ts, proc_rot[i,], lwd = 2)
+    ## add panel labels
+    mtext(paste("State",i), side = 3, line = 0.5)
+    axis(1, 12 * (0:mm) + 1, yr_frst + 0:mm)
+}
+## plot the loadings
+minZ <- 0
+ylm <- c(-1, 1) * max(abs(Z_rot))
+for(i in 1:m) {
+  plot(x = c(1:N_ts)[abs(Z_rot[,i])>minZ],
+       y = as.vector(Z_rot[abs(Z_rot[,i])>minZ,i]),
+       type = "h",
+       lwd = 2, xlab = "", ylab = "", xaxt = "n", ylim = ylm,
+       xlim = c(0.5, N_ts + 0.5), col = clr)
+    for(j in 1:N_ts) {
+      if(Z_rot[j,i] > minZ) {text(j, -0.03, ylbl[j], srt = 90, adj = 1, cex = 1.2, col = clr[j])}
+      if(Z_rot[j,i] < -minZ) {text(j, 0.03, ylbl[j], srt = 90, adj = 0, cex = 1.2, col = clr[j])}
+      abline(h = 0, lwd = 1.5, col = "gray")
+      } 
+  mtext(paste("Factor loadings on state", i), side = 3, line = 0.5)
+}
+```
+There does not seem to be much loading of any observations on state 3. Additionally Epischura, other Other Algae, and Daphnia do not show much loading on any of the states. Though this is before we have chosen a window of time to focus on
+
+
+## General Notes
+
+labmate emails:
+
+Madi Heller-Shipley --[shipmadison\@gmail.com](mailto:shipmadison@gmail.com){.email} Eric French -- [ericvfrench\@gmail.com](mailto:ericvfrench@gmail.com){.email} Maria Mariakuruvilla -- [mariakur\@uw.edu](mailto:mariakur@uw.edu){.email}
+
+*Diatoms* dominated in early spring time (Phytoplankton) *Daphnia* eat diatoms --\> bloom after diatoms (zooplankton)
+
+*bluegreen* (Cyano-bacteria) is toxic --\> dominace correlated to TP (not as nitrogen limited)
+
+*Epischura* --\> calanus copepod peaks after diatoms
+
+*Neomysis* --\> opossum shrimp (predator) Data limited
+
+# First Steps
+
+1)  Plot all species all years and look for data-based relationships -connect what we see in the data to literature and the biology of Lake Washington
+*Plotted, I can at least justify diatoms and daphnia, we may need a little more for the rest*
+
+2)  Pick our species and connect them!!!
+*Done*
+
+3)  Connect species to available environmental data
+*Done*
+
+4)  Play with models, move to general tasks
+
+# General tasks
+
+Each group has the same general tasks, but you will adapt them as you work on the data.
+
+1)  Find the most parsimonious model among a set that examines the effects of environmental covariates and/or an indicator of seasonality, varying numbers of trends, and different forms of variance-covariance matrices for the observation errors.
+
+2)  Plot trends and individual loadings for the model identified in task (1) above.
+
+3)  Plot model fits and uncertainty intervals for the model identified in task (1) above.
+
+4)  Describe the effects of environmental or dummy variables on (possibly seasonal) patterns in the data. *I'm not super familiar with dummy variables. - Eric*
+
+# Model fitting
+
+DFA assumptions, we can adapt this to cycle through options for our models
+
+```{r}
+
+# Here we will evaluate how well the data supports various hypotheses
+
+# If we use form="dfa" in the MARSS function, we don't have to specify the Z matrix unless it is not the default form. (These are the default) I have left it in just in case we decide it may be useful later
+#Z.models <- list(
+#  Z1 = matrix(list("z11",
+#                   "z21",
+#                   "z31",
+#                   "z41",
+#                   "z51"), 5, 1, byrow = TRUE), # one hidden driver
+#  Z2 = matrix(list( "z11",  0  ,
+#                    "z21","z22",
+#                    "z31","z32",
+#                    "z41","z42",
+#                    "z51","z52"), 5, 2, byrow = TRUE), # two hidden drivers
+#  Z3 = matrix(list( "z11",  0  ,  0  ,
+#                    "z21","z22",  0  ,
+#                    "z31","z32","z33",
+#                    "z41","z42","z43",
+#                    "z51","z52","z53"), 5, 3, byrow = TRUE), # three hidden drivers
+#  Z4 = matrix(list( "z11",  0  ,  0  ,  0  ,
+#                    "z21","z22",  0  ,  0  ,
+#                    "z31","z32","z33",  0  ,
+#                    "z41","z42","z43","z44",
+#                    "z51","z52","z53","z54"), 5, 4, byrow = TRUE) # four hidden drivers
+#)
+#names(Z.models) <- c("one_process","two_processes","three_processes","four_processes")
+
+# Instead of specifying Z, we can just use the number of states we want. Much less effort
+model.states <- list(
+  m2 = 2, # 2 hidden states
+  m3 = 3, # 3 hidden states
+  m4 = 4 # 4 hidden states
+)
+names(model.states) <- c("two_states","three_states","four_states")
+
+# Also testing different observation error matrices
+R.models <- c("diagonal and unequal","equalvarcov","unconstrained")
+
+# Ignoring pH for now because it does not have a complete dataset. We may add a dummy variable for seasonality later
+d.models <- list( 
+  d1 = "zero", # No covariates
+  d2 = t(init_dat[,"Temp"]), # Temperature
+  d3 = t(init_dat[,"TP"]), # Total Phosphorus
+  d4 = t(init_dat[,c("Temp","TP")]) # Temperature and Total Phosphorus
+  )
+names(d.models) <- c("No Covariation","Temperature","Total Phosphorus","Temp and TP")
+
+
+# Setting fixed portion of mod list, some of these we can mess around with but we will already be testing 48 models and I didn't want to eat up a bunch of processing time
+mod.list = list(
+  A = "zero", # this is set to zero because the data has been demeaned
+  Q = "identity", # Q is set to the default value, this can also be "diagonal and equal" or "diagonal and unequal"
+  x0 = "zero" # x0 can be also be set to "unconstrained" or "unequal" it might be useful to try these later
+  )
+  # all other params are left to their default settings
+```
+
+## MARSS Model Selection
+
+Run MARSS models
+*still having issues with this block*
+```{r}
+# Added in another for loop to run through cycling options, be warned, this means there are 80 total models. It takes a long time to run
+out.tab <- NULL
+fits <- list()
+for(i in 1:length(model.states)){
+  for (j in 1:length(d.models)){
+    for(R.model in R.models){
+      fit.model = c(list(m=model.states[[i]], R=R.model), mod.list)
+      
+#MARSS will throw an error if covariates are not a matrix, This will not pass the covariate arg if it does not exist
+      if(j==1) {
+      fit <- MARSS(plank_dat, model=fit.model, 
+                form = "dfa", z.score = FALSE,
+                silent=TRUE, control=list(maxit=3000))
+      }
+      else {
+      fit <- MARSS(plank_dat, model=fit.model, 
+                form = "dfa", z.score = FALSE,
+                silent=TRUE, control=list(maxit=3000), 
+                covariates = d.models[[j]])
+      }
+      
+      out=data.frame(States=names(model.states)[i],d=names(d.models)[j],R=R.model, # 
+                   logLik=fit$logLik, AICc=fit$AICc, num.param=fit$num.params,
+                   num.iter=fit$numIter, converged=!fit$convergence,
+                   stringsAsFactors = FALSE)
+      out.tab=rbind(out.tab,out)
+      fits=c(fits,list(fit))
+      
+    }
+  }
+}
+
+min.AICc <- order(out.tab$AICc)
+out.tab.1 <- out.tab[min.AICc, ]
+out.tab.1 <- cbind(out.tab.1, delta.AICc = out.tab.1$AICc - out.tab.1$AICc[1])
+out.tab.1 <- cbind(out.tab.1, rel.like = exp(-1 * out.tab.1$delta.AICc/2))
+out.tab.1 <- cbind(out.tab.1, AIC.weight = out.tab.1$rel.like/sum(out.tab.1$rel.like))
+out.tab.1
+
+
+```
+
+# Methods
+
+Please address the following in your methods:
+
+-   Which plankton taxa did you choose and how did you choose them?
+
+-   What time period(s) did you examine and why?
+
+-   What environmental or dummy variables did you include and why?
+
+-   What forms of models did you fit (ie, write them out in matrix form)?
+
+-   What sort of model diagnostics did you use to examine model assumptions?
+
+# Results
+
+# Discussion
+
+# Team contributions
+
+Example: "All team members helped decide on the goal and ran the analyses for the individual regions. Team members 2 & 3 wrote most of the code for the analysis. Team member 1 worked on the plotting section of the report using and adapting code that team member 3 wrote. All team members helped edit the report and wrote the discussion together."
