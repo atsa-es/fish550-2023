@@ -266,6 +266,30 @@ min.AICc_2 <- order(model.data$AICc)
 model.data <- model.data[min.AICc_2, ]
 model.data.delta <- cbind(model.data, delta.AICc = model.data$AICc - model.data$AICc[1])
 model.data.delta
+
+
+#same loop using BFGS method to get all models to converge
+cont_BFGS <- list(maxit = 3000)
+model.data2 <- data.frame(stringsAsFactors = FALSE)
+for (R in R_list) {
+  for (m in 1:length(m_list)) {
+    dfa.model <- list(R = R, m = m, A = "zero") ## if we zscore or demean A should go to zero... 
+      
+    fit = MARSS(plankton_z, model = dfa.model, control = cont_BFGS, 
+                  form = "dfa",method = "BFGS", z.score = FALSE, covariates = d)
+    
+    
+  model.data2 <- rbind(model.data2, data.frame(R = R, m = m,
+                      fit$logLik, AICc=fit$AICc, num.param=fit$num.params,
+                      stringsAsFactors = FALSE))
+  }
+}
+model.data2
+min.AICc_2 <- order(model.data2$AICc)
+model.data2 <- model.data2[min.AICc_2, ]
+model.data.delta2 <- cbind(model.data2, delta.AICc = model.data2$AICc - model.data2$AICc[1])
+model.data.delta2
+
 # potentially remove everything below this if we dont want to use any unconstrained models
 # m1 = MARSS(plankton_z, model = list(R = "unconstrained", m = 3, A = "zero"), control = cont_list, 
 #                  form = "dfa", z.score = FALSE, covariates = d)
@@ -281,6 +305,7 @@ model.data.delta
 
 ```
 
+The Diagonal and unequal models do not converge using the default MARSS methods. Running the BFGS method allows all models to converge. In the BFGS method Diagonal and unequal with 3 latent states is the top model. 
 Diagonal and unequal tests as a better R matrix, but not sure whether we justify trying this based on sample design? We could just show it and then say we stuck with R = diagonal and equal. 
 
 What if we said diagonal and unequal as some of these species may be harder to count under the microscope than the others but being sampled together has no effect on the counts of others (no covariance)? That seems fairly legit to me.
@@ -294,17 +319,19 @@ I think I will move forward with diag&unequal m=3.
 
 ```{r}
 #use this to create every combo of rows in the covariate matrix possible
+#NOTE: there is a saved .RDS table at the bottom that is the output of the loop
+#so you don't have to rerun (its a long time)
 combo <- powerSet(1:4)
 #make sure cos and sin are always together as season
 for (i in 9:16) {
   combo[[i]] <- c(combo[[i]],5)
 }
-d[combo[[15]],1]  # [[1]] is empty so dont loop it
-cont_list <- list(maxit = 3000)
+#d[combo[[15]],1]  # [[1]] is empty so dont loop it
+cont_BFGS <- list(maxit = 3000)
 model.cov.data <- data.frame(stringsAsFactors = FALSE)
 for (i in 2:16) {
     fit2 <- MARSS(plankton_z, model = list(R = "diagonal and unequal", m = 3,
-                                           A = "zero"), control = cont_list,
+                                           A = "zero"), control = cont_BFGS,
                                            form = "dfa", z.score = FALSE, 
                                            method = "BFGS",
                                            covariates = d[combo[[i]],])
@@ -325,6 +352,7 @@ covariate.table
 #be re-run in the future (i hope)
 #saveRDS(covariate.table, "covariate_table.rds")
 table <- readRDS("covariate_table.rds")
+table
 ```
 
 We used the BFGS method to estimate the parameters for the best model as running the models without this method 1) took a very long time and 2) resulted in a lot of models failing to converge.
@@ -337,6 +365,7 @@ Thus, our top model has an R matrix that is diagonal and unequal, three latent s
 
 
 # Results
+To have something to compare our top model to we will run a basic model with no covariates but with the same R matrix of "diagonal and unequal" and three latent states. We are forced to use the BFGS method as the model does not converge otherwise.
 ```{r}
 #we can look at the model with no covariates first
 #create z loading matrix. assume 3 underlying processes
@@ -380,10 +409,18 @@ mod_list <- list(Z = Z_mat, A = a, D = D, d = dd, R = r, B = B,
 init_list <- list(x0 = matrix(rep(0, mm), mm, 1))
 
 #run the model
-basic.mod <- MARSS(y = plankton_z, model = mod_list, inits = init_list,control = cont_list)
+mod.list.basic <- list(R = "diagonal and unequal",m=3, A="zero")
+cont_list.basic <- list(maxit = 6000, allow.degen=TRUE)
 
+basic.mod <- MARSS(plankton_z, model = mod.list.basic, control = cont_list.basic, inits = init_list, form = "dfa",
+                    z.score = FALSE) #fails to converge
+
+cont_longer <- list(maxit = 5000, allow.degen = TRUE)
+basic.mod <- MARSS(y = plankton_z, model = mod_list, inits = init_list, control = cont_longer) #fails to converge
+
+cont_BFGS <- list(maxit = 3000)
 basic.mod <- MARSS(plankton_z, model = list(R = "diagonal and unequal", m = 3,
-                                           A = "zero"), control = cont_list,
+                                           A = "zero"), control = cont_BFGS,
                                            method = "BFGS",
                                            form = "dfa", z.score = FALSE 
                                            )
@@ -430,9 +467,9 @@ get_DFA_fits <- function(MLEobj, dd = NULL, alpha = 0.05) {
 }
 
 #get model fit
-basic.fit <- get_DFA_fits(basic.mod)
+basic.fit <- get_DFA_fits(basic.mod)   #if diagonal and unequal was used it produces NANs
 
-#plot the fit
+#plot the fit of the basic model
 ylbl <- c("Diatoms","Greens","Unicells","Cyclops","Rotifers")
 w_ts <- seq(dim(plankton_z)[2])
 yr_start <- 1967
@@ -509,11 +546,15 @@ for (i in 1:mm) {
 }
 ```
 
+
+
+
+Now we can look at our top model which has Total Phosporus, pH, and season as covariates with an R matrix set to "diagonal and unequal" and three latent states.
 ```{r}
 
 #create an object of the top model
 top.mod <- MARSS(plankton_z, model = list(R = "diagonal and unequal", m = 3,
-                                           A = "zero"), control = cont_list,
+                                           A = "zero"), control = cont_BFGS,
                                            form = "dfa", z.score = FALSE, 
                                            method = "BFGS",
                                            covariates = d[combo[[15]],])
@@ -537,6 +578,32 @@ for (i in 1:n_ts) {
   lines(w_ts, lo, col = "darkgray")
 }
 
+#create an object of the top model with Diagonal and equal to compare
+top.mod2 <- MARSS(plankton_z, model = list(R = "diagonal and equal", m = 3,
+                                           A = "zero"), control = cont_BFGS,
+                                           form = "dfa", z.score = FALSE, 
+                                           method = "BFGS",
+                                           covariates = d[combo[[15]],])
+top.mod$AIC
+top.mod2$AIC
+#get model fit
+top.fit2 <- get_DFA_fits(top.mod2, dd = d[combo[[15]],])
+
+#plot the fit
+par(mfrow = c(n_ts, 1), mai = c(0.5, 0.7, 0.1, 0.1), omi = c(0, 
+                                                             0, 0, 0))
+for (i in 1:n_ts) {
+  up <- top.fit2$up[i, ]
+  mn <- top.fit2$ex[i, ]
+  lo <- top.fit2$lo[i, ]
+  plot(w_ts, mn, xlab = "", ylab = ylbl[i], xaxt = "n", type = "n", 
+       cex.lab = 1.2, ylim = c(min(lo), max(up)))
+  axis(1, 12 * (0:dim(plankton_z)[2]) + 1, yr_start + 0:dim(plankton_z)[2])
+  points(w_ts, plankton_z[i, ], pch = 16, col = clr[i])
+  lines(w_ts, up, col = "darkgray")
+  lines(w_ts, mn, col = "black", lwd = 2)
+  lines(w_ts, lo, col = "darkgray")
+}
 
 
 ```
