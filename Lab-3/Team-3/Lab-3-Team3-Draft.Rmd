@@ -140,6 +140,131 @@ We chose to model four zooplankton taxa :Cyclops, Diaptomus, Epischura, and Neom
 
 ### Model:
 
+# Observation Model
+
+## ZZ is loadings matrix
+```{r}
+
+Z_vals <- list("z11",  0  ,  0  ,
+               "z21","z22",  0  ,
+               "z31","z32","z33",
+               "z41","z42","z43",
+               "z51","z52","z53")
+ZZ <- matrix(Z_vals, nrow = N_ts, ncol = 3, byrow = TRUE)
+ZZ
+
+## 'aa' is the offset/scaling
+aa <- "zero"
+
+## 'DD' and 'd' are for covariates
+DD <- "zero"  # matrix(0,mm,1)
+dd <- "zero"  # matrix(0,1,wk_last)
+
+## 'RR' is var-cov matrix for obs errors
+RR <- "diagonal and unequal"
+```
+
+# Process Model
+```{r}
+## number of processes
+mm <- 3 #
+
+## 'BB' is identity: 1's along the diagonal & 0's elsewhere
+
+BB <- "identity"  # diag(mm)
+
+## 'uu' is a column vector of 0's
+uu <- "zero"  # matrix(0, mm, 1)
+
+## 'CC' and 'cc' are for covariates
+CC <- "zero"  # matrix(0, mm, 1)
+cc <- "zero"  # matrix(0, 1, wk_last)
+
+## 'QQ' is identity
+QQ <- "identity"  # diag(mm)
+
+```
+
+
+# Fit with MARSS
+```{r}
+## list with specifications for model vectors/matrices
+mod_list <- list(Z = ZZ, A = aa, D = DD, d = dd, R = RR,
+                 B = BB, U = uu, C = CC, c = cc, Q = QQ)
+## list with model inits
+init_list <- list(x0 = matrix(rep(0, mm), mm, 1))
+## list with model control parameters
+con_list <- list(maxit = 3000, allow.degen = TRUE)
+
+```
+
+```{r}
+## fit MARSS
+dfa_1 <- MARSS(y = dat, model = mod_list, inits = init_list, control = con_list)
+
+```
+
+#Rotating trends and loadings
+```{r}
+## get the estimated ZZ
+Z_est <- coef(dfa_1, type = "matrix")$Z
+
+## get the inverse of the rotation matrix
+H_inv <- varimax(Z_est)$rotmat
+
+#Now rotate both Z and x
+
+## rotate factor loadings
+Z_rot = Z_est %*% H_inv   
+
+## rotate processes
+proc_rot = solve(H_inv) %*% dfa_1$states
+```
+
+#Estimated States and Loadings
+```{r}
+## plot labels
+ylbl <- phytoplankton
+w_ts <- seq(dim(dat)[2])
+
+## set up plot area
+layout(matrix(c(1,2,3,4,5,6), mm, 2), widths = c(2,1))
+par(mai = c(0.5, 0.5, 0.5, 0.1), omi = c(0, 0, 0, 0))
+
+## plot the processes
+for(i in 1:mm) {
+  ylm <- c(-1, 1) * max(abs(proc_rot[i,]))
+  ## set up plot area
+    plot(w_ts,proc_rot[i,], type = "n", bty = "L",
+         ylim = ylm, xlab = "", ylab = "", xaxt = "n")
+    ## draw zero-line
+    abline(h = 0, col = "gray")
+    ## plot trend line
+    lines(w_ts, proc_rot[i,], lwd = 2)
+    lines(w_ts, proc_rot[i,], lwd = 2)
+    ## add panel labels
+    mtext(paste("State",i), side = 3, line = 0.5)
+    axis(1, 12 * (0:dim(dat_1980)[2]) + 1, yr_frst + 0:dim(dat_1980)[2])
+}
+## plot the loadings
+minZ <- 0
+ylm <- c(-1, 1) * max(abs(Z_rot))
+for(i in 1:mm) {
+  plot(x = c(1:N_ts)[abs(Z_rot[,i])>minZ],
+       y = as.vector(Z_rot[abs(Z_rot[,i])>minZ,i]),
+       type = "h",
+       lwd = 2, xlab = "", ylab = "", xaxt = "n", ylim = ylm,
+       xlim = c(0.5, N_ts + 0.5), col = clr)
+    for(j in 1:N_ts) {
+      if(Z_rot[j,i] > minZ) {text(j, -0.03, ylbl[j], srt = 90, adj = 1, cex = 1.2, col = clr[j])}
+      if(Z_rot[j,i] < -minZ) {text(j, 0.03, ylbl[j], srt = 90, adj = 0, cex = 1.2, col = clr[j])}
+      abline(h = 0, lwd = 1.5, col = "gray")
+      } 
+  mtext(paste("Factor loadings on state", i), side = 3, line = 0.5)
+}
+
+```
+
 ### Diagnostics:
 
 # Results
