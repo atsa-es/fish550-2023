@@ -99,6 +99,7 @@ for(i in spp){
 }
 ```
 The plots are kind of hard to see, do they just not work well in .Rmd files?
+If we stick with these plankton, a good time to start may be may be 1973, that is when the daphnia data starts becoming more frequent.
 
 Plot the covariates
 ```{r}
@@ -122,77 +123,7 @@ for(i in row.names(covar)){
 ```
 Temperature and pH seems to follow the time of year closely. 
 Does this mean that using temperature as a covariate will make pH and seasonality redundant?
-
-First DFA test, using default settings for the model and 3 hidden states, 
-```{r}
-mod.list1 <- list(m = 3)
-testfit <- MARSS(plank_dat, model=mod.list1, form = "dfa", covariates = covar, z.score = FALSE, control=list(maxit=3000, allow.degen=TRUE))
-
-# Get Z Estimations and rotate the data
-## get the estimated ZZ
-Z_est <- coef(testfit, type = "matrix")$Z
-
-## get the inverse of the rotation matrix
-H_inv <- varimax(Z_est)$rotmat
-
-## rotate factor loadings
-Z_rot = Z_est %*% H_inv   
-
-## rotate processes
-proc_rot = solve(H_inv) %*% testfit$states
-```
-
-
-
-
-
-plot the results and loadings as shown in Mark's example
-```{r}
-plot(testfit, plot.type="fitted.ytT")
-
-N_ts <- nrow(plank_dat)
-m = ncol(Z_est)
-## plot labels
-ylbl <- plank_taxa
-w_ts <- seq(mm)
-
-## set up plot area
-layout(matrix(c(1,2,3,4,5,6), m, 2), widths = c(2,1))
-par(mai = c(0.5, 0.5, 0.5, 0.1), omi = c(0, 0, 0, 0))
-
-## plot the processes
-for(i in 1:m) {
-  ylm <- c(-1, 1) * max(abs(proc_rot[i,]))
-  ## set up plot area
-    plot(w_ts,proc_rot[i,], type = "n", bty = "L",
-         ylim = ylm, xlab = "", ylab = "", xaxt = "n")
-    ## draw zero-line
-    abline(h = 0, col = "gray")
-    ## plot trend line
-    lines(w_ts, proc_rot[i,], lwd = 2)
-    lines(w_ts, proc_rot[i,], lwd = 2)
-    ## add panel labels
-    mtext(paste("State",i), side = 3, line = 0.5)
-    axis(1, 12 * (0:mm) + 1, yr_frst + 0:mm)
-}
-## plot the loadings
-minZ <- 0
-ylm <- c(-1, 1) * max(abs(Z_rot))
-for(i in 1:m) {
-  plot(x = c(1:N_ts)[abs(Z_rot[,i])>minZ],
-       y = as.vector(Z_rot[abs(Z_rot[,i])>minZ,i]),
-       type = "h",
-       lwd = 2, xlab = "", ylab = "", xaxt = "n", ylim = ylm,
-       xlim = c(0.5, N_ts + 0.5), col = clr)
-    for(j in 1:N_ts) {
-      if(Z_rot[j,i] > minZ) {text(j, -0.03, ylbl[j], srt = 90, adj = 1, cex = 1.2, col = clr[j])}
-      if(Z_rot[j,i] < -minZ) {text(j, 0.03, ylbl[j], srt = 90, adj = 0, cex = 1.2, col = clr[j])}
-      abline(h = 0, lwd = 1.5, col = "gray")
-      } 
-  mtext(paste("Factor loadings on state", i), side = 3, line = 0.5)
-}
-```
-There does not seem to be much loading of any observations on state 3. Additionally Epischura, other Other Algae, and Daphnia do not show much loading on any of the states. Though this is before we have chosen a window of time to focus on
+It is a shame that a lot of data is not available from ~1964 to 1974. During those years we can see an obvious decline in TP. It would be interesting to study how strongly the plankton species reacted to this change in TP concentration.
 
 
 ## General Notes
@@ -212,7 +143,7 @@ Madi Heller-Shipley --[shipmadison\@gmail.com](mailto:shipmadison@gmail.com){.em
 # First Steps
 
 1)  Plot all species all years and look for data-based relationships -connect what we see in the data to literature and the biology of Lake Washington
-*Plotted, I can at least justify diatoms and daphnia, we may need a little more for the rest*
+*Plotted, I can at least justify diatoms and daphnia, we may need a little more for the rest. We can say that we wanted to pick multiple trophic levels.*
 
 2)  Pick our species and connect them!!!
 *Done*
@@ -268,24 +199,21 @@ DFA assumptions, we can adapt this to cycle through options for our models
 #names(Z.models) <- c("one_process","two_processes","three_processes","four_processes")
 
 # Instead of specifying Z, we can just use the number of states we want. Much less effort
-model.states <- list(
-  m2 = 2, # 2 hidden states
-  m3 = 3, # 3 hidden states
-  m4 = 4 # 4 hidden states
-)
+model.states <- 2:4
 names(model.states) <- c("two_states","three_states","four_states")
 
 # Also testing different observation error matrices
 R.models <- c("diagonal and unequal","equalvarcov","unconstrained")
 
-# Ignoring pH for now because it does not have a complete dataset. We may add a dummy variable for seasonality later
+# Ignoring pH for now because it does not have a complete dataset. May add seasonal variables later. From early results it looks like best fits all have covariation. I have taken out a few of the options to reduce the number of models
+# Also the covariates must be z-scored if the response variables are demeaned
 d.models <- list( 
-  d1 = "zero", # No covariates
-  d2 = t(init_dat[,"Temp"]), # Temperature
-  d3 = t(init_dat[,"TP"]), # Total Phosphorus
-  d4 = t(init_dat[,c("Temp","TP")]) # Temperature and Total Phosphorus
+#  d1 = "zero", # No covariates
+#  d2 = t(init_dat[,"Temp"]), # Temperature
+#  d3 = t(init_dat[,"TP"]), # Total Phosphorus
+  d4 = zscore(t(init_dat[,c("Temp","TP")])) # Temperature and Total Phosphorus
   )
-names(d.models) <- c("No Covariation","Temperature","Total Phosphorus","Temp and TP")
+names(d.models) <- c("Temp and TP")
 
 
 # Setting fixed portion of mod list, some of these we can mess around with but we will already be testing 48 models and I didn't want to eat up a bunch of processing time
@@ -305,25 +233,25 @@ Run MARSS models
 # Added in another for loop to run through cycling options, be warned, this means there are 80 total models. It takes a long time to run
 out.tab <- NULL
 fits <- list()
-for(i in 1:length(model.states)){
+for(i in model.states){
   for (j in 1:length(d.models)){
     for(R.model in R.models){
-      fit.model = c(list(m=model.states[[i]], R=R.model), mod.list)
+      fit.model = c(list(m=i, R=R.model), mod.list)
       
 #MARSS will throw an error if covariates are not a matrix, This will not pass the covariate arg if it does not exist
-      if(j==1) {
+#      if(j==1) {
+#      fit <- MARSS(plank_dat, model=fit.model, 
+#                form = "dfa", z.score = FALSE, silent = TRUE,
+#                control=list(maxit=2000, allow.degen=TRUE))
+#      }
+#      else {
       fit <- MARSS(plank_dat, model=fit.model, 
-                form = "dfa", z.score = FALSE,
-                silent=TRUE, control=list(maxit=3000))
-      }
-      else {
-      fit <- MARSS(plank_dat, model=fit.model, 
-                form = "dfa", z.score = FALSE,
-                silent=TRUE, control=list(maxit=3000), 
+                form = "dfa", z.score = FALSE, silent = TRUE,
+                control=list(maxit=2000, allow.degen=TRUE), 
                 covariates = d.models[[j]])
-      }
+#      }
       
-      out=data.frame(States=names(model.states)[i],d=names(d.models)[j],R=R.model, # 
+      out=data.frame(States=names(model.states)[i-1],d=names(d.models)[j],R=R.model, # 
                    logLik=fit$logLik, AICc=fit$AICc, num.param=fit$num.params,
                    num.iter=fit$numIter, converged=!fit$convergence,
                    stringsAsFactors = FALSE)
@@ -336,13 +264,93 @@ for(i in 1:length(model.states)){
 
 min.AICc <- order(out.tab$AICc)
 out.tab.1 <- out.tab[min.AICc, ]
-out.tab.1 <- cbind(out.tab.1, delta.AICc = out.tab.1$AICc - out.tab.1$AICc[1])
-out.tab.1 <- cbind(out.tab.1, rel.like = exp(-1 * out.tab.1$delta.AICc/2))
-out.tab.1 <- cbind(out.tab.1, AIC.weight = out.tab.1$rel.like/sum(out.tab.1$rel.like))
 out.tab.1
 
 
 ```
+The model with the lowest AICc has 4 states, and a diagonal and unequal R matrix, however it failed to converge after 2000 iterations.
+
+The best model that did converge is [5], with 3 states and an equal varcovar matrix. It will be examined below.
+
+```{r}
+# Rotating the model, plotting the states and loadings
+best_fit <- fits[[5]]
+
+# Get Z Estimations and rotate the data
+## get the estimated ZZ
+Z_est <- coef(best_fit, type = "matrix")$Z
+
+## get the inverse of the rotation matrix
+H_inv <- varimax(Z_est)$rotmat
+
+## rotate factor loadings
+Z_rot = Z_est %*% H_inv   
+
+## rotate processes
+proc_rot = solve(H_inv) %*% best_fit$states
+
+N_ts <- nrow(plank_dat)
+m = ncol(Z_est)
+## plot labels
+ylbl <- plank_taxa
+w_ts <- seq(mm)
+
+## set up plot area
+layout(matrix(1:6, m, 2), widths = c(3,2))
+par(mai = c(0.3, 0.3, 0.3, 0.1), omi = c(0, 0, 0, 0))
+
+## plot the processes
+for(i in 1:m) {
+  ylm <- c(-1, 1) * max(abs(proc_rot[i,]))
+  ## set up plot area
+    plot(w_ts,proc_rot[i,], type = "n", bty = "L",
+         ylim = ylm, xlab = "", ylab = "", xaxt = "n")
+    ## draw zero-line
+    abline(h = 0, col = "gray")
+    ## plot trend line
+    lines(w_ts, proc_rot[i,], lwd = 2)
+    lines(w_ts, proc_rot[i,], lwd = 2)
+    ## add panel labels
+    mtext(paste("State",i), side = 3, line = 0.5)
+    axis(1, 12 * (0:mm) + 1, yr_frst + 0:mm)
+}
+## plot the loadings
+minZ <- 0
+ylm <- c(-1, 1) * max(abs(Z_rot))
+for(i in 1:m) {
+  plot(x = c(1:N_ts)[abs(Z_rot[,i])>minZ],
+       y = as.vector(Z_rot[abs(Z_rot[,i])>minZ,i]),
+       type = "h",
+       lwd = 2, xlab = "", ylab = "", xaxt = "n", ylim = ylm,
+       xlim = c(0.5, N_ts + 0.5), col = clr)
+    for(j in 1:N_ts) {
+      if(Z_rot[j,i] > minZ) {text(j, -0.03, ylbl[j], srt = 90, adj = 1, cex = 1.2, col = clr[j])}
+      if(Z_rot[j,i] < -minZ) {text(j, 0.03, ylbl[j], srt = 90, adj = 0, cex = 1.2, col = clr[j])}
+      abline(h = 0, lwd = 1.5, col = "gray")
+      } 
+  mtext(paste("Factor loadings on state", i), side = 3, line = 0.5)
+}
+```
+States 2 and 3 look like they are almost mirror images of each other. Lets look at the ccf()
+
+```{r}
+## set up plotting area
+par(mai = c(0.9,0.9,0.3,0.1))
+
+## plot CCF's
+ccf(proc_rot[1,],proc_rot[2,], lag.max = 30, main="")
+title(main = "State 1 vs 2")
+
+## plot CCF's
+ccf(proc_rot[1,],proc_rot[3,], lag.max = 30, main="")
+title(main = "State 1 vs 3")
+
+## plot CCF's
+ccf(proc_rot[2,],proc_rot[3,], lag.max = 30, main="")
+title(main = "State 2 vs 3")
+```
+States 2 and 3 seem very strongly correlated.
+
 
 # Methods
 
