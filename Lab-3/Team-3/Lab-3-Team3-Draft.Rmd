@@ -68,6 +68,9 @@ dat_1985<-all_dat[all_dat[, "Year"] <= 1985,]
 dat_zoo_1985<-dat_1985[, spp]
 #head(dat_zoo_1985)
 dat_zoo<-t(dat_zoo_1985)
+
+yr_frst <- min(dat_1985[,"Year"])
+yr_last <- max(dat_1985[,"Year"])
 ```
 
 ```{r wrangle_data_2}
@@ -144,14 +147,33 @@ We chose to model four zooplankton taxa :Cyclops, Diaptomus, Epischura, and Neom
 
 ## ZZ is loadings matrix
 ```{r}
-
+ZZ = NULL
+# Define different ZZ hypotheses 
+# 1 state
+Z_vals <- list("z11",
+               "z21", 
+               "z31",
+               "z41")
+ZZ[[1]] <- matrix(Z_vals, nrow = N_ts, ncol = 1, byrow = TRUE)
+# 2 states
+Z_vals <- list("z11",  0  , 
+               "z21","z22", 
+               "z31","z32",
+               "z41","z42")
+ZZ[[2]] <- matrix(Z_vals, nrow = N_ts, ncol = 2, byrow = TRUE)
+# 3 states
 Z_vals <- list("z11",  0  ,  0  ,
                "z21","z22",  0  ,
                "z31","z32","z33",
-               "z41","z42","z43",
-               "z51","z52","z53")
-ZZ <- matrix(Z_vals, nrow = N_ts, ncol = 3, byrow = TRUE)
-ZZ
+               "z41","z42","z43")
+ZZ[[3]] <- matrix(Z_vals, nrow = N_ts, ncol = 3, byrow = TRUE)
+
+# 4 states
+Z_vals <- list("z11",  0  ,  0  , 0,
+               "z21","z22",  0  , 0,
+               "z31","z32","z33", 0,
+               "z41","z42","z43","z44")
+ZZ[[4]] <- matrix(Z_vals, nrow = N_ts, ncol = 4, byrow = TRUE)
 
 ## 'aa' is the offset/scaling
 aa <- "zero"
@@ -167,7 +189,7 @@ RR <- "diagonal and unequal"
 # Process Model
 ```{r}
 ## number of processes
-mm <- 3 #
+mm <- 2 #
 
 ## 'BB' is identity: 1's along the diagonal & 0's elsewhere
 
@@ -189,7 +211,7 @@ QQ <- "identity"  # diag(mm)
 # Fit with MARSS
 ```{r}
 ## list with specifications for model vectors/matrices
-mod_list <- list(Z = ZZ, A = aa, D = DD, d = dd, R = RR,
+mod_list <- list(Z = ZZ[[2]], A = aa, D = DD, d = dd, R = RR,
                  B = BB, U = uu, C = CC, c = cc, Q = QQ)
 ## list with model inits
 init_list <- list(x0 = matrix(rep(0, mm), mm, 1))
@@ -224,8 +246,12 @@ proc_rot = solve(H_inv) %*% dfa_1$states
 #Estimated States and Loadings
 ```{r}
 ## plot labels
-ylbl <- phytoplankton
+zooplankton_names = c("Cyclops", "Diaptomus", "Epischura", "Neomysis")
+ylbl <- zooplankton_names
 w_ts <- seq(dim(dat)[2])
+
+# plot colors
+clr <- c("brown", "blue", "darkgreen", "darkred", "purple")
 
 ## set up plot area
 layout(matrix(c(1,2,3,4,5,6), mm, 2), widths = c(2,1))
@@ -244,7 +270,7 @@ for(i in 1:mm) {
     lines(w_ts, proc_rot[i,], lwd = 2)
     ## add panel labels
     mtext(paste("State",i), side = 3, line = 0.5)
-    axis(1, 12 * (0:dim(dat_1980)[2]) + 1, yr_frst + 0:dim(dat_1980)[2])
+    axis(1, 12 * (0:dim(dat)[2]) + 1, yr_frst + 0:dim(dat)[2])
 }
 ## plot the loadings
 minZ <- 0
