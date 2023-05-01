@@ -293,10 +293,10 @@ model.cov.data <- data.frame(stringsAsFactors = FALSE)
 for (i in 2:16) {
     fit2 <- MARSS(plankton_z, model = list(R = "diagonal and equal", m = 3,
                                            A = "zero"), control = cont_BFGS,
-                                           form = "dfa", z.score = FALSE, 
+                                           form = "dfa", z.score = FALSE,
                                            method = "BFGS",
                                            covariates = d[combo[[i]],])
-  
+
    model.cov.data <- rbind(model.cov.data,
                            data.frame(Covariates =                       toString(rownames(d)[combo[[i]]]),
                       LogLik = fit2$logLik, AICc=fit2$AICc, num.param=fit2$num.params,
@@ -510,7 +510,44 @@ Fits don't look the best, but probably because the plankton aren't super similar
 
 # Describe the effects of environmental or dummy variables on (possibly seasonal) patterns in the data
 
-Liz can do this on Monday... 
+```{r}
+
+coef <- as.data.frame(top.mod$coef[14:33])
+colnames(coef)[1] <- "effect"
+coef$covariate <- c(rep("TP", 5), rep("pH", 5), rep("cos_t", 5), rep("sin_t", 5))
+coef$species <- rep(c('Diatoms', 'Greens', 'Unicells', 'Cyclops', 'Rotifers'), 4)
+
+effect_plot <- function(plot_object){ggplot(plot_object, mapping = aes(y = species, x = effect, col = species))+
+    geom_point(cex = 3)+
+    theme_classic()+
+    geom_vline(xintercept=0, linetype="dashed", 
+                               color = "grey60", size=0.5)+
+    xlim(c(-.5,.5))+
+    xlab("")+ylab("")
+  
+}
+
+TP <- coef[which(coef$covariate=="TP"),] %>%
+  effect_plot()
+
+
+pH <- coef[which(coef$covariate=="pH"),]%>%
+  effect_plot()
+
+cos <- coef[which(coef$covariate=="cos_t"),]%>%
+  effect_plot()
+
+
+sin <- coef[which(coef$covariate=="sin_t"),]%>%
+  effect_plot()
+
+library(ggpubr)
+print(ggarrange(TP+rremove("legend")+ggtitle("TP"),
+                pH+rremove("legend")+ggtitle("pH"),
+                cos+rremove("legend")+ggtitle("cosine"),
+                sin+rremove("legend")+ggtitle("sine"),
+                ncol = 2, nrow = 2))
+```
 
 # Model diagnostics
 
