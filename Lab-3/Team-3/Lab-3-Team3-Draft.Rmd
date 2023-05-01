@@ -189,7 +189,7 @@ RR <- "diagonal and unequal"
 # Process Model
 ```{r}
 ## number of processes
-mm <- 2 #
+mm <- 2 # this is just a placeholder, as we loop through # of states we will update this
 
 ## 'BB' is identity: 1's along the diagonal & 0's elsewhere
 
@@ -220,16 +220,49 @@ con_list <- list(maxit = 3000, allow.degen = TRUE)
 
 ```
 
-```{r}
-## fit MARSS
-dfa_1 <- MARSS(y = dat, model = mod_list, inits = init_list, control = con_list)
 
+````{r model selection of # states}
+Z_AIC <- data.frame(states = NA,AICc=NA)
+for (z in 1:length(ZZ)){
+## list with specifications for model vectors/matrices
+mod_list <- list(Z = ZZ[[z]], A = aa, D = DD, d = dd, R = RR,
+                 B = BB, U = uu, C = CC, c = cc, Q = QQ)
+mm <- z
+## list with model inits
+init_list <- list(x0 = matrix(rep(0, mm), mm, 1))
+## list with model control parameters
+con_list <- list(maxit = 3000, allow.degen = TRUE)
+
+## fit MARSS
+dfa <- MARSS(y = dat, model = mod_list, inits = init_list, control = con_list)
+# get model results
+Z_AIC[z,"states"] = z
+Z_AIC[z,"AICc"] = dfa$AICc
+}
+Z_AIC
+```
+
+Best performing based on AICc is the one with 3 states. 
+
+```{r}
+## list with specifications for model vectors/matrices
+mod_list <- list(Z = ZZ[[3]], A = aa, D = DD, d = dd, R = RR,
+                 B = BB, U = uu, C = CC, c = cc, Q = QQ)
+mm <- 3
+## list with model inits
+init_list <- list(x0 = matrix(rep(0, mm), mm, 1))
+## list with model control parameters
+con_list <- list(maxit = 3000, allow.degen = TRUE)
+
+
+## fit MARSS
+dfa_3 <- MARSS(y = dat, model = mod_list, inits = init_list, control = con_list)
 ```
 
 #Rotating trends and loadings
 ```{r}
 ## get the estimated ZZ
-Z_est <- coef(dfa_1, type = "matrix")$Z
+Z_est <- coef(dfa_3, type = "matrix")$Z
 
 ## get the inverse of the rotation matrix
 H_inv <- varimax(Z_est)$rotmat
