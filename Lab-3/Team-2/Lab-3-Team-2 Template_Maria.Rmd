@@ -124,15 +124,15 @@ model.states <- 2:4
 names(model.states) <- c("two_states","three_states","four_states")
 
 # Also testing different observation error matrices
-R.models <- c("diagonal and unequal","equalvarcov")
+R.models <- c("diagonal and unequal","equalvarcov", "diagonal and equal")
 
 # Ignoring pH for now because it does not have a complete dataset. May add seasonal variables later. From early results it looks like best fits all have covariation. I have taken out a few of the options to reduce the number of models
 # Also the covariates must be z-scored if the response variables are demeaned
 d.models <- list( 
   # d1 = "zero", # No covariates
-  d2 = t(init_dat[,"Temp"]), # Temperature
-  d3 = t(init_dat[,"TP"]), # Total Phosphorus
-  d4 = t(init_dat[,"pH"]), # ph
+  d2 = zscore(t(init_dat[,"Temp"])), # Temperature
+  d3 = zscore(t(init_dat[,"TP"])), # Total Phosphorus
+  d4 = zscore(t(init_dat[,"pH"])), # ph
   d5 = zscore(t(init_dat[,c("Temp","TP")])),
   d6 = zscore(t(init_dat[,c("TP", "pH")])),
   d7 = zscore(t(init_dat[,c("Temp", "pH")])),
@@ -155,7 +155,7 @@ mod.list = list(
 ```
 
 
-```{r MARSS_models}
+```{r MARSS_models, cache = TRUE}
 # Added in another for loop to run through cycling options, be warned, this means there are 80 total models. It takes a long time to run
 start.time <- Sys.time()
 
@@ -176,7 +176,7 @@ for(i in model.states){
       #      else {
       fit <- MARSS(plank_dat, model=fit.model, 
                    form = "dfa", z.score = FALSE, silent = TRUE,
-                   control=list(maxit=2000, allow.degen=TRUE), 
+                   control=list(maxit=2000, allow.degen = TRUE), 
                    covariates = d.models[[j]])
       #      }
       
