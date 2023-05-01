@@ -422,6 +422,7 @@ for (i in 1:mm) {
 }
 ```
 
+
 # Plot model fits and uncertainty intervals for the model identified in task (1) above
 
 Get DFA function... 
@@ -517,19 +518,18 @@ colnames(coef)[1] <- "effect"
 coef$covariate <- c(rep("TP", 5), rep("pH", 5), rep("cos_t", 5), rep("sin_t", 5))
 coef$species <- rep(c('Diatoms', 'Greens', 'Unicells', 'Cyclops', 'Rotifers'), 4)
 
-effect_plot <- function(plot_object){ggplot(plot_object, mapping = aes(y = species, x = effect, col = species))+
+effect_plot <- function(plot_object){
+  ggplot(plot_object, mapping = aes(y = species, x = effect, col = species))+
     geom_point(cex = 3)+
     theme_classic()+
     geom_vline(xintercept=0, linetype="dashed", 
                                color = "grey60", size=0.5)+
     xlim(c(-.5,.5))+
     xlab("")+ylab("")
-  
 }
 
 TP <- coef[which(coef$covariate=="TP"),] %>%
   effect_plot()
-
 
 pH <- coef[which(coef$covariate=="pH"),]%>%
   effect_plot()
@@ -549,9 +549,36 @@ print(ggarrange(TP+rremove("legend")+ggtitle("TP"),
                 ncol = 2, nrow = 2))
 ```
 
+TP has a negative effect on diatoms and green algae, a positive effect on unicells and cylops, and no effect on rotifers. The effect of TP on diatoms and unicells tracks on with the literature-- increased P has been shown to increase the growth of bluegreen algae and dinoflagellates (unicells), decreasing the competitive availability of diatoms. Although not included in our analyses, we can see by looking at the raw data that during times of high phosphorus, cyanobacteria (bluegreen algae) bloomed. This likely influenced diatom and green algae populations through competitive exclusion processes.
+
+pH largely has a positive effect on all species of study, with the acceptance of green algal species. This suggests that greens do better under more acidic conditions (more carbon), whereas others are better suited to low CO2 (less acidic) levels. 
+
+Our seasonality dummy variables (cosine and sine) represent winter (cosine) and and springtime (sine) periods. During winter months when the curve is high, the effect of season on algal species is negative. The springtime curve has a negative effect on unicells, rotifers, and greens, a strong postive effect on diatoms, and no effect on cylops. This makes sense considering that spring algae blooms are generally dominated by diatoms.
+
 # Model diagnostics
 
-Prob just need some acf plots. 
+Below we check our model residuals and plot the acfs. 
+
+```{r}
+
+par(mfrow = c(3, 2), mai = c(0.5, 0.7, 0.2, 0.1), omi = c(0, 0, 0, 0))
+resids <- MARSSresiduals(top.mod, type = "tt1")
+for (i in 1:5) {
+    plot(resids$model.residuals[i, ], ylab = "model residuals", 
+        xlab = "")
+    abline(h = 0)
+    title(rownames(plankton_z)[i])
+}
+
+plot(top.mod, plot.type = "qqplot.std.model.resids.ytt1")
+plot(top.mod, plot.type = "acf.std.model.resids.ytt1")
+```
+
+For the most part our model residuals look okay, with some potential residual pattern remaining in our Diatoms, Unicells, and Cyclops time series. 
+
+Our data do appear to be normally distributed based on our qq-norm plots. 
+
+The acf plots show some remaining auto-correlation in all of our algal time series with the acceptance of green algae. This suggests that there is some remaining variance not explained by our latent trends and model covariates. State 1 for example looks like it could maybe be some sort of oscillation (maybe). Future studies may want to consider some sort of larger climate variables that may influence algal abundace in Lake Washington. 
 
 # Discussion
 
