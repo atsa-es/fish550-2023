@@ -60,7 +60,7 @@ yr_frst <- 1962
 
 ## Fitting a Model
 We have 5 time series and will start with assuming 3 hidden trends. We assume that there are different observation errors for the different plankton given differences in size and feeding behavior.
-The Z matrix would look like this (I'M NOT SURE HOW TO PUT IN MATRIX FORM HERE)
+The Z matrix can be seen in the code below. 
 
 ```{r}
 #set matrices for the DFA model
@@ -71,6 +71,7 @@ Z.vals<-list(
   "z41", "z42", "z43",
   "z51", "z52", "z53"
 )
+
 Z<-matrix(Z.vals, nrow=N.ts, ncol=3, byrow=T)
 Z
 #Q and B are equal to identity matrix
@@ -85,8 +86,8 @@ V0<-diag(5,3)
 Here is the model for 3 hidden trends:
 ```{r}
 dfa.model1<-list(Z=Z, A="zero", R=R, B=B, U=U, Q=Q, x0=x0, V0=V0)
-cntl.list<-list(maxit=100)
-dfa.fit1<-MARSS(plank.t, model=dfa.model1, control=cntl.list)
+cntl.list<-list(maxit=1000)
+dfa.fit1<-MARSS(plank.t, model=dfa.model1, control=cntl.list, silent = TRUE)
 autoplot(dfa.fit1, plot.type='acf.std.model.resids.ytt1')
 ```
 This model has a lot of autocorrelation in the residuals.
@@ -95,14 +96,14 @@ We tried the same model with 2 or 4 underlying trends.
 ```{r}
 #2 trends
 model.list<-list(m=2, R="diagonal and unequal")
-dfa.fit2<-MARSS(plank.t, model=model.list, z.score=T, form='dfa', control=cntl.list)
+dfa.fit2<-MARSS(plank.t, model=model.list, z.score=T, form='dfa', control=cntl.list, silent = TRUE)
 autoplot(dfa.fit2, plot.type='acf.std.model.resids.ytt1')
 ```
 
 ```{r}
 #4 trends
 model.list<-list(m=4, R="diagonal and unequal")
-dfa.fit3<-MARSS(plank.t, model=model.list, z.score=T, form='dfa', control=cntl.list)
+dfa.fit3<-MARSS(plank.t, model=model.list, z.score=T, form='dfa', control=cntl.list, silent = TRUE)
 autoplot(dfa.fit3, plot.type='acf.std.model.resids.ytt1')
 ```
 
@@ -114,42 +115,42 @@ print(cbind(model=c("3 trends", "2 trends", "4 trends"), AICc=round(c(dfa.fit1$A
 ## Adding covariates to the model
 We will start with the assumption that our best model with have 4 hidden trends. We hypothesize that zooplankton will respond to fluctuations in the population of phytoplankton and that both plankton groups will respond strongly to temperature - a main driver of biological response in the ocean - and phytoplankton will respond strongly to changes in total phosphorus since increased TP typically causes phytoplankton growth.
 
-```{r}
+```{r, results='hide'}
 #set up covariates and compare models with different combinations of covariates
 temp <- t(all_dat[,"Temp", drop = FALSE])
 TP <- t(all_dat[,"TP", drop = FALSE])
 
 mod_list = list(m = 4, R = "diagonal and unequal")
 dfa_temp <- MARSS(plank.t, model = mod_list, form = "dfa", z.score = FALSE,
-                  control=cntl.list, covariates = temp)
+                  control=cntl.list, covariates = temp, silent = TRUE)
 dfa_TP <- MARSS(plank.t, model = mod_list, form = "dfa", z.score = FALSE,
-                control=cntl.list, covariates = TP)
+                control=cntl.list, covariates = TP, silent = TRUE)
 dfa_both <- MARSS(plank.t, model = mod_list, form = "dfa", z.score = FALSE,
-                  control=cntl.list, covariates = rbind(temp, TP))
+                  control=cntl.list, covariates = rbind(temp, TP), silent = TRUE)
 
-print(cbind(model = c("no covars", "Temp", "TP", "Temp & TP"),
+dfa_AICc <- cbind(model = c("no covars", "Temp", "TP", "Temp & TP"),
             AICc = round(c(dfa.fit3$AICc,
                            dfa_temp$AICc,
                            dfa_TP$AICc,
-                           dfa_both$AICc))),
-      quote = FALSE)
+                           dfa_both$AICc)))
+dfa_AICc
 ```
 The "best" model (lowest AICc) includes both temperature and TP, supporting our hypothesis that both of these covariates drive biological response.
 
 ## Adding seasonality to the model
 Seasonal influences likely affect the plankton community as well. We create a dummy model for the seasonal influence to test its impact on model fit. We are not including all iterations here, but we tested seasons alone, seasons + TP, seasons + temperature, and seasons + temp + TP. The models that included seasons + TP and seasons + TP + temperature had the lowest and similar AICc (less than 10 units apart).
 
-```{r}
+```{r, warning=FALSE}
 cos_t <- cos(2 * pi * seq(TT) / 12)
 sin_t <- sin(2 * pi * seq(TT) / 12)
 dd <- rbind(cos_t, sin_t)
 
 ## fit model
 dfa_TPseas <- MARSS(plank.t, model = mod_list, form = "dfa", z.score = FALSE,
-                  control=cntl.list, covariates = rbind(TP, dd))
+                  control=cntl.list, covariates = rbind(TP, dd), silent = TRUE)
 
 dfa_TPtempseas <- MARSS(plank.t, model = mod_list, form = "dfa", z.score = FALSE,
-                    control=cntl.list, covariates = rbind(temp,TP, dd))
+                    control=cntl.list, covariates = rbind(temp,TP, dd), silent = TRUE)
 
 ```
 
@@ -360,7 +361,7 @@ When we looked at 4 hidden trends for our data subset, the 4th trend was just a 
 mod_list = list(m = 3, R = "diagonal and unequal")
 
 dfa_TPseas.10 <- MARSS(plank.t10, model = mod_list, form = "dfa", z.score = TRUE,
-              control=cntl.list, covariates = rbind(TP.z,dd.10))
+              control=cntl.list, covariates = rbind(TP.z,dd.10), silent = TRUE)
 
 #mod_fit.TPseas.10 <- getDFAfits(dfa_TPseas.10)
 
@@ -464,5 +465,5 @@ Neither one of our models fit the data very well. This may be because 1) we are 
 
 # Team contributions
 
-ETS explored the data to find usable parts for the analysis; she also did the first attempt at fitting a DFA with different trends. MM and KV refined the DFA and added analyses for assessing model fit. They added covariates and seasonal effects to the model. ETS selected the subset of data to analyze and applied the previous code developed by all team members to the new subset of the data. ETS drafted the final lab report. Code was de-bugged and the lab report was finalized by KV and MM?
+ETS explored the data to find usable parts for the analysis; she also did the first attempt at fitting a DFA with different trends. MM refined the DFA and added analyses for assessing model fit and covariates. MM and KV discussed covariates and seasonal effects on the model. ETS selected the subset of data to analyze and applied the previous code developed by all team members to the new subset of the data. ETS drafted the final lab report with very minor changes from MM. Code was de-bugged and the lab report was finalized by KV and MM?
 
