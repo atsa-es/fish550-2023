@@ -59,7 +59,20 @@ names(stoplight)
 stoplight[,1]  
 years<-seq(1998:2021)
 
-#
+#ecosystem indicators to pull
+PDO_DecMarch<-stoplight[1,] 
+SST<-stoplight[4,] 
+Copepod_richness<-stoplight[9,] 
+Ichthy_community_index<-stoplight[14,]
+
+#Example for PDO 
+
+pdo$Year[which(pdo$Month%in%c("Oct","Nov","Dec"))] <- pdo$Year[which(pdo$Month%in%c("Oct","Nov","Dec"))] + 1
+pdo <- dplyr::group_by(pdo, Year) %>%
+  dplyr::summarize(winter_pdo = mean(PDO[which(Month %in% c("Oct","Nov","Dec","Jan","Feb"))])) %>% 
+  dplyr::select(winter_pdo, Year)
+# The first year will be missing Oct-Dec
+pdo <- pdo[-1,]
 
 #five times series in response and keep things to your block 
 
