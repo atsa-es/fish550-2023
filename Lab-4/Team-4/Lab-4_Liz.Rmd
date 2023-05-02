@@ -52,6 +52,37 @@ stoplight <- read.csv(here::here("Lab-4", "stoplight.csv"))
 ## copepod richness, North/south copepod as response variables
 ```
 
+## Notes from Liz
+
+Please pick a type of indicators, and develop a 2- or
+3-state multivariate HMM. A few tips:
+
+
+Emma -- 
+We are going to fit a 2-state multivariate HMM to North and South Copepod biomass and Copepod richness.
+
+Then we fit 3 state and compare
+
+-   Assume all responses are Gaussian.
+
+Liz --
+
+Liz will try deep temp or upper temperature to see if this effects the steps 
+
+-   You're welcome to include covariates (year? Climate variables?) --
+    but fitting a simple model without covariates is also totally fine
+
+Summarize the model you've created. Specifically,
+
+Terrance -- 
+
+-   Does it converge?
+
+-   How many states seem to be most supported?
+
+-   What are the transition probabilities?
+
+-   Anything else interesting that you've discovered?
 
 # General tasks
 
