@@ -12,7 +12,7 @@ all_dat
 
 
 # set the window we wish to examine
-yr_frst <- 1978
+yr_frst <- 1974
 yr_last <- 1994
 init_dat <- all_dat[all_dat[, "Year"] >= yr_frst & 
                       all_dat[, "Year"] <= yr_last,]

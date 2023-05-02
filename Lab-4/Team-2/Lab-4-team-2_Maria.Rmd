@@ -1,6 +1,6 @@
 ---
 title: "Lab 4 - Hidden Markov Models"
-author: "Dylan Hub, Eric French, Zoe Rand"
+author: "Maria Kuruvilla, Miranda Mudge"
 date: May 9, 2023
 output: 
   html_document:
@@ -13,31 +13,19 @@ output:
 options(dplyr.summarise.inform = FALSE)
 ```
 
-* Team 1: Dylan Hubl, Eric French, Zoe Rand
-* Team 2: Maria Kuruvilla, Miranda Mudge
-* Team 3: Nick Chambers, Madison Shipley, Karl Veggerby
-* Team 4: Liz Elmstrom, Terrance Wang, Emma Timmins-Schiffman
-
-Make sure to label your final write-up with "final" in the title so we know which one is the final one.
 
 # Data
-
-As part of the California Current Integrated Ecosystem Report, NOAA
-scientists do annual updates of [stoplight charts for ecosystem
-indicators](https://www.fisheries.noaa.gov/west-coast/science-data/ocean-conditions-indicators-trends).
-
-We have included the `stoplight.csv` dataset for this week. One of the
-columns divides indicators into groups (e.g. Local Physical, Local
-Biological, etc). Please pick a type of indicators, and develop a 2- or
-3-state multivariate HMM. A few tips:
 
 Describe what plankton groups and covariates you used and indicate any temporal 
 subsetting you chose. Also describe any standardization, centering or scaling 
 that was used. 
 
+First we will only look at copepod richness with 2 states. For environmental covariates, we will use PDO(Sum; Dec - 
+Mar)
+
 ## Load the data
 
-One of the
+We have included the `stoplight.csv` dataset for this week. One of the
 columns divides indicators into groups (e.g. Local Physical, Local
 Biological, etc). 
 
@@ -49,9 +37,22 @@ stoplight <- read.csv(here::here("Lab-4", "stoplight.csv"))
 
 ```{r wrangle_data}
 ## add some code here
-# we will look at Copepod_richness, N_copepod, S_copepod
 
-df <- rbind.data.frame(stoplight[stoplight$Ecosystem.Indicators == "Copepod_richness",],stoplight[stoplight$Ecosystem.Indicators == "N_copepod",],stoplight[stoplight$Ecosystem.Indicators == "S_copepod",])
+print(stoplight)
+
+rownames(stoplight) <- stoplight[,1]
+
+subset_data <- stoplight[c("Copepod_richness","PDO_DecMarch"),3:26]
+
+#column names should be years
+colnames(subset_data) <- seq(1998,2021)
+
+print(subset_data)
+
+par(mfrow = c(2,1), mai = c(0.5, 0.7, 0.1, 0.1), omi = c(0, 0, 0, 0))
+plot(seq(1998,2021),subset_data["Copepod_richness",], type = "l", xlab = "years", ylab ="Copepod richness")
+plot(seq(1998,2021),subset_data["PDO_DecMarch",], type = "l", xlab = "years", ylab ="PDO_DecMarch")
+
 ```
 
 
@@ -69,6 +70,27 @@ A few tips:
 
 -   You're welcome to include covariates (year? Climate variables?) --
     but fitting a simple model without covariates is also totally fine
+    
+```{r}
+library(depmixS4)
+data <- data.frame(t(subset_data))
+fitmod <- depmix(Copepod_richness ~1,
+                 nstates = 2,
+                 transition = ~ 1,
+                 family = gaussian(),
+                 data = data)
+```
+
+
+```{r}
+set.seed(123)
+fit1 <- fit(fitmod)
+pars <- getpars(fit1)
+matrix(pars[3:6], 2, 2, byrow = TRUE)
+AIC1 <- AIC(fitmod)
+
+```
+
 
 # Results
 
@@ -93,9 +115,3 @@ Summarize the model you've created. Specifically,
 
 Example: "All team members helped decide on the goal and ran the analyses for the individual regions. Team members 2 & 3 wrote most of the code for the analysis. Team member 1 worked on the plotting section of the report using and adapting code that team member 3 wrote. All team members helped edit the report and wrote the discussion together."
 
-#Notes (GET RID OF): 
-Tasks: 
-1) Fit 2 state (Zoe)
-2) Fit 3 state (Eric)
-3) Results (transition probabilities, time series of states, number of states) (Dylan)
-4) Discussion (Together)
