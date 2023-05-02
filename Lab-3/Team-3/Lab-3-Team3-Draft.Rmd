@@ -227,7 +227,7 @@ DD <- "zero"  # matrix(0,mm,1)
 dd <- "zero"  # matrix(0,1,wk_last)
 
 ## 'RR' is var-cov matrix for obs errors
-RR <- "diagonal and unequal"
+RR <- "diagonal and equal"
 ```
 
 # Process Model
@@ -260,7 +260,7 @@ mod_list <- list(Z = ZZ[[2]], A = aa, D = DD, d = dd, R = RR,
 ## list with model inits
 init_list <- list(x0 = matrix(rep(0, mm), mm, 1))
 ## list with model control parameters
-con_list <- list(maxit = 3000, allow.degen = TRUE)
+con_list <- list(maxit = 3000, allow.degen = F)
 
 ```
 
@@ -274,7 +274,7 @@ for (z in 1:length(ZZ)){
 #                  B = BB, U = uu, C = CC, c = cc, Q = QQ)  
 mm <- z
 # model_list specification 
-mod_list = list(m = mm, R = "diagonal and unequal")
+mod_list = list(m = mm, R = "diagonal and equal")
 ## list with model inits
 init_list <- list(x0 = matrix(rep(0, mm), mm, 1))
 
@@ -282,7 +282,8 @@ init_list <- list(x0 = matrix(rep(0, mm), mm, 1))
 con_list <- list(maxit = 3000, allow.degen = TRUE)
 
 ## fit MARSS
-dfa <- MARSS(y = dat, model = mod_list, inits = init_list, control = con_list, covariates = t(cov_df),form="dfa")
+dfa <- MARSS(y = dat, model = mod_list, inits = init_list, control = con_list, covariates = t(cov_df),form="dfa",
+             method="BFGS")
 
 # get model results
 Z_AIC[z,"states"] = z
@@ -300,13 +301,14 @@ Best performing based on AICc is the one with 3 states, but not meaningfully dif
 #                  B = BB, U = uu, C = CC, c = cc, Q = QQ)
 mm <- 2
 # model_list specification 
-mod_list = list(m = mm, R = "diagonal and unequal")
+mod_list = list(m = mm, R = "diagonal and equal")
 ## list with model inits
 init_list <- list(x0 = matrix(rep(0, mm), mm, 1))
 
 
 ## fit MARSS
-dfa_2 <- MARSS(y = dat, model = mod_list, inits = init_list, control = con_list, covariates = t(cov_df),form="dfa")
+dfa_2 <- MARSS(y = dat, model = mod_list, inits = init_list, control = con_list, covariates = t(cov_df),form="dfa",
+               method="BFGS")
 ```
 
 #Rotating trends and loadings
@@ -380,11 +382,11 @@ for(i in 1:mm) {
 #                  B = BB, U = uu, C = CC, c = cc, Q = QQ)
 mm <- 2
 
-mod_list = list(m = mm, R = "diagonal and unequal")
+mod_list = list(m = mm, R = "diagonal and equal")
 ## list with model inits
 init_list <- list(x0 = matrix(rep(0, mm), mm, 1))
 ## list with model control parameters
-con_list <- list(maxit = 3000, allow.degen = TRUE)
+con_list <- list(maxit = 3000, allow.degen = F)
   
 # Forward stepwise model selection
 # Create a table of indicators as to whether that predictor is include
@@ -404,7 +406,6 @@ DFA_fits <- NULL
 
 for(i in 1:(length(cov.terms)+1)){
   print(i)
-  i=10
   model_i <- i
   ind_on=as.matrix(mod.tab[i,1:length(cov.terms)])
   # ind_off=as.matrix(!mod.tab[i,1:length(mod.terms)])
@@ -423,7 +424,8 @@ for(i in 1:(length(cov.terms)+1)){
   }
   
   # fit the model
-  dfa_model = MARSS(y = dat, model = mod_list, form = "dfa",inits = init_list, control = con_list,covariates=cov_data)
+  dfa_model = MARSS(y = dat, model = mod_list, form = "dfa",inits = init_list, control = con_list,covariates=cov_data,
+                    method="BFGS")
   
   #save thi fit
   DFA_fits[[i]] = get_DFA_fits(dfa_model,dd=cov_data)
