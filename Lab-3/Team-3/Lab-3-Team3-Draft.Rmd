@@ -8,7 +8,6 @@ output:
     code-folding: true
     toc: true
     toc_float: true
-bibliography: references.bib
 ---
 
 ```{r setup, include = FALSE}
@@ -20,6 +19,44 @@ options(dplyr.summarise.inform = FALSE)
 ```{r, warning = FALSE, message = FALSE}
 library(tidyverse)
 library(zoo)
+get_DFA_fits <- function(MLEobj, dd = NULL, alpha = 0.05) {
+    ## empty list for results
+    fits <- list()
+    ## extra stuff for var() calcs
+    Ey <- MARSS:::MARSShatyt(MLEobj)
+    ## model params
+    ZZ <- coef(MLEobj, type = "matrix")$Z
+    ## number of obs ts
+    nn <- dim(Ey$ytT)[1]
+    ## number of time steps
+    TT <- dim(Ey$ytT)[2]
+    ## get the inverse of the rotation matrix
+    H_inv <- varimax(ZZ)$rotmat
+    ## check for covars
+    if (!is.null(dd)) {
+        DD <- coef(MLEobj, type = "matrix")$D
+        ## model expectation
+        fits$ex <- ZZ %*% H_inv %*% MLEobj$states + DD %*% dd
+    } else {
+        ## model expectation
+        fits$ex <- ZZ %*% H_inv %*% MLEobj$states
+    }
+    ## Var in model fits
+    VtT <- MARSSkfss(MLEobj)$VtT
+    VV <- NULL
+    for (tt in 1:TT) {
+        RZVZ <- coef(MLEobj, type = "matrix")$R - ZZ %*% VtT[, 
+            , tt] %*% t(ZZ)
+        SS <- Ey$yxtT[, , tt] - Ey$ytT[, tt, drop = FALSE] %*% 
+            t(MLEobj$states[, tt, drop = FALSE])
+        VV <- cbind(VV, diag(RZVZ + SS %*% t(ZZ) + ZZ %*% t(SS)))
+    }
+    SE <- sqrt(VV)
+    ## upper & lower (1-alpha)% CI
+    fits$up <- qnorm(1 - alpha/2) * SE + fits$ex
+    fits$lo <- qnorm(alpha/2) * SE + fits$ex
+    return(fits)
+}
 ```
 
 # Data
@@ -106,11 +143,18 @@ dd <- rbind(cos_t, sin_t)
 
 ```{r cov_corr}
 #looking at any correlation issues for covariates
-pairs(dat_1985[,covs])
+pairs(cbind(dat_1985[,covs],t(dd)))
 library(corrplot)
-corrplot(cor(dat_1985[,covs], use = "pairwise.complete.obs"), addCoef.col = "blue")
+corrplot(cor(cbind(dat_1985[,covs],t(dd)), use = "pairwise.complete.obs"), addCoef.col = "blue")
 ```
-
+# estimating missing values
+```{r estimating missing values}
+# Best way is in Ch13 to fill out NA, https://cran.r-project.org/web/packages/MARSS/vignettes/UserGuide.pdf
+# Easy way is just to fill in with mean for purposes of this lab
+cov_df <- cbind(dat_1985[,covs],t(dd)) %>% as.data.frame()  %>%
+  # replace na values with simply mean
+         mutate_all(~ifelse(is.na(.x), mean(.x, na.rm = TRUE), .x))  
+```
 # General tasks
 
 Each group has the same general tasks, but you will adapt them as you work on the data.
@@ -221,48 +265,54 @@ con_list <- list(maxit = 3000, allow.degen = TRUE)
 ```
 
 
-````{r model selection of # states}
+```{r model selection of # states}
 Z_AIC <- data.frame(states = NA,AICc=NA)
 for (z in 1:length(ZZ)){
 ## list with specifications for model vectors/matrices
-mod_list <- list(Z = ZZ[[z]], A = aa, D = DD, d = dd, R = RR,
-                 B = BB, U = uu, C = CC, c = cc, Q = QQ)
+# the first mod_list is the long way of writing it out
+# mod_list <- list(Z = ZZ[[z]], A = aa, D = DD, d = dd, R = RR,
+#                  B = BB, U = uu, C = CC, c = cc, Q = QQ)  
 mm <- z
+# model_list specification 
+mod_list = list(m = mm, R = "diagonal and unequal")
 ## list with model inits
 init_list <- list(x0 = matrix(rep(0, mm), mm, 1))
+
 ## list with model control parameters
 con_list <- list(maxit = 3000, allow.degen = TRUE)
 
 ## fit MARSS
-dfa <- MARSS(y = dat, model = mod_list, inits = init_list, control = con_list)
+dfa <- MARSS(y = dat, model = mod_list, inits = init_list, control = con_list, covariates = t(cov_df),form="dfa")
+
 # get model results
 Z_AIC[z,"states"] = z
 Z_AIC[z,"AICc"] = dfa$AICc
 }
+Z_AIC$AICc = Z_AIC$AICc- min(Z_AIC$AICc)
 Z_AIC
 ```
 
-Best performing based on AICc is the one with 3 states. 
+Best performing based on AICc is the one with 3 states, but not meaningfully different from the 2 and 4 states. We decided on the simplest possible model of 2 states.
 
 ```{r}
 ## list with specifications for model vectors/matrices
-mod_list <- list(Z = ZZ[[3]], A = aa, D = DD, d = dd, R = RR,
-                 B = BB, U = uu, C = CC, c = cc, Q = QQ)
-mm <- 3
+# mod_list <- list(Z = ZZ[[2]], A = aa, D = DD, d = dd, R = RR,
+#                  B = BB, U = uu, C = CC, c = cc, Q = QQ)
+mm <- 2
+# model_list specification 
+mod_list = list(m = mm, R = "diagonal and unequal")
 ## list with model inits
 init_list <- list(x0 = matrix(rep(0, mm), mm, 1))
-## list with model control parameters
-con_list <- list(maxit = 3000, allow.degen = TRUE)
 
 
 ## fit MARSS
-dfa_3 <- MARSS(y = dat, model = mod_list, inits = init_list, control = con_list)
+dfa_2 <- MARSS(y = dat, model = mod_list, inits = init_list, control = con_list, covariates = t(cov_df),form="dfa")
 ```
 
 #Rotating trends and loadings
 ```{r}
 ## get the estimated ZZ
-Z_est <- coef(dfa_3, type = "matrix")$Z
+Z_est <- coef(dfa_2, type = "matrix")$Z
 
 ## get the inverse of the rotation matrix
 H_inv <- varimax(Z_est)$rotmat
@@ -273,7 +323,7 @@ H_inv <- varimax(Z_est)$rotmat
 Z_rot = Z_est %*% H_inv   
 
 ## rotate processes
-proc_rot = solve(H_inv) %*% dfa_3$states
+proc_rot = solve(H_inv) %*% dfa_2$states
 ```
 
 #Estimated States and Loadings of Model with 3 states
@@ -287,7 +337,7 @@ w_ts <- seq(dim(dat)[2])
 clr <- c("brown", "blue", "darkgreen", "darkred", "purple")
 
 ## set up plot area
-layout(matrix(c(1,2,3,4,5,6), mm, 2), widths = c(2,1))
+layout(matrix(c(1,2,3,4), mm, 2), widths = c(2,1))
 par(mai = c(0.5, 0.5, 0.5, 0.1), omi = c(0, 0, 0, 0))
 
 ## plot the processes
@@ -328,9 +378,9 @@ for(i in 1:mm) {
 ## list with specifications for model vectors/matrices
 # mod_list <- list(Z = ZZ[[3]], A = aa, D = DD, d = dd, R = RR,
 #                  B = BB, U = uu, C = CC, c = cc, Q = QQ)
-# mm <- 3
+mm <- 2
 
-mod_list = list(m = 3, R = "diagonal and unequal")
+mod_list = list(m = mm, R = "diagonal and unequal")
 ## list with model inits
 init_list <- list(x0 = matrix(rep(0, mm), mm, 1))
 ## list with model control parameters
@@ -338,27 +388,21 @@ con_list <- list(maxit = 3000, allow.degen = TRUE)
   
 # Forward stepwise model selection
 # Create a table of indicators as to whether that predictor is include
-cov.terms <- covs
+cov.terms <- c(covs,"seasonality")
 mod.ind <- matrix(F, ncol = length(cov.terms), nrow = 1)
 mod.tab <- data.frame(mod.ind)
 names(mod.tab) <- cov.terms
 
 # Define a columns for storing model selection
 mod.tab$AICc <- NA
-# model.forms <- matrix(ncol=1,nrow=nrow(mod.tab))
+
+# to keep track of the best model so far
 k_counter <- 1 
 
-#temp, pH, TP, cryptomonas, diatoms, greens, unicells, other.algae 
-covs<-colnames(dat_1985)[c(3:8,10:11)]
-cov_dat<-t(dat_1985[,covs])
-#head(cov_dat)
-#dummy seasonal affect
-cos_t <- cos(2 * pi * seq(TT) / 12)
-sin_t <- sin(2 * pi * seq(TT) / 12)
-dd <- rbind(cos_t, sin_t)
+# save the fits in a list
+DFA_fits <- NULL
 
-
-for(i in 1:length(cov.terms)){
+for(i in 1:(length(cov.terms)+1)){
   print(i)
   model_i <- i
   ind_on=as.matrix(mod.tab[i,1:length(cov.terms)])
@@ -371,14 +415,17 @@ for(i in 1:length(cov.terms)){
   if (length(cov.terms[ind_on])==0){
     cov_data = NULL
   }else{
-    cov_data =  t(dat_1985[,cov.terms[ind_on]])
-      # fill NA values with 0 for now 
-  # Check out Ch13 to fill out NA, https://cran.r-project.org/web/packages/MARSS/vignettes/UserGuide.pdf
-    cov_data = cov_data %>% replace(is.na(.), 0)
-    }
+    cov_data =  cov_df %>% select(matches(cov.terms[ind_on])) %>% t()
+  }
+  if("seasonality" %in% cov.terms[ind_on]){ # special case where you have 2 columns for seasonality
+    cov_data = rbind(cov_data,dd)
+  }
   
   # fit the model
   dfa_model = MARSS(y = dat, model = mod_list, form = "dfa",inits = init_list, control = con_list,covariates=cov_data)
+  
+  #save thi fit
+  DFA_fits[[i]] = get_DFA_fits(dfa_model,dd=cov_data)
   
   # add AICc valueto model
   mod.tab[i,]$AICc <- dfa_model$AICc
@@ -401,12 +448,36 @@ for(i in 1:length(cov.terms)){
   }
   }
 }
-
+mod.tab
 ```
+```{r fit the best model}
+## get model fits & CI's
+best_model_i = which(mod.tab$AICc==min(mod.tab$AICc,na.rm=T))
+mod_fit <- DFA_fits[[best_model_i]]
+
+## plot the fits
+par(mfrow = c(N_ts, 1), mai = c(0.5, 0.7, 0.1, 0.1), omi = c(0, 0, 0, 0))
+for(i in 1:N_ts) {
+  up <- mod_fit$up[i,]
+  mn <- mod_fit$ex[i,]
+  lo <- mod_fit$lo[i,]
+  plot(w_ts, mn, type = "n",
+       xlab = "", ylab = ylbl[i],
+       xaxt = "n", cex.lab = 1.2,
+       ylim = c(min(lo), max(up)))
+  axis(1, 12 * (0:dim(dat)[2]) + 1, yr_frst + 0:dim(dat)[2])
+  points(w_ts, dat[i,], pch = 16, col = clr[i])
+  lines(w_ts, up, col = "darkgray")
+  lines(w_ts, mn, col = "black", lwd = 2)
+  lines(w_ts, lo, col = "darkgray")
+}
+```
+
 ### Diagnostics:
 
 # Results
 
+Best model was 
 # Discussion
 
 # Team contributions
