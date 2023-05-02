@@ -273,7 +273,7 @@ H_inv <- varimax(Z_est)$rotmat
 Z_rot = Z_est %*% H_inv   
 
 ## rotate processes
-proc_rot = solve(H_inv) %*% dfa_1$states
+proc_rot = solve(H_inv) %*% dfa_3$states
 ```
 
 #Estimated States and Loadings of Model with 3 states
@@ -325,6 +325,17 @@ for(i in 1:mm) {
 ```
 
 ```{r model selection of covariates}
+## list with specifications for model vectors/matrices
+# mod_list <- list(Z = ZZ[[3]], A = aa, D = DD, d = dd, R = RR,
+#                  B = BB, U = uu, C = CC, c = cc, Q = QQ)
+# mm <- 3
+
+mod_list = list(m = 3, R = "diagonal and unequal")
+## list with model inits
+init_list <- list(x0 = matrix(rep(0, mm), mm, 1))
+## list with model control parameters
+con_list <- list(maxit = 3000, allow.degen = TRUE)
+  
 # Forward stepwise model selection
 # Create a table of indicators as to whether that predictor is include
 cov.terms <- covs
