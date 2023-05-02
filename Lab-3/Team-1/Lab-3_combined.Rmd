@@ -14,39 +14,37 @@ output:
 options(dplyr.summarise.inform = FALSE)
 ```
 
-***
+------------------------------------------------------------------------
 
 # General tasks
 
 Each group has the same general tasks, but you will adapt them as you work on the data.
 
-1) Find the most parsimonious model among a set that examines the effects of environmental covariates and/or an indicator of seasonality, (Dylan did this)
+1)  Find the most parsimonious model among a set that examines the effects of environmental covariates and/or an indicator of seasonality, (Dylan did this)
 
 Liz (varying numbers of trends, and different forms of variance-covariance matrices for the observation errors, compare AIC)
 
 Another set of model selection that varies the different covariates. (Dylan, compare AIC)
 
-2) Plot trends and individual loadings for the model identified in task (1) above. (Code from Lab book, Dylan has written, just need to apply to best model)
+2)  Plot trends and individual loadings for the model identified in task (1) above. (Code from Lab book, Dylan has written, just need to apply to best model)
 
-3) Plot model fits and uncertainty intervals for the model identified in task (1) above. (Model automatically does this? Already have the code, just need to apply it to the best model)
+3)  Plot model fits and uncertainty intervals for the model identified in task (1) above. (Model automatically does this? Already have the code, just need to apply it to the best model)
 
-4) Describe the effects of environmental or dummy variables on (possibly seasonal) patterns in the data. (D matrix, mod.fit$D, make this into a table or figure, Liz might have?)
-
+4)  Describe the effects of environmental or dummy variables on (possibly seasonal) patterns in the data. (D matrix, mod.fit\$D, make this into a table or figure, Liz might have?)
 
 # Methods
 
 Please address the following in your methods:
 
-* Which plankton taxa did you choose and how did you choose them?
-   
-* What time period(s) did you examine and why?
+-   Which plankton taxa did you choose and how did you choose them?
 
-* What environmental or dummy variables did you include and why?
+-   What time period(s) did you examine and why?
 
-* What forms of models did you fit (ie, write them out in matrix form)?
+-   What environmental or dummy variables did you include and why?
 
-* What sort of model diagnostics did you use to examine model assumptions?
+-   What forms of models did you fit (ie, write them out in matrix form)?
 
+-   What sort of model diagnostics did you use to examine model assumptions?
 
 # Data
 
@@ -67,6 +65,8 @@ library(dplyr)
 library(tidyverse)
 library(rje)
 library(stringr)
+library(knitr)
+library(ggpubr)
 ## load the raw data (there are 3 datasets contained here)
 data(lakeWAplankton, package = "MARSS")
 
@@ -115,7 +115,6 @@ ggplot(covar_long, aes(x = Year, y= value), color=name) +
 
 ```
 
-
 ## Wrangle the data
 
 Filtering the data
@@ -154,7 +153,7 @@ plankton_z <- zscore(plankton_ts)
 
 ```
 
-We selected a window of years to include data from 1967 to 1986. We are interested in examining how populations of Diatoms, Greens, Unicells, Cyclops, and Non-colonial-rotifers are associated with one another and environmental factors such as temperature, pH of the water, amount of phosphorus in the water, and time of year.
+We selected a window of years to include data from 1967 to 1986. We are interested in examining how populations of Diatoms, Greens, Unicells, Cyclops, and Non-colonial-rotifers are associated with one another and environmental factors such as temperature, pH of the water, amount of phosphorus in the water, and season.
 
 We standardized the observations of these populations by z scoring to allow the models to make better parameter estimates. We will z score the covariate data as well when we begin fitting models with covariates.
 
@@ -162,9 +161,9 @@ We standardized the observations of these populations by z scoring to allow the 
 
 ## Step 1- Fit global model with all covariates and number of trends
 
-We are keeping R to diagonal and equal based on the sample design. The default DFA setting within MARSS sets our Z matrix, A to scaling and Q to identity. 
+We are keeping R to diagonal and equal based on the sample design. The default DFA setting within MARSS sets our Z matrix, A to scaling and Q to identity.
 
-``` {r}
+```{r}
 #set up observation model parameters
 
 #covariates
@@ -200,11 +199,12 @@ dfa_global <- MARSS(plankton_z, model = mod_list, control = cont_list, inits = i
                     z.score = FALSE, covariates = d)
 
 ```
+
 The covariates including the season were zscored to ensure they each have a variance of 1. Which will help the model produce better estimates of the parameters.
 
 ## Step 2- Testing number of trends
 
-Fitting full DFA model of covariates and testing for different latent trends. 
+Fitting full DFA model of covariates and testing for different latent trends.
 
 ```{r}
 
@@ -236,9 +236,9 @@ out.tab.1 <- cbind(out.tab.1, delta.AICc = out.tab.1$AICc - out.tab.1$AICc[1])
 out.tab.1
 ```
 
-In step 2, we used the global modal and information criterion to test various numbers of latent states (m = 1-3). This resulted in a top model, as indicated by AICc scores, with three latent trends. 
+In step 2, we used the global model and information criterion to test various numbers of latent states (m = 1-3). This resulted in a top model, as indicated by AICc scores, with three latent trends.
 
-We can also alter the for loop to test for different R structures. We do this below as a general exercise to show how to loop through the stochastic or "random" effects of the DFA model as a part of model selection. However, considering our study design, we opt to consider only models with R equal to "diagonal and equal" moving forward. 
+We can also alter the for loop to test for different R structures. We do this below as a general exercise to show how to loop through the stochastic or "random" effects of the DFA model as a part of model selection. However, considering our study design, we opt to consider only models with R equal to "diagonal and equal" moving forward.
 
 ```{r}
 ## for loop testing m and R adapted from the user manual
@@ -271,12 +271,11 @@ model.data.delta
 
 ```
 
-Note - The Diagonal and unequal models do not converge using the default MARSS methods. Running the BFGS method allows all models to converge. 
+Note - The Diagonal and unequal models do not converge using the default MARSS methods. Running the BFGS method allows all models to converge.
 
 In this comparison, diagonal and unequal with 3 latent states is the top model. However, as mentioned above, this does not make sense for our study design, so moving forward we test different combinations of covariates with R = diagonal and equal and m = 3.
 
-## Step 3- Testing covariates 
- 
+## Step 3- Testing covariates
 
 ```{r}
 #use this to create every combo of rows in the covariate matrix possible
@@ -287,7 +286,7 @@ combo <- powerSet(1:4)
 for (i in 9:16) {
   combo[[i]] <- c(combo[[i]],5)
 }
-#d[combo[[15]],1]  # [[1]] is empty so dont loop it
+#d[combo[[1]],]  # [[1]] is empty so dont loop it
 cont_BFGS <- list(maxit = 3000)
 model.cov.data <- data.frame(stringsAsFactors = FALSE)
 for (i in 2:16) {
@@ -312,7 +311,7 @@ covariate.table
 
 #this will save our table that is generated so the whole thing doesn't need to
 #be re-run in the future (i hope)
-#saveRDS(covariate.table, "covariate_table.rds")
+#saveRDS(covariate.table, "covariate_table2.rds")
 table <- readRDS("covariate_table.rds")
 table
 ```
@@ -321,22 +320,112 @@ We used the BFGS method to estimate the parameters for the best model as running
 
 To select the covariate combination that resulted in a model that fit the data the best, we held the R matrix at "diagonal and unequal" and the number of latent states at three. Previously, we found these to be the best options when testing the global covariate model.
 
-We see that of the 15 combinations of Temperature, Total Phosphorus (TP), pH, and Season that the top model used *TP, pH and Season as covariates*. The second top model, based on AICc, was close but with fewer parameters we would expect it to be closer to 10 AICc points away if the models were equivalent.
+We see that of the 15 combinations of Temperature, Total Phosphorus (TP), pH, and Season that the top model used *TP, pH and Season* as covariates. The second top model, based on AICc, was close but with fewer parameters we would expect it to be closer to 10 AICc points away if the models were equivalent.
 
-Thus, our top model has an R matrix that is diagonal and equal, three latent states, and uses TP, pH and Season as its covariates.
+Thus, our top model has an R matrix that is diagonal and equal, three latent states, and uses TP, pH and Season as its covariates. The observation model and process model are written in matrix form below.
+
+Observation model:
+$$
+\begin{bmatrix}
+y_1\\
+y_2\\
+y_3\\
+y_4\\
+y_5\\
+\end{bmatrix}_t=
+\begin{bmatrix}
+0.394 &  0.000 &  0.000\\
+0.068 &  0.361 &  0.000\\
+0.317 & -0.014 & -0.233\\
+0.453 &  0.196 &  0.246\\
+0.429 &  0.017 &  0.158\\
+\end{bmatrix}*
+\begin{bmatrix}
+x_1\\
+x_2\\
+x_3\\
+\end{bmatrix}_t+
+\begin{bmatrix}
+-0.234&  0.088& -0.285& 0.409\\
+-0.134& -0.076& -0.389& -0.206\\
+0.317&  0.159&  -0.381& -0.259\\
+0.108&  0.320&  -0.259& -0.011\\
+-0.017& 0.228&  -0.439& -0.056\\
+\end{bmatrix}*
+\begin{bmatrix}
+d_{TP}\\
+d_{pH}\\
+d_{cos}\\
+d_{sin}\\
+\end{bmatrix}_t+
+\begin{bmatrix}
+w_1\\
+w_2\\
+w_3\\
+w_4\\
+w_5\\
+\end{bmatrix}_t
+$$ 
+$$
+\text{Where }w_i \sim MVN
+\begin{pmatrix}
+\text{0,}\begin{bmatrix}
+R&0&0&0&0\\
+0&R&0&0&0\\
+0&0&R&0&0\\
+0&0&0&R&0\\
+0&0&0&0&R\\
+\end{bmatrix}
+\end{pmatrix}
+$$ 
+Process model:
+$$
+\begin{bmatrix}
+x_1\\
+x_2\\
+x_3\\
+\end{bmatrix}_t=
+\begin{bmatrix}
+1 &  0 &  0\\
+0 &  1 &  0\\
+0 & 0 & 1\\
+\end{bmatrix}*
+\begin{bmatrix}
+x_1\\
+x_2\\
+x_3\\
+\end{bmatrix}_{t-1}+
+\begin{bmatrix}
+v_1\\
+v_2\\
+v_3\\
+v_4\\
+v_5\\
+\end{bmatrix}_t 
+$$
+
+$$ 
+\text{Where }v_i \sim MVN
+\begin{pmatrix}
+\text{0,}\begin{bmatrix}
+1&0&0\\
+0&1&0\\
+0&0&1\\
+\end{bmatrix}
+\end{pmatrix}
+$$
 
 # Notes from Liz to Dylan: DFA Model next steps from Eli's template
 
 What we need to do next...
 
-2) Plot trends and individual loadings for the model identified in task (1) above. (Code from Lab book, Dylan has written, just need to apply to best model)
+2)  Plot trends and individual loadings for the model identified in task (1) above. (Code from Lab book, Dylan has written, just need to apply to best model)
 
-3) Plot model fits and uncertainty intervals for the model identified in task (1) above. (Model automatically does this? Already have the code, just need to apply it to the best model)
+3)  Plot model fits and uncertainty intervals for the model identified in task (1) above. (Model automatically does this? Already have the code, just need to apply it to the best model)
 
-4) Describe the effects of environmental or dummy variables on (possibly seasonal) patterns in the data. (D matrix, mod.fit$D, make this into a table or figure, Liz might have?)
+4)  Describe the effects of environmental or dummy variables on (possibly seasonal) patterns in the data. (D matrix, mod.fit\$D, make this into a table or figure, Liz might have?)
 
-Dylan -- previously you had run a basic model with no covariates, but I deleted it figuring it fell within this category from your email-- 
-"and delete all my extra model runs that I was tinkering with trying to figure out what was going on". Also deleted some of the plots with the extra top model. If you want these in feel free to copy and paste back into the code. 
+Dylan -- previously you had run a basic model with no covariates, but I deleted it figuring it fell within this category from your email-- "and delete all my extra model runs that I was tinkering with trying to figure out what was going on". Also deleted some of the plots with the extra top model. If you want these in feel free to copy and paste back into the code.
 
 I also rearranged the order of your code to fit the order of the steps Eli outlined above. I think the next this to do is to figure out step 4. I can do this on Monday.
 
@@ -365,12 +454,11 @@ Z_rot = Z_est %*% H_inv
 ## rotate processes
 proc_rot = solve(H_inv) %*% top.mod$states
 mm <- 3
-ylbl <- rownames(plankton_z)
-w_ts <- seq(dim(plankton_z)[2])
-layout(matrix(c(1, 2, 3, 4, 5, 6), mm, 2), widths = c(2, 1))
 
 
-#plot the fit of the top model
+
+
+#info needed for plotting for loops
 ylbl <- c("Diatoms","Greens","Unicells","Cyclops","Rotifers")
 w_ts <- seq(dim(plankton_z)[2])
 yr_start <- 1967
@@ -378,11 +466,10 @@ spp <- c("Diatoms","Greens","Unicells","Cyclops","Rotifers")
 clr <- c("brown", "blue", "darkgreen", "darkred", "purple")
 cnt <- 1
 
+layout(matrix(c(1, 2, 3, 4, 5, 6), mm, 2), widths = c(2, 1))
 par(mai = c(0.25, 0.5, 0.25, 0.1), omi = c(0, 0, 0, 0))
 
-yr_start <- 1967
-
-## plot the processes
+## plot the latent processes
 for (i in 1:mm) {
   ylm <- c(-1, 1) * max(abs(proc_rot[i, ]))
   ## set up plot area
@@ -398,7 +485,9 @@ for (i in 1:mm) {
   axis(1, 12 * (0:dim(plankton_z)[2]) + 1, yr_start + 0:dim(plankton_z)[2])
 }
 
+```
 
+```{r}
 
 ## plot the loadings
 minZ <- 0
@@ -422,10 +511,21 @@ for (i in 1:mm) {
 }
 ```
 
+```{r}
+#display Z matrix
+coef(top.mod, type = "matrix")$Z
+```
+
+```{r}
+#display rotated z matrix that loadings come from
+Z_rot
+```
+
+The plots show the loadings, or the weights, for each of the latent states. The loadings in the plots do not match with the values in the z matrix above because the must be rotated using the varimax function to produce the loading values we see plotted. Thus, the second table's values match with the loadings plot
 
 # Plot model fits and uncertainty intervals for the model identified in task (1) above
 
-Get DFA function... 
+The DFA fitting function comes from the lab notebook
 
 ```{r}
 
@@ -507,7 +607,8 @@ for (i in 1:n_ts) {
 
 
 ```
-Fits don't look the best, but probably because the plankton aren't super similar and the latent trends don't describe all time series perfectly. 
+
+Fits don't look the best, but probably because the plankton aren't super similar and the latent trends don't describe all time series perfectly.
 
 # Describe the effects of environmental or dummy variables on (possibly seasonal) patterns in the data
 
@@ -549,15 +650,21 @@ print(ggarrange(TP+rremove("legend")+ggtitle("TP"),
                 ncol = 2, nrow = 2))
 ```
 
+```{r}
+D_mat <- coef(top.mod, type = "matrix")$D
+colnames(D_mat) <-  c("TP","pH","cosine","sine") 
+D_mat
+```
+
 TP has a negative effect on diatoms and green algae, a positive effect on unicells and cylops, and no effect on rotifers. The effect of TP on diatoms and unicells tracks on with the literature-- increased P has been shown to increase the growth of bluegreen algae and dinoflagellates (unicells), decreasing the competitive availability of diatoms. Although not included in our analyses, we can see by looking at the raw data that during times of high phosphorus, cyanobacteria (bluegreen algae) bloomed. This likely influenced diatom and green algae populations through competitive exclusion processes.
 
-pH largely has a positive effect on all species of study, with the acceptance of green algal species. This suggests that greens do better under more acidic conditions (more carbon), whereas others are better suited to low CO2 (less acidic) levels. 
+pH largely has a positive effect on all species of study, with the acceptance of green algal species. This suggests that greens do better under more acidic conditions (more carbon), whereas others are better suited to low CO2 (less acidic) levels.
 
 Our seasonality dummy variables (cosine and sine) represent winter (cosine) and and springtime (sine) periods. During winter months when the curve is high, the effect of season on algal species is negative. The springtime curve has a negative effect on unicells, rotifers, and greens, a strong postive effect on diatoms, and no effect on cylops. This makes sense considering that spring algae blooms are generally dominated by diatoms.
 
 # Model diagnostics
 
-Below we check our model residuals and plot the acfs. 
+Below we check our model residuals and plot the acfs.
 
 ```{r}
 
@@ -574,14 +681,18 @@ plot(top.mod, plot.type = "qqplot.std.model.resids.ytt1")
 plot(top.mod, plot.type = "acf.std.model.resids.ytt1")
 ```
 
-For the most part our model residuals look okay, with some potential residual pattern remaining in our Diatoms, Unicells, and Cyclops time series. 
+For the most part our model residuals look okay, with some potential residual pattern remaining in our Diatoms, Unicells, and Cyclops time series.
 
-Our data do appear to be normally distributed based on our qq-norm plots. 
+Our data do appear to be normally distributed based on our qq-norm plots.
 
-The acf plots show some remaining auto-correlation in all of our algal time series with the acceptance of green algae. This suggests that there is some remaining variance not explained by our latent trends and model covariates. State 1 for example looks like it could maybe be some sort of oscillation (maybe). Future studies may want to consider some sort of larger climate variables that may influence algal abundace in Lake Washington. 
+The acf plots show some remaining auto-correlation in all of our algal time series with the exception of green algae. This suggests that there is some remaining variance not explained by our latent trends and model covariates. State 1 for example looks like it could maybe be some sort of oscillation (maybe). Future studies may want to consider some sort of larger climate variables that may influence algal abundance in Lake Washington.
 
 # Discussion
 
-# Team contributions
+We z scored the response data and all of the covariates to help the MARSS models make better parameter estimations. We then found that the observed data was best explained by 3 latent states when we held the R matrix constant at Diagonal and equal and included all covariates. This was the maximum number of latent states that we tested and had we tested more latent states, it is likely a higher number would have won out over the rest. This is because a higher number of latent states would allow for more flexibility in the models to explain our data. A latent state of for each of the individual species would likely have had the lowest AIC but our goal was to "reduce dimensions" and still be able to make predictions.
 
-Example: "All team members helped decide on the goal and ran the analyses for the individual regions. Team members 2 & 3 wrote most of the code for the analysis. Team member 1 worked on the plotting section of the report using and adapting code that team member 3 wrote. All team members helped edit the report and wrote the discussion together."
+This reduction in dimensions, explaining 5 observed datasets with 3 latent states, and the differences between the 5 species is why on areas of our fitted plots the predictions did not fit the data well.
+
+The direction of the effects of the covariates on each of the species made biological sense. We saw that the winter component of the season covariate strongly limited all of the species. The season covariate was present in a number of the top models and may have had enough predictive power to reduce the predictive value of temperature.We also saw that species capable of blooms, such as diatoms in the spring or dinoflagellates in the presence of high amounts of free phosphorus were capable of suppressing the populations. This could explain why the majority of species did not respond positively to the spring portion of the season covariate.
+
+Model diagnostics showed that the systematic form of our models may not have captured and removed all of the structure from the residuals. Future analyses could investigate other covariates like water turbidity which could affect the amount of light reaching into the water column which would be important for plankton species. Furthermore, another cyclical climatic variable may help reduce autocorrelation observed in the ACF plots. \# Team contributions Both Dylan and Liz contributed code, interpretation, and discussion to this analysis.
