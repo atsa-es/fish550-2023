@@ -292,6 +292,42 @@ RR <- "diagonal and equal"
 
 # Process Model
 
+Process model: $$
+\begin{bmatrix}
+x_1\\
+x_2\\
+x_3\\
+\end{bmatrix}_t=
+\begin{bmatrix}
+1 &  0 &  0\\
+0 &  1 &  0\\
+0 & 0 & 1\\
+\end{bmatrix}*
+\begin{bmatrix}
+x_1\\
+x_2\\
+x_3\\
+\end{bmatrix}_{t-1}+
+\begin{bmatrix}
+v_1\\
+v_2\\
+v_3\\
+v_4\\
+v_5\\
+\end{bmatrix}_t 
+$$
+
+$$ 
+\text{Where }v_i \sim MVN
+\begin{pmatrix}
+\text{0,}\begin{bmatrix}
+1&0&0\\
+0&1&0\\
+0&0&1\\
+\end{bmatrix}
+\end{pmatrix}
+$$
+
 ```{r}
 ## number of processes
 mm <- 2 # this is just a placeholder, as we loop through # of states we will update this

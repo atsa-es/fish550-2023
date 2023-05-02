@@ -8,6 +8,7 @@ output:
     code-folding: true
     toc: true
     toc_float: true
+bibliography: references.bib
 ---
 
 ```{r setup, include = FALSE}
@@ -61,7 +62,7 @@ get_DFA_fits <- function(MLEobj, dd = NULL, alpha = 0.05) {
 
 # Data
 
-We decided to model 4 groups of zooplankton: Cyclops, Diaptomus, Epischura, and Neomysis. We chose to test environemtnal covariates (temp, pH, TP), as well as phytoplankton abundances as covariates(cryptomonas, diatoms, greens, unicells, other.algae) since the zooplankton we chose are copepods and mysids, and therefore may be impacted by the type of phytoplankton present. We used data from the start of the time series (1962) until 1985, because the Neomysis data gets very patchy after the 1980s and we didn't want this to cause issues with model fitting.
+We decided to model 4 groups of zooplankton: Cyclops, Diaptomus, Epischura, and Neomysis. We chose to test environmental covariates (temp, pH, TP), as well as phytoplankton abundances as covariates(cryptomonas, diatoms, greens, unicells, other.algae) since the zooplankton we chose are copepods and mysids, and therefore may be impacted by the type of phytoplankton present. We used data from the start of the time series (1962) until 1985, because the Neomysis data gets very patchy after the 1980s and we didn't want this to cause issues with model fitting.
 
 ## Load the data
 
@@ -147,7 +148,9 @@ pairs(cbind(dat_1985[,covs],t(dd)))
 library(corrplot)
 corrplot(cor(cbind(dat_1985[,covs],t(dd)), use = "pairwise.complete.obs"), addCoef.col = "blue")
 ```
+
 # estimating missing values
+
 ```{r estimating missing values}
 # Best way is in Ch13 to fill out NA, https://cran.r-project.org/web/packages/MARSS/vignettes/UserGuide.pdf
 # Easy way is just to fill in with mean for purposes of this lab
@@ -155,6 +158,7 @@ cov_df <- cbind(dat_1985[,covs],t(dd)) %>% as.data.frame()  %>%
   # replace na values with simply mean
          mutate_all(~ifelse(is.na(.x), mean(.x, na.rm = TRUE), .x))  
 ```
+
 # General tasks
 
 Each group has the same general tasks, but you will adapt them as you work on the data.
@@ -190,6 +194,7 @@ We chose to model four zooplankton taxa :Cyclops, Diaptomus, Epischura, and Neom
 # Observation Model
 
 ## ZZ is loadings matrix
+
 ```{r}
 ZZ = NULL
 # Define different ZZ hypotheses 
@@ -212,12 +217,12 @@ Z_vals <- list("z11",  0  ,  0  ,
                "z41","z42","z43")
 ZZ[[3]] <- matrix(Z_vals, nrow = N_ts, ncol = 3, byrow = TRUE)
 
-# 4 states
-Z_vals <- list("z11",  0  ,  0  , 0,
-               "z21","z22",  0  , 0,
-               "z31","z32","z33", 0,
-               "z41","z42","z43","z44")
-ZZ[[4]] <- matrix(Z_vals, nrow = N_ts, ncol = 4, byrow = TRUE)
+# 4 states--removing this because we only have 4 sp groups
+#Z_vals <- list("z11",  0  ,  0  , 0,
+               #"z21","z22",  0  , 0,
+               #"z31","z32","z33", 0,
+               #"z41","z42","z43","z44")
+#ZZ[[4]] <- matrix(Z_vals, nrow = N_ts, ncol = 4, byrow = TRUE)
 
 ## 'aa' is the offset/scaling
 aa <- "zero"
@@ -231,6 +236,7 @@ RR <- "diagonal and equal"
 ```
 
 # Process Model
+
 ```{r}
 ## number of processes
 mm <- 2 # this is just a placeholder, as we loop through # of states we will update this
@@ -251,8 +257,8 @@ QQ <- "identity"  # diag(mm)
 
 ```
 
-
 # Fit with MARSS
+
 ```{r}
 ## list with specifications for model vectors/matrices
 mod_list <- list(Z = ZZ[[2]], A = aa, D = DD, d = dd, R = RR,
@@ -260,10 +266,10 @@ mod_list <- list(Z = ZZ[[2]], A = aa, D = DD, d = dd, R = RR,
 ## list with model inits
 init_list <- list(x0 = matrix(rep(0, mm), mm, 1))
 ## list with model control parameters
-con_list <- list(maxit = 3000, allow.degen = F)
+#con_list <- list(maxit = 3000, allow.degen = FALSE) #allow.degen not allowed for BFGS
+con_list <- list(maxit = 3000)
 
 ```
-
 
 ```{r model selection of # states}
 Z_AIC <- data.frame(states = NA,AICc=NA)
@@ -279,7 +285,8 @@ mod_list = list(m = mm, R = "diagonal and equal")
 init_list <- list(x0 = matrix(rep(0, mm), mm, 1))
 
 ## list with model control parameters
-con_list <- list(maxit = 3000, allow.degen = TRUE)
+#con_list <- list(maxit = 3000, allow.degen = TRUE)
+con_list <- list(maxit = 3000)
 
 ## fit MARSS
 dfa <- MARSS(y = dat, model = mod_list, inits = init_list, control = con_list, covariates = t(cov_df),form="dfa",
@@ -293,13 +300,13 @@ Z_AIC$AICc = Z_AIC$AICc- min(Z_AIC$AICc)
 Z_AIC
 ```
 
-Best performing based on AICc is the one with 3 states, but not meaningfully different from the 2 and 4 states. We decided on the simplest possible model of 2 states.
+Best performing based on AICc is the one with 3 states.
 
 ```{r}
 ## list with specifications for model vectors/matrices
 # mod_list <- list(Z = ZZ[[2]], A = aa, D = DD, d = dd, R = RR,
 #                  B = BB, U = uu, C = CC, c = cc, Q = QQ)
-mm <- 2
+mm <- 3
 # model_list specification 
 mod_list = list(m = mm, R = "diagonal and equal")
 ## list with model inits
@@ -312,6 +319,7 @@ dfa_2 <- MARSS(y = dat, model = mod_list, inits = init_list, control = con_list,
 ```
 
 #Rotating trends and loadings
+
 ```{r}
 ## get the estimated ZZ
 Z_est <- coef(dfa_2, type = "matrix")$Z
@@ -329,6 +337,7 @@ proc_rot = solve(H_inv) %*% dfa_2$states
 ```
 
 #Estimated States and Loadings of Model with 3 states
+
 ```{r}
 ## plot labels
 zooplankton_names = c("Cyclops", "Diaptomus", "Epischura", "Neomysis")
@@ -339,7 +348,7 @@ w_ts <- seq(dim(dat)[2])
 clr <- c("brown", "blue", "darkgreen", "darkred", "purple")
 
 ## set up plot area
-layout(matrix(c(1,2,3,4), mm, 2), widths = c(2,1))
+layout(matrix(c(1,2,3,4, 5, 6), mm, 2), widths = c(2,1))
 par(mai = c(0.5, 0.5, 0.5, 0.1), omi = c(0, 0, 0, 0))
 
 ## plot the processes
@@ -361,6 +370,7 @@ for(i in 1:mm) {
 minZ <- 0
 ylm <- c(-1, 1) * max(abs(Z_rot))
 for(i in 1:mm) {
+  print(i)
   plot(x = c(1:N_ts)[abs(Z_rot[,i])>minZ],
        y = as.vector(Z_rot[abs(Z_rot[,i])>minZ,i]),
        type = "h",
@@ -380,17 +390,19 @@ for(i in 1:mm) {
 ## list with specifications for model vectors/matrices
 # mod_list <- list(Z = ZZ[[3]], A = aa, D = DD, d = dd, R = RR,
 #                  B = BB, U = uu, C = CC, c = cc, Q = QQ)
-mm <- 2
+mm <- 3
 
 mod_list = list(m = mm, R = "diagonal and equal")
 ## list with model inits
 init_list <- list(x0 = matrix(rep(0, mm), mm, 1))
 ## list with model control parameters
-con_list <- list(maxit = 3000, allow.degen = F)
-  
+#con_list <- list(maxit = 3000, allow.degen = F)
+con_list <- list(maxit = 3000)
+ 
 # Forward stepwise model selection
 # Create a table of indicators as to whether that predictor is include
-cov.terms <- c(covs,"seasonality")
+#cov.terms <- c(covs,"seasonality")
+cov.terms<-covs #seasonality is causing an issue so running without this
 mod.ind <- matrix(F, ncol = length(cov.terms), nrow = 1)
 mod.tab <- data.frame(mod.ind)
 names(mod.tab) <- cov.terms
@@ -453,9 +465,13 @@ for(i in 1:(length(cov.terms)+1)){
 }
 mod.tab
 ```
+
 ```{r fit the best model}
+##ZR:I don't think there should be a model #10 so I'm just removing this...
+mod.tab<-mod.tab[-10,]
+mod.tab$DeltaAICc<-mod.tab$AICc - min(mod.tab$AICc)
 ## get model fits & CI's
-best_model_i = which(mod.tab$AICc==min(mod.tab$AICc,na.rm=T))
+best_model_i = 8 #number 8 is simpler and similar AICc 
 mod_fit <- DFA_fits[[best_model_i]]
 
 ## plot the fits
@@ -476,15 +492,16 @@ for(i in 1:N_ts) {
 }
 ```
 
-### Diagnostics:
-
 # Results
 
-Best model was 
+Model results can be found above in the code outputs. Models 8 and 9 had similar AICcs so we chose the simpler model (#8) The best model had 3 states, and included covariates for temperature, pH, diatoms and unicells.
+
 # Discussion
 
-# Team contributions
+Our results suggest that the best DFA model fit to time series of 4 groups of zooplankton(Cyclops, Diaptomus, Epischura, and Neomysis) included 3 states and covariates for temperature pH, diatoms and unicells. Copepods are known to prefer diatoms over other forms of phytoplankton [@kleppel1993] , so it makes sense that this would be an important covariate. Using a DFA did not greatly reduce the dimensionality of our dataset (we went from 4 species groups to 3), but maybe this affect would have been greater if we had used a larger set of the zooplankton groups.
 
-Example: "All team members helped decide on the goal and ran the analyses for the individual regions. Team members 2 & 3 wrote most of the code for the analysis. Team member 1 worked on the plotting section of the report using and adapting code that team member 3 wrote. All team members helped edit the report and wrote the discussion together."
+# Team Contributions
+
+All team members helped decide the question and plan for the analysis. ZR did the data wrangling for the zooplankton and the covariates, and checked for correlation issues with the covariates. NC wrote the matrix models in the methods section. NC fit the models for different states using all the covariates. TW did the model selection for the different covariates. ZR helped with debugging the code, and wrote the discussion.
 
 # References

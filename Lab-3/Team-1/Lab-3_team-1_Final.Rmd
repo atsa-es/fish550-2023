@@ -382,30 +382,30 @@ for (i in 9:16) {
 }
 #d[combo[[1]],]  # [[1]] is empty so dont loop it
 cont_BFGS <- list(maxit = 3000)
-# model.cov.data <- data.frame(stringsAsFactors = FALSE)
-# for (i in 2:16) {
-#     fit2 <- MARSS(plankton_z, model = list(R = "diagonal and equal", m = 3,
-#                                            A = "zero"), control = cont_BFGS,
-#                                            form = "dfa", z.score = FALSE,
-#                                            method = "BFGS",
-#                                            covariates = d[combo[[i]],])
-# 
-#    model.cov.data <- rbind(model.cov.data,
-#                            data.frame(Covariates =                       toString(rownames(d)[combo[[i]]]),
-#                       LogLik = fit2$logLik, AICc=fit2$AICc, num.param=fit2$num.params,
-#                       stringsAsFactors = FALSE))
-# }
-# #model.cov.data
-# min.AICc_3 <- order(model.cov.data$AICc)
-# model.cov.data <- model.cov.data[min.AICc_3, ]
-# covariate.table <- cbind(model.cov.data, delta.AICc = model.cov.data$AICc - model.cov.data$AICc[1])
-# #covariate.table
-# covariate.table$Covariates <- str_replace(covariate.table$Covariates, "cos_t, sin_t", "Season")
-# covariate.table
+model.cov.data <- data.frame(stringsAsFactors = FALSE)
+for (i in 2:16) {
+    fit2 <- MARSS(plankton_z, model = list(R = "diagonal and equal", m = 3,
+                                           A = "zero"), control = cont_BFGS,
+                                           form = "dfa", z.score = FALSE,
+                                           method = "BFGS",
+                                           covariates = d[combo[[i]],])
+
+   model.cov.data <- rbind(model.cov.data,
+                           data.frame(Covariates =                       toString(rownames(d)[combo[[i]]]),
+                      LogLik = fit2$logLik, AICc=fit2$AICc, num.param=fit2$num.params,
+                      stringsAsFactors = FALSE))
+}
+#model.cov.data
+min.AICc_3 <- order(model.cov.data$AICc)
+model.cov.data <- model.cov.data[min.AICc_3, ]
+covariate.table <- cbind(model.cov.data, delta.AICc = model.cov.data$AICc - model.cov.data$AICc[1])
+#covariate.table
+covariate.table$Covariates <- str_replace(covariate.table$Covariates, "cos_t, sin_t", "Season")
+covariate.table
 
 #this will save our table that is generated so the whole thing doesn't need to
 #be re-run in the future (i hope)
-#saveRDS(covariate.table, "covariate_table2.rds")
+#saveRDS(covariate.table, "covariate_table.rds")
 table <- readRDS("covariate_table.rds")
 table
 ```
@@ -698,7 +698,7 @@ effect_plot <- function(plot_object){
     geom_point(cex = 3)+
     theme_classic()+
     geom_vline(xintercept=0, linetype="dashed", 
-                               color = "grey60", size=0.5)+
+                               color = "grey60", linewidth=0.5)+
     xlim(c(-.5,.5))+
     xlab("")+ylab("")
 }
