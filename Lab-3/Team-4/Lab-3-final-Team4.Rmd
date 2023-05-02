@@ -84,26 +84,26 @@ V0<-diag(5,3)
 ```
 
 Here is the model for 3 hidden trends:
-```{r}
+```{r, cache = TRUE}
 dfa.model1<-list(Z=Z, A="zero", R=R, B=B, U=U, Q=Q, x0=x0, V0=V0)
-cntl.list<-list(maxit=1000)
-dfa.fit1<-MARSS(plank.t, model=dfa.model1, control=cntl.list, silent = TRUE)
+cntl.list<-list(maxit=3000)
+dfa.fit1<-MARSS(plank.t, model=dfa.model1, control=cntl.list, silent = TRUE,method = "BFGS")
 autoplot(dfa.fit1, plot.type='acf.std.model.resids.ytt1')
 ```
 This model has a lot of autocorrelation in the residuals.
 We tried the same model with 2 or 4 underlying trends.
 
-```{r}
+```{r, cache = TRUE}
 #2 trends
 model.list<-list(m=2, R="diagonal and unequal")
-dfa.fit2<-MARSS(plank.t, model=model.list, z.score=T, form='dfa', control=cntl.list, silent = TRUE)
+dfa.fit2<-MARSS(plank.t, model=model.list, z.score=T, form='dfa', control=cntl.list, silent = TRUE, method = "BFGS")
 autoplot(dfa.fit2, plot.type='acf.std.model.resids.ytt1')
 ```
 
-```{r}
+```{r, cache = TRUE}
 #4 trends
 model.list<-list(m=4, R="diagonal and unequal")
-dfa.fit3<-MARSS(plank.t, model=model.list, z.score=T, form='dfa', control=cntl.list, silent = TRUE)
+dfa.fit3<-MARSS(plank.t, model=model.list, z.score=T, form='dfa', control=cntl.list, silent = TRUE,method = "BFGS")
 autoplot(dfa.fit3, plot.type='acf.std.model.resids.ytt1')
 ```
 
@@ -115,18 +115,29 @@ print(cbind(model=c("3 trends", "2 trends", "4 trends"), AICc=round(c(dfa.fit1$A
 ## Adding covariates to the model
 We will start with the assumption that our best model with have 4 hidden trends. We hypothesize that zooplankton will respond to fluctuations in the population of phytoplankton and that both plankton groups will respond strongly to temperature - a main driver of biological response in the ocean - and phytoplankton will respond strongly to changes in total phosphorus since increased TP typically causes phytoplankton growth.
 
-```{r, results='hide'}
+
+```{r dfa_temp, cache = TRUE}
 #set up covariates and compare models with different combinations of covariates
 temp <- t(all_dat[,"Temp", drop = FALSE])
 TP <- t(all_dat[,"TP", drop = FALSE])
 
 mod_list = list(m = 4, R = "diagonal and unequal")
 dfa_temp <- MARSS(plank.t, model = mod_list, form = "dfa", z.score = FALSE,
-                  control=cntl.list, covariates = temp, silent = TRUE)
+                  control=cntl.list, covariates = temp, silent = TRUE,method = "BFGS")
+```
+
+```{r dfa_TP, cache = TRUE}
 dfa_TP <- MARSS(plank.t, model = mod_list, form = "dfa", z.score = FALSE,
-                control=cntl.list, covariates = TP, silent = TRUE)
+                control=cntl.list, covariates = TP, silent = TRUE,method = "BFGS")
+```
+
+```{r dfa_both, cache = TRUE}
 dfa_both <- MARSS(plank.t, model = mod_list, form = "dfa", z.score = FALSE,
-                  control=cntl.list, covariates = rbind(temp, TP), silent = TRUE)
+                  control=cntl.list, covariates = rbind(temp, TP), silent = TRUE,method = "BFGS")
+```
+
+
+```{r, results='hide'}
 
 dfa_AICc <- cbind(model = c("no covars", "Temp", "TP", "Temp & TP"),
             AICc = round(c(dfa.fit3$AICc,
@@ -140,23 +151,35 @@ The "best" model (lowest AICc) includes both temperature and TP, supporting our 
 ## Adding seasonality to the model
 Seasonal influences likely affect the plankton community as well. We create a dummy model for the seasonal influence to test its impact on model fit. We are not including all iterations here, but we tested seasons alone, seasons + TP, seasons + temperature, and seasons + temp + TP. The models that included seasons + TP and seasons + TP + temperature had the lowest and similar AICc (less than 10 units apart).
 
-```{r, warning=FALSE}
+
+```{r dfa_TPseas, warning=FALSE, cache = TRUE}
 cos_t <- cos(2 * pi * seq(TT) / 12)
 sin_t <- sin(2 * pi * seq(TT) / 12)
 dd <- rbind(cos_t, sin_t)
 
+
 ## fit model
 dfa_TPseas <- MARSS(plank.t, model = mod_list, form = "dfa", z.score = FALSE,
-                  control=cntl.list, covariates = rbind(TP, dd), silent = TRUE)
+                  control=cntl.list, covariates = rbind(TP, dd), silent = TRUE,method = "BFGS")
+
+```
+
+
+
+```{r dfa_TPtempseas, warning=FALSE, cache = TRUE}
+cos_t <- cos(2 * pi * seq(TT) / 12)
+sin_t <- sin(2 * pi * seq(TT) / 12)
+dd <- rbind(cos_t, sin_t)
+
 
 dfa_TPtempseas <- MARSS(plank.t, model = mod_list, form = "dfa", z.score = FALSE,
-                    control=cntl.list, covariates = rbind(temp,TP, dd), silent = TRUE)
+                    control=cntl.list, covariates = rbind(temp,TP, dd), silent = TRUE,method = "BFGS")
 
 ```
 
 # Results
 Plot of the model fits for each of the seasonal models:
-```{r}
+```{r, eval = FALSE}
 # get estimated ZZ
 Z_est <- coef(dfa_TPseas, type = "matrix")$Z
 H_inv <- varimax(Z_est)$rotmat
@@ -218,7 +241,7 @@ for(i in 1:N.ts) {
 }
 ```
 
-```{r}
+```{r,eval = FALSE}
 for(i in 1:N.ts) {
   up <- mod_fit2$up[i,]
   mn <- mod_fit2$ex[i,]
@@ -257,7 +280,7 @@ The ACFs of the residuals don't look amazing.
 
 Let's look at the overall fit of the model:
 
-```{r}
+```{r, eval=FALSE}
 
 mm <- 4
 ## plot the processes
@@ -277,7 +300,7 @@ for(i in 1:mm) {
 }
 ```
 State 1 has two big dips: ~1974 and ~1988. The first may be related to the decrease in TP in the lake. State 2 shows some seasonal pattern ~6 years and a steady increase starting in 1978. State 3 is relatively steady over time with possible seasonality. State 4 decreases until about 1977 and then rebounds and remains stable, with possible seasonal patterns.
-```{r}
+```{r, eval=FALSE}
 spp <- rownames(plank.t)
 minZ <- 0.05
 m <- dim(trends.rot)[1]
@@ -301,7 +324,7 @@ for (i in 1:m) {
 ```
 All taxa are positively associated with state 1. Unicells, algae and rotifers have a positive association with state 2. Cyclops has a strong positive loading on state 3, with weaker loadings from unicells, algae, and rotifers. Diaptomus has the strongest positive loading on state 4, with weak loadings from unicells, algae, and cyclops. 
 The phytoplankton have loadings on all states, suggesting that we did not quite capture their trends effectively with our model. The strongest associations were for the copepods Diaptomus and Cyclops, suggesting that our model does a decent job of capturing their population dynamics.
-```{r}
+```{r,eval = FALSE}
 # plot the fits
 par(mfcol = c(5, 1), mar = c(3, 4, 1.5, 0.5), oma = c(0.4, 1, 1, 1))
 for (i in 1:N.ts) {
@@ -357,11 +380,11 @@ dd.10 <- rbind(cos_t, sin_t)
 
 When we looked at 4 hidden trends for our data subset, the 4th trend was just a straight horizontal line, so we moved forward with 3 hidden trends. TP + seasons had a lower AICc than temperature alone.
 
-```{r}
+```{r, warning=FALSE, cache = TRUE}
 mod_list = list(m = 3, R = "diagonal and unequal")
 
 dfa_TPseas.10 <- MARSS(plank.t10, model = mod_list, form = "dfa", z.score = TRUE,
-              control=cntl.list, covariates = rbind(TP.z,dd.10), silent = TRUE)
+              control=cntl.list, covariates = rbind(TP.z,dd.10), silent = TRUE,method = "BFGS")
 
 #mod_fit.TPseas.10 <- getDFAfits(dfa_TPseas.10)
 
@@ -389,7 +412,7 @@ w_ts_10 <- seq(dim(plank.t10)[2])
 ```
 The data do not look well represented by this model.
 
-```{r}
+```{r, eval=FALSE}
 Z_est.10 <- coef(dfa_TPseas.10, type = "matrix")$Z
 H_inv.10 <- varimax(Z_est.10)$rotmat
 
@@ -417,7 +440,7 @@ for (i in 1:m10) {
 }
 ```
 
-```{r}
+```{r, eval=FALSE}
 mm<-3
 for(i in 1:mm) {
   ylm <- c(-1, 1) * max(abs(trends.rot.10[i,]))
