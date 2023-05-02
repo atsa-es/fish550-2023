@@ -93,3 +93,9 @@ Summarize the model you've created. Specifically,
 
 Example: "All team members helped decide on the goal and ran the analyses for the individual regions. Team members 2 & 3 wrote most of the code for the analysis. Team member 1 worked on the plotting section of the report using and adapting code that team member 3 wrote. All team members helped edit the report and wrote the discussion together."
 
+#Notes (GET RID OF): 
+Tasks: 
+1) Fit 2 state (Zoe)
+2) Fit 3 state (Eric)
+3) Results (transition probabilities, time series of states, number of states) (Dylan)
+4) Discussion (Together)
