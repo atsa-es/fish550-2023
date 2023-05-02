@@ -17,14 +17,16 @@ SST<-unlist(as.vector(stoplight[4,3:26]))
 Copepod_richness<-unlist(as.vector(stoplight[9,3:26])) 
 Ichthy_community_index<-unlist(as.vector(stoplight[14,3:26]))
 
-dat<-matrix(,nrow=length(years), ncol=5)
+dat<-matrix(nrow=length(years), ncol=5)
 dat[,1]<-years
 dat[,2]<-PDO_DecMarch
 dat[,3]<-SST
 dat[,4]<-Copepod_richness
 dat[,5]<-Ichthy_community_index
 colnames(dat)<-c("years","PDO", "SST", "CopeRich", "FishInx")
+rownames(dat)<-seq(1,24,1)
 
+print(dat)
 #five times series in response and keep things to your block 
 
 #Lecture example
@@ -37,3 +39,7 @@ fitmod = fit(mod)
 
 
 #pick some plankton, pick some drivers, 
+
+
+
+
