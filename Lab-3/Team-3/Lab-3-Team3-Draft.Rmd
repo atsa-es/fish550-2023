@@ -404,6 +404,7 @@ DFA_fits <- NULL
 
 for(i in 1:(length(cov.terms)+1)){
   print(i)
+  i=10
   model_i <- i
   ind_on=as.matrix(mod.tab[i,1:length(cov.terms)])
   # ind_off=as.matrix(!mod.tab[i,1:length(mod.terms)])
