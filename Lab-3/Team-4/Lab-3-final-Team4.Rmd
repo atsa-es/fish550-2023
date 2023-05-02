@@ -137,7 +137,7 @@ dfa_both <- MARSS(plank.t, model = mod_list, form = "dfa", z.score = FALSE,
 ```
 
 
-```{r, results='hide'}
+```{r}
 
 dfa_AICc <- cbind(model = c("no covars", "Temp", "TP", "Temp & TP"),
             AICc = round(c(dfa.fit3$AICc,
@@ -167,11 +167,6 @@ dfa_TPseas <- MARSS(plank.t, model = mod_list, form = "dfa", z.score = FALSE,
 
 
 ```{r dfa_TPtempseas, warning=FALSE, cache = TRUE}
-cos_t <- cos(2 * pi * seq(TT) / 12)
-sin_t <- sin(2 * pi * seq(TT) / 12)
-dd <- rbind(cos_t, sin_t)
-
-
 dfa_TPtempseas <- MARSS(plank.t, model = mod_list, form = "dfa", z.score = FALSE,
                     control=cntl.list, covariates = rbind(temp,TP, dd), silent = TRUE,method = "BFGS")
 
@@ -179,7 +174,7 @@ dfa_TPtempseas <- MARSS(plank.t, model = mod_list, form = "dfa", z.score = FALSE
 
 # Results
 Plot of the model fits for each of the seasonal models:
-```{r, eval = FALSE}
+```{r}
 # get estimated ZZ
 Z_est <- coef(dfa_TPseas, type = "matrix")$Z
 H_inv <- varimax(Z_est)$rotmat
@@ -223,7 +218,6 @@ getDFAfits <- function(MLEobj, alpha = 0.05, dd = NULL) { #dd = covariates
 }
 
 mod_fit <- getDFAfits(dfa_TPseas)
-mod_fit2 <- getDFAfits(dfa_TPtempseas)
 par(mfrow = c(N.ts, 1), mai = c(0.5, 0.7, 0.1, 0.1), omi = c(0, 0, 0, 0))
 for(i in 1:N.ts) {
   up <- mod_fit$up[i,]
@@ -241,22 +235,6 @@ for(i in 1:N.ts) {
 }
 ```
 
-```{r,eval = FALSE}
-for(i in 1:N.ts) {
-  up <- mod_fit2$up[i,]
-  mn <- mod_fit2$ex[i,]
-  lo <- mod_fit2$lo[i,]
-  plot(w_ts, mn, type = "n",
-       xlab = "", ylab = ylbl[i],
-       xaxt = "n", cex.lab = 1.2,
-       ylim = c(min(lo), max(up)))
-  axis(1, 12 * (0:dim(plank.t)[2]) + 1, yr_frst + 0:dim(plank.t)[2])
-  points(w_ts, plank.t[i,], pch = 16, col = clr[i])
-  lines(w_ts, up, col = "darkgray")
-  lines(w_ts, mn, col = "black", lwd = 2)
-  lines(w_ts, lo, col = "darkgray")
-}
-```
 
 ```{r}
 #Table of AICc for all fitted models
@@ -280,7 +258,7 @@ The ACFs of the residuals don't look amazing.
 
 Let's look at the overall fit of the model:
 
-```{r, eval=FALSE}
+```{r}
 
 mm <- 4
 ## plot the processes
@@ -300,7 +278,7 @@ for(i in 1:mm) {
 }
 ```
 State 1 has two big dips: ~1974 and ~1988. The first may be related to the decrease in TP in the lake. State 2 shows some seasonal pattern ~6 years and a steady increase starting in 1978. State 3 is relatively steady over time with possible seasonality. State 4 decreases until about 1977 and then rebounds and remains stable, with possible seasonal patterns.
-```{r, eval=FALSE}
+```{r}
 spp <- rownames(plank.t)
 minZ <- 0.05
 m <- dim(trends.rot)[1]
@@ -324,7 +302,7 @@ for (i in 1:m) {
 ```
 All taxa are positively associated with state 1. Unicells, algae and rotifers have a positive association with state 2. Cyclops has a strong positive loading on state 3, with weaker loadings from unicells, algae, and rotifers. Diaptomus has the strongest positive loading on state 4, with weak loadings from unicells, algae, and cyclops. 
 The phytoplankton have loadings on all states, suggesting that we did not quite capture their trends effectively with our model. The strongest associations were for the copepods Diaptomus and Cyclops, suggesting that our model does a decent job of capturing their population dynamics.
-```{r,eval = FALSE}
+```{r}
 # plot the fits
 par(mfcol = c(5, 1), mar = c(3, 4, 1.5, 0.5), oma = c(0.4, 1, 1, 1))
 for (i in 1:N.ts) {
@@ -393,26 +371,10 @@ autoplot(dfa_TPseas.10, plot.type='acf.std.model.resids.ytt1')
 
 ```{r}
 w_ts_10 <- seq(dim(plank.t10)[2])
-
-#par(mfrow = c(N.ts, 1), mai = c(0.5, 0.7, 0.1, 0.1), omi = c(0, 0, 0, 0))
-#for(i in 1:N.ts) {
- # up <- mod_fit.TPseas.10$up[i,]
-  #mn <- mod_fit.TPseas.10$ex[i,]
-  #lo <- mod_fit.TPseas.10$lo[i,]
-  #plot(w_ts_10, mn, type = "n",
-   #    xlab = "", ylab = ylbl[i],
-    #   xaxt = "n", cex.lab = 1.2,
-     #  ylim = c(min(lo), max(up)))
-#  axis(1, 12 * (0:dim(plank.t10)[2]) + 1, yr_frst + 0:dim(plank.t10)[2])
- # points(w_ts_10, dat.z[i,], pch = 16, col = clr[i])
-#  lines(w_ts_10, up, col = "darkgray")
- # lines(w_ts_10, mn, col = "black", lwd = 2)
-  #lines(w_ts_10, lo, col = "darkgray")
-#}
 ```
 The data do not look well represented by this model.
 
-```{r, eval=FALSE}
+```{r}
 Z_est.10 <- coef(dfa_TPseas.10, type = "matrix")$Z
 H_inv.10 <- varimax(Z_est.10)$rotmat
 
@@ -440,7 +402,7 @@ for (i in 1:m10) {
 }
 ```
 
-```{r, eval=FALSE}
+```{r}
 mm<-3
 for(i in 1:mm) {
   ylm <- c(-1, 1) * max(abs(trends.rot.10[i,]))
@@ -458,17 +420,6 @@ for(i in 1:mm) {
 }
 ```
 
-# General tasks
-
-Each group has the same general tasks, but you will adapt them as you work on the data.
-
-1) Find the most parsimonious model among a set that examines the effects of environmental covariates and/or an indicator of seasonality, varying numbers of trends, and different forms of variance-covariance matrices for the observation errors.
-
-2) Plot trends and individual loadings for the model identified in task (1) above.
-
-3) Plot model fits and uncertainty intervals for the model identified in task (1) above.
-
-4) Describe the effects of environmental or dummy variables on (possibly seasonal) patterns in the data.
 
 # Discussion
 We chose to first analyze data from the full time series with the assumption that more data would yield stronger associations between covariates and plankton abundance. We first determined the optimal number of states by fitting multiple models, each with different numbers of states. The models were then compared via AICc to determine what number of states best fit the time series. 
@@ -488,5 +439,5 @@ Neither one of our models fit the data very well. This may be because 1) we are 
 
 # Team contributions
 
-ETS explored the data to find usable parts for the analysis; she also did the first attempt at fitting a DFA with different trends. MM refined the DFA and added analyses for assessing model fit and covariates. MM and KV discussed covariates and seasonal effects on the model. ETS selected the subset of data to analyze and applied the previous code developed by all team members to the new subset of the data. ETS drafted the final lab report with very minor changes from MM. Code was de-bugged and the lab report was finalized by KV and MM?
+ETS explored the data to find usable parts for the analysis; she also did the first attempt at fitting a DFA with different trends. MM refined the DFA and added analyses for assessing model fit and covariates. MM and KV discussed covariates and seasonal effects on the model. ETS selected the subset of data to analyze and applied the previous code developed by all team members to the new subset of the data. ETS drafted the final lab report with very minor changes from MM. Code was de-bugged and the lab report was finalized by all.
 
