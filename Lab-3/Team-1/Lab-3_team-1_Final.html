@@ -2440,30 +2440,664 @@ for (i in 9:16) {
 }
 #d[combo[[1]],]  # [[1]] is empty so dont loop it
 cont_BFGS &lt;- list(maxit = 3000)
-# model.cov.data &lt;- data.frame(stringsAsFactors = FALSE)
-# for (i in 2:16) {
-#     fit2 &lt;- MARSS(plankton_z, model = list(R = &quot;diagonal and equal&quot;, m = 3,
-#                                            A = &quot;zero&quot;), control = cont_BFGS,
-#                                            form = &quot;dfa&quot;, z.score = FALSE,
-#                                            method = &quot;BFGS&quot;,
-#                                            covariates = d[combo[[i]],])
-# 
-#    model.cov.data &lt;- rbind(model.cov.data,
-#                            data.frame(Covariates =                       toString(rownames(d)[combo[[i]]]),
-#                       LogLik = fit2$logLik, AICc=fit2$AICc, num.param=fit2$num.params,
-#                       stringsAsFactors = FALSE))
-# }
-# #model.cov.data
-# min.AICc_3 &lt;- order(model.cov.data$AICc)
-# model.cov.data &lt;- model.cov.data[min.AICc_3, ]
-# covariate.table &lt;- cbind(model.cov.data, delta.AICc = model.cov.data$AICc - model.cov.data$AICc[1])
-# #covariate.table
-# covariate.table$Covariates &lt;- str_replace(covariate.table$Covariates, &quot;cos_t, sin_t&quot;, &quot;Season&quot;)
-# covariate.table
+model.cov.data &lt;- data.frame(stringsAsFactors = FALSE)
+for (i in 2:16) {
+    fit2 &lt;- MARSS(plankton_z, model = list(R = &quot;diagonal and equal&quot;, m = 3,
+                                           A = &quot;zero&quot;), control = cont_BFGS,
+                                           form = &quot;dfa&quot;, z.score = FALSE,
+                                           method = &quot;BFGS&quot;,
+                                           covariates = d[combo[[i]],])
 
-#this will save our table that is generated so the whole thing doesn&#39;t need to
+   model.cov.data &lt;- rbind(model.cov.data,
+                           data.frame(Covariates =                       toString(rownames(d)[combo[[i]]]),
+                      LogLik = fit2$logLik, AICc=fit2$AICc, num.param=fit2$num.params,
+                      stringsAsFactors = FALSE))
+}</code></pre>
+<pre><code>## Success! Converged in 213 iterations.
+## Function MARSSkfas used for likelihood calculation.
+## 
+## MARSS fit is
+## Estimation method: BFGS 
+## Estimation converged in 213 iterations. 
+## Log-likelihood: -1445.446 
+## AIC: 2926.892   AICc: 2927.479   
+##  
+##                         Estimate
+## Z.11                     0.57688
+## Z.21                     0.16464
+## Z.31                     0.33664
+## Z.41                     0.50783
+## Z.51                     0.54082
+## Z.22                    -0.30921
+## Z.32                     0.01914
+## Z.42                    -0.30163
+## Z.52                    -0.11538
+## Z.33                     0.21659
+## Z.43                    -0.02124
+## Z.53                     0.00108
+## R.diag                   0.41918
+## D.Diatoms               -0.13142
+## D.Greens                 0.38129
+## D.Unicells               0.33622
+## D.Cyclops                0.17779
+## D.Non.colonial.rotifers  0.33886
+## Initial states (x0) defined at t=0
+## 
+## Standard errors have not been calculated. 
+## Use MARSSparamCIs to compute CIs and bias estimates.
+## 
+## Success! Converged in 216 iterations.
+## Function MARSSkfas used for likelihood calculation.
+## 
+## MARSS fit is
+## Estimation method: BFGS 
+## Estimation converged in 216 iterations. 
+## Log-likelihood: -1460.442 
+## AIC: 2956.884   AICc: 2957.47   
+##  
+##                         Estimate
+## Z.11                      0.5476
+## Z.21                      0.0432
+## Z.31                      0.3170
+## Z.41                      0.4714
+## Z.51                      0.5033
+## Z.22                     -0.4105
+## Z.32                     -0.1710
+## Z.42                     -0.3738
+## Z.52                     -0.2911
+## Z.33                     -0.2697
+## Z.43                      0.1313
+## Z.53                      0.0205
+## R.diag                    0.4023
+## D.Diatoms                -0.1833
+## D.Greens                 -0.5891
+## D.Unicells               -0.2483
+## D.Cyclops                -0.2036
+## D.Non.colonial.rotifers  -0.3840
+## Initial states (x0) defined at t=0
+## 
+## Standard errors have not been calculated. 
+## Use MARSSparamCIs to compute CIs and bias estimates.
+## 
+## Success! Converged in 252 iterations.
+## Function MARSSkfas used for likelihood calculation.
+## 
+## MARSS fit is
+## Estimation method: BFGS 
+## Estimation converged in 252 iterations. 
+## Log-likelihood: -1409.915 
+## AIC: 2865.831   AICc: 2866.782   
+##  
+##                                Estimate
+## Z.11                            0.54025
+## Z.21                            0.13475
+## Z.31                            0.37336
+## Z.41                            0.54129
+## Z.51                            0.55720
+## Z.22                            0.36831
+## Z.32                           -0.00545
+## Z.42                            0.20153
+## Z.52                            0.02786
+## Z.33                           -0.23688
+## Z.43                            0.23139
+## Z.53                            0.15678
+## R.diag                          0.36316
+## D.(Diatoms,Temp)               -0.28240
+## D.(Greens,Temp)                 0.32594
+## D.(Unicells,Temp)               0.37906
+## D.(Cyclops,Temp)                0.13085
+## D.(Non.colonial.rotifers,Temp)  0.24924
+## D.(Diatoms,TP)                 -0.44062
+## D.(Greens,TP)                  -0.20733
+## D.(Unicells,TP)                 0.12353
+## D.(Cyclops,TP)                 -0.12863
+## D.(Non.colonial.rotifers,TP)   -0.25512
+## Initial states (x0) defined at t=0
+## 
+## Standard errors have not been calculated. 
+## Use MARSSparamCIs to compute CIs and bias estimates.
+## 
+## Success! Converged in 206 iterations.
+## Function MARSSkfas used for likelihood calculation.
+## 
+## MARSS fit is
+## Estimation method: BFGS 
+## Estimation converged in 206 iterations. 
+## Log-likelihood: -1466.036 
+## AIC: 2968.072   AICc: 2968.658   
+##  
+##                         Estimate
+## Z.11                      0.4939
+## Z.21                      0.0329
+## Z.31                      0.2540
+## Z.41                      0.3516
+## Z.51                      0.3827
+## Z.22                     -0.4264
+## Z.32                     -0.1910
+## Z.42                     -0.3707
+## Z.52                     -0.2582
+## Z.33                      0.2671
+## Z.43                     -0.0481
+## Z.53                      0.0373
+## R.diag                    0.4338
+## D.Diatoms                 0.3036
+## D.Greens                  0.1978
+## D.Unicells                0.2527
+## D.Cyclops                 0.3469
+## D.Non.colonial.rotifers   0.4327
+## Initial states (x0) defined at t=0
+## 
+## Standard errors have not been calculated. 
+## Use MARSSparamCIs to compute CIs and bias estimates.
+## 
+## Success! Converged in 265 iterations.
+## Function MARSSkfas used for likelihood calculation.
+## 
+## MARSS fit is
+## Estimation method: BFGS 
+## Estimation converged in 265 iterations. 
+## Log-likelihood: -1423.373 
+## AIC: 2892.745   AICc: 2893.696   
+##  
+##                                Estimate
+## Z.11                            0.48496
+## Z.21                            0.13769
+## Z.31                            0.31579
+## Z.41                            0.41505
+## Z.51                            0.42787
+## Z.22                            0.31003
+## Z.32                           -0.01121
+## Z.42                            0.30294
+## Z.52                            0.10571
+## Z.33                           -0.20717
+## Z.43                            0.00252
+## Z.53                           -0.01927
+## R.diag                          0.42381
+## D.(Diatoms,Temp)               -0.24181
+## D.(Greens,Temp)                 0.34767
+## D.(Unicells,Temp)               0.27872
+## D.(Cyclops,Temp)                0.07570
+## D.(Non.colonial.rotifers,Temp)  0.22458
+## D.(Diatoms,pH)                  0.36982
+## D.(Greens,pH)                   0.10731
+## D.(Unicells,pH)                 0.18325
+## D.(Cyclops,pH)                  0.33639
+## D.(Non.colonial.rotifers,pH)    0.38439
+## Initial states (x0) defined at t=0
+## 
+## Standard errors have not been calculated. 
+## Use MARSSparamCIs to compute CIs and bias estimates.
+## 
+## Success! Converged in 254 iterations.
+## Function MARSSkfas used for likelihood calculation.
+## 
+## MARSS fit is
+## Estimation method: BFGS 
+## Estimation converged in 254 iterations. 
+## Log-likelihood: -1438.594 
+## AIC: 2923.188   AICc: 2924.139   
+##  
+##                              Estimate
+## Z.11                          0.49825
+## Z.21                          0.04300
+## Z.31                          0.26854
+## Z.41                          0.38208
+## Z.51                          0.40521
+## Z.22                          0.42581
+## Z.32                          0.15218
+## Z.42                          0.34661
+## Z.52                          0.25259
+## Z.33                          0.27229
+## Z.43                         -0.10659
+## Z.53                          0.00697
+## R.diag                        0.40365
+## D.(Diatoms,TP)               -0.01220
+## D.(Greens,TP)                -0.55287
+## D.(Unicells,TP)              -0.12257
+## D.(Cyclops,TP)                0.01611
+## D.(Non.colonial.rotifers,TP) -0.15889
+## D.(Diatoms,pH)                0.28987
+## D.(Greens,pH)                 0.05577
+## D.(Unicells,pH)               0.23641
+## D.(Cyclops,pH)                0.37197
+## D.(Non.colonial.rotifers,pH)  0.39398
+## Initial states (x0) defined at t=0
+## 
+## Standard errors have not been calculated. 
+## Use MARSSparamCIs to compute CIs and bias estimates.
+## 
+## Success! Converged in 319 iterations.
+## Function MARSSkfas used for likelihood calculation.
+## 
+## MARSS fit is
+## Estimation method: BFGS 
+## Estimation converged in 319 iterations. 
+## Log-likelihood: -1389.371 
+## AIC: 2834.741   AICc: 2836.146   
+##  
+##                                Estimate
+## Z.11                            -0.4908
+## Z.21                            -0.1378
+## Z.31                            -0.3225
+## Z.41                            -0.4611
+## Z.51                            -0.4752
+## Z.22                            -0.3741
+## Z.32                             0.0155
+## Z.42                            -0.2022
+## Z.52                            -0.0258
+## Z.33                            -0.2452
+## Z.43                             0.2090
+## Z.53                             0.1381
+## R.diag                           0.3634
+## D.(Diatoms,Temp)                -0.3243
+## D.(Greens,Temp)                  0.3163
+## D.(Unicells,Temp)                0.3464
+## D.(Cyclops,Temp)                 0.0824
+## D.(Non.colonial.rotifers,Temp)   0.1998
+## D.(Diatoms,TP)                  -0.2975
+## D.(Greens,TP)                   -0.1970
+## D.(Unicells,TP)                  0.2284
+## D.(Cyclops,TP)                   0.0424
+## D.(Non.colonial.rotifers,TP)    -0.0764
+## D.(Diatoms,pH)                   0.2969
+## D.(Greens,pH)                    0.0392
+## D.(Unicells,pH)                  0.2308
+## D.(Cyclops,pH)                   0.3553
+## D.(Non.colonial.rotifers,pH)     0.3684
+## Initial states (x0) defined at t=0
+## 
+## Standard errors have not been calculated. 
+## Use MARSSparamCIs to compute CIs and bias estimates.
+## 
+## Success! Converged in 269 iterations.
+## Function MARSSkfas used for likelihood calculation.
+## 
+## MARSS fit is
+## Estimation method: BFGS 
+## Estimation converged in 269 iterations. 
+## Log-likelihood: -1414.718 
+## AIC: 2875.437   AICc: 2876.388   
+##  
+##                                 Estimate
+## Z.11                              0.4014
+## Z.21                              0.0917
+## Z.31                              0.3151
+## Z.41                              0.3889
+## Z.51                              0.3535
+## Z.22                             -0.2614
+## Z.32                              0.0142
+## Z.42                             -0.3551
+## Z.52                             -0.1423
+## Z.33                              0.1942
+## Z.43                              0.0179
+## Z.53                              0.0423
+## R.diag                            0.4330
+## D.(Diatoms,cos_t)                -0.4185
+## D.(Greens,cos_t)                 -0.3778
+## D.(Unicells,cos_t)               -0.3984
+## D.(Cyclops,cos_t)                -0.4592
+## D.(Non.colonial.rotifers,cos_t)  -0.6086
+## D.(Diatoms,sin_t)                 0.3571
+## D.(Greens,sin_t)                 -0.2360
+## D.(Unicells,sin_t)               -0.1746
+## D.(Cyclops,sin_t)                 0.0426
+## D.(Non.colonial.rotifers,sin_t)  -0.0416
+## Initial states (x0) defined at t=0
+## 
+## Standard errors have not been calculated. 
+## Use MARSSparamCIs to compute CIs and bias estimates.
+## 
+## Success! Converged in 292 iterations.
+## Function MARSSkfas used for likelihood calculation.
+## 
+## MARSS fit is
+## Estimation method: BFGS 
+## Estimation converged in 292 iterations. 
+## Log-likelihood: -1410.615 
+## AIC: 2877.23   AICc: 2878.635   
+##  
+##                                  Estimate
+## Z.11                             0.415161
+## Z.21                             0.075856
+## Z.31                             0.305956
+## Z.41                             0.401409
+## Z.51                             0.360787
+## Z.22                            -0.274659
+## Z.32                             0.006480
+## Z.42                            -0.362330
+## Z.52                            -0.145507
+## Z.33                            -0.207367
+## Z.43                             0.021952
+## Z.53                            -0.003207
+## R.diag                           0.422024
+## D.(Diatoms,Temp)                -0.388896
+## D.(Greens,Temp)                  0.000862
+## D.(Unicells,Temp)               -0.085237
+## D.(Cyclops,Temp)                -0.026392
+## D.(Non.colonial.rotifers,Temp)   0.460085
+## D.(Diatoms,cos_t)               -0.602400
+## D.(Greens,cos_t)                -0.377452
+## D.(Unicells,cos_t)              -0.439079
+## D.(Cyclops,cos_t)               -0.471920
+## D.(Non.colonial.rotifers,cos_t) -0.390827
+## D.(Diatoms,sin_t)                0.024243
+## D.(Greens,sin_t)                -0.235474
+## D.(Unicells,sin_t)              -0.247536
+## D.(Cyclops,sin_t)                0.020553
+## D.(Non.colonial.rotifers,sin_t)  0.352508
+## Initial states (x0) defined at t=0
+## 
+## Standard errors have not been calculated. 
+## Use MARSSparamCIs to compute CIs and bias estimates.
+## 
+## Success! Converged in 325 iterations.
+## Function MARSSkfas used for likelihood calculation.
+## 
+## MARSS fit is
+## Estimation method: BFGS 
+## Estimation converged in 325 iterations. 
+## Log-likelihood: -1383.561 
+## AIC: 2823.121   AICc: 2824.526   
+##  
+##                                  Estimate
+## Z.11                            -0.389709
+## Z.21                            -0.052707
+## Z.31                            -0.332116
+## Z.41                            -0.475882
+## Z.51                            -0.437379
+## Z.22                             0.350220
+## Z.32                             0.000979
+## Z.42                             0.193241
+## Z.52                             0.014798
+## Z.33                             0.216936
+## Z.43                            -0.278855
+## Z.53                            -0.172286
+## R.diag                           0.366800
+## D.(Diatoms,TP)                  -0.261663
+## D.(Greens,TP)                   -0.118546
+## D.(Unicells,TP)                  0.277579
+## D.(Cyclops,TP)                   0.018855
+## D.(Non.colonial.rotifers,TP)    -0.079289
+## D.(Diatoms,cos_t)               -0.341024
+## D.(Greens,cos_t)                -0.339710
+## D.(Unicells,cos_t)              -0.482904
+## D.(Cyclops,cos_t)               -0.461907
+## D.(Non.colonial.rotifers,cos_t) -0.584040
+## D.(Diatoms,sin_t)                0.421494
+## D.(Greens,sin_t)                -0.214410
+## D.(Unicells,sin_t)              -0.240577
+## D.(Cyclops,sin_t)                0.028659
+## D.(Non.colonial.rotifers,sin_t) -0.028721
+## Initial states (x0) defined at t=0
+## 
+## Standard errors have not been calculated. 
+## Use MARSSparamCIs to compute CIs and bias estimates.
+## 
+## Success! Converged in 375 iterations.
+## Function MARSSkfas used for likelihood calculation.
+## 
+## MARSS fit is
+## Estimation method: BFGS 
+## Estimation converged in 375 iterations. 
+## Log-likelihood: -1378.866 
+## AIC: 2823.732   AICc: 2825.682   
+##  
+##                                 Estimate
+## Z.11                             0.40084
+## Z.21                             0.04342
+## Z.31                             0.33358
+## Z.41                             0.47782
+## Z.51                             0.42502
+## Z.22                            -0.36360
+## Z.32                            -0.00267
+## Z.42                            -0.20386
+## Z.52                            -0.02836
+## Z.33                            -0.21961
+## Z.43                             0.28550
+## Z.53                             0.17815
+## R.diag                           0.35955
+## D.(Diatoms,Temp)                -0.34785
+## D.(Greens,Temp)                  0.27252
+## D.(Unicells,Temp)               -0.03706
+## D.(Cyclops,Temp)                -0.14369
+## D.(Non.colonial.rotifers,Temp)   0.38272
+## D.(Diatoms,TP)                  -0.24966
+## D.(Greens,TP)                   -0.12312
+## D.(Unicells,TP)                  0.27956
+## D.(Cyclops,TP)                   0.02549
+## D.(Non.colonial.rotifers,TP)    -0.09396
+## D.(Diatoms,cos_t)               -0.50969
+## D.(Greens,cos_t)                -0.20931
+## D.(Unicells,cos_t)              -0.50108
+## D.(Cyclops,cos_t)               -0.53192
+## D.(Non.colonial.rotifers,cos_t) -0.39807
+## D.(Diatoms,sin_t)                0.12139
+## D.(Greens,sin_t)                 0.01913
+## D.(Unicells,sin_t)              -0.27269
+## D.(Cyclops,sin_t)               -0.09597
+## D.(Non.colonial.rotifers,sin_t)  0.30284
+## Initial states (x0) defined at t=0
+## 
+## Standard errors have not been calculated. 
+## Use MARSSparamCIs to compute CIs and bias estimates.
+## 
+## Success! Converged in 382 iterations.
+## Function MARSSkfas used for likelihood calculation.
+## 
+## MARSS fit is
+## Estimation method: BFGS 
+## Estimation converged in 382 iterations. 
+## Log-likelihood: -1406.542 
+## AIC: 2869.085   AICc: 2870.49   
+##  
+##                                  Estimate
+## Z.11                             0.391023
+## Z.21                             0.102211
+## Z.31                             0.324678
+## Z.41                             0.359636
+## Z.51                             0.330831
+## Z.22                            -0.279682
+## Z.32                             0.020153
+## Z.42                            -0.329076
+## Z.52                            -0.119499
+## Z.33                             0.187323
+## Z.43                             0.047808
+## Z.53                             0.061845
+## R.diag                           0.431322
+## D.(Diatoms,pH)                   0.136610
+## D.(Greens,pH)                   -0.000794
+## D.(Unicells,pH)                  0.128573
+## D.(Cyclops,pH)                   0.274254
+## D.(Non.colonial.rotifers,pH)     0.220054
+## D.(Diatoms,cos_t)               -0.321008
+## D.(Greens,cos_t)                -0.378307
+## D.(Unicells,cos_t)              -0.306143
+## D.(Cyclops,cos_t)               -0.262709
+## D.(Non.colonial.rotifers,cos_t) -0.450590
+## D.(Diatoms,sin_t)                0.348327
+## D.(Greens,sin_t)                -0.236416
+## D.(Unicells,sin_t)              -0.182914
+## D.(Cyclops,sin_t)                0.025612
+## D.(Non.colonial.rotifers,sin_t) -0.056013
+## Initial states (x0) defined at t=0
+## 
+## Standard errors have not been calculated. 
+## Use MARSSparamCIs to compute CIs and bias estimates.
+## 
+## Success! Converged in 258 iterations.
+## Function MARSSkfas used for likelihood calculation.
+## 
+## MARSS fit is
+## Estimation method: BFGS 
+## Estimation converged in 258 iterations. 
+## Log-likelihood: -1402.502 
+## AIC: 2871.004   AICc: 2872.954   
+##  
+##                                 Estimate
+## Z.11                             0.40804
+## Z.21                             0.08794
+## Z.31                             0.31313
+## Z.41                             0.37245
+## Z.51                             0.33718
+## Z.22                             0.28954
+## Z.32                            -0.01655
+## Z.42                             0.34161
+## Z.52                             0.12744
+## Z.33                             0.20110
+## Z.43                             0.01431
+## Z.53                             0.02707
+## R.diag                           0.42091
+## D.(Diatoms,Temp)                -0.43264
+## D.(Greens,Temp)                 -0.01644
+## D.(Unicells,Temp)               -0.15795
+## D.(Cyclops,Temp)                -0.08453
+## D.(Non.colonial.rotifers,Temp)   0.40805
+## D.(Diatoms,pH)                   0.14542
+## D.(Greens,pH)                    0.00279
+## D.(Unicells,pH)                  0.12514
+## D.(Cyclops,pH)                   0.27288
+## D.(Non.colonial.rotifers,pH)     0.22265
+## D.(Diatoms,cos_t)               -0.51926
+## D.(Greens,cos_t)                -0.38361
+## D.(Unicells,cos_t)              -0.38349
+## D.(Cyclops,cos_t)               -0.30378
+## D.(Non.colonial.rotifers,cos_t) -0.25567
+## D.(Diatoms,sin_t)               -0.02223
+## D.(Greens,sin_t)                -0.25052
+## D.(Unicells,sin_t)              -0.31800
+## D.(Cyclops,sin_t)               -0.04576
+## D.(Non.colonial.rotifers,sin_t)  0.29416
+## Initial states (x0) defined at t=0
+## 
+## Standard errors have not been calculated. 
+## Use MARSSparamCIs to compute CIs and bias estimates.
+## 
+## Success! Converged in 376 iterations.
+## Function MARSSkfas used for likelihood calculation.
+## 
+## MARSS fit is
+## Estimation method: BFGS 
+## Estimation converged in 376 iterations. 
+## Log-likelihood: -1372.372 
+## AIC: 2810.744   AICc: 2812.694   
+##  
+##                                 Estimate
+## Z.11                             -0.3947
+## Z.21                             -0.0690
+## Z.31                             -0.3168
+## Z.41                             -0.4553
+## Z.51                             -0.4300
+## Z.22                              0.3605
+## Z.32                             -0.0142
+## Z.42                              0.1953
+## Z.52                              0.0159
+## Z.33                             -0.2340
+## Z.43                              0.2444
+## Z.53                              0.1567
+## R.diag                            0.3603
+## D.(Diatoms,TP)                   -0.2350
+## D.(Greens,TP)                    -0.1339
+## D.(Unicells,TP)                   0.3161
+## D.(Cyclops,TP)                    0.1108
+## D.(Non.colonial.rotifers,TP)     -0.0155
+## D.(Diatoms,pH)                    0.0887
+## D.(Greens,pH)                    -0.0769
+## D.(Unicells,pH)                   0.1593
+## D.(Cyclops,pH)                    0.3203
+## D.(Non.colonial.rotifers,pH)      0.2289
+## D.(Diatoms,cos_t)                -0.2858
+## D.(Greens,cos_t)                 -0.3896
+## D.(Unicells,cos_t)               -0.3804
+## D.(Cyclops,cos_t)                -0.2598
+## D.(Non.colonial.rotifers,cos_t)  -0.4392
+## D.(Diatoms,sin_t)                 0.4096
+## D.(Greens,sin_t)                 -0.2067
+## D.(Unicells,sin_t)               -0.2596
+## D.(Cyclops,sin_t)                -0.0118
+## D.(Non.colonial.rotifers,sin_t)  -0.0575
+## Initial states (x0) defined at t=0
+## 
+## Standard errors have not been calculated. 
+## Use MARSSparamCIs to compute CIs and bias estimates.
+## 
+## Success! Converged in 288 iterations.
+## Function MARSSkfas used for likelihood calculation.
+## 
+## MARSS fit is
+## Estimation method: BFGS 
+## Estimation converged in 288 iterations. 
+## Log-likelihood: -1367.448 
+## AIC: 2810.895   AICc: 2813.481   
+##  
+##                                 Estimate
+## Z.11                             -0.4072
+## Z.21                             -0.0590
+## Z.31                             -0.3172
+## Z.41                             -0.4581
+## Z.51                             -0.4173
+## Z.22                              0.3751
+## Z.32                             -0.0128
+## Z.42                              0.2048
+## Z.52                              0.0286
+## Z.33                              0.2379
+## Z.43                             -0.2497
+## Z.53                             -0.1602
+## R.diag                            0.3529
+## D.(Diatoms,Temp)                 -0.4167
+## D.(Greens,Temp)                   0.2777
+## D.(Unicells,Temp)                -0.0626
+## D.(Cyclops,Temp)                 -0.1979
+## D.(Non.colonial.rotifers,Temp)    0.3185
+## D.(Diatoms,TP)                   -0.2251
+## D.(Greens,TP)                    -0.1386
+## D.(Unicells,TP)                   0.3155
+## D.(Cyclops,TP)                    0.1147
+## D.(Non.colonial.rotifers,TP)     -0.0324
+## D.(Diatoms,pH)                    0.0909
+## D.(Greens,pH)                    -0.0800
+## D.(Unicells,pH)                   0.1614
+## D.(Cyclops,pH)                    0.3201
+## D.(Non.colonial.rotifers,pH)      0.2300
+## D.(Diatoms,cos_t)                -0.4848
+## D.(Greens,cos_t)                 -0.2589
+## D.(Unicells,cos_t)               -0.4085
+## D.(Cyclops,cos_t)                -0.3549
+## D.(Non.colonial.rotifers,cos_t)  -0.2822
+## D.(Diatoms,sin_t)                 0.0514
+## D.(Greens,sin_t)                  0.0316
+## D.(Unicells,sin_t)               -0.3128
+## D.(Cyclops,sin_t)                -0.1817
+## D.(Non.colonial.rotifers,sin_t)   0.2200
+## Initial states (x0) defined at t=0
+## 
+## Standard errors have not been calculated. 
+## Use MARSSparamCIs to compute CIs and bias estimates.</code></pre>
+<pre class="r"><code>#model.cov.data
+min.AICc_3 &lt;- order(model.cov.data$AICc)
+model.cov.data &lt;- model.cov.data[min.AICc_3, ]
+covariate.table &lt;- cbind(model.cov.data, delta.AICc = model.cov.data$AICc - model.cov.data$AICc[1])
+#covariate.table
+covariate.table$Covariates &lt;- str_replace(covariate.table$Covariates, &quot;cos_t, sin_t&quot;, &quot;Season&quot;)
+covariate.table</code></pre>
+<pre><code>##              Covariates    LogLik     AICc num.param  delta.AICc
+## 14       TP, pH, Season -1372.372 2812.694        33   0.0000000
+## 15 Temp, TP, pH, Season -1367.448 2813.481        38   0.7875195
+## 10           TP, Season -1383.561 2824.526        28  11.8322727
+## 11     Temp, TP, Season -1378.866 2825.682        33  12.9878768
+## 7          Temp, TP, pH -1389.371 2836.146        28  23.4524037
+## 3              Temp, TP -1409.915 2866.782        23  54.0878719
+## 12           pH, Season -1406.542 2870.490        28  57.7957471
+## 13     Temp, pH, Season -1402.502 2872.954        33  60.2600136
+## 8                Season -1414.718 2876.388        23  63.6938460
+## 9          Temp, Season -1410.615 2878.635        28  65.9407013
+## 5              Temp, pH -1423.373 2893.696        23  81.0022118
+## 6                TP, pH -1438.594 2924.139        23 111.4453399
+## 1                  Temp -1445.446 2927.479        18 114.7849607
+## 2                    TP -1460.442 2957.470        18 144.7765595
+## 4                    pH -1466.036 2968.658        18 155.9645585</code></pre>
+<pre class="r"><code>#this will save our table that is generated so the whole thing doesn&#39;t need to
 #be re-run in the future (i hope)
-#saveRDS(covariate.table, &quot;covariate_table2.rds&quot;)
+#saveRDS(covariate.table, &quot;covariate_table.rds&quot;)
 table &lt;- readRDS(&quot;covariate_table.rds&quot;)
 table</code></pre>
 <pre><code>##              Covariates    LogLik     AICc num.param  delta.AICc
@@ -2815,19 +3449,15 @@ effect_plot &lt;- function(plot_object){
     geom_point(cex = 3)+
     theme_classic()+
     geom_vline(xintercept=0, linetype=&quot;dashed&quot;, 
-                               color = &quot;grey60&quot;, size=0.5)+
+                               color = &quot;grey60&quot;, linewidth=0.5)+
     xlim(c(-.5,.5))+
     xlab(&quot;&quot;)+ylab(&quot;&quot;)
 }
 
 TP &lt;- coef[which(coef$covariate==&quot;TP&quot;),] %&gt;%
-  effect_plot()</code></pre>
-<pre><code>## Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
-## ℹ Please use `linewidth` instead.
-## This warning is displayed once every 8 hours.
-## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
-## generated.</code></pre>
-<pre class="r"><code>pH &lt;- coef[which(coef$covariate==&quot;pH&quot;),]%&gt;%
+  effect_plot()
+
+pH &lt;- coef[which(coef$covariate==&quot;pH&quot;),]%&gt;%
   effect_plot()
 
 cos &lt;- coef[which(coef$covariate==&quot;cos_t&quot;),]%&gt;%
