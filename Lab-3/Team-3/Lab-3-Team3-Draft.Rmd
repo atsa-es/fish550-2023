@@ -502,6 +502,6 @@ Our results suggest that the best DFA model fit to time series of 4 groups of zo
 
 # Team Contributions
 
-All team members helped decide the question and plan for the analysis. ZR did the data wrangling for the zooplankton and the covariates, and checked for correlation issues with the covariates. NC wrote the matrix models in the methods section. NC fit the models for different states using all the covariates. TW did the model selection for the different covariates. ZR helped with debugging the code, and wrote the discussion.
+All team members helped decide the question and plan for the analysis. ZR did the data wrangling for the zooplankton and the covariates, and checked for correlation issues with the covariates. NC wrote the matrix models in the methods section. NC and TW fit the models for different states using all the covariates. TW did the model selection for the different covariates. ZR helped with debugging the code, and wrote the discussion.
 
 # References
