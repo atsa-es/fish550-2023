@@ -1499,8 +1499,10 @@ border-radius: 0px;
 <div id="load-the-data" class="section level2">
 <h2>Load the data</h2>
 <pre class="r"><code>## load MARSS for data and analyses
-library(MARSS)
-library(dplyr)</code></pre>
+library(MARSS)</code></pre>
+<pre><code>## Warning: package &#39;MARSS&#39; was built under R version 4.2.3</code></pre>
+<pre class="r"><code>library(dplyr)</code></pre>
+<pre><code>## Warning: package &#39;dplyr&#39; was built under R version 4.2.3</code></pre>
 <pre><code>## 
 ## Attaching package: &#39;dplyr&#39;</code></pre>
 <pre><code>## The following objects are masked from &#39;package:stats&#39;:
@@ -1510,6 +1512,14 @@ library(dplyr)</code></pre>
 ## 
 ##     intersect, setdiff, setequal, union</code></pre>
 <pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## Warning: package &#39;tidyverse&#39; was built under R version 4.2.3</code></pre>
+<pre><code>## Warning: package &#39;tibble&#39; was built under R version 4.2.3</code></pre>
+<pre><code>## Warning: package &#39;tidyr&#39; was built under R version 4.2.3</code></pre>
+<pre><code>## Warning: package &#39;readr&#39; was built under R version 4.2.3</code></pre>
+<pre><code>## Warning: package &#39;purrr&#39; was built under R version 4.2.3</code></pre>
+<pre><code>## Warning: package &#39;stringr&#39; was built under R version 4.2.3</code></pre>
+<pre><code>## Warning: package &#39;forcats&#39; was built under R version 4.2.3</code></pre>
+<pre><code>## Warning: package &#39;lubridate&#39; was built under R version 4.2.3</code></pre>
 <pre><code>## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
 ## ✔ forcats   1.0.0     ✔ readr     2.1.4
 ## ✔ ggplot2   3.4.2     ✔ stringr   1.5.0
@@ -1520,6 +1530,7 @@ library(dplyr)</code></pre>
 ## ✖ dplyr::lag()    masks stats::lag()
 ## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
 <pre class="r"><code>library(rje)</code></pre>
+<pre><code>## Warning: package &#39;rje&#39; was built under R version 4.2.3</code></pre>
 <pre><code>## 
 ## Attaching package: &#39;rje&#39;
 ## 
@@ -1527,9 +1538,11 @@ library(dplyr)</code></pre>
 ## 
 ##     last</code></pre>
 <pre class="r"><code>library(stringr)
-library(knitr)
-library(ggpubr)
-## load the raw data (there are 3 datasets contained here)
+library(knitr)</code></pre>
+<pre><code>## Warning: package &#39;knitr&#39; was built under R version 4.2.3</code></pre>
+<pre class="r"><code>library(ggpubr)</code></pre>
+<pre><code>## Warning: package &#39;ggpubr&#39; was built under R version 4.2.3</code></pre>
+<pre class="r"><code>## load the raw data (there are 3 datasets contained here)
 data(lakeWAplankton, package = &quot;MARSS&quot;)
 
 ## we want `lakeWAplanktonTrans`, which has been transformed
@@ -1640,7 +1653,7 @@ Cyclops, and Non-colonial-rotifers. We chose these taxa based on
 available data and our previous knowledge of relationships between
 environmental covariates (specifically total phosphorus and pH) and
 phytoplankton. We additionally chose two zooplankton taxa to see if we
-examine any community interactions.</p>
+observe any community interactions.</p>
 <p><strong>What time period(s) did you examine and why?</strong></p>
 <p>We selected a window of years to include data from 1967 to 1986. This
 gave us roughly twenty years of data to work with and excluded NAs from
@@ -1650,9 +1663,10 @@ why?</strong></p>
 <p>We chose to include total phosphorus, temperature, pH, and a dummy
 variable of season in our global DFA model. Given that these are monthly
 data, it is likely that they exhibit some sort of seasonal pattern. It
-is well known that nutrients, pH, and water temperature all driven
-plankton growth and community dynamics. We then tested data support for
-different combinations of covariates using AIC.</p>
+is well known that nutrients, pH, and water temperature all drive
+plankton growth and community dynamics. After selecting a model design
+with the global covariate model, we then tested various combinations of
+covariates to determine the best model fit for the data using AIC.</p>
 <p><strong>What forms of models did you fit (ie, write them out in
 matrix form)?</strong></p>
 <p>We tested support for three options for the Z matrix: <span class="math display">\[
@@ -1780,7 +1794,7 @@ below.</p>
 <p><strong>What sort of model diagnostics did you use to examine model
 assumptions?</strong></p>
 <p>Finally, we assessed our model performance by examining our model
-residuals for normality and homogeniety, and examined any residual
+residuals for normality and homogeneity, and examined any residual
 autocorrelation using ACF plots.</p>
 </div>
 <div id="results-dfa-model-selection" class="section level1">
@@ -1789,8 +1803,8 @@ autocorrelation using ACF plots.</p>
 <h2>Step 1- Fit global model with all covariates and number of
 trends</h2>
 <p>We are keeping R to diagonal and equal based on the sample design.
-The default DFA setting within MARSS sets our Z matrix, A to scaling and
-Q to identity.</p>
+The default DFA setting within MARSS sets up our Z matrix, A to scaling
+and Q to identity.</p>
 <pre class="r"><code>#set up observation model parameters
 
 #covariates
@@ -1884,8 +1898,8 @@ of the parameters.</p>
 </div>
 <div id="step-2--testing-number-of-trends" class="section level2">
 <h2>Step 2- Testing number of trends</h2>
-<p>Fitting full DFA model of covariates and testing for different latent
-trends.</p>
+<p>Fitting DFA model with global covariate set and testing for different
+latent trends.</p>
 <pre class="r"><code>## Liz&#39;s original for loop
 mod_list = list(R = &quot;diagonal and equal&quot;, A = &quot;zero&quot;) # All other parameters are the default
 
@@ -3098,31 +3112,15 @@ covariate.table</code></pre>
 <pre class="r"><code>#this will save our table that is generated so the whole thing doesn&#39;t need to
 #be re-run in the future (i hope)
 #saveRDS(covariate.table, &quot;covariate_table.rds&quot;)
-table &lt;- readRDS(&quot;covariate_table.rds&quot;)
-table</code></pre>
-<pre><code>##              Covariates    LogLik     AICc num.param  delta.AICc
-## 14       TP, pH, Season -1372.372 2812.694        33   0.0000000
-## 15 Temp, TP, pH, Season -1367.448 2813.481        38   0.7875195
-## 10           TP, Season -1383.561 2824.526        28  11.8322727
-## 11     Temp, TP, Season -1378.866 2825.682        33  12.9878768
-## 7          Temp, TP, pH -1389.371 2836.146        28  23.4524037
-## 3              Temp, TP -1409.915 2866.782        23  54.0878719
-## 12           pH, Season -1406.542 2870.490        28  57.7957471
-## 13     Temp, pH, Season -1402.502 2872.954        33  60.2600136
-## 8                Season -1414.718 2876.388        23  63.6938460
-## 9          Temp, Season -1410.615 2878.635        28  65.9407013
-## 5              Temp, pH -1423.373 2893.696        23  81.0022118
-## 6                TP, pH -1438.594 2924.139        23 111.4453399
-## 1                  Temp -1445.446 2927.479        18 114.7849607
-## 2                    TP -1460.442 2957.470        18 144.7765595
-## 4                    pH -1466.036 2968.658        18 155.9645585</code></pre>
+#table &lt;- readRDS(&quot;covariate_table.rds&quot;)
+#table</code></pre>
 <p>We used the BFGS method to estimate the parameters for the best model
 as running the models without this method 1) took a very long time and
 2) resulted in a lot of models failing to converge.</p>
 <p>To select the covariate combination that resulted in a model that fit
-the data the best, we held the R matrix at “diagonal and unequal” and
-the number of latent states at three. Previously, we found these to be
-the best options when testing the global covariate model.</p>
+the data the best, we held the R matrix at “diagonal and equal” and the
+number of latent states at three. Previously, we found these to be the
+best options when testing the global covariate model.</p>
 <p>We see that of the 15 combinations of Temperature, Total Phosphorus
 (TP), pH, and Season that the top model used <em>TP, pH and Season</em>
 as covariates. The second top model, based on AICc, was close but with
@@ -3356,7 +3354,7 @@ Z_rot</code></pre>
 ## Non.colonial.rotifers 0.43440106 0.02360494 -0.14360315</code></pre>
 <p>The plots show the loadings, or the weights, for each of the latent
 states. The loadings in the plots do not match with the values in the z
-matrix above because the must be rotated using the varimax function to
+matrix above because they must be rotated using the varimax function to
 produce the loading values we see plotted. Thus, the second table’s
 values match with the loadings plot</p>
 </div>
@@ -3497,9 +3495,9 @@ acceptance of green algal species. This suggests that greens do better
 under more acidic conditions (more carbon), whereas others are better
 suited to low CO2 (less acidic) levels.</p>
 <p>Our seasonality dummy variables (cosine and sine) represent winter
-(cosine) and and springtime (sine) periods. During winter months when
-the curve is high, the effect of season on algal species is negative.
-The springtime curve has a negative effect on unicells, rotifers, and
+(cosine) and springtime (sine) periods. During winter months when the
+curve is high, the effect of season on algal species is negative. The
+springtime curve has a negative effect on unicells, rotifers, and
 greens, a strong postive effect on diatoms, and no effect on cylops.
 This makes sense considering that spring algae blooms are generally
 dominated by diatoms.</p>
@@ -3542,11 +3540,11 @@ MARSS models make better parameter estimations. We then found that the
 observed data was best explained by 3 latent states when we held the R
 matrix constant at Diagonal and equal and included all covariates. This
 was the maximum number of latent states that we tested and had we tested
-more latent states, it is likely a higher number would have won out over
-the rest. This is because a higher number of latent states would allow
-for more flexibility in the models to explain our data. A latent state
-of for each of the individual species would likely have had the lowest
-AIC but our goal was to “reduce dimensions” and still be able to make
+more latent states, a higher number would have won out over the rest.
+This is because a higher number of latent states would allow for more
+flexibility in the models to explain our data. A latent state for each
+of the individual species would likely have had the lowest AIC but our
+goal was to “reduce dimensions” and still be able to make
 predictions.</p>
 <p>This reduction in dimensions, explaining 5 observed datasets with 3
 latent states, and the differences between the 5 species is why on areas
@@ -3555,10 +3553,10 @@ of our fitted plots the predictions did not fit the data well.</p>
 made biological sense. We saw that the winter component of the season
 covariate strongly limited all of the species. The season covariate was
 present in a number of the top models and may have had enough predictive
-power to reduce the predictive value of temperature.We also saw that
+power to reduce the predictive value of temperature. We also saw that
 species capable of blooms, such as diatoms in the spring or
 dinoflagellates in the presence of high amounts of free phosphorus were
-capable of suppressing the populations. This could explain why the
+capable of suppressing other populations. This could explain why the
 majority of species did not respond positively to the spring portion of
 the season covariate.</p>
 <p>Model diagnostics showed that the systematic form of our models may
