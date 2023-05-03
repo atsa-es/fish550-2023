@@ -24,7 +24,14 @@ This lab focused on dynamic factor analysis, exploring plankton blooms in Lake W
 
 ```{r load_data}
 ## load MARSS for data and analyses
+library(tidyr)
+library(ggplot2)
+library(tidyverse)
+library(dplyr)
+library(forecast)
 library(MARSS)
+library(corrplot)
+library(knitr)
 
 ## load the raw data (there are 3 datasets contained here)
 data(lakeWAplankton, package = "MARSS")
@@ -42,16 +49,15 @@ all_dat <- lakeWAplanktonTrans
 
 We selected two primary producers (Diatoms & Other Algae), two grazers (Daphnia & Cyclops), and one predator (Epischura). We wanted to consider potential interaction between species (primary producers, grazers, predators), and also select species that were data-rich for the majority of the time series.  
 
-*Diatoms* (Primary Producer) dominated in early spring time (Phytoplankton) 
+* *Diatoms* (Primary Producer) dominated in early spring time (Phytoplankton) 
 
-*Other Algae* (Primary Producer)  --\> Various algal species that grazers eat. Complete data set.
+* *Other Algae* (Primary Producer)  --\> Various algal species that grazers eat. Complete data set.
 
-*Daphnia* (Grazer) --\> Eat diatoms bloom after diatoms (zooplankton)
+* *Daphnia* (Grazer) --\> Eat diatoms bloom after diatoms (zooplankton)
 
-*Cyclops* (Grazer) --\> Grazer taxa, eat phytoplankton 
+* *Cyclops* (Grazer) --\> Grazer taxa, eat phytoplankton 
 
-*Epischura* (Predator) --\> Calanus Copepod, tend to peak after diatoms
-
+* *Epischura* (Predator) --\> Calanus Copepod, tend to peak after diatoms
 
 **What time period did you examine and why?**
 
@@ -136,7 +142,6 @@ for(i in row.names(covar)){
 
 
 ```
-
 ## Initial Model Set-up
 
 We examined models that considered three underlying state options: two, three, and four states. We also tested three observation error matrices, diagonal and equal, diagonal and unequal, and equal variance and covariance. We originally were going to include unconstrained but omitted it due to convergence issues. We wanted to explore assumptions for observation error given our uncertainty surrounding collection and counting methods for the data set. Finally, we considered all combinations of three possible covariates, temperature (Temp), total phosphorus (TP), and pH.
@@ -161,15 +166,14 @@ d.models <- list(
 )
 names(d.models) <- c("Temp", "TP", "pH", "Temp and TP", "TP and pH", "Temp and pH", "Temp,TP, and pH")
 
-
-# Setting fixed portion of mod list, some of these we can mess around with but we will already be testing 48 models and I didn't want to eat up a bunch of processing time
+#Define Model List 
 mod.list = list(
   A = "zero", # this is set to zero because the data has been demeaned
   Q = "identity", # Q is set to the default value, this can also be "diagonal and equal" or "diagonal and unequal"
   x0 = "zero" # x0 can be also be set to "unconstrained" or "unequal" it might be useful to try these later
 )
 
-#DFA form for mars model Q--reduces option to streamline runtime
+#DFA form for mars model Q--reduces option to streamline run time
 
 # all other params are left to their default settings
 
@@ -405,19 +409,14 @@ for(i in 1:m) {
 ccf(proc_rot[1,],proc_rot[2,], lag.max = 15, main="")
 title(main = "State 1 vs 2")
 ```
+This model seems to explain primary producer and grazer dynamics best in state 1, and predator dynamics best in state two. Epischura has a strong negative trend in state two, compared to other species which are all postive in both states 1 and 2. 
 ```{r Continued Diagnostics}
-
-autoplot(best_fit) #pick the residual one, and the qq plots 
-
+autoplot(best_fit) 
 ```
-It looks like Epischura is following the negative of state two whereas most of the other species are following either just state 1 or a mixture of state one and state two.
 
-The diagnostic plots show relativly good fits, though other algae and diatoms aren't capturing the full range of data. There may be some structure to the residuals for diatoms and maybe cyclops with few outliers, but all species and states show normality in the QQ plots. 
+The diagnostic plots show relatively good fits for three of the species, but "other algae" and diatoms aren't being captured as the model is missing the full range of data. There may be some structure to the residuals for diatoms and maybe cyclops with few outliers, but all species and states show normality in the QQ plots. 
 
-THIS COULD BE FLESHED OUT A LITTLE MORE
-
-
-### Initial Model Fits 
+### Model Fits 
 ```{r}
 get_DFA_fits <- function(MLEobj, dd = NULL, alpha = 0.05) {
     ## empty list for results
@@ -481,7 +480,7 @@ for (i in 1:N_ts) {
     lines(w_ts, lo, col = "darkgray")
 }
 ```
-These fits seem to be missing a lot of the interannual 
+These fits seem to be missing a lot of the interannual peaks and valleys for daphnia and the confidence intervals for cyclops and epischura are very tight and missing data. We may be able to find a better fitting model with seasonal considerations. 
 
 # Seasonal Model Exploration
 
@@ -562,7 +561,8 @@ out.tab.2
 ```
 
 # Seasonal Results 
-The best 
+When comparing our previous best model,a two state model with diagonal and unequal observation error with covariates temperature, total phosphorous, and pH, to a model with the same assumptions but adding in seasonal considerations, both 12 month periods and 6 month periods performed better than the non-seasonal model. The model with the 6 month period performed the best by a significant margin. We explore the diagnostics and model fits below. 
+
 ## Matrix for Best Seasonal Model 
 
 $$
@@ -727,16 +727,16 @@ Factor loadings:
 
 CCF plot indicates that there is still some seasonal mechanism occurring that our model is not capturing. 
 
-## Additional Diagnostic 
-```{r Continued Diagnostics, cache = TRUE}
+### Additional Diagnostic 
+```{r Seasonal Diagnostics, cache = TRUE}
 
 autoplot(best_fit_s)  
 
 ```
-This model is fitting the species better overall compared to the non-seaosnal model. Residuals and assumptions of normality look good overall. 
+This model is fitting the species better overall compared to the non-seaosnal model. Residuals and assumptions of normality look good overall. Daphnia still show some seasonal pattern not being captured in this model in the Cholesky residuals. 
 
 
-### Model Fits 
+## Model Fits 
 ```{r}
 
 clr <- c("brown", "blue", "darkgreen", "darkred", "purple")
@@ -761,7 +761,7 @@ for (i in 1:N_ts) {
     lines(w_ts, lo, col = "darkgray")
 }
 ```
-Still not fitting other algae and daphina particularly well, but following the trends and capturing most of the data within the confidence intervals.  
+Still not fitting other algae and daphina particularly well, but the model is trying to follow the trends and most of the data are captured within the confidence intervals. The confidence intervals are larger for cyclops and epishura compared to the non-seasonal model and more of the data are being captured.
 
 # Discussion
 
@@ -780,9 +780,11 @@ All three environmental covariates were included in the best fit model, showing 
 
 Madi set up plotting code for the entire time series for all species to select species of interest in data rich periods. 
 
-Maria and Eric wrote the majority of the model set up code and created functions used for plotting. 
+Eric wrote the majority of the model set up code and created functions used for plotting. 
 
-Madi took the Maria's code and edited to include seasonal considerations, added commentary for diagnostics, and helped to set up the Rmarkdown structure. 
+Maria took the code that Eric wrote, optimized it for our covariate process, and helped with convergence issues, and set up the initial model that included seasonal considerations. 
 
-All team members helped with interpretation of results and writing of the report. 
+Madi took the Maria's code and edited to include seasonal considerations for three periods, added commentary for diagnostics, and set-up the Rmarkdown structure and coded the model matrices. 
+
+All team members helped with defining the matrices for the selected models, interpretation of results, and writing of the report. 
 
