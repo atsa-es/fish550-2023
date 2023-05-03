@@ -109,7 +109,7 @@ We standardized the observations of these populations by z scoring to allow the 
 
 **Which plankton taxa did you choose and how did you choose them?**
 
-We chose to examine time series of Diatoms, Greens, Unicells, Cyclops, and Non-colonial-rotifers. We chose these taxa based on available data and our previous knowledge of relationships between environmental covariates (specifically total phosphorus and pH) and phytoplankton. We additionally chose two zooplankton taxa to see if we examine any community interactions.
+We chose to examine time series of Diatoms, Greens, Unicells, Cyclops, and Non-colonial-rotifers. We chose these taxa based on available data and our previous knowledge of relationships between environmental covariates (specifically total phosphorus and pH) and phytoplankton. We additionally chose two zooplankton taxa to see if we observe any community interactions.
 
 **What time period(s) did you examine and why?**
 
@@ -117,7 +117,7 @@ We selected a window of years to include data from 1967 to 1986. This gave us ro
 
 **What environmental or dummy variables did you include and why?**
 
-We chose to include total phosphorus, temperature, pH, and a dummy variable of season in our global DFA model. Given that these are monthly data, it is likely that they exhibit some sort of seasonal pattern. It is well known that nutrients, pH, and water temperature all driven plankton growth and community dynamics. We then tested data support for different combinations of covariates using AIC. 
+We chose to include total phosphorus, temperature, pH, and a dummy variable of season in our global DFA model. Given that these are monthly data, it is likely that they exhibit some sort of seasonal pattern. It is well known that nutrients, pH, and water temperature all drive plankton growth and community dynamics. After selecting a model design with the global covariate model, we then tested various combinations of covariates to determine the best model fit for the data using AIC. 
 
 **What forms of models did you fit (ie, write them out in matrix form)?**
 
@@ -249,13 +249,13 @@ We assessed data support for different combinations of covariates in the D matri
 
 **What sort of model diagnostics did you use to examine model assumptions?**
 
-Finally, we assessed our model performance by examining our model residuals for normality and homogeniety, and examined any residual autocorrelation using ACF plots. 
+Finally, we assessed our model performance by examining our model residuals for normality and homogeneity, and examined any residual autocorrelation using ACF plots. 
 
 # Results: DFA Model Selection
 
 ## Step 1- Fit global model with all covariates and number of trends
 
-We are keeping R to diagonal and equal based on the sample design. The default DFA setting within MARSS sets our Z matrix, A to scaling and Q to identity.
+We are keeping R to diagonal and equal based on the sample design. The default DFA setting within MARSS sets up our Z matrix, A to scaling and Q to identity.
 
 ```{r}
 #set up observation model parameters
@@ -298,7 +298,7 @@ The covariates including the season were zscored to ensure they each have a vari
 
 ## Step 2- Testing number of trends
 
-Fitting full DFA model of covariates and testing for different latent trends.
+Fitting DFA model with global covariate set and testing for different latent trends.
 
 ```{r}
 
@@ -406,13 +406,13 @@ covariate.table
 #this will save our table that is generated so the whole thing doesn't need to
 #be re-run in the future (i hope)
 #saveRDS(covariate.table, "covariate_table.rds")
-table <- readRDS("covariate_table.rds")
-table
+#table <- readRDS("covariate_table.rds")
+#table
 ```
 
 We used the BFGS method to estimate the parameters for the best model as running the models without this method 1) took a very long time and 2) resulted in a lot of models failing to converge.
 
-To select the covariate combination that resulted in a model that fit the data the best, we held the R matrix at "diagonal and unequal" and the number of latent states at three. Previously, we found these to be the best options when testing the global covariate model.
+To select the covariate combination that resulted in a model that fit the data the best, we held the R matrix at "diagonal and equal" and the number of latent states at three. Previously, we found these to be the best options when testing the global covariate model.
 
 We see that of the 15 combinations of Temperature, Total Phosphorus (TP), pH, and Season that the top model used *TP, pH and Season* as covariates. The second top model, based on AICc, was close but with fewer parameters we would expect it to be closer to 10 AICc points away if the models were equivalent.
 
@@ -595,7 +595,7 @@ coef(top.mod, type = "matrix")$Z
 Z_rot
 ```
 
-The plots show the loadings, or the weights, for each of the latent states. The loadings in the plots do not match with the values in the z matrix above because the must be rotated using the varimax function to produce the loading values we see plotted. Thus, the second table's values match with the loadings plot
+The plots show the loadings, or the weights, for each of the latent states. The loadings in the plots do not match with the values in the z matrix above because they must be rotated using the varimax function to produce the loading values we see plotted. Thus, the second table's values match with the loadings plot
 
 # Results: Model fits and uncertainty 
 
@@ -734,7 +734,7 @@ TP has a negative effect on diatoms and green algae, a positive effect on unicel
 
 pH largely has a positive effect on all species of study, with the acceptance of green algal species. This suggests that greens do better under more acidic conditions (more carbon), whereas others are better suited to low CO2 (less acidic) levels.
 
-Our seasonality dummy variables (cosine and sine) represent winter (cosine) and and springtime (sine) periods. During winter months when the curve is high, the effect of season on algal species is negative. The springtime curve has a negative effect on unicells, rotifers, and greens, a strong postive effect on diatoms, and no effect on cylops. This makes sense considering that spring algae blooms are generally dominated by diatoms.
+Our seasonality dummy variables (cosine and sine) represent winter (cosine) and springtime (sine) periods. During winter months when the curve is high, the effect of season on algal species is negative. The springtime curve has a negative effect on unicells, rotifers, and greens, a strong postive effect on diatoms, and no effect on cylops. This makes sense considering that spring algae blooms are generally dominated by diatoms.
 
 # Model diagnostics
 
@@ -763,11 +763,11 @@ The acf plots show some remaining auto-correlation in all of our algal time seri
 
 # Discussion
 
-We z scored the response data and all of the covariates to help the MARSS models make better parameter estimations. We then found that the observed data was best explained by 3 latent states when we held the R matrix constant at Diagonal and equal and included all covariates. This was the maximum number of latent states that we tested and had we tested more latent states, it is likely a higher number would have won out over the rest. This is because a higher number of latent states would allow for more flexibility in the models to explain our data. A latent state of for each of the individual species would likely have had the lowest AIC but our goal was to "reduce dimensions" and still be able to make predictions.
+We z scored the response data and all of the covariates to help the MARSS models make better parameter estimations. We then found that the observed data was best explained by 3 latent states when we held the R matrix constant at Diagonal and equal and included all covariates. This was the maximum number of latent states that we tested and had we tested more latent states, a higher number would have won out over the rest. This is because a higher number of latent states would allow for more flexibility in the models to explain our data. A latent state for each of the individual species would likely have had the lowest AIC but our goal was to "reduce dimensions" and still be able to make predictions.
 
 This reduction in dimensions, explaining 5 observed datasets with 3 latent states, and the differences between the 5 species is why on areas of our fitted plots the predictions did not fit the data well.
 
-The direction of the effects of the covariates on each of the species made biological sense. We saw that the winter component of the season covariate strongly limited all of the species. The season covariate was present in a number of the top models and may have had enough predictive power to reduce the predictive value of temperature.We also saw that species capable of blooms, such as diatoms in the spring or dinoflagellates in the presence of high amounts of free phosphorus were capable of suppressing the populations. This could explain why the majority of species did not respond positively to the spring portion of the season covariate.
+The direction of the effects of the covariates on each of the species made biological sense. We saw that the winter component of the season covariate strongly limited all of the species. The season covariate was present in a number of the top models and may have had enough predictive power to reduce the predictive value of temperature. We also saw that species capable of blooms, such as diatoms in the spring or dinoflagellates in the presence of high amounts of free phosphorus were capable of suppressing other populations. This could explain why the majority of species did not respond positively to the spring portion of the season covariate.
 
 Model diagnostics showed that the systematic form of our models may not have captured and removed all of the structure from the residuals. Future analyses could investigate other covariates like water turbidity which could affect the amount of light reaching into the water column which would be important for plankton species. Furthermore, another cyclical climatic variable may help reduce autocorrelation observed in the ACF plots. 
 
