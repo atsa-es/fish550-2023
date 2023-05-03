@@ -193,8 +193,64 @@ We chose to model four zooplankton taxa :Cyclops, Diaptomus, Epischura, and Neom
 
 # Observation Model
 
-## ZZ is loadings matrix
 
+$$
+\begin{bmatrix}
+y_1\\
+y_2\\
+y_3\\
+y_4\\
+y_5\\
+\end{bmatrix}_t=
+\begin{bmatrix}
+Z_{11} &  Z_{12} &  Z_{13}\\
+Z_{21} &  Z_{22} &  Z_{23}\\
+Z_{31} &  Z_{32} &  Z_{33}\\
+Z_{41} &  Z_{42} &  Z_{43}\\
+Z_{51} &  Z_{52} &  Z_{53}\\
+\end{bmatrix}*
+\begin{bmatrix}
+x_1\\
+x_2\\
+x_3\\
+\end{bmatrix}_t+
+\begin{bmatrix}
+ a_{1} \\
+ a_{2}\\
+ a_{3}\\
+ a_{4}\\
+ a_{5}\\
+\end{bmatrix}*
+\begin{bmatrix}
+d_{Temp}\\
+d_{TP}\\
+d_{pH}\\
+d_{cos}\\
+d_{sin}\\
+\end{bmatrix}_t+
+\begin{bmatrix}
+w_1\\
+w_2\\
+w_3\\
+w_4\\
+w_5\\
+\end{bmatrix}_t
+$$
+
+$$
+\text{Where }w_i \sim MVN
+\begin{pmatrix}
+\text{0,}\begin{bmatrix}
+R&0&0&0&0\\
+0&R&0&0&0\\
+0&0&R&0&0\\
+0&0&0&R&0\\
+0&0&0&0&R\\
+\end{bmatrix}
+\end{pmatrix}
+$$
+
+## ZZ is loadings matrix
 ```{r}
 ZZ = NULL
 # Define different ZZ hypotheses 
@@ -236,6 +292,42 @@ RR <- "diagonal and equal"
 ```
 
 # Process Model
+
+Process model: $$
+\begin{bmatrix}
+x_1\\
+x_2\\
+x_3\\
+\end{bmatrix}_t=
+\begin{bmatrix}
+1 &  0 &  0\\
+0 &  1 &  0\\
+0 & 0 & 1\\
+\end{bmatrix}*
+\begin{bmatrix}
+x_1\\
+x_2\\
+x_3\\
+\end{bmatrix}_{t-1}+
+\begin{bmatrix}
+v_1\\
+v_2\\
+v_3\\
+v_4\\
+v_5\\
+\end{bmatrix}_t 
+$$
+
+$$ 
+\text{Where }v_i \sim MVN
+\begin{pmatrix}
+\text{0,}\begin{bmatrix}
+1&0&0\\
+0&1&0\\
+0&0&1\\
+\end{bmatrix}
+\end{pmatrix}
+$$
 
 ```{r}
 ## number of processes
