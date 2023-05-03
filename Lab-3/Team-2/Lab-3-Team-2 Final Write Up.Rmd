@@ -8,6 +8,9 @@ output:
     code-folding: true
     toc: true
     toc_float: true
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
 ```{r setup, include = FALSE}
@@ -18,7 +21,8 @@ options(dplyr.summarise.inform = FALSE)
 
 # Introduction
 
-This lab focused on dynamic factor analysis, exploring plankton blooms in Lake Washington.
+This lab focused on dynamic factor analysis, exploring plankton blooms
+in Lake Washington.
 
 # Data
 
@@ -47,21 +51,31 @@ all_dat <- lakeWAplanktonTrans
 
 **Which plankton taxa did you choose and how did you choose them?**
 
-We selected two primary producers (Diatoms & Other Algae), two grazers (Daphnia & Cyclops), and one predator (Epischura). We wanted to consider potential interaction between species (primary producers, grazers, predators), and also select species that were data-rich for the majority of the time series.  
+We selected two primary producers (Diatoms & Other Algae), two grazers
+(Daphnia & Cyclops), and one predator (Epischura). We wanted to consider
+potential interaction between species (primary producers, grazers,
+predators), and also select species that were data-rich for the majority
+of the time series.
 
-* *Diatoms* (Primary Producer) dominated in early spring time (Phytoplankton) 
+-   *Diatoms* (Primary Producer) dominated in early spring time
+    (Phytoplankton)
 
-* *Other Algae* (Primary Producer)  --\> Various algal species that grazers eat. Complete data set.
+-   *Other Algae* (Primary Producer) --\> Various algal species that
+    grazers eat. Complete data set.
 
-* *Daphnia* (Grazer) --\> Eat diatoms bloom after diatoms (zooplankton)
+-   *Daphnia* (Grazer) --\> Eat diatoms bloom after diatoms
+    (zooplankton)
 
-* *Cyclops* (Grazer) --\> Grazer taxa, eat phytoplankton 
+-   *Cyclops* (Grazer) --\> Grazer taxa, eat phytoplankton
 
-* *Epischura* (Predator) --\> Calanus Copepod, tend to peak after diatoms
+-   *Epischura* (Predator) --\> Calanus Copepod, tend to peak after
+    diatoms
 
 **What time period did you examine and why?**
 
-We are choosing years 1978 to 1985 since Daphnia data is more consistent after 1978 and we are able to capture an interesting trend in Total Phosphorus.
+We are choosing years 1978 to 1985 since Daphnia data is more consistent
+after 1978 and we are able to capture an interesting trend in Total
+Phosphorus.
 
 ## Wrangle the data
 
@@ -142,9 +156,18 @@ for(i in row.names(covar)){
 
 
 ```
+
 ## Initial Model Set-up
 
-We examined models that considered three underlying state options: two, three, and four states. We also tested three observation error matrices, diagonal and equal, diagonal and unequal, and equal variance and covariance. We originally were going to include unconstrained but omitted it due to convergence issues. We wanted to explore assumptions for observation error given our uncertainty surrounding collection and counting methods for the data set. Finally, we considered all combinations of three possible covariates, temperature (Temp), total phosphorus (TP), and pH.
+We examined models that considered three underlying state options: two,
+three, and four states. We also tested three observation error matrices,
+diagonal and equal, diagonal and unequal, and equal variance and
+covariance. We originally were going to include unconstrained but
+omitted it due to convergence issues. We wanted to explore assumptions
+for observation error given our uncertainty surrounding collection and
+counting methods for the data set. Finally, we considered all
+combinations of three possible covariates, temperature (Temp), total
+phosphorus (TP), and pH.
 
 ```{r model_params}
 model.states <- 2:4
@@ -179,7 +202,8 @@ mod.list = list(
 
 ```
 
-We then set up for model runs for 63 model runs, looking at various combination of states, covariates (d) and observation error (R).
+We then set up for model runs for 63 model runs, looking at various
+combination of states, covariates (d) and observation error (R).
 
 ```{r MARSS_models, cache = TRUE}
 # Added in another for loop to run through cycling options, be warned, this means there are 80 total models. It takes a long time to run
@@ -227,14 +251,19 @@ out.tab.1
 
 # Initial Results
 
-The time for all models to fit was approximately 40 min, and the model that has the least AICc is the model with two states, diagonal and unequal errors and all 3 covariates. Many of the models did not converge, which could have been due to data being inconsistent with our model assumptions, insufficient data (we selected a data rich time period, so I'm not sure about this one), or not enough number of iterations for fitting. (MARSS Manual, Chapter 10).
+The time for all models to fit was approximately 40 min, and the model
+that has the least AICc is the model with two states, diagonal and
+unequal errors and all 3 covariates. Many of the models did not
+converge, which could have been due to data being inconsistent with our
+model assumptions, insufficient data (we selected a data rich time
+period, so I'm not sure about this one), or not enough number of
+iterations for fitting. (MARSS Manual, Chapter 10).
 
-### Matrix for best fit model 
+### Matrix for best fit model
 
 What forms of models did you fit (ie, write them out in matrix form)?
 
-\text{Best Model}:
-Observation Model
+
 $$
 \begin{bmatrix}
 y_1\\
@@ -242,30 +271,35 @@ y_2\\
 y_3\\
 y_4\\
 y_5\\
-\end{bmatrix}_t=
+\end{bmatrix}_t
+=
 \begin{bmatrix}
 z_{1,1} & z_{1,2}\\
 z_{2,1} & z_{2,2}\\
 z_{3,1} & z_{3,2}\\
 z_{4,1} & z_{4,2}\\
 z_{5,1} & z_{5,2}\\
-\end{bmatrix}*
+\end{bmatrix}
+*
 \begin{bmatrix}
 x_1\\
 x_2\\
-\end{bmatrix}_t+
+\end{bmatrix}_t
++
 \begin{bmatrix}
 d_{1,1} & d_{1,2} & d_{1,3}\\
 d_{2,1} & d_{2,2} & d_{2,3}\\
 d_{3,1} & d_{3,2} & d_{3,3}\\
 d_{4,1} & d_{4,2} & d_{4,3}\\
 d_{5,1} & d_{5,2} & d_{5,3}\\
-\end{bmatrix}*
+\end{bmatrix}
+* 
 \begin{bmatrix}
 Temp \\
 TP \\
 pH\\
-\end{bmatrix}_t +
+\end{bmatrix}_t
++
 \begin{bmatrix}
 v_1\\
 v_2\\
@@ -273,38 +307,38 @@ v_3\\
 v_4\\
 v_5
 \end{bmatrix}_t
-
 $$
-Process Model
+
 $$
 \begin{bmatrix}
 x_1\\
 x_2\\
-\end{bmatrix}_t=
+\end{bmatrix}_t
+=
 \begin{bmatrix}
 1 & 0\\
 0 & 1\\
-\end{bmatrix}*
+\end{bmatrix}
 \begin{bmatrix}
 x_1\\
 x_2\\
-\end{bmatrix}_{t-1}+
+\end{bmatrix}_{t-1}
++
 \begin{bmatrix}
 w_1\\
 w_2\\
 \end{bmatrix}_t
-
 $$
+
 
 Process Error
-$$
 
-\text{Where }
+$$
 \begin{bmatrix}
 w_1\\
 w_2\\
 \end{bmatrix}
- \sim MVN
+\sim MVN
 \begin{pmatrix}
 \begin{bmatrix}
 0\\
@@ -316,9 +350,11 @@ w_2\\
 \end{bmatrix}
 \end{pmatrix}
 $$
+
 Observation Error 
-$$
-\text{Where }
+
+
+$$ 
 \begin{bmatrix}
 v_1\\
 v_2\\
@@ -326,7 +362,7 @@ v_3\\
 v_4\\
 v_5\\
 \end{bmatrix}
- \sim MVN
+\sim MVN
 \begin{pmatrix}
 \begin{bmatrix}
 0\\
@@ -344,7 +380,8 @@ r_1 & 0& 0& 0& 0\\
 \end{bmatrix}
 \end{pmatrix}
 $$
-## Diagnostics 
+
+## Diagnostics
 
 ```{r factor_loadings}
 # Rotating the model, plotting the states and loadings
@@ -409,14 +446,24 @@ for(i in 1:m) {
 ccf(proc_rot[1,],proc_rot[2,], lag.max = 15, main="")
 title(main = "State 1 vs 2")
 ```
-This model seems to explain primary producer and grazer dynamics best in state 1, and predator dynamics best in state two. Epischura has a strong negative trend in state two, compared to other species which are all postive in both states 1 and 2. 
+
+This model seems to explain primary producer and grazer dynamics best in
+state 1, and predator dynamics best in state two. Epischura has a strong
+negative trend in state two, compared to other species which are all
+postive in both states 1 and 2.
+
 ```{r Continued Diagnostics}
 autoplot(best_fit) 
 ```
 
-The diagnostic plots show relatively good fits for three of the species, but "other algae" and diatoms aren't being captured as the model is missing the full range of data. There may be some structure to the residuals for diatoms and maybe cyclops with few outliers, but all species and states show normality in the QQ plots. 
+The diagnostic plots show relatively good fits for three of the species,
+but "other algae" and diatoms aren't being captured as the model is
+missing the full range of data. There may be some structure to the
+residuals for diatoms and maybe cyclops with few outliers, but all
+species and states show normality in the QQ plots.
 
-### Model Fits 
+### Model Fits
+
 ```{r}
 get_DFA_fits <- function(MLEobj, dd = NULL, alpha = 0.05) {
     ## empty list for results
@@ -480,14 +527,22 @@ for (i in 1:N_ts) {
     lines(w_ts, lo, col = "darkgray")
 }
 ```
-These fits seem to be missing a lot of the interannual peaks and valleys for daphnia and the confidence intervals for cyclops and epischura are very tight and missing data. We may be able to find a better fitting model with seasonal considerations. 
+
+These fits seem to be missing a lot of the interannual peaks and valleys
+for daphnia and the confidence intervals for cyclops and epischura are
+very tight and missing data. We may be able to find a better fitting
+model with seasonal considerations.
 
 # Seasonal Model Exploration
 
-**Describe the effects of environmental or dummy variables on (possibly seasonal) patterns in the data.**
+**Describe the effects of environmental or dummy variables on (possibly
+seasonal) patterns in the data.**
 
 ## Seasonal Model Set-up
-We decided to look at three seasonal patterns, an annual pattern (12 months), a six month pattern, and a 3 month pattern (Winter, Spring, Summer, Fall).
+
+We decided to look at three seasonal patterns, an annual pattern (12
+months), a six month pattern, and a 3 month pattern (Winter, Spring,
+Summer, Fall).
 
 ```{r Seasonal exploration, cache = TRUE}
 
@@ -551,7 +606,7 @@ R.models <- c("diagonal and unequal")
   end.time <- Sys.time()
 
   elapsed.time <- round((end.time - start.time), 3)
-  print(paste("Elapsed time for period", p, ":", elapsed.time))
+  print(paste("Elapsed time for period:", elapsed.time))
 
 
 min.AICc <- order(out.tab.season$AICc)
@@ -560,10 +615,18 @@ out.tab.2
 
 ```
 
-# Seasonal Results 
-When comparing our previous best model,a two state model with diagonal and unequal observation error with covariates temperature, total phosphorous, and pH, to a model with the same assumptions but adding in seasonal considerations, both 12 month periods and 6 month periods performed better than the non-seasonal model. The model with the 6 month period performed the best by a significant margin. We explore the diagnostics and model fits below. 
+# Seasonal Results
 
-## Matrix for Best Seasonal Model 
+When comparing our previous best model,a two state model with diagonal
+and unequal observation error with covariates temperature, total
+phosphorous, and pH, to a model with the same assumptions but adding in
+seasonal considerations, both 12 month periods and 6 month periods
+performed better than the non-seasonal model. The model with the 6 month
+period performed the best by a significant margin. We explore the
+diagnostics and model fits below.
+
+## Matrix for Best Seasonal Model
+
 
 $$
 \begin{bmatrix}
@@ -572,32 +635,37 @@ y_2\\
 y_3\\
 y_4\\
 y_5\\
-\end{bmatrix}_t=
+\end{bmatrix}_t
+=
 \begin{bmatrix}
 z_{1,1} & z_{1,2}\\
 z_{2,1} & z_{2,2}\\
 z_{3,1} & z_{3,2}\\
 z_{4,1} & z_{4,2}\\
 z_{5,1} & z_{5,2}\\
-\end{bmatrix}*
+\end{bmatrix}
+*
 \begin{bmatrix}
 x_1\\
 x_2\\
-\end{bmatrix}_t+
+\end{bmatrix}_t
++
 \begin{bmatrix}
 d_{1,1} & d_{1,2} & d_{1,3} & d_{1,4} & d_{1,5}\\
 d_{2,1} & d_{2,2} & d_{2,3} & d_{2,4} & d_{2,5}\\
 d_{3,1} & d_{3,2} & d_{3,3} & d_{3,4} & d_{3,5}\\
 d_{4,1} & d_{4,2} & d_{4,3} & d_{4,4} & d_{4,5}\\
 d_{5,1} & d_{5,2} & d_{5,3} & d_{5,4} & d_{5,5}\\
-\end{bmatrix}*
+\end{bmatrix}
+* 
 \begin{bmatrix}
 Temp \\
 TP \\
 pH\\
 cos(2pi*TT/6)\\
 sin(2pi*TT/6\\
-\end{bmatrix}_t +
+\end{bmatrix}_t
++
 \begin{bmatrix}
 v_1\\
 v_2\\
@@ -605,17 +673,41 @@ v_3\\
 v_4\\
 v_5
 \end{bmatrix}_t
-
 $$
+$$
+\begin{bmatrix}
+x_1\\
+x_2\\
+\end{bmatrix}_t
+=
+\begin{bmatrix}
+1 & 0\\
+0 & 1\\
+\end{bmatrix}
+\begin{bmatrix}
+x_1\\
+x_2\\
+\end{bmatrix}_{t-1}
++
+\begin{bmatrix}
+w_1\\
+w_2\\
+\end{bmatrix}_t
+$$
+
+
+
+
+
+
 Process Error
-$$
 
-\text{Where }
+$$
 \begin{bmatrix}
 w_1\\
 w_2\\
 \end{bmatrix}
- \sim MVN
+\sim MVN
 \begin{pmatrix}
 \begin{bmatrix}
 0\\
@@ -627,9 +719,11 @@ w_2\\
 \end{bmatrix}
 \end{pmatrix}
 $$
+
 Observation Error 
-$$
-\text{Where }
+
+
+$$ 
 \begin{bmatrix}
 v_1\\
 v_2\\
@@ -637,7 +731,7 @@ v_3\\
 v_4\\
 v_5\\
 \end{bmatrix}
- \sim MVN
+\sim MVN
 \begin{pmatrix}
 \begin{bmatrix}
 0\\
@@ -655,7 +749,9 @@ r_1 & 0& 0& 0& 0\\
 \end{bmatrix}
 \end{pmatrix}
 $$
+
 ## Plotting the Seasonal Model
+
 ```{r factor_loadings including seasonality}
 # Rotating the model, plotting the states and loadings
 best_fit_s <- fits_season[[3]]
@@ -671,7 +767,7 @@ H_inv_s <- varimax(Z_est_s)$rotmat
 Z_rot_s = Z_est_s %*% H_inv_s   
 
 ## rotate processes
-proc_rot_s = solve(H_inv_s) %*% best_fit_S$states
+proc_rot_s = solve(H_inv_s) %*% best_fit_s$states
 
 N_ts <- nrow(plank_dat)
 m = ncol(Z_est)
@@ -719,24 +815,35 @@ for(i in 1:m) {
 ccf(proc_rot_s[1,],proc_rot_s[2,], lag.max = 15, main="")
 title(main = "State 1 vs 2 with seasonality")
 ```
-The factor loading seen in the model that is including seasonality seems to explain the dynamics of the speices better than the model that did not include seasonality, however, the sign of factor loading for Epishura, our predator species, changed to become positive in the seasonal model. 
 
-Factor loadings: 
-* Pattern for primary producers and grazers is better explained by state one 
-* Pattern for predator species is better explained by state two
+The factor loading seen in the model that is including seasonality seems
+to explain the dynamics of the speices better than the model that did
+not include seasonality, however, the sign of factor loading for
+Epishura, our predator species, changed to become positive in the
+seasonal model.
 
-CCF plot indicates that there is still some seasonal mechanism occurring that our model is not capturing. 
+Factor loadings: \* Pattern for primary producers and grazers is better
+explained by state one \* Pattern for predator species is better
+explained by state two
 
-### Additional Diagnostic 
+CCF plot indicates that there is still some seasonal mechanism occurring
+that our model is not capturing.
+
+### Additional Diagnostic
+
 ```{r Seasonal Diagnostics, cache = TRUE}
 
 autoplot(best_fit_s)  
 
 ```
-This model is fitting the species better overall compared to the non-seaosnal model. Residuals and assumptions of normality look good overall. Daphnia still show some seasonal pattern not being captured in this model in the Cholesky residuals. 
 
+This model is fitting the species better overall compared to the
+non-seaosnal model. Residuals and assumptions of normality look good
+overall. Daphnia still show some seasonal pattern not being captured in
+this model in the Cholesky residuals.
 
-## Model Fits 
+## Model Fits
+
 ```{r}
 
 clr <- c("brown", "blue", "darkgreen", "darkred", "purple")
@@ -761,30 +868,51 @@ for (i in 1:N_ts) {
     lines(w_ts, lo, col = "darkgray")
 }
 ```
-Still not fitting other algae and daphina particularly well, but the model is trying to follow the trends and most of the data are captured within the confidence intervals. The confidence intervals are larger for cyclops and epishura compared to the non-seasonal model and more of the data are being captured.
+
+Still not fitting other algae and daphina particularly well, but the
+model is trying to follow the trends and most of the data are captured
+within the confidence intervals. The confidence intervals are larger for
+cyclops and epishura compared to the non-seasonal model and more of the
+data are being captured.
 
 # Discussion
 
-In this exercise our goal was to capturing the dynamics of predator and prey species in Lake Washington in the late 70's and early 80's. 
+In this exercise our goal was to capturing the dynamics of predator and
+prey species in Lake Washington in the late 70's and early 80's.
 
-Seasonal model (six month period) fit better and the factor loading results showed more of a deviance between state one and state two for primary producers and grazers, and predators.
+Seasonal model (six month period) fit better and the factor loading
+results showed more of a deviance between state one and state two for
+primary producers and grazers, and predators.
 
-All three environmental covariates were included in the best fit model, showing that they are explaning levels of variability for the selected species in the selected time period. 
+All three environmental covariates were included in the best fit model,
+showing that they are explaning levels of variability for the selected
+species in the selected time period.
 
-Epishura seem to have an offset from the other species. We're fitting two independent states to five species, and while one state captured the dynamics of grazers and primary producers relatively well, epishura was not captured at all in this state, indicating independence between these two groups of plankton in the time period analyzed. 
+Epishura seem to have an offset from the other species. We're fitting
+two independent states to five species, and while one state captured the
+dynamics of grazers and primary producers relatively well, epishura was
+not captured at all in this state, indicating independence between these
+two groups of plankton in the time period analyzed.
 
-All three environmental covariates were included in the best fit model, showing that they are explaning levels of variability for the selected species in the selected time period. 
-
+All three environmental covariates were included in the best fit model,
+showing that they are explaning levels of variability for the selected
+species in the selected time period.
 
 # Team contributions
 
-Madi set up plotting code for the entire time series for all species to select species of interest in data rich periods. 
+Madi set up plotting code for the entire time series for all species to
+select species of interest in data rich periods.
 
-Eric wrote the majority of the model set up code and created functions used for plotting. 
+Eric wrote the majority of the model set up code and created functions
+used for plotting.
 
-Maria took the code that Eric wrote, optimized it for our covariate process, and helped with convergence issues, and set up the initial model that included seasonal considerations. 
+Maria took the code that Eric wrote, optimized it for our covariate
+process, and helped with convergence issues, and set up the initial
+model that included seasonal considerations.
 
-Madi took the Maria's code and edited to include seasonal considerations for three periods, added commentary for diagnostics, and set-up the Rmarkdown structure and coded the model matrices. 
+Madi took the Maria's code and edited to include seasonal considerations
+for three periods, added commentary for diagnostics, and set-up the
+Rmarkdown structure and coded the model matrices.
 
-All team members helped with defining the matrices for the selected models, interpretation of results, and writing of the report. 
-
+All team members helped with defining the matrices for the selected
+models, interpretation of results, and writing of the report.
