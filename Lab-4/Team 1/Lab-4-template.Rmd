@@ -7,18 +7,27 @@ output:
     code-folding: true
     toc: true
     toc_float: true
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
 ```{r setup, include = FALSE}
 options(dplyr.summarise.inform = FALSE)
 ```
 
-* Team 1: Dylan Hubl, Eric French, Zoe Rand
-* Team 2: Maria Kuruvilla, Miranda Mudge
-* Team 3: Nick Chambers, Madison Shipley, Karl Veggerby
-* Team 4: Liz Elmstrom, Terrance Wang, Emma Timmins-Schiffman
+-   Team 1: Dylan Hubl, Eric French, Zoe Rand
+-   Team 2: Maria Kuruvilla, Miranda Mudge
+-   Team 3: Nick Chambers, Madison Shipley, Karl Veggerby
+-   Team 4: Liz Elmstrom, Terrance Wang, Emma Timmins-Schiffman
 
-Make sure to label your final write-up with "final" in the title so we know which one is the final one.
+Make sure to label your final write-up with "final" in the title so we
+know which one is the final one.
+
+```{r}
+library(tidyverse)
+library(depmixS4)
+```
 
 # Data
 
@@ -31,15 +40,14 @@ columns divides indicators into groups (e.g. Local Physical, Local
 Biological, etc). Please pick a type of indicators, and develop a 2- or
 3-state multivariate HMM. A few tips:
 
-Describe what plankton groups and covariates you used and indicate any temporal 
-subsetting you chose. Also describe any standardization, centering or scaling 
-that was used. 
+Describe what plankton groups and covariates you used and indicate any
+temporal subsetting you chose. Also describe any standardization,
+centering or scaling that was used.
 
 ## Load the data
 
-One of the
-columns divides indicators into groups (e.g. Local Physical, Local
-Biological, etc). 
+One of the columns divides indicators into groups (e.g. Local Physical,
+Local Biological, etc).
 
 ```{r load_data}
 stoplight <- read.csv(here::here("Lab-4", "stoplight.csv"))
@@ -54,12 +62,30 @@ stoplight <- read.csv(here::here("Lab-4", "stoplight.csv"))
 df <- rbind.data.frame(stoplight[stoplight$Ecosystem.Indicators == "Copepod_richness",],stoplight[stoplight$Ecosystem.Indicators == "N_copepod",],stoplight[stoplight$Ecosystem.Indicators == "S_copepod",])
 ```
 
+```{r plot_data}
+newdf<-df%>%pivot_longer(-c(Ecosystem.Indicators, Type), names_to = "Year") %>%
+  mutate(Year = as.numeric(gsub("X","",Year)))
+
+ggplot(newdf) + geom_line(aes(x = Year, y = value, color = Ecosystem.Indicators)) + theme_classic()
+```
+
+```{r wrangle_data_mods}
+#arranging data for model fits
+df2<-df %>% dplyr::select(-Type) %>%
+  gather(Year, value, -Ecosystem.Indicators) %>% 
+  spread(Ecosystem.Indicators, value) 
+
+df2$Year<-as.numeric(gsub("X","",df2$Year))
+head(df2)
+```
 
 # General tasks
 
-Each group has the same general tasks, but you will adapt them as you work on the data.
+Each group has the same general tasks, but you will adapt them as you
+work on the data.
 
-Please pick a type of indicators, and develop a 2- or 3-state multivariate HMM. 
+Please pick a type of indicators, and develop a 2- or 3-state
+multivariate HMM.
 
 # Methods
 
@@ -69,6 +95,59 @@ A few tips:
 
 -   You're welcome to include covariates (year? Climate variables?) --
     but fitting a simple model without covariates is also totally fine
+
+## 2-State HMM
+
+```{r 2_state_HMM}
+set.seed(123)
+#set up 2-state model
+mod<-depmix(list(Copepod_richness ~1, N_copepod ~1, S_copepod ~1), 
+           nstates = 2, 
+           #assume gaussian errors for all
+           family = list(gaussian(), gaussian(), gaussian()), 
+           data = df2)
+#fit the model
+fitmod<-fit(mod)
+#model results
+summary(fitmod)
+```
+
+The model results change slightly depending on the seed, so making sure
+it found the best model:
+
+```{r}
+iter <-100 #number of times to run the model
+seeds<-sample(100:1000, size = iter, replace = F) #get 100 seed values
+best <- 1e10 #this is large so first AIC is definitely smaller
+best_model <- NA
+for(i in 1:iter){
+  #set the seed from the ones we picked (makes sure its new each time)
+  set.seed(seeds[i]) 
+  #fit the model
+  fitmod <- fit(mod)
+  #is this model better than the last?
+  if(AIC(fitmod)< best){
+    best_model <- fitmod
+    best <- AIC(fitmod)
+  }
+}
+
+summary(best_model)
+```
+
+Plot of states and data from the 2-State HMM
+
+```{r}
+prstates<-apply(posterior(fitmod)[,c("S1", "S2")],1, which.max)
+mu<-summary(best_model)[,1]
+pred <- tibble("Year" = df2$Year, "Fit" = mu[prstates])
+ggplot() + geom_point(data = newdf, aes(x = Year, y = value, color = Ecosystem.Indicators)) + 
+  geom_line(data = pred, aes(x = Year, y = Fit)) + theme_classic()
+
+```
+
+The copepod richness really seem to be driving the results. Doesn't seem
+to be as great of a fit for N_copepod or S_copepod.
 
 # Results
 
@@ -88,14 +167,14 @@ Summarize the model you've created. Specifically,
 
 # Discussion
 
-
 # Team contributions
 
-Example: "All team members helped decide on the goal and ran the analyses for the individual regions. Team members 2 & 3 wrote most of the code for the analysis. Team member 1 worked on the plotting section of the report using and adapting code that team member 3 wrote. All team members helped edit the report and wrote the discussion together."
+Example: "All team members helped decide on the goal and ran the
+analyses for the individual regions. Team members 2 & 3 wrote most of
+the code for the analysis. Team member 1 worked on the plotting section
+of the report using and adapting code that team member 3 wrote. All team
+members helped edit the report and wrote the discussion together."
 
-#Notes (GET RID OF): 
-Tasks: 
-1) Fit 2 state (Zoe)
-2) Fit 3 state (Eric)
-3) Results (transition probabilities, time series of states, number of states) (Dylan)
-4) Discussion (Together)
+#Notes (GET RID OF): Tasks: 1) Fit 2 state (Zoe) 2) Fit 3 state (Eric)
+3) Results (transition probabilities, time series of states, number of
+states) (Dylan) 4) Discussion (Together)
