@@ -44,6 +44,9 @@ summary(best_model)
 #plotting
 prstates<-apply(posterior(fitmod)[,c("S1", "S2")],1, which.max)
 mu<-summary(best_model)[,1]
-pred <- tibble("Year" = df2$Year, "Fit" = mu[prstates])
+mu2<-summary(best_model)[,3]
+mu3<-summary(best_model)[,5]
+pred <- tibble("Year" = df2$Year, "Copepod_richness" = mu[prstates], "N_copepod" = mu2[prstates], "S_copepod" = mu3[prstates])
+pred2<-pred %>% pivot_longer(-Year, names_to = "Ecosystem.Indicators", values_to = "Fit")
 ggplot() + geom_point(data = newdf, aes(x = Year, y = value, color = Ecosystem.Indicators)) + 
-  geom_line(data = pred, aes(x = Year, y = Fit)) + theme_classic()
+  geom_line(data = pred2, aes(x = Year, y = Fit, group = Ecosystem.Indicators, color = Ecosystem.Indicators)) + theme_classic()
