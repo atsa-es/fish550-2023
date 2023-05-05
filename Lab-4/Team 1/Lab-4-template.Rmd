@@ -150,6 +150,61 @@ ggplot() + geom_point(data = newdf, aes(x = Year, y = value, color = Ecosystem.I
 
 ```
 
+
+
+## 3-State HMM
+
+```{r 3_state_HMM}
+set.seed(123)
+#set up 3-state model
+mod3<-depmix(list(Copepod_richness ~1, N_copepod ~1, S_copepod ~1), 
+           nstates = 3, 
+           #assume gaussian errors for all
+           family = list(gaussian(), gaussian(), gaussian()), 
+           data = df2)
+#fit the model
+fitmod3<-fit(mod3)
+#model results
+summary(fitmod3)
+```
+
+The model results change slightly depending on the seed, so making sure
+it found the best model:
+
+```{r}
+iter <-100 #number of times to run the model
+seeds<-sample(100:1000, size = iter, replace = F) #get 100 seed values
+best <- 1e10 #this is large so first AIC is definitely smaller
+best_model <- NA
+for(i in 1:iter){
+  #set the seed from the ones we picked (makes sure its new each time)
+  set.seed(seeds[i]) 
+  #fit the model
+  fitmod3 <- fit(mod3)
+  #is this model better than the last?
+  if(AIC(fitmod3)< best){
+    best_model <- fitmod3
+    best <- AIC(fitmod3)
+  }
+}
+
+summary(best_model)
+```
+
+Plot of states and data from the 3-State HMM
+
+```{r}
+prstates<-apply(posterior(fitmod3)[,c("S1", "S2","S3")],1, which.max)
+mu<-summary(best_model)[,1]
+mu2<-summary(best_model)[,3]
+mu3<-summary(best_model)[,5]
+pred <- tibble("Year" = df2$Year, "Copepod_richness" = mu[prstates], "N_copepod" = mu2[prstates], "S_copepod" = mu3[prstates])
+pred2<-pred %>% pivot_longer(-Year, names_to = "Ecosystem.Indicators", values_to = "Fit")
+ggplot() + geom_point(data = newdf, aes(x = Year, y = value, color = Ecosystem.Indicators)) + 
+  geom_line(data = pred2, aes(x = Year, y = Fit, group = Ecosystem.Indicators, color = Ecosystem.Indicators)) + theme_classic()
+
+# The 3-State HMM seems to fit the data worse than the 2-State HMM
+```
 # Results
 
 Summarize the model you've created. Specifically,
