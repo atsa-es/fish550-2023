@@ -43,6 +43,8 @@ Summarize the model you've created. Specifically,
 
 Terrance -- 
 
+Next steps -- Add in biological transition as another response variable. This time around, zscoring the response variables and re-run the models. 
+
 -   Does it converge?
 
 -   How many states seem to be most supported?
