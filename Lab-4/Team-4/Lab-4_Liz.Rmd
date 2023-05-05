@@ -20,43 +20,10 @@ options(dplyr.summarise.inform = FALSE)
 
 Make sure to label your final write-up with "final" in the title so we know which one is the final one.
 
-# Data
-
-As part of the California Current Integrated Ecosystem Report, NOAA
-scientists do annual updates of [stoplight charts for ecosystem
-indicators](https://www.fisheries.noaa.gov/west-coast/science-data/ocean-conditions-indicators-trends).
-
-We have included the `stoplight.csv` dataset for this week. One of the
-columns divides indicators into groups (e.g. Local Physical, Local
-Biological, etc). Please pick a type of indicators, and develop a 2- or
-3-state multivariate HMM. A few tips:
-
-Describe what plankton groups and covariates you used and indicate any temporal 
-subsetting you chose. Also describe any standardization, centering or scaling 
-that was used. 
-
-## Load the data
-
-One of the
-columns divides indicators into groups (e.g. Local Physical, Local
-Biological, etc). 
-
-```{r load_data}
-stoplight <- read.csv(here::here("Lab-4", "stoplight.csv"))
-```
-
-## Wrangle the data
-
-```{r wrangle_data}
-## add some code here
-## copepod richness, North/south copepod as response variables
-```
-
 ## Notes from Liz
 
 Please pick a type of indicators, and develop a 2- or
 3-state multivariate HMM. A few tips:
-
 
 Emma -- 
 We are going to fit a 2-state multivariate HMM to North and South Copepod biomass and Copepod richness.
@@ -99,6 +66,77 @@ A few tips:
 -   You're welcome to include covariates (year? Climate variables?) --
     but fitting a simple model without covariates is also totally fine
 
+# Data
+
+As part of the California Current Integrated Ecosystem Report, NOAA
+scientists do annual updates of [stoplight charts for ecosystem
+indicators](https://www.fisheries.noaa.gov/west-coast/science-data/ocean-conditions-indicators-trends).
+
+We have included the `stoplight.csv` dataset for this week. One of the
+columns divides indicators into groups (e.g. Local Physical, Local
+Biological, etc). Please pick a type of indicators, and develop a 2- or
+3-state multivariate HMM. A few tips:
+
+Describe what plankton groups and covariates you used and indicate any temporal 
+subsetting you chose. Also describe any standardization, centering or scaling 
+that was used. 
+
+## Load the data
+
+One of the
+columns divides indicators into groups (e.g. Local Physical, Local
+Biological, etc). 
+
+```{r load_data}
+library(depmixS4)
+library(ggplot2)
+library(tidyverse)
+
+stoplight <- read.csv(here::here("Lab-4", "stoplight.csv"))
+```
+
+## Wrangle the data
+
+```{r wrangle_data}
+## add some code here
+## copepod richness, North/south copepod as response variables
+
+#we will focus on copepod richness, N cop. biomass, S cop. biomass
+#rows 9-11
+cop.dat<-stoplight[9:11,]
+cop.row<-cop.dat[,1]
+cop.dat<-cop.dat[,3:26]
+rownames(cop.dat)<-cop.row
+
+#look at the data over time
+cop.t<-t(cop.dat)
+rows <- gsub("X","", rownames(cop.t))
+row.names(cop.t)<-rows
+cop.df<-data.frame(cop.t)
+cop.df$Year<-row.names(cop.df)
+
+plot(x=cop.df$Year, y=cop.df$Copepod_richness, type='l')
+lines(x=cop.df$Year, y=cop.df$N_copepod, col='blue')
+lines(x=cop.df$Year, y=cop.df$S_copepod, col='magenta')
+```
+```{r covariates}
+library(janitor)
+
+covar <- stoplight %>%
+  filter(Ecosystem.Indicators %in% 
+    c('Copepod_richness','N_copepod','S_copepod',"Deep_temperature","SST", "PDO_DecMarch"))%>%
+  select(!Type)%>% 
+  t() %>%
+  as_tibble %>% 
+  row_to_names(row_number = 1)%>%
+  mutate_if(is.character, as.numeric)
+
+covar$Year <- 1998:2021
+
+head(covar)
+
+```
+
 # Results
 
 Summarize the model you've created. Specifically,
@@ -114,6 +152,161 @@ Summarize the model you've created. Specifically,
 -   If included, what are the covariate effects? What do these mean?
 
 -   Anything else interesting that you've discovered?
+
+## Multivariate HMM - 2 state
+
+```{r}
+#building the 2 state model
+set.seed(1)
+mod.2st<-depmix(list(Copepod_richness ~ 1, N_copepod ~ 1, S_copepod ~ 1),
+                nstates = 2,
+                family=list(gaussian(), gaussian(),gaussian()),
+                data=cop.df)
+fitmod.2st <- fit(mod.2st)
+
+# Transition matrix
+summary(fitmod.2st, which = "transition")
+# AIC
+AIC(fitmod.2st)
+
+```
+
+Most probable to switch from state 2 back to state 1.
+
+```{r 2 state plots}
+#most probable states
+prstates2 <- apply(posterior(fitmod.2st) [,c("S1", "S2")], 1, which.max)
+plot(prstates2, type='b', xlab='Time', ylab='State')
+
+#estimated data/fits
+mu2 <- summary(fitmod.2st)[,1]
+pred2 <- data.frame("year"=seq(min(cop.df$Year), max(cop.df$Year)), "fit" = mu2[prstates2])
+
+cop.df$Year<-as.numeric(cop.df$Year)
+
+ggplot(cop.df) + 
+  geom_point(aes(x=Year, y=Copepod_richness), col="black", size=1.5) + 
+  geom_point(aes(x=Year, y=N_copepod), col="blue", size=1.5) +
+  geom_point(aes(x=Year, y=S_copepod), col="magenta", size=1.5) +
+  geom_line(data=pred2, aes(year, fit)) + 
+  ggtitle("Copepods - raw data and predictions") + 
+  ylab("Richness or Biomass") + xlab("Year") + theme_bw()
+
+```
+
+Richness = black points... Does seem to follow some sort of state/regime shift
+Others do not... 
+
+
+## Multivariate HMM - 3 state
+
+```{r 3 state model}
+
+#3 state model
+set.seed(314)
+mod.3st<-depmix(list(Copepod_richness ~ 1, N_copepod ~ 1, S_copepod ~ 1),
+                nstates = 3,
+                family=list(gaussian(), gaussian(),gaussian()),
+                data=cop.df)
+fitmod.3st <- fit(mod.3st)
+
+# Transition matrix
+summary(fitmod.3st, which = "transition")
+# AIC
+AIC(fitmod.3st)
+
+```
+Most probable to switch from S1 to S2. 
+
+Adding a state greatly improves the AIC. (But almost always does) 
+
+```{r 3 state plots}
+#most probable states, LIZ EDITED THIS
+prstates3 <- apply(posterior(fitmod.3st) [,c("S1", "S2", "S3")], 1, which.max)
+plot(prstates3, type='b', xlab='Time', ylab='State')
+
+#estimated data
+mu3 <- summary(fitmod.3st)[,1]
+pred3 <- data.frame("year"=seq(min(cop.df$Year), max(cop.df$Year)), "fit" = mu3[prstates3])
+
+ggplot(cop.df) + 
+  geom_point(aes(x=Year, y=Copepod_richness), col="black", size=1.5) + 
+  geom_point(aes(x=Year, y=N_copepod), col="blue", size=1.5) +
+  geom_point(aes(x=Year, y=S_copepod), col="magenta", size=1.5) +
+  geom_line(data=pred3, aes(year, fit)) + 
+  ggtitle("Copepods - raw data and predictions") + 
+  ylab("Richness or Biomass") + xlab("Year") + theme_bw()
+
+```
+
+## Multivariate HMM with covariates
+
+** Tried PDO, deep temperature, and SST, but not coded here. SST == better model fit. 
+
+```{r covar}
+
+#building the 2 state model
+set.seed(1)
+mod.2covar <-depmix(list(Copepod_richness ~ 1, N_copepod ~ 1, S_copepod ~ 1),
+                nstates = 2,# Could change this to three. Adding states almost always improves AICs
+                family=list(gaussian(), gaussian(),gaussian()),
+                transition = ~ scale(SST),
+                data=covar)
+
+fitmod.2covar <- fit(mod.2covar)
+summary(fitmod.2covar, which = "transition")
+
+aics <- c(AIC(fitmod.2st), AIC(fitmod.2covar))
+aics
+
+```
+
+SST slightly improves the model fit of the two state model. Don't really know how to interpret the transition matrix... 
+
+SST maybe has a larger effect on the transition of Copepod richness to state 2? So when SST is high, Copepod Richness increases?
+
+```{r covar 3 state}
+# 3 state model 
+set.seed(1)
+mod.3covar <-depmix(list(Copepod_richness ~ 1, N_copepod ~ 1, S_copepod ~ 1),
+                 nstates = 3,
+                 family=list(gaussian(), gaussian(),gaussian()),
+                 transition = ~ scale(SST),
+                 data=covar)
+
+fitmod.3covar <- fit(mod.3covar)
+summary(fitmod.3covar, which = "transition")
+
+aics <- c(AIC(fitmod.3st), AIC(fitmod.3covar))
+aics
+#SST slightly improves the 2 state model AIC, no improvement to three state model
+
+```
+Adding covariate does not improve model fit to the three state model. 
+
+
+```{r covariates plot}
+
+#most probable states
+prstates_covar <- apply(posterior(fitmod.2covar) [,c("S1", "S2")], 1, which.max)
+plot(prstates_covar, type='b', xlab='Time', ylab='State')
+
+#estimated data
+mu_covar <- summary(fitmod.2covar)[,1]
+pred_covar <- data.frame("year"=seq(min(covar$Year), max(covar$Year)), "fit" = mu_covar[prstates_covar])
+
+ggplot(covar) + 
+  geom_point(aes(x=Year, y=Copepod_richness), col="black", size=1.5) + 
+  geom_point(aes(x=Year, y=N_copepod), col="blue", size=1.5) +
+  geom_point(aes(x=Year, y=S_copepod), col="magenta", size=1.5) +
+  geom_line(data=pred2, aes(year, fit), col = "orange")+
+  geom_line(data=pred_covar, aes(year, fit)) + 
+  ggtitle("Copepods - raw data and predictions") + 
+  ylab("Richness or Biomass") + xlab("Year") + theme_bw()
+
+## Fits are visually the same with and without covariates
+
+```
 
 # Discussion
 
