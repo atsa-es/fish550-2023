@@ -59,7 +59,6 @@ plot(seq(1998,2021),subset_data["PDO_DecMarch",], type = "l", xlab = "years", yl
 # Reframe multivariate dataset
 
 ```{r}
-library(maditr)
 subset_data_l <- subset_data
 subset_data_l$ID <- rownames(subset_data_l)
 
@@ -72,6 +71,8 @@ subset_multi <-pivot_wider(subset_data_long, names_from = ID, values_from = valu
 ```
 
 # HMM on 3 states
+
+Basic 3 state model
 ```{r}
 set.seed(123)
 mod3_1 = depmix(list(Copepod_richness ~ 1, N_copepod~1, S_copepod~1), 
@@ -79,9 +80,11 @@ mod3_1 = depmix(list(Copepod_richness ~ 1, N_copepod~1, S_copepod~1),
              family = list(gaussian(),gaussian(),gaussian()),
              data=subset_multi)
 fitmod3_1 = fit(mod3_1)
+AIC1 <- AIC(fitmod3_1)
 ```
-# Effect of covariate on transition parameters
 
+## Effect of covariate on transition parameters
+3 state model with covariate effects on transition parameters
 ```{r}
 set.seed(123)
 mod3_2 = depmix(list(Copepod_richness ~ 1, N_copepod~1, S_copepod~1), 
@@ -93,11 +96,70 @@ fitmod3_2 = fit(mod3_2)
 
 summary(fitmod3_2, which = "transition")
 summary(fitmod3_2, which = "response")
+AIC2 <- AIC(fitmod3_2)
 ```
 
+3 state model with covariate effects on state parameters
+```{r}
+set.seed(123)
+mod3_3 = depmix(list(Copepod_richness ~ 1 +PDO_DecMarch, 
+                     N_copepod~1 +PDO_DecMarch,
+                     S_copepod~1+PDO_DecMarch), 
+             nstates = 3, 
+             family = list(gaussian(),gaussian(),gaussian()),
+             data=subset_multi)
+fitmod3_3 = fit(mod3_3)
 
+summary(fitmod3_3, which = "transition")
+summary(fitmod3_3, which = "response")
+AIC3 <- AIC(fitmod3_3)
+```
+
+3 state model with covariate effects on state and transition parameters
+```{r}
+set.seed(123)
+mod3_4 = depmix(list(Copepod_richness ~ 1 +PDO_DecMarch, 
+                     N_copepod~1 +PDO_DecMarch,
+                     S_copepod~1+PDO_DecMarch), 
+             nstates = 3, 
+             family = list(gaussian(),gaussian(),gaussian()),
+             transition = ~scale(PDO_DecMarch),
+             data=subset_multi)
+fitmod3_4 = fit(mod3_4)
+
+summary(fitmod3_4, which = "transition")
+summary(fitmod3_4, which = "response")
+AIC4 <- AIC(fitmod3_4)
+```
+
+```{r}
+AIC1
+AIC2
+AIC3
+AIC4
+```
+
+Model with covariate effects on state parameters yields lowest AIC, suggesting this is the optimal 3 state model. 
+
+# code to plot 3 state model with covariate effects on state parameters
+```{r}
+# plot posterior state sequence for the 3-state model
+state1 <- plot(ts(posterior(fitmod3_3, type="smoothing")[,1], # [] state #
+        start=c(1998)))
+state2 <- plot(ts(posterior(fitmod3_3, type="smoothing")[,2], # [] state #
+        start=c(1998)))
+state3 <- plot(ts(posterior(fitmod3_3, type="smoothing")[,3], # [] state #
+        start=c(1998)))
+
+state1
+state2
+state3
+```
+
+##### Address later #################################### 
 
 ## Example code to potentially try
+This should eliminate need for set.seed by providing the best framework for the model
 ```{r}
 best = 1.0e10
 best_model = NA
@@ -111,21 +173,32 @@ for(i in 1:iter) {
     best = AIC(fitmod)
   }
 }
+
+best(fitmod3_1)
+```
+# code to plot states
+```{r}
+# plot posterior state sequence for the 3-state model
+state1 <- plot(ts(posterior(fitmod3_3, type="smoothing")[,1], # [] state #
+        start=c(1998)))
+state2 <- plot(ts(posterior(fitmod3_3, type="smoothing")[,2], # [] state #
+        start=c(1998)))
+state3 <- plot(ts(posterior(fitmod3_3, type="smoothing")[,3], # [] state #
+        start=c(1998)))
+
+state1
+state2
+state3
 ```
 
+# from notes
 ```{r}
-prstates = apply(posterior(fitmod3_1)[,c("S1","S2","S3")], 
-  1, which.max)
-plot(prstates, type="b", xlab="Time", ylab="State")
+#mu = summary(fitmod3_1)[,1]
 
-```
-```{r}
-mu = summary(fitmod3_1)[,1]
-
-pred = data.frame("year"=seq(min(subset_multi$variable), 
-  max(subset_multi$variable)),
-  "fit" = mu[prstates])
-pred
+#pred = data.frame("year"=seq(min(subset_multi$variable), 
+#  max(subset_multi$variable)),
+#  "fit" = mu[prstates])
+#pred
 ```
 
 # General tasks
@@ -142,27 +215,7 @@ A few tips:
 
 -   You're welcome to include covariates (year? Climate variables?) --
     but fitting a simple model without covariates is also totally fine
-    
-```{r}
-library(depmixS4)
-data <- data.frame(t(subset_data))
-fitmod <- depmix(Copepod_richness ~1,
-                 nstates = 2,
-                 transition = ~ 1,
-                 family = gaussian(),
-                 data = data)
-```
 
-
-```{r}
-set.seed(123)
-fit1 <- fit(fitmod)
-pars <- getpars(fit1)
-matrix(pars[3:6], 2, 2, byrow = TRUE)
-AIC1 <- AIC(fitmod)
-
-```
-# Analyzing 3 states
 
 
 # Results
@@ -188,3 +241,79 @@ Summarize the model you've created. Specifically,
 
 Example: "All team members helped decide on the goal and ran the analyses for the individual regions. Team members 2 & 3 wrote most of the code for the analysis. Team member 1 worked on the plotting section of the report using and adapting code that team member 3 wrote. All team members helped edit the report and wrote the discussion together."
 
+# code from rdocumentation website for depmixs4
+```{r}
+# NOT RUN {
+# create a 2 state model with one continuous and one binary response
+# ntimes is used to specify the lengths of 3 separate series
+data(speed)	
+mod <- depmix(list(rt~1,corr~1),data=speed,nstates=2,
+    family=list(gaussian(),multinomial("identity")),ntimes=c(168,134,137))
+# print the model, formulae and parameter values
+mod
+set.seed(1)
+# fit the model by calling fit
+fm <- fit(mod)
+
+# Volatility of S & P 500 returns
+# (thanks to Chen Haibo for providing this example)
+
+data(sp500)
+
+# fit some models
+msp <- depmix(logret~1,nstates=2,data=sp500)
+set.seed(1)
+fmsp <- fit(msp)	
+
+# plot posterior state sequence for the 2-state model
+plot(ts(posterior(fmsp, type="smoothing")[,1], 
+        start=c(1950,2),
+        deltat=1/12),
+     ylab="probability",
+main="Posterior probability of state 1 (volatile, negative markets).",
+frame=FALSE)
+
+# }
+# NOT RUN {
+# this creates data with a single change point with Poisson data
+set.seed(3)
+y1 <- rpois(50,1)
+y2 <- rpois(50,2)
+ydf <- data.frame(y=c(y1,y2))
+
+# fit models with 1 to 3 states
+m1 <- depmix(y~1,ns=1,family=poisson(),data=ydf)
+set.seed(1)
+fm1 <- fit(m1)
+m2 <- depmix(y~1,ns=2,family=poisson(),data=ydf)
+set.seed(1)
+fm2 <- fit(m2)
+m3 <- depmix(y~1,ns=3,family=poisson(),data=ydf)
+set.seed(1)
+fm3 <- fit(m3,em=em.control(maxit=500))
+
+# plot the BICs to select the proper model
+plot(1:3,c(BIC(fm1),BIC(fm2),BIC(fm3)),ty="b")
+
+# }
+# NOT RUN {
+# }
+# NOT RUN {
+# similar to the binomial model, data may also be entered in 
+# multi-column format where the n for each row can be different
+dt <- data.frame(y1=c(0,1,1,2,4,5),y2=c(1,0,1,0,1,0),y3=c(4,4,3,2,1,1))
+# specify a mixture model ...
+m2 <- mix(cbind(y1,y2,y3)~1,data=dt,ns=2,family=multinomial("identity"))
+set.seed(1)
+fm2 <- fit(m2)
+# ... or dependent mixture model
+dm2 <- depmix(cbind(y1,y2,y3)~1,data=dt,ns=2,family=multinomial("identity"))
+set.seed(1)
+fdm2 <- fit(dm2)
+# }
+# NOT RUN {
+
+
+# }
+
+```
