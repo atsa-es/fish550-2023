@@ -66,7 +66,9 @@ df <- rbind.data.frame(stoplight[stoplight$Ecosystem.Indicators == "Copepod_rich
 newdf<-df%>%pivot_longer(-c(Ecosystem.Indicators, Type), names_to = "Year") %>%
   mutate(Year = as.numeric(gsub("X","",Year)))
 
-ggplot(newdf) + geom_line(aes(x = Year, y = value, color = Ecosystem.Indicators)) + theme_classic()
+ggplot(newdf) + 
+  geom_line(aes(x = Year, y = value, color = Ecosystem.Indicators)) + 
+  theme_classic()
 ```
 
 ```{r wrangle_data_mods}
@@ -81,11 +83,6 @@ head(df2)
 
 # General tasks
 
-Each group has the same general tasks, but you will adapt them as you
-work on the data.
-
-Please pick a type of indicators, and develop a 2- or 3-state
-multivariate HMM.
 
 # Methods
 
@@ -206,7 +203,11 @@ ggplot() + geom_point(data = newdf, aes(x = Year, y = value, color = Ecosystem.I
 # The 3-State HMM seems to fit the data worse than the 2-State HMM
 ```
 # Results
-
+```{r}
+a <- AIC(fitmod3)
+b <- AIC(fitmod)
+rbind(a,b)
+```
 Summarize the model you've created. Specifically,
 
 -   Does it converge?
