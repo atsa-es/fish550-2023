@@ -117,16 +117,19 @@ row.names(cop.t)<-rows
 cop.df<-data.frame(cop.t)
 cop.df$Year<-row.names(cop.df)
 
-plot(x=cop.df$Year, y=cop.df$Copepod_richness, type='l')
-lines(x=cop.df$Year, y=cop.df$N_copepod, col='blue')
-lines(x=cop.df$Year, y=cop.df$S_copepod, col='magenta')
+# to make this tidyr happy
+cop.df.long = cop.df %>% pivot_longer(-Year, names_to="indicator", values_to = "value") %>%
+  mutate(Year=as.numeric(Year))
+
+cop.df.long %>% ggplot(aes(x=Year,y=value,color=indicator)) + geom_line() + theme_bw()
 ```
+
 ```{r covariates}
 library(janitor)
 
 covar <- stoplight %>%
   filter(Ecosystem.Indicators %in% 
-    c('Copepod_richness','N_copepod','S_copepod',"Deep_temperature","SST", "PDO_DecMarch"))%>%
+    c('Copepod_richness','N_copepod','S_copepod',"Deep_temperature","SST", "PDO_DecMarch","Biological_transition"))%>%
   select(!Type)%>% 
   t() %>%
   as_tibble %>% 
@@ -135,8 +138,23 @@ covar <- stoplight %>%
 
 covar$Year <- 1998:2021
 
-head(covar)
+# to make this tidyr happy
+cv.df = covar %>% pivot_longer(-Year, names_to="variable", values_to="value") %>%
+  # z scores
+  group_by(variable) %>% mutate(z_score = scale(value)) %>% group_by(Year) %>%
+  filter(variable %in% c("N_copepod","S_copepod","Copepod_richness","Biological_transition"))
 
+# save this as the non z score version
+big.df = cv.df %>%
+  select(-z_score) %>%
+  # repivot for data analysis 
+  pivot_wider(names_from="variable", values_from="value")
+
+# save as z score version
+big.df.z = cv.df %>%
+  select(-value) %>%
+  # repivot for data analysis 
+  pivot_wider(names_from="variable", values_from="z_score")
 ```
 
 # Results
@@ -158,110 +176,162 @@ Summarize the model you've created. Specifically,
 ## Multivariate HMM - 2 state
 
 ```{r}
-#building the 2 state model
-set.seed(1)
-mod.2st<-depmix(list(Copepod_richness ~ 1, N_copepod ~ 1, S_copepod ~ 1),
-                nstates = 2,
-                family=list(gaussian(), gaussian(),gaussian()),
-                data=cop.df)
-fitmod.2st <- fit(mod.2st)
-
+# loop through a few states and compare AIC
+set.seed(123)
+AIC_tbl = data.frame(nstate=0, AIC=0)
+fit_list = NULL
+for (i in 1:3){
+mod<-depmix(list(Copepod_richness ~ 1, N_copepod ~ 1, S_copepod ~ 1,Biological_transition ~ 1),
+                nstates = i,
+                family=list(gaussian(), gaussian(),gaussian(),gaussian()),
+                data=big.df)
+fitmod <- fit(mod)
+fit_list[[i]] = fitmod
 # Transition matrix
-summary(fitmod.2st, which = "transition")
+# summary(fitmod, which = "transition")
 # AIC
-AIC(fitmod.2st)
+AIC_tbl[i,"nstate"] = i
+AIC_tbl[i,"AIC"] = AIC(fitmod)
+}
+
+# do the same but with z scores
+set.seed(123)
+AIC_tbl_z = data.frame(nstate=0, AIC=0)
+fit_list_z = NULL
+for (i in 1:3){
+mod<-depmix(list(Copepod_richness ~ 1, N_copepod ~ 1, S_copepod ~ 1,Biological_transition ~ 1),
+                nstates = i,
+                family=list(gaussian(), gaussian(),gaussian(),gaussian()),
+                data=big.df.z)
+fitmod <- fit(mod)
+fit_list_z[[i]] = fitmod
+# Transition matrix
+# summary(fitmod, which = "transition")
+# AIC
+AIC_tbl_z[i,"nstate"] = i
+AIC_tbl_z[i,"AIC"] = AIC(fitmod)
+}
 
 ```
 
-Most probable to switch from state 2 back to state 1.
+2 states seem like the most reasonable. Though a 3rd state lowers the AIC, adding more states usually lowers the AIC. We proceed with a 2 state HMM due to its interperability. 
 
 ```{r 2 state plots}
+# compare HMM with raw data and z score data
+# RAW DATA
 #most probable states
-prstates2 <- apply(posterior(fitmod.2st) [,c("S1", "S2")], 1, which.max)
-plot(prstates2, type='b', xlab='Time', ylab='State')
+prstates2 <- apply(posterior(fit_list[[2]]) [,c("S1", "S2")], 1, which.max)
+# plot(prstates2, type='b', xlab='Time', ylab='State')
 
 #estimated data/fits
-mu2 <- summary(fitmod.2st)[,1]
-pred2 <- data.frame("year"=seq(min(cop.df$Year), max(cop.df$Year)), "fit" = mu2[prstates2])
+mu2 <- summary(fit_list[[2]])[,1]
+pred2 <- data.frame("year"=seq(min(big.df$Year), max(big.df$Year)), "fit" = mu2[prstates2])
 
-cop.df$Year<-as.numeric(cop.df$Year)
+# Z SCORE DATA
+#most probable states
+prstates2_z <- apply(posterior(fit_list_z[[2]]) [,c("S1", "S2")], 1, which.max)
+# plot(prstates2, type='b', xlab='Time', ylab='State')
 
-ggplot(cop.df) + 
-  geom_point(aes(x=Year, y=Copepod_richness), col="black", size=1.5) + 
-  geom_point(aes(x=Year, y=N_copepod), col="blue", size=1.5) +
-  geom_point(aes(x=Year, y=S_copepod), col="magenta", size=1.5) +
+#estimated data/fits
+mu2_z <- summary(fit_list_z[[2]])[,1]
+pred2_z <- data.frame("year"=seq(min(big.df$Year), max(big.df$Year)), "fit" = mu2_z[prstates2_z])
+
+# Raw data
+ggplot() + 
+  geom_point(data=cv.df,aes(x=Year,y=value,color=variable)) +
   geom_line(data=pred2, aes(year, fit)) + 
   ggtitle("Copepods - raw data and predictions") + 
-  ylab("Richness or Biomass") + xlab("Year") + theme_bw()
+  ylab("Indicator Value") + xlab("Year") + theme_bw()
+
+# Z score
+ggplot() + 
+  geom_point(data=cv.df,aes(x=Year,y=z_score,color=variable),shape=4,size=3) +
+  geom_line(data=pred2_z, aes(year, fit), linetype = "dashed") + 
+  ggtitle("Copepods - z-score data and predictions") + 
+  ylab("Indicator Value") + xlab("Year") + theme_bw()
+
+# Transition Tables
+summary(fit_list[[2]], which = "transition")
+summary(fit_list_z[[2]], which = "transition")
 
 ```
 
-Richness = black points... Does seem to follow some sort of state/regime shift
-Others do not... 
+There seems to be 2 state system, where the first state is associated with high copepod richness and S copepod, and low N copepod The second state is associated with low copepod richness and S copepod, and high N copepod. Our analysis shows that z-scoring the indicator data shows the same state fits as the raw data results, albeit at different scales. Z-scores are only useful for plotting purposes. Transition probabilities are identical. Though z-scoring the data is helpful in visualizing the contrast among states, we proceed with raw data when adding covariates. 
 
-
-## Multivariate HMM - 3 state
-
-```{r 3 state model}
-
-#3 state model
-set.seed(314)
-mod.3st<-depmix(list(Copepod_richness ~ 1, N_copepod ~ 1, S_copepod ~ 1),
-                nstates = 3,
-                family=list(gaussian(), gaussian(),gaussian()),
-                data=cop.df)
-fitmod.3st <- fit(mod.3st)
-
-# Transition matrix
-summary(fitmod.3st, which = "transition")
-# AIC
-AIC(fitmod.3st)
-
-```
-Most probable to switch from S1 to S2. 
-
-Adding a state greatly improves the AIC. (But almost always does) 
 
 ```{r 3 state plots}
-#most probable states, LIZ EDITED THIS
-prstates3 <- apply(posterior(fitmod.3st) [,c("S1", "S2", "S3")], 1, which.max)
-plot(prstates3, type='b', xlab='Time', ylab='State')
-
-#estimated data
-mu3 <- summary(fitmod.3st)[,1]
-pred3 <- data.frame("year"=seq(min(cop.df$Year), max(cop.df$Year)), "fit" = mu3[prstates3])
-
-ggplot(cop.df) + 
-  geom_point(aes(x=Year, y=Copepod_richness), col="black", size=1.5) + 
-  geom_point(aes(x=Year, y=N_copepod), col="blue", size=1.5) +
-  geom_point(aes(x=Year, y=S_copepod), col="magenta", size=1.5) +
-  geom_line(data=pred3, aes(year, fit)) + 
-  ggtitle("Copepods - raw data and predictions") + 
-  ylab("Richness or Biomass") + xlab("Year") + theme_bw()
+# #most probable states, LIZ EDITED THIS
+# prstates3 <- apply(posterior(fitmod.3st) [,c("S1", "S2", "S3")], 1, which.max)
+# plot(prstates3, type='b', xlab='Time', ylab='State')
+# 
+# #estimated data
+# mu3 <- summary(fitmod.3st)[,1]
+# pred3 <- data.frame("year"=seq(min(cop.df$Year), max(cop.df$Year)), "fit" = mu3[prstates3])
+# 
+# ggplot(cop.df) + 
+#   geom_point(aes(x=Year, y=Copepod_richness), col="black", size=1.5) + 
+#   geom_point(aes(x=Year, y=N_copepod), col="blue", size=1.5) +
+#   geom_point(aes(x=Year, y=S_copepod), col="magenta", size=1.5) +
+#   geom_line(data=pred3, aes(year, fit)) + 
+#   ggtitle("Copepods - raw data and predictions") + 
+#   ylab("Richness or Biomass") + xlab("Year") + theme_bw()
 
 ```
+I don't think we need the above chunk.
 
 ## Multivariate HMM with covariates
 
 ** Tried PDO, deep temperature, and SST, but not coded here. SST == better model fit. 
 
 ```{r covar}
-
 #building the 2 state model
-set.seed(1)
-mod.2covar <-depmix(list(Copepod_richness ~ 1, N_copepod ~ 1, S_copepod ~ 1),
+set.seed(123)
+# mod.2covar <-depmix(list(Copepod_richness ~ 1, N_copepod ~ 1, S_copepod ~ 1),
+#                 nstates = 2,# Could change this to three. Adding states almost always improves AICs
+#                 family=list(gaussian(), gaussian(),gaussian()),
+#                 transition = ~ SST+Deep_temperature,
+#                 data=covar)
+# 
+# fitmod.2covar <- fit(mod.2covar)
+# summary(fitmod.2covar, which = "transition")
+# 
+# aics <- c(AIC(fitmod.2st), AIC(fitmod.2covar))
+# aics
+
+# model sel
+cov.terms<-c("SST","Deep_temperature")
+# Create a table of indicators as to whethr that predictor is included
+mod.ind <- as.matrix(expand.grid(c(FALSE,TRUE),c(FALSE,TRUE)))
+mod.tab <- data.frame(mod.ind)
+names(mod.tab) <- cov.terms
+
+# Define a column for storing AIC
+mod.tab$AIC  <- NA
+
+for (i in 1:nrow(mod.tab)){
+  ind_on=as.matrix(mod.tab[i,1:length(cov.terms)])
+  # ind_off=as.matrix(!mod.tab[i,1:length(mod.terms)])
+
+  # ind_off <- !mod.ind[model_i, ]
+  # ind_on <- mod.ind[model_i, ]
+  
+  # Set which covariates should be included in formulas
+  if (length(cov.terms[ind_on])==0){
+    formula = ~1
+  }else{
+    formula =  paste("~",paste(cov.terms[ind_on],collapse="+"),sep="")
+  }
+
+  mod.2covar <-depmix(list(Copepod_richness ~ 1, N_copepod ~ 1, S_copepod ~ 1),
                 nstates = 2,# Could change this to three. Adding states almost always improves AICs
                 family=list(gaussian(), gaussian(),gaussian()),
-                transition = ~ scale(SST),
+                transition = eval(parse(text=formula)),
                 data=covar)
-
-fitmod.2covar <- fit(mod.2covar)
-summary(fitmod.2covar, which = "transition")
-
-aics <- c(AIC(fitmod.2st), AIC(fitmod.2covar))
-aics
-
+  
+  mod.tab[i,"AIC"] = AIC(mod.2covar)
+}
 ```
+All models that include covariates in the transition probabilities only increase the AIC, suggesting that we should not include covariates in our final model. 
 
 SST slightly improves the model fit of the two state model. Don't really know how to interpret the transition matrix... 
 
@@ -273,7 +343,7 @@ set.seed(1)
 mod.3covar <-depmix(list(Copepod_richness ~ 1, N_copepod ~ 1, S_copepod ~ 1),
                  nstates = 3,
                  family=list(gaussian(), gaussian(),gaussian()),
-                 transition = ~ scale(SST),
+                 transition = ~ SST,
                  data=covar)
 
 fitmod.3covar <- fit(mod.3covar)
