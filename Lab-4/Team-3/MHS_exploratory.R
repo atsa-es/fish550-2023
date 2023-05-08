@@ -38,12 +38,37 @@ library(hmmTMB)
 #exploring the data more 
 #rule 1 plot your data 
 
-# Plotting
+ggplot(dat, aes(x = years)) +
+  geom_line(aes(y = PDO, color = "PDO"), size = 1) +
+  geom_line(aes(y = SST, color = "SST"), size = 1) +
+  scale_color_manual(values = c(PDO = "blue", SST = "red", CopeRich = "green", FishInx = "purple")) +
+  labs(x = "Year", y = "Value", color = "Variable") +
+  theme_minimal()
+
+
+# Plotting all
 ggplot(dat, aes(x = years)) +
   geom_line(aes(y = PDO, color = "PDO"), size = 1) +
   geom_line(aes(y = SST, color = "SST"), size = 1) +
   geom_line(aes(y = CopeRich, color = "CopeRich"), size = 1) +
   geom_line(aes(y = FishInx, color = "FishInx"), size = 1) +
+  scale_color_manual(values = c(PDO = "blue", SST = "red", CopeRich = "green", FishInx = "purple")) +
+  labs(x = "Year", y = "Value", color = "Variable") +
+  theme_minimal()
+
+# Plotting Coperich and env cov
+ggplot(dat, aes(x = years)) +
+  geom_line(aes(y = PDO, color = "PDO"), size = 1) +
+  geom_line(aes(y = SST, color = "SST"), size = 1) +
+  geom_line(aes(y = CopeRich, color = "CopeRich"), size = 1) +
+  scale_color_manual(values = c(PDO = "blue", SST = "red", CopeRich = "green", FishInx = "purple")) +
+  labs(x = "Year", y = "Value", color = "Variable") +
+  theme_minimal()
+
+# Plotting Coperich and env cov
+ggplot(dat, aes(x = years)) +
+  geom_line(aes(y = PDO, color = "PDO"), size = 1) +
+  geom_line(aes(y = CopeRich, color = "CopeRich"), size = 1) +
   scale_color_manual(values = c(PDO = "blue", SST = "red", CopeRich = "green", FishInx = "purple")) +
   labs(x = "Year", y = "Value", color = "Variable") +
   theme_minimal()
@@ -68,7 +93,7 @@ ggplot(dat, aes(x = PDO, y = CopeRich, color = CopeRich < 0)) +
   geom_line(data = data.frame(PDO, CopeRich), aes(x = PDO, y = CopeRich)) +
   geom_hline(yintercept = 0, linetype = "dotted") +
   geom_vline(xintercept = 0, linetype = "dotted") +
-  scale_color_manual(values = c("blue", "red"), labels = c("Above 0", "Below 0")) +
+  scale_color_manual(values = c("red", "blue"), labels = c("Above 0", "Below 0")) +
   labs(x = "PDO", y = "CopeRich") +
   theme_minimal()
   
