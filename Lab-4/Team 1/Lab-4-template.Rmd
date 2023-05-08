@@ -27,6 +27,7 @@ know which one is the final one.
 ```{r}
 library(tidyverse)
 library(depmixS4)
+library(knitr)
 ```
 
 # Data
@@ -81,18 +82,6 @@ df2$Year<-as.numeric(gsub("X","",df2$Year))
 head(df2)
 ```
 
-# General tasks
-
-
-# Methods
-
-A few tips:
-
--   Assume all responses are Gaussian.
-
--   You're welcome to include covariates (year? Climate variables?) --
-    but fitting a simple model without covariates is also totally fine
-
 ## 2-State HMM
 
 ```{r 2_state_HMM}
@@ -131,9 +120,18 @@ for(i in 1:iter){
 
 summary(best_model)
 ```
+The transition probabilities for the best model are in the table below:
+```{r}
+FromS1 <- c(0.555, 0.445)
+FromS2 <- c(0.217, 0.783)
+tab <- rbind.data.frame(FromS1,FromS2)
+colnames(tab) <- c("To S1", "To S2")
+row.names(tab) <- c("From S1", "From S2")
+tab
+```
+
 
 Plot of states and data from the 2-State HMM
-
 ```{r}
 prstates<-apply(posterior(fitmod)[,c("S1", "S2")],1, which.max)
 mu<-summary(best_model)[,1]
@@ -144,13 +142,12 @@ pred2<-pred %>% pivot_longer(-Year, names_to = "Ecosystem.Indicators", values_to
 ggplot() + geom_point(data = newdf, aes(x = Year, y = value, color = Ecosystem.Indicators)) + 
   geom_line(data = pred2, aes(x = Year, y = Fit, group = Ecosystem.Indicators, color = Ecosystem.Indicators)) + theme_classic()
 
-?depmix
 
 ```
 
 Our best model does converge for the two state model.
 
-We see that the predicted fit lines still follow the general trend of the data. Southern Copepod Biomass is in phase with the Copepod Richness measure. The observations for Northern and Southern Copepod Biomass have much less variance than the Copepod Richness measurement and thus the fitted lines are much closer to the observed points.
+We see that the predicted fit lines follow the general trend of the data. Southern Copepod Biomass is in phase with the Copepod Richness measure. The observations for Northern and Southern Copepod Biomass have much less variance than the Copepod Richness measurement and thus the fitted lines are much closer to the observed points.
 
 
 ## 3-State HMM
@@ -192,6 +189,16 @@ for(i in 1:iter){
 summary(best_model)
 ```
 
+The transition probabilities for the 3-State model are in the table below
+```{r}
+FromS1 <- c(0.400, 0.200, 0.400)
+FromS2 <- c(0.000, 0.700, 0.300)
+FromS3 <- c(0.250, 0.375, 0.375)
+tab2 <- rbind.data.frame(FromS1,FromS2,FromS3)
+colnames(tab2) <- c("To S1", "To S2", "To S3")
+row.names(tab2) <- c("From S1", "From S2", "From S3")
+tab2
+```
 Plot of states and data from the 3-State HMM
 
 ```{r}
@@ -216,40 +223,27 @@ One thing to note is that the transition probabilities state that there is a 0.0
 ```{r}
 `3-State` <- AIC(fitmod3)
 `2-State` <- AIC(fitmod)
-d <- c(a,b)-min(a,b)
-library(knitr)
-e <- cbind(rbind(`3-State`,`2-State`),d)
-kable(e, format = "simple", row.names = TRUE, col.names = c("AIC", "deltaAIC"))
+d <- c(`3-State`,`2-State`)-min(`3-State`,`2-State`)
 
+e <- cbind.data.frame(rbind(`3-State`,`2-State`),d)
+colnames(e) <- c("AIC","delta AIC")
+row.names(e) <- c("3-State","2-State")
+e
 ```
 
 The three state model has the lower AIC value despite appearing to not fit the data as well. 
-Summarize the model you've created. Specifically,
-
--   Does it converge?
-
--   How many states seem to be most supported?
-
--   Plot the time series of estimated states. What does this mean?
-
--   What are the transition probabilities?
-
--   If included, what are the covariate effects? What do these mean?
-
--   Anything else interesting that you've discovered?
 
 # Discussion
-When looking at the three Copepod measurements, both of our models converge. We did not use any covariates in order to keep our models simple. The AIC score indicates that the 3-state model is better supported than the 2-state. However, visually it appears that the two state model fits the data better. Additionally, when thinking a biological reason for selecting a 2 vs 3 state model, it seems to make more sense to go with a two state model as we see on the NOAA website that copepods richness gradually increases as the summer starts and then decreases at the end of the summer. There is a very brief plateau in May but the 3 state model doesn't seem to follow that general pattern, instead it seems to make large random jumps. At one point Copepod richness drops to the lowest state but there is no observed data there. In contrast, the 2 state model seems to follow the general pattern of the observed data quite well.
+When looking at the three Copepod measurements, both of our models converge. We did not use any covariates in order to keep our models simple. The AIC score indicates that the 3-state model is better supported than the 2-state. However, visually it appears that the two state model fits the data better. Additionally, when thinking of a biological reason for selecting a 2 vs 3 state model, it seems to make more sense to go with a two state model as we see on the NOAA website that copepods richness gradually increases as the summer starts and then decreases at the end of the summer. There is a very brief plateau in May but the 3 state model doesn't seem to follow that general pattern, instead it seems to make large random jumps. At one point Copepod Richness drops to the lowest state but there is no observed data there. In contrast, the 2 state model seems to follow the general pattern of the observed data quite well.
 
-We see that Southern Copepod Biomass is in phase with the Copepod Richness measurement in both models. This is because there are more species representing the Southern Copepod group than the Northern. It also makes sense that the Northern and Southern groups are out of phase as two different water currents which are opposed to one another carry in the copepods from each group.
+We see that Southern Copepod Biomass is in phase with the Copepod Richness measurement in both models. This is because there are more species representing the Southern Copepod group than the Northern so when the Southern Copepod biomass is high the total richness is higher as well due to the increased number of species present. It also makes sense that the Northern and Southern groups are out of phase as two different water currents which are opposed to one another carry the copepods from each group.
+
+All three sets of observations are tied to the same transition probabilities and therefore the model must balance each set of observation data to estimate the probabilities. At each data point the model gives decides based on the probabilities whether the fitted line should change states. Sometimes the model makes a switch that does not seem appropriate based on those probabilities. This is why we see that some of the transition switches in the 3 state model don't seem to make sense.
+
 # Team contributions
+Zoe coded state 2 model.
+Eric coded state 3 model.
+Dylan created tables, results, and led discussion section for group.
+Entire group contributed thoughts and comments to the discussion section.
 
-Example: "All team members helped decide on the goal and ran the
-analyses for the individual regions. Team members 2 & 3 wrote most of
-the code for the analysis. Team member 1 worked on the plotting section
-of the report using and adapting code that team member 3 wrote. All team
-members helped edit the report and wrote the discussion together."
 
-#Notes (GET RID OF): Tasks: 1) Fit 2 state (Zoe) 2) Fit 3 state (Eric)
-3) Results (transition probabilities, time series of states, number of
-states) (Dylan) 4) Discussion (Together)
