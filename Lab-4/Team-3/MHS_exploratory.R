@@ -137,6 +137,52 @@ plot(ts(posterior(fitmod, type="smoothing")[,1], start=c(2003,5), deltat=1/12),y
      frame=FALSE)
 
 
+#=== model options
+
+#Just copepods
+mod1 = depmix(CopeRich ~1,
+                   nstates = 2, 
+                   transition = ~1, 
+                   family = gaussian(),
+                   data=dat)
+
+#Copepods where PDO informs the transition 
+
+mod1 = depmix(CopeRich ~1,
+              nstates = 2, 
+              transition = ~PDO, 
+              family = gaussian(),
+              data=dat)
+
+#Copepods and PDO as intercepts 
+mod2 = depmix(list(CopeRich ~1, PDO~1),
+             nstates = 2, 
+             transition = ~1, 
+             family = list(gaussian(),gaussian()),
+             data=dat)
+
+#Copepods and PDO as intercepts where the transition is informed by PDO
+mod3 = depmix(list(CopeRich ~1, PDO~1),
+              nstates = 2, 
+              transition = ~PDO, 
+              family = list(gaussian(),gaussian()),
+              data=dat)
+
+#Copepods as they relate to PDO
+mod4 = depmix(list(CopeRich ~PDO),
+              nstates = 2, 
+              transition = ~1, 
+              family = list(gaussian()),
+              data=dat)
+
+#Copepods as they relate to PDO where the transition is informed by PDO
+mod5 = depmix(list(CopeRich ~PDO),
+              nstates = 2, 
+              transition = ~PDO, 
+              family = list(gaussian()),
+              data=dat)
+
+
 # Looking for best model
 ######################################################
 
@@ -165,6 +211,9 @@ for(i in 1:iter){
 
 summary(best_model)
 
+fit@response
+fit@transition
+
 test<-getpars(best_model)
 
 init_states1<-test[1:2]
@@ -174,17 +223,61 @@ plot(ts(posterior(best_model, type="smoothing")[,1], start=c(2003,5), deltat=1/1
      main="Posterior probability of state 1 (copepods good?).",
      frame=FALSE)
 
+#=========================
+#Two states modded
+#========================
+#Two state Assumptions
+
+multimod2 = depmix(CopeRich~PDO,
+                   nstates = 2, 
+                   transition = ~1, 
+                   family = gaussian(),
+                   data=dat)
+
+fitmod = fit(multimod2)
+
+iter <-100
+seeds<-sample(100:1000, size = iter, replace = F)
+best <- 1e10
+best_model <- NA
+for(i in 1:iter){
+  set.seed(seeds[i])
+  fitmod <- fit(multimod2)
+  if(AIC(fitmod)< best){
+    best_model <- fitmod
+    best <- AIC(fitmod)
+  }
+}
+
+summary(best_model)
+
+test<-getpars(best_model)
+
+fit@response
+fit@transition
+
+init_states1<-test[1:2]
+mat_test<-matrix(test[3:6],2,2,byrow=TRUE)
+
+plot(ts(posterior(best_model, type="smoothing")[,1], start=c(2003,5), deltat=1/12),ylab="probability",
+     main="Posterior probability of state 1 (copepods good?).",
+     frame=FALSE)
+
+
 #===================================
-#Three state Assumptions
+#Alt 2  state Assumptions
 #===================================
 
-multimod3 = depmix(list(CopeRich ~1, PDO~1),
-                   nstates = 3, 
+multimod3 = depmix(CopeRich ~1,
+                   nstates = 2, 
                    transition = ~PDO, 
-                   family = list(gaussian(),gaussian()),
+                   family = gaussian(),
                    data=dat)
 
 fitmod3 = fit(multimod3)
+
+fitmod3@response
+fitmod3@transition
 
 iter <-100
 seeds<-sample(100:1000, size = iter, replace = F)
