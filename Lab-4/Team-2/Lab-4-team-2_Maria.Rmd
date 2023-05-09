@@ -179,6 +179,36 @@ frame=FALSE)
 ```
 
 
+
+## HMM with 2 states and covariate
+
+
+```{r}
+set.seed(123)
+mod2_2 = depmix(list(Copepod_richness ~ PDO_DecMarch, N_copepod~ PDO_DecMarch, 
+                     S_copepod~PDO_DecMarch), 
+             nstates = 2, 
+             family = list(gaussian(),gaussian(),gaussian()),
+             data=subset_multi)
+fitmod2_2 = fit(mod2_2)
+AIC(fitmod2_2)
+```
+
+### Covariate in the transition probabilty
+
+```{r}
+set.seed(123)
+mod2_3 = depmix(list(Copepod_richness ~ 1, N_copepod ~ 1, 
+                     S_copepod ~ 1), 
+             nstates = 2, 
+             transition = ~PDO_DecMarch,
+             family = list(gaussian(),gaussian(),gaussian()),
+             data=subset_multi)
+fitmod2_3 = fit(mod2_3)
+AIC(fitmod2_3)
+```
+
+
 # Results
 
 Summarize the model you've created. Specifically,
