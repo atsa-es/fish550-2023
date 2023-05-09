@@ -13,32 +13,25 @@ output:
 options(dplyr.summarise.inform = FALSE)
 ```
 
-
 # Data
 
-Describe what plankton groups and covariates you used and indicate any temporal 
-subsetting you chose. Also describe any standardization, centering or scaling 
+Here we will examine a model fitting 3 different local copepod metrics - copepod richness, northern copepod biomass, and southern copepod biomass - across the entire available time series. After spending some time looking at the time-series patterns prior to model fitting, we would also like to evaluate the effect of Pacific Decadal Oscillation (PDO) from December to March as a covariate on both the state and transition. We will evaluate both a 2 and 3 state model with 1 covariate. 
+
+## Note ?? 
+Also describe any standardization, centering or scaling 
 that was used. 
 
-First we will only look at copepod richness with 2 states. For environmental covariates, we will use PDO(Sum; Dec - 
-Mar)
 
 ## Load the data
 
-We have included the `stoplight.csv` dataset for this week. One of the
-columns divides indicators into groups (e.g. Local Physical, Local
-Biological, etc). 
-
 ```{r load_data}
+library(depmixS4)
 stoplight <- read.csv(here::here("Lab-4", "stoplight.csv"))
 ```
 
 ## Wrangle the data
 
 ```{r wrangle_data}
-## add some code here
-
-print(stoplight)
 
 rownames(stoplight) <- stoplight[,1]
 
@@ -47,8 +40,6 @@ subset_data <- stoplight[c("Copepod_richness","N_copepod","S_copepod","PDO_DecMa
 #column names should be years
 colnames(subset_data) <- seq(1998,2021)
 
-print(subset_data)
-
 par(mfrow = c(2,1), mai = c(0.5, 0.7, 0.1, 0.1), omi = c(0, 0, 0, 0))
 plot(seq(1998,2021),subset_data["Copepod_richness",], type = "l", xlab = "years", ylab ="Copepod richness")
 plot(seq(1998,2021),subset_data["N_copepod",], type = "l", xlab = "years", ylab ="N_copepod")
@@ -56,8 +47,47 @@ plot(seq(1998,2021),subset_data["S_copepod",], type = "l", xlab = "years", ylab 
 plot(seq(1998,2021),subset_data["PDO_DecMarch",], type = "l", xlab = "years", ylab ="PDO_DecMarch")
 
 ```
+# Univariate test
+
+We will start by looking at copepod richness. 
+```{r}
+data <- data.frame(t(subset_data))
+fitmod <- depmix(Copepod_richness ~1,
+                 nstates = 2,
+                 transition = ~ 1,
+                 family = gaussian(),
+                 data = data)
+```
+
+```{r}
+set.seed(123)
+fit1 <- fit(fitmod)
+pars <- getpars(fit1)
+matrix(pars[3:6], 2, 2, byrow = TRUE)
+AIC1 <- AIC(fitmod)
+
+```
+
+Here we look at the effect of 1 covariate on copepod richness. 
+```{r}
+fitmod_cov <- depmix(Copepod_richness ~1 + PDO_DecMarch,
+                 nstates = 2,
+                 transition = ~ 1,
+                 family = gaussian(),
+                 data = data)
+```
+
+```{r}
+set.seed(123)
+fit_cov <- fit(fitmod_cov)
+pars_cov <- getpars(fit_cov)
+matrix(pars_cov[3:6], 2, 2, byrow = TRUE)
+AIC_cov <- AIC(fitmod_cov)
+```
+
 # Reframe multivariate dataset
 
+Wrangle data to multivariate subset. 
 ```{r}
 subset_data_l <- subset_data
 subset_data_l$ID <- rownames(subset_data_l)
@@ -70,6 +100,65 @@ subset_data_long <- subset_data_l %>%
 subset_multi <-pivot_wider(subset_data_long, names_from = ID, values_from = value, names_repair = "check_unique")
 ```
 
+# HMM on 2 states
+Basic 2 state model
+```{r}
+set.seed(123)
+mod2_1 = depmix(list(Copepod_richness ~ 1, N_copepod~1, S_copepod~1), 
+             nstates = 2, 
+             family = list(gaussian(),gaussian(),gaussian()),
+             data=subset_multi)
+fitmod2_1 = fit(mod2_1)
+AIC2_1 = AIC(fitmod2_1)
+```
+
+```{r}
+prstates = apply(posterior(fitmod2_1)[,c("S1","S2")], 1, which.max)
+prstates2 <- apply(posterior(fit_list[[2]]) [,c("S1", "S2")], 1, which.max)
+
+plot(prstates, type="b", xlab="Time", ylab="State")
+
+```
+
+
+```{r}
+plot(ts(posterior(fitmod2_1, type="smoothing")[,1], start=1998, end = 2021),
+     ylab="probability",
+main="Posterior probability of state 1",
+frame=FALSE, ylim = c(-1,8))
+points(subset_multi$variable,subset_multi$Copepod_richness)
+
+plot(ts(posterior(fitmod2_1, type="smoothing")[,2], start=c(1998,2021)),
+     ylab="probability",
+main="Posterior probability of state 1",
+frame=FALSE)
+
+```
+
+HMM with 2 states and covariate
+```{r}
+set.seed(123)
+mod2_2 = depmix(list(Copepod_richness ~ PDO_DecMarch, N_copepod~ PDO_DecMarch, 
+                     S_copepod~PDO_DecMarch), 
+             nstates = 2, 
+             family = list(gaussian(),gaussian(),gaussian()),
+             data=subset_multi)
+fitmod2_2 = fit(mod2_2)
+AIC2_2 = AIC(fitmod2_2)
+```
+
+Covariate in the transition probabilty
+```{r}
+set.seed(123)
+mod2_3 = depmix(list(Copepod_richness ~ 1, N_copepod ~ 1, 
+                     S_copepod ~ 1), 
+             nstates = 2, 
+             transition = ~PDO_DecMarch,
+             family = list(gaussian(),gaussian(),gaussian()),
+             data=subset_multi)
+fitmod2_3 = fit(mod2_3)
+AIC2_3 = AIC(fitmod2_3)
+```
 # HMM on 3 states
 
 Basic 3 state model
@@ -80,7 +169,7 @@ mod3_1 = depmix(list(Copepod_richness ~ 1, N_copepod~1, S_copepod~1),
              family = list(gaussian(),gaussian(),gaussian()),
              data=subset_multi)
 fitmod3_1 = fit(mod3_1)
-AIC1 <- AIC(fitmod3_1)
+AIC3_1 <- AIC(fitmod3_1)
 ```
 
 ## Effect of covariate on transition parameters
@@ -96,7 +185,7 @@ fitmod3_2 = fit(mod3_2)
 
 summary(fitmod3_2, which = "transition")
 summary(fitmod3_2, which = "response")
-AIC2 <- AIC(fitmod3_2)
+AIC3_2 <- AIC(fitmod3_2)
 ```
 
 3 state model with covariate effects on state parameters
@@ -112,7 +201,7 @@ fitmod3_3 = fit(mod3_3)
 
 summary(fitmod3_3, which = "transition")
 summary(fitmod3_3, which = "response")
-AIC3 <- AIC(fitmod3_3)
+AIC3_3 <- AIC(fitmod3_3)
 ```
 
 3 state model with covariate effects on state and transition parameters
@@ -129,32 +218,178 @@ fitmod3_4 = fit(mod3_4)
 
 summary(fitmod3_4, which = "transition")
 summary(fitmod3_4, which = "response")
-AIC4 <- AIC(fitmod3_4)
+AIC3_4 <- AIC(fitmod3_4)
 ```
 
 ```{r}
-AIC1
-AIC2
-AIC3
-AIC4
+AIC2_1
+AIC2_2
+AIC2_3
+AIC3_1
+AIC3_2
+AIC3_3 # best model 
+AIC3_4
 ```
+
+```{r}
+print(fitmod3_3)
+```
+
+Based on the AIC values, the best model for assessing our subset of copepod data is the multivariate 3 state HMM model with covariate effects on the state parameters. 
+
+# Results
+
+-   Does it converge?
+Our model does converge. 
+
+How many states seem to be most supported?
+- An HMM model with 3 states is the most supported. 
+
+Plot the time series of estimated states. What does this mean?
+- 
+What are the transition probabilities?
+- Our transition matrix: 
+        toS1  toS2 toS3
+fromS1 0.666 0.334  0.0
+fromS2 0.500 0.000  0.5
+fromS3 0.400 0.400  0.2
+
+If included, what are the covariate effects? What do these mean?
+- 
+
+Anything else interesting that you've discovered?
+- In both the 2 and 3 state HMM models, the covariate effects were best explained as state effects. 
+
+Plot BIC
+```{r}
+plot(1:4,c(BIC(fitmod3_1),BIC(fitmod3_2),BIC(fitmod3_3),BIC(fitmod3_4)),ty="b")
+```
+
+# Discussion
 
 Model with covariate effects on state parameters yields lowest AIC, suggesting this is the optimal 3 state model. 
 
+```{r}
+convert_probs = function(fit, coef_value = 0) {
+  # extract coefficients
+  p1 <- fit@transition[[1]]@parameters$coefficients
+  p2 <- fit@transition[[2]]@parameters$coefficients
+  
+  # assemble transition matrix in mlogit space
+  m <- matrix(0, 2, 2)
+  m[1,] <- p1[1,] + p1[2,] * coef_value
+  m[2,] <- p2[1,] + p2[2,] * coef_value
+  
+  # exponentiate
+  m <- exp(m)
+  
+  # normalize
+  m[1,] <- m[1,] / sum(m[1,])
+  m[2,] <- m[2,] / sum(m[2,])
+  return(m)
+}
+
+# So to look at the effects of the matrix when covariate 'corr' is 0,
+convert_probs(fit, coef_value = 0)
+
+# and compare these to
+convert_probs(fit, coef_value = 1)
+
+
+```
+
+
 # code to plot 3 state model with covariate effects on state parameters
+The first column of posterior(fit) will give you the viterbi states, which
+represents the most probable sequence of states. I think you can use this
+-- along with the means / intercepts for each of the time series to create
+predicted values for each time series. Then I'd maybe bind them all into a
+single dataframe, and use ggplot to show them all (using facetwrap() with
+facets = variables?)
 ```{r}
 # plot posterior state sequence for the 3-state model
 state1 <- plot(ts(posterior(fitmod3_3, type="smoothing")[,1], # [] state #
         start=c(1998)))
-state2 <- plot(ts(posterior(fitmod3_3, type="smoothing")[,2], # [] state #
-        start=c(1998)))
-state3 <- plot(ts(posterior(fitmod3_3, type="smoothing")[,3], # [] state #
-        start=c(1998)))
 
-state1
-state2
-state3
 ```
+
+##### code from class ##############
+To start from the models we talked about in class, we start with the intercept only model / no covariates
+```{r}
+data(speed)
+mod <- depmix(list(rt~1),
+              data=speed,
+              nstates=2,
+              family=list(gaussian()))
+fit <- fit(mod)
+
+# look at this to see the estimated intercepts for each of the 2 states
+summary(fit)
+
+fit@response
+fit@transition
+```
+
+Using the same dataset, we'll now add in covariates on the intercept:
+```{r}
+mod <- depmix(list(rt~corr),
+              data=speed,
+              nstates=2,
+              family=list(gaussian()))
+fit <- fit(mod)
+
+# In this case, fit@transition is the same, but
+fit@response
+# gives 2 intercepts / slopes / sds. In other words, there are 2 regression models being fit -- either in state 1 or state 2
+```
+
+Now, we can add in covariates onto the transition probabilities. This is where things get trickier.
+```{r}
+mod <- depmix(list(rt~1),
+              transition=~corr,
+              data=speed,
+              nstates=2,
+              family=list(gaussian()))
+fit <- fit(mod)
+
+fit@response
+# contains 2 intercepts, 2 sds as expected
+
+attributes(fit)$transition
+# gives the intercept and slope for the transition probabilities for each model in logit space.
+```
+Why are some set to 0 arbitrarily? These are the reference cases that we'll see below -- probabilities are normalized, so these aren't identifiable.
+
+To look at the effect of covariates, if often helps to look at several levels of the covariate. I put together this little function for this example (2 states, 1 covariate on transition probabilities). Note that the steps are (1) create transition matrix in logit space, and (2) back transform
+```{r}
+convert_probs = function(fit, coef_value = 0) {
+  # extract coefficients
+  p1 <- fit@transition[[1]]@parameters$coefficients
+  p2 <- fit@transition[[2]]@parameters$coefficients
+  
+  # assemble transition matrix in mlogit space
+  m <- matrix(0, 2, 2)
+  m[1,] <- p1[1,] + p1[2,] * coef_value
+  m[2,] <- p2[1,] + p2[2,] * coef_value
+  
+  # exponentiate
+  m <- exp(m)
+  
+  # normalize
+  m[1,] <- m[1,] / sum(m[1,])
+  m[2,] <- m[2,] / sum(m[2,])
+  return(m)
+}
+
+# So to look at the effects of the matrix when covariate 'corr' is 0,
+convert_probs(fit, coef_value = 0)
+
+# and compare these to
+convert_probs(fit, coef_value = 1)
+
+
+```
+
 
 ##### Address later #################################### 
 
@@ -176,20 +411,7 @@ for(i in 1:iter) {
 
 best(fitmod3_1)
 ```
-# code to plot states
-```{r}
-# plot posterior state sequence for the 3-state model
-state1 <- plot(ts(posterior(fitmod3_3, type="smoothing")[,1], # [] state #
-        start=c(1998)))
-state2 <- plot(ts(posterior(fitmod3_3, type="smoothing")[,2], # [] state #
-        start=c(1998)))
-state3 <- plot(ts(posterior(fitmod3_3, type="smoothing")[,3], # [] state #
-        start=c(1998)))
 
-state1
-state2
-state3
-```
 
 # from notes
 ```{r}
@@ -201,22 +423,12 @@ state3
 #pred
 ```
 
-# General tasks
-
-Each group has the same general tasks, but you will adapt them as you work on the data.
-
-Please pick a type of indicators, and develop a 2- or 3-state multivariate HMM. 
-
-# Methods
-
-A few tips:
-
--   Assume all responses are Gaussian.
-
--   You're welcome to include covariates (year? Climate variables?) --
-    but fitting a simple model without covariates is also totally fine
-
-
+# SO thread 
+```{r}
+init_mod <- depmix(response, data, nstates) ## no solid value
+mod <- setpars(init_mod, getpars(fm))
+forwardbackward(mod)
+```
 
 # Results
 
@@ -239,81 +451,5 @@ Summarize the model you've created. Specifically,
 
 # Team contributions
 
-Example: "All team members helped decide on the goal and ran the analyses for the individual regions. Team members 2 & 3 wrote most of the code for the analysis. Team member 1 worked on the plotting section of the report using and adapting code that team member 3 wrote. All team members helped edit the report and wrote the discussion together."
-
-# code from rdocumentation website for depmixs4
-```{r}
-# NOT RUN {
-# create a 2 state model with one continuous and one binary response
-# ntimes is used to specify the lengths of 3 separate series
-data(speed)	
-mod <- depmix(list(rt~1,corr~1),data=speed,nstates=2,
-    family=list(gaussian(),multinomial("identity")),ntimes=c(168,134,137))
-# print the model, formulae and parameter values
-mod
-set.seed(1)
-# fit the model by calling fit
-fm <- fit(mod)
-
-# Volatility of S & P 500 returns
-# (thanks to Chen Haibo for providing this example)
-
-data(sp500)
-
-# fit some models
-msp <- depmix(logret~1,nstates=2,data=sp500)
-set.seed(1)
-fmsp <- fit(msp)	
-
-# plot posterior state sequence for the 2-state model
-plot(ts(posterior(fmsp, type="smoothing")[,1], 
-        start=c(1950,2),
-        deltat=1/12),
-     ylab="probability",
-main="Posterior probability of state 1 (volatile, negative markets).",
-frame=FALSE)
-
-# }
-# NOT RUN {
-# this creates data with a single change point with Poisson data
-set.seed(3)
-y1 <- rpois(50,1)
-y2 <- rpois(50,2)
-ydf <- data.frame(y=c(y1,y2))
-
-# fit models with 1 to 3 states
-m1 <- depmix(y~1,ns=1,family=poisson(),data=ydf)
-set.seed(1)
-fm1 <- fit(m1)
-m2 <- depmix(y~1,ns=2,family=poisson(),data=ydf)
-set.seed(1)
-fm2 <- fit(m2)
-m3 <- depmix(y~1,ns=3,family=poisson(),data=ydf)
-set.seed(1)
-fm3 <- fit(m3,em=em.control(maxit=500))
-
-# plot the BICs to select the proper model
-plot(1:3,c(BIC(fm1),BIC(fm2),BIC(fm3)),ty="b")
-
-# }
-# NOT RUN {
-# }
-# NOT RUN {
-# similar to the binomial model, data may also be entered in 
-# multi-column format where the n for each row can be different
-dt <- data.frame(y1=c(0,1,1,2,4,5),y2=c(1,0,1,0,1,0),y3=c(4,4,3,2,1,1))
-# specify a mixture model ...
-m2 <- mix(cbind(y1,y2,y3)~1,data=dt,ns=2,family=multinomial("identity"))
-set.seed(1)
-fm2 <- fit(m2)
-# ... or dependent mixture model
-dm2 <- depmix(cbind(y1,y2,y3)~1,data=dt,ns=2,family=multinomial("identity"))
-set.seed(1)
-fdm2 <- fit(dm2)
-# }
-# NOT RUN {
 
 
-# }
-
-```
