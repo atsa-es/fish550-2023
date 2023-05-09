@@ -91,6 +91,16 @@ A few tips:
 -   You're welcome to include covariates (year? Climate variables?) --
     but fitting a simple model without covariates is also totally fine
     
+    
+    We fit models with different numbers of PDO states to determine whether PDO seems to have 2 or 3 states.It's unclear if there is a 'neutral' state that modulates copepod richness in addition to the hot and cool phases. 
+    
+   We also used a few options for the transition equatation in addition to PDO to explore if PDO was more effective than several simple numeric options for controlling transition dynamics.
+   
+   
+   
+   
+    
+    
 ```{r}
 #EXAMPLE FROM LECTURE 
 
@@ -127,6 +137,9 @@ Summarize the model you've created. Specifically,
 -   Anything else interesting that you've discovered?
 
 # Discussion
+
+
+
 
 
 # Team contributions
