@@ -1,6 +1,6 @@
 ---
 title: "Lab 4 - Hidden Markov Models"
-author: "Person 1, Person 2, Person 3"
+author: "Liz Elmstrom, Terrance Wang, Emma Timmins-Schiffman"
 date: May 9, 2023
 output: 
   html_document:
@@ -13,13 +13,7 @@ output:
 options(dplyr.summarise.inform = FALSE)
 ```
 
-* Team 1: Dylan Hubl, Eric French, Zoe Rand
-* Team 2: Maria Kuruvilla, Miranda Mudge
-* Team 3: Nick Chambers, Madison Shipley, Karl Veggerby
-* Team 4: Liz Elmstrom, Terrance Wang, Emma Timmins-Schiffman
-
-Make sure to label your final write-up with "final" in the title so we know which one is the final one.
-
+Copepods and other zooplankton are responsive to oceanographic conditions that alter their physical environment and food sources. We hypothesize that 4 indicators of the copepod community - richness, N biomass, S biomass, and biological transition - will be significantly impacted by PDO transitions. If copepods are sensitive to PDO, we should see shifts in the copepod community on a ~decadal scale. Covariates related to the PDO should strengthen the model if there is a strong link between the PDO and copepods.
 ## Notes from Liz
 
 Please pick a type of indicators, and develop a 2- or
@@ -53,41 +47,14 @@ Next steps -- Add in biological transition as another response variable. This ti
 
 -   Anything else interesting that you've discovered?
 
-# General tasks
-
-Each group has the same general tasks, but you will adapt them as you work on the data.
-
-Please pick a type of indicators, and develop a 2- or 3-state multivariate HMM. 
-
-# Methods
-
-A few tips:
-
--   Assume all responses are Gaussian.
-
--   You're welcome to include covariates (year? Climate variables?) --
-    but fitting a simple model without covariates is also totally fine
-
 # Data
 
-As part of the California Current Integrated Ecosystem Report, NOAA
-scientists do annual updates of [stoplight charts for ecosystem
-indicators](https://www.fisheries.noaa.gov/west-coast/science-data/ocean-conditions-indicators-trends).
+Copepods and other zooplankton are responsive to oceanographic conditions that alter their physical environment and food sources. We hypothesize that 4 indicators of the copepod community - richness, N biomass, S biomass, and biological transition - will be significantly impacted by PDO transitions. If copepods are sensitive to PDO, we should see shifts in the copepod community on a ~decadal scale. Covariates related to the PDO should strengthen the model if there is a strong link between the PDO and copepods.
 
-We have included the `stoplight.csv` dataset for this week. One of the
-columns divides indicators into groups (e.g. Local Physical, Local
-Biological, etc). Please pick a type of indicators, and develop a 2- or
-3-state multivariate HMM. A few tips:
-
-Describe what plankton groups and covariates you used and indicate any temporal 
-subsetting you chose. Also describe any standardization, centering or scaling 
+Also describe any standardization, centering or scaling 
 that was used. 
 
 ## Load the data
-
-One of the
-columns divides indicators into groups (e.g. Local Physical, Local
-Biological, etc). 
 
 ```{r load_data}
 library(depmixS4)
@@ -100,12 +67,7 @@ stoplight <- read.csv(here::here("Lab-4", "stoplight.csv"))
 ## Wrangle the data
 
 ```{r wrangle_data}
-## add some code here
-## copepod richness, North/south copepod as response variables
-
-#we will focus on copepod richness, N cop. biomass, S cop. biomass
-#rows 9-11
-cop.dat<-stoplight[9:11,]
+cop.dat<-stoplight[9:12,]
 cop.row<-cop.dat[,1]
 cop.dat<-cop.dat[,3:26]
 rownames(cop.dat)<-cop.row
@@ -121,7 +83,8 @@ cop.df$Year<-row.names(cop.df)
 cop.df.long = cop.df %>% pivot_longer(-Year, names_to="indicator", values_to = "value") %>%
   mutate(Year=as.numeric(Year))
 
-cop.df.long %>% ggplot(aes(x=Year,y=value,color=indicator)) + geom_line() + theme_bw()
+cop.df.long %>% group_by(indicator) %>% mutate(value=scale(value)) %>% 
+  ggplot(aes(x=Year,y=value,color=indicator)) + geom_line() + theme_bw() + labs(y="Z score")
 ```
 
 ```{r covariates}
@@ -158,20 +121,6 @@ big.df.z = cv.df %>%
 ```
 
 # Results
-
-Summarize the model you've created. Specifically,
-
--   Does it converge?
-
--   How many states seem to be most supported?
-
--   Plot the time series of estimated states. What does this mean?
-
--   What are the transition probabilities?
-
--   If included, what are the covariate effects? What do these mean?
-
--   Anything else interesting that you've discovered?
 
 ## Multivariate HMM - 2 state
 
@@ -212,9 +161,11 @@ AIC_tbl_z[i,"nstate"] = i
 AIC_tbl_z[i,"AIC"] = AIC(fitmod)
 }
 
+AIC_tbl
+AIC_tbl_z
 ```
 
-2 states seem like the most reasonable. Though a 3rd state lowers the AIC, adding more states usually lowers the AIC. We proceed with a 2 state HMM due to its interperability. 
+2 states seem like the most reasonable. Though a 3rd state lowers the AIC, adding more states usually lowers the AIC. We proceed with a 2 state HMM due to its interpretability (there are 2 states in the PDO fluctuation, our system of interest).
 
 ```{r 2 state plots}
 # compare HMM with raw data and z score data
@@ -259,45 +210,13 @@ summary(fit_list_z[[2]], which = "transition")
 There seems to be 2 state system, where the first state is associated with high copepod richness and S copepod, and low N copepod The second state is associated with low copepod richness and S copepod, and high N copepod. Our analysis shows that z-scoring the indicator data shows the same state fits as the raw data results, albeit at different scales. Z-scores are only useful for plotting purposes. Transition probabilities are identical. Though z-scoring the data is helpful in visualizing the contrast among states, we proceed with raw data when adding covariates. 
 
 
-```{r 3 state plots}
-# #most probable states, LIZ EDITED THIS
-# prstates3 <- apply(posterior(fitmod.3st) [,c("S1", "S2", "S3")], 1, which.max)
-# plot(prstates3, type='b', xlab='Time', ylab='State')
-# 
-# #estimated data
-# mu3 <- summary(fitmod.3st)[,1]
-# pred3 <- data.frame("year"=seq(min(cop.df$Year), max(cop.df$Year)), "fit" = mu3[prstates3])
-# 
-# ggplot(cop.df) + 
-#   geom_point(aes(x=Year, y=Copepod_richness), col="black", size=1.5) + 
-#   geom_point(aes(x=Year, y=N_copepod), col="blue", size=1.5) +
-#   geom_point(aes(x=Year, y=S_copepod), col="magenta", size=1.5) +
-#   geom_line(data=pred3, aes(year, fit)) + 
-#   ggtitle("Copepods - raw data and predictions") + 
-#   ylab("Richness or Biomass") + xlab("Year") + theme_bw()
-
-```
-I don't think we need the above chunk.
-
 ## Multivariate HMM with covariates
 
-** Tried PDO, deep temperature, and SST, but not coded here. SST == better model fit. 
+** Tried PDO, deep temperature, and SST, but not coded here. SST was the better model fit. 
 
 ```{r covar}
 #building the 2 state model
 set.seed(123)
-# mod.2covar <-depmix(list(Copepod_richness ~ 1, N_copepod ~ 1, S_copepod ~ 1),
-#                 nstates = 2,# Could change this to three. Adding states almost always improves AICs
-#                 family=list(gaussian(), gaussian(),gaussian()),
-#                 transition = ~ SST+Deep_temperature,
-#                 data=covar)
-# 
-# fitmod.2covar <- fit(mod.2covar)
-# summary(fitmod.2covar, which = "transition")
-# 
-# aics <- c(AIC(fitmod.2st), AIC(fitmod.2covar))
-# aics
-
 # model sel
 cov.terms<-c("SST","Deep_temperature")
 # Create a table of indicators as to whethr that predictor is included
@@ -307,13 +226,9 @@ names(mod.tab) <- cov.terms
 
 # Define a column for storing AIC
 mod.tab$AIC  <- NA
-
+fit_covar_list = NULL
 for (i in 1:nrow(mod.tab)){
   ind_on=as.matrix(mod.tab[i,1:length(cov.terms)])
-  # ind_off=as.matrix(!mod.tab[i,1:length(mod.terms)])
-
-  # ind_off <- !mod.ind[model_i, ]
-  # ind_on <- mod.ind[model_i, ]
   
   # Set which covariates should be included in formulas
   if (length(cov.terms[ind_on])==0){
@@ -322,68 +237,50 @@ for (i in 1:nrow(mod.tab)){
     formula =  paste("~",paste(cov.terms[ind_on],collapse="+"),sep="")
   }
 
-  mod.2covar <-depmix(list(Copepod_richness ~ 1, N_copepod ~ 1, S_copepod ~ 1),
+  mod.2covar <-depmix(list(Copepod_richness ~ 1, N_copepod ~ 1, S_copepod ~ 1,Biological_transition ~ 1),
                 nstates = 2,# Could change this to three. Adding states almost always improves AICs
-                family=list(gaussian(), gaussian(),gaussian()),
+                family=list(gaussian(), gaussian(),gaussian(),gaussian()),
                 transition = eval(parse(text=formula)),
                 data=covar)
+  fit_covar_list[[i]]= fit(mod.2covar)
   
-  mod.tab[i,"AIC"] = AIC(mod.2covar)
+  mod.tab[i,"AIC"] = AIC((fit_covar_list[[i]]))
 }
+mod.tab
 ```
-All models that include covariates in the transition probabilities only increase the AIC, suggesting that we should not include covariates in our final model. 
-
-SST slightly improves the model fit of the two state model. Don't really know how to interpret the transition matrix... 
-
-SST maybe has a larger effect on the transition of Copepod richness to state 2? So when SST is high, Copepod Richness increases?
-
-```{r covar 3 state}
-# 3 state model 
-set.seed(1)
-mod.3covar <-depmix(list(Copepod_richness ~ 1, N_copepod ~ 1, S_copepod ~ 1),
-                 nstates = 3,
-                 family=list(gaussian(), gaussian(),gaussian()),
-                 transition = ~ SST,
-                 data=covar)
-
-fitmod.3covar <- fit(mod.3covar)
-summary(fitmod.3covar, which = "transition")
-
-aics <- c(AIC(fitmod.3st), AIC(fitmod.3covar))
-aics
-#SST slightly improves the 2 state model AIC, no improvement to three state model
-
-```
-Adding covariate does not improve model fit to the three state model. 
+Inclusion of SST and Deep Temp as covariates for the transition matrix seems to improve the 2-state model. 
 
 
 ```{r covariates plot}
+summary(fit_covar_list[[4]])
 
 #most probable states
-prstates_covar <- apply(posterior(fitmod.2covar) [,c("S1", "S2")], 1, which.max)
+prstates_covar <- apply(posterior(fit_covar_list[[4]]) [,c("S1", "S2")], 1, which.max)
 plot(prstates_covar, type='b', xlab='Time', ylab='State')
 
 #estimated data
-mu_covar <- summary(fitmod.2covar)[,1]
+mu_covar <- summary(fit_covar_list[[4]])[,1]
 pred_covar <- data.frame("year"=seq(min(covar$Year), max(covar$Year)), "fit" = mu_covar[prstates_covar])
 
 ggplot(covar) + 
-  geom_point(aes(x=Year, y=Copepod_richness), col="black", size=1.5) + 
-  geom_point(aes(x=Year, y=N_copepod), col="blue", size=1.5) +
-  geom_point(aes(x=Year, y=S_copepod), col="magenta", size=1.5) +
-  geom_line(data=pred2, aes(year, fit), col = "orange")+
-  geom_line(data=pred_covar, aes(year, fit)) + 
-  ggtitle("Copepods - raw data and predictions") + 
-  ylab("Richness or Biomass") + xlab("Year") + theme_bw()
+  geom_point(data=cv.df,aes(x=Year,y=z_score,color=variable),size=2,alpha=0.7) +
+  geom_line(data=pred2, aes(year, scale(fit),color="w/o cov"))+
+  geom_line(data=pred_covar, aes(year, scale(fit),color="w cov")) + 
+  ggtitle("2 state model - with vs without covariates") + 
+  ylab("Z score") + xlab("Year") + theme_bw()
 
-## Fits are visually the same with and without covariates
-
+## Fits almost the same with and without covariates
 ```
 
-# Discussion
+Adding covariates only slightly changes the fits of states, but since the AIC is decreased by < 10 it is not worth including the covariates in the final model. The transition from state 1 to 2 only differ by 1 year around 1998 and 2006. 
 
+
+# Discussion
+Our best model was a 2 state model using N copepod, S copepod, copepod richness, and biological transition as indicators with SST and deep temperature as covariates. The 2nd state of high copepod richness (warm PDO), high S copepod biomass (winter dominant), low N copepod biomass (summer dominant), and late biological transition (winter>summer) confirms what we know about copepod ecology in the CA Current. The transition matrix suggests that the systems tends to remain in the 1st state on average. This 1st state tends to be associated with the cool PDO. 
+
+Temperature covariates seem to be minmally important in explaining the state transitions. However, if covariates are included, warmer temperatures are generally associated with increased copepod diversity. 
 
 # Team contributions
 
-Example: "All team members helped decide on the goal and ran the analyses for the individual regions. Team members 2 & 3 wrote most of the code for the analysis. Team member 1 worked on the plotting section of the report using and adapting code that team member 3 wrote. All team members helped edit the report and wrote the discussion together."
+All team members contributed to experimental design and planning. ETS did the first draft of the 2- and 3- state HMMs and provided feedback and editing of the other team members' work.
 

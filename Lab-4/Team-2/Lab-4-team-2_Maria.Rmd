@@ -90,6 +90,123 @@ matrix(pars[3:6], 2, 2, byrow = TRUE)
 AIC1 <- AIC(fitmod)
 
 ```
+```{r}
+fitmod_cov <- depmix(Copepod_richness ~1 + PDO_DecMarch,
+                 nstates = 2,
+                 transition = ~ 1,
+                 family = gaussian(),
+                 data = data)
+```
+
+
+```{r}
+set.seed(123)
+fit_cov <- fit(fitmod_cov)
+pars_cov <- getpars(fit_cov)
+matrix(pars_cov[3:6], 2, 2, byrow = TRUE)
+AIC_cov <- AIC(fitmod_cov)
+```
+## Multivariate time series
+
+
+```{r}
+rownames(stoplight) <- stoplight[,1]
+
+subset_data <- stoplight[c("Copepod_richness","N_copepod","S_copepod","PDO_DecMarch"),3:26]
+
+#column names should be years
+colnames(subset_data) <- seq(1998,2021)
+
+print(subset_data)
+
+par(mfrow = c(2,1), mai = c(0.5, 0.7, 0.1, 0.1), omi = c(0, 0, 0, 0))
+plot(seq(1998,2021),subset_data["Copepod_richness",], type = "l", xlab = "years", ylab ="Copepod richness")
+plot(seq(1998,2021),subset_data["N_copepod",], type = "l", xlab = "years", ylab ="N_copepod")
+plot(seq(1998,2021),subset_data["S_copepod",], type = "l", xlab = "years", ylab ="S_copepod")
+plot(seq(1998,2021),subset_data["PDO_DecMarch",], type = "l", xlab = "years", ylab ="PDO_DecMarch")
+
+
+```
+
+
+```{r}
+library(tidyverse)
+subset_data_l <- subset_data
+subset_data_l$ID <- rownames(subset_data_l)
+
+subset_data_long <- subset_data_l %>%
+  pivot_longer(!ID, names_to = "variable",
+               values_to = "value")
+
+
+subset_multi <-pivot_wider(subset_data_long, names_from = ID, values_from = value, names_repair = "check_unique")
+```
+
+
+# HMM on 2 states
+```{r}
+set.seed(123)
+mod2_1 = depmix(list(Copepod_richness ~ 1, N_copepod~1, S_copepod~1), 
+             nstates = 2, 
+             family = list(gaussian(),gaussian(),gaussian()),
+             data=subset_multi)
+fitmod2_1 = fit(mod2_1)
+```
+
+```{r}
+prstates = apply(posterior(fitmod2_1)[,c("S1","S2")], 
+  1, which.max)
+
+plot(prstates, type="b", xlab="Time", ylab="State")
+
+```
+
+
+```{r}
+plot(ts(posterior(fitmod2_1, type="smoothing")[,1], start=1998, end = 2021),
+     ylab="probability",
+main="Posterior probability of state 1",
+frame=FALSE, ylim = c(-1,8))
+points(subset_multi$variable,subset_multi$Copepod_richness)
+
+
+
+plot(ts(posterior(fitmod2_1, type="smoothing")[,2], start=c(1998,2021)),
+     ylab="probability",
+main="Posterior probability of state 1",
+frame=FALSE)
+
+```
+
+
+
+## HMM with 2 states and covariate
+
+
+```{r}
+set.seed(123)
+mod2_2 = depmix(list(Copepod_richness ~ PDO_DecMarch, N_copepod~ PDO_DecMarch, 
+                     S_copepod~PDO_DecMarch), 
+             nstates = 2, 
+             family = list(gaussian(),gaussian(),gaussian()),
+             data=subset_multi)
+fitmod2_2 = fit(mod2_2)
+AIC(fitmod2_2)
+```
+
+### Covariate in the transition probabilty
+
+```{r}
+set.seed(123)
+mod2_3 = depmix(list(Copepod_richness ~ 1, N_copepod ~ 1, 
+                     S_copepod ~ 1), 
+             nstates = 2, 
+             transition = ~PDO_DecMarch,
+             family = list(gaussian(),gaussian(),gaussian()),
+             data=subset_multi)
+fitmod2_3 = fit(mod2_3)
+AIC(fitmod2_3)
+```
 
 
 # Results
