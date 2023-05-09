@@ -208,6 +208,8 @@ ggplot(pred2, aes(x = years))+
 #Three state Assumptions
 #===================================
 
+####3####
+
 multimod3 = depmix(list(CopeRich ~1, PDO~1),
                    nstates = 3, 
                    transition = ~PDO, 
@@ -270,11 +272,20 @@ ggplot(pred, aes(x = years))+
   labs(title = "Three States", x = "Year", y = "Value", color = "Variable") +
   theme_minimal()
 
-#States overlayed on data (plots from above)
+####3####
+
+#Diagnostics using two state model from above
+
+summary(fitmod2)
+
+#these give same values as summary, but split up?
+fitmod2@response #gives the 4 intercepts with sd
+fitmod2@transition # gives coefficients and transition probabilities?
 
 
 
-#Diagnostics 
+
+
 #comparative tables for 2 v 3 states 
 
 
