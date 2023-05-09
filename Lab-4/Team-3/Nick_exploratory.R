@@ -282,16 +282,30 @@ summary(fitmod2)
 fitmod2@response #gives the 4 intercepts with sd
 fitmod2@transition # gives coefficients and transition probabilities?
 
-
-
-
-
 #comparative tables for 2 v 3 states 
 
 
+convert_probs <- function(fit, coef_value = 0) {
+  # extract coefficients
+  p1 <- fit@transition[[1]]@parameters$coefficients
+  p2 <- fit@transition[[2]]@parameters$coefficients
+  
+  # assemble transition matrix in mlogit space
+  m <- matrix(0, 2, 2)
+  m[1,] <- p1[1,] + p1[2,] * coef_value
+  m[2,] <- p2[1,] + p2[2,] * coef_value
+  
+  # exponentiate
+  m <- exp(m)
+  
+  # normalize
+  m[1,] <- m[1,] / sum(m[1,])
+  m[2,] <- m[2,] / sum(m[2,])
+  return(m)
+}
 
-
-
+#returns the transition matrix
+convert_probs(fit = fitmod2)
 
 
 
