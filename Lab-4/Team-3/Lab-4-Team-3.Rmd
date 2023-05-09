@@ -27,6 +27,10 @@ columns divides indicators into groups (e.g. Local Physical, Local
 Biological, etc). 
 
 ```{r load_data}
+
+library(hmmTMB)
+library(depmixS4)
+
 stoplight <- read.csv(here::here("Lab-4", "stoplight.csv"))
 
 head(stoplight)
@@ -35,6 +39,99 @@ names(stoplight)
 ```
 
 ## Wrangle the data
+
+```{r}
+
+#ecosystem indicators
+stoplight[,1]  
+years<-seq(1998,2021,1)
+
+#ecosystem indicators to pull
+PDO_DecMarch<-unlist(as.vector(stoplight[1,3:26])) 
+SST<-unlist(as.vector(stoplight[4,3:26])) 
+Copepod_richness<-unlist(as.vector(stoplight[9,3:26])) 
+Ichthy_community_index<-unlist(as.vector(stoplight[14,3:26]))
+
+dat<-matrix(nrow=length(years), ncol=5)
+dat[,1]<-years
+dat[,2]<-PDO_DecMarch
+dat[,3]<-SST
+dat[,4]<-Copepod_richness
+dat[,5]<-Ichthy_community_index
+colnames(dat)<-c("years","PDO", "SST", "CopeRich", "FishInx")
+rownames(dat)<-seq(1,24,1)
+
+dat<-as.data.frame(dat)
+print(dat)
+#five times series in response and keep things to your block 
+
+
+#exploring the data more 
+#rule 1 plot your data 
+
+ggplot(dat, aes(x = years)) +
+  geom_line(aes(y = PDO, color = "PDO"), size = 1) +
+  geom_line(aes(y = SST, color = "SST"), size = 1) +
+  scale_color_manual(values = c(PDO = "blue", SST = "red", CopeRich = "green", FishInx = "purple")) +
+  labs(x = "Year", y = "Value", color = "Variable") +
+  theme_minimal()
+
+# Plotting all
+ggplot(dat, aes(x = years)) +
+  geom_line(aes(y = PDO, color = "PDO"), size = 1) +
+  geom_line(aes(y = SST, color = "SST"), size = 1) +
+  geom_line(aes(y = CopeRich, color = "CopeRich"), size = 1) +
+  geom_line(aes(y = FishInx, color = "FishInx"), size = 1) +
+  scale_color_manual(values = c(PDO = "blue", SST = "red", CopeRich = "green", FishInx = "purple")) +
+  labs(x = "Year", y = "Value", color = "Variable") +
+  theme_minimal()
+
+# Plotting Coperich and env cov
+ggplot(dat, aes(x = years)) +
+  geom_line(aes(y = PDO, color = "PDO"), size = 1) +
+  geom_line(aes(y = SST, color = "SST"), size = 1) +
+  geom_line(aes(y = CopeRich, color = "CopeRich"), size = 1) +
+  scale_color_manual(values = c(PDO = "blue", SST = "red", CopeRich = "green", FishInx = "purple")) +
+  labs(x = "Year", y = "Value", color = "Variable") +
+  theme_minimal()
+
+# Plotting Coperich and env cov
+ggplot(dat, aes(x = years)) +
+  geom_line(aes(y = PDO, color = "PDO"), size = 1) +
+  geom_line(aes(y = CopeRich, color = "CopeRich"), size = 1) +
+  scale_color_manual(values = c(PDO = "blue", SST = "red", CopeRich = "green", FishInx = "purple")) +
+  labs(x = "Year", y = "Value", color = "Variable") +
+  theme_minimal()
+
+# PDO states 
+ggplot(dat, aes(x = years)) +
+  geom_line(aes(y = PDO, color = "PDO"), size = 1) +
+  scale_color_manual(values = c(PDO = "blue", SST = "red", CopeRich = "green", FishInx = "purple")) +
+  labs(x = "Year", y = "Value", color = "Variable") +
+  geom_hline(yintercept = 0, linetype = "dotted") +
+  geom_hline(yintercept = 2.5, linetype = "dotted") +
+  geom_hline(yintercept = -2.5, linetype = "dotted") +
+  theme_minimal()
+
+#Think of weak vs strong PDO?
+
+#CopeRichness tracks very closely with PDO
+#SST seems to have a negligible correlation 
+
+ggplot(dat, aes(x = PDO, y = CopeRich, color = CopeRich < 0)) +
+  geom_point() +
+  geom_line(aes(x = PDO, y = CopeRich)) +
+  geom_hline(yintercept = 0, linetype = "dotted") +
+  geom_vline(xintercept = 0, linetype = "dotted") +
+  scale_color_manual(values = c("red", "blue"), labels = c("Above 0", "Below 0")) +
+  labs(x = "PDO", y = "CopeRich") +
+  theme_minimal()
+  
+
+#fish index is all over the place, let's not use it. 
+
+```
+
 
 ### Objective tips 
 
