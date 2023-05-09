@@ -190,6 +190,7 @@ summary(fit_list_z[[2]], which = "transition")
 There seems to be 2 state system, where the first state is associated with high copepod richness and S copepod, and low N copepod The second state is associated with low copepod richness and S copepod, and high N copepod. The probability of transitioning from state 1 to state 2 is 0.218. The probability of transitioning from state 2 to state 1 is 0.446.
 
 Our analysis shows that z-scoring the indicator data shows the same state fits as the raw data results, albeit at different scales. Z-scores are only useful for plotting purposes. Transition probabilities are identical. Though z-scoring the data is helpful in visualizing the contrast among states, we proceed with raw data when adding covariates. 
+
 ## Multivariate HMM with covariates
 
 Here we test the data support for including SST and Deep temperature as covariates that *affect the transition probabilities* of our 2-state HMM model. 

@@ -292,7 +292,7 @@ convert_probs <- function(fit, coef_value = 0) {
   
   # assemble transition matrix in mlogit space
   m <- matrix(0, 2, 2)
-  m[1,] <- p1[1,] + p1[2,] * coef_value
+  m[1,] <- p1[1,] + p1[2,] * coef_value #intercept + slope * coefficient
   m[2,] <- p2[1,] + p2[2,] * coef_value
   
   # exponentiate
