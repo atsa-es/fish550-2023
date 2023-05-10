@@ -517,7 +517,7 @@ convert_probs <- function(fit, coef_value = 0) {
 }
 ```
 
-Let's look at all the model together. Note that the above function was applied to models 4 and 6, which did not have an interpretable transition matrix. 
+Let's look at all the models together. Note that the above function was applied to models 4 and 6, which did not have an interpretable transition matrix. 
 
 ```{r}
 
