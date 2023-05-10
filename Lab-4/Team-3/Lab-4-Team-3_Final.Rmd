@@ -16,10 +16,10 @@ library(tidyverse)
 library(kableExtra)
 library(hmmTMB)
 library(depmixS4)
+
 ```
 
 # Data set 
-
 In this lab, we're looking at ecological indicators and exploring hidden Markov models and probabilities of shifting between underlying states. 
     
 ## Load the data
@@ -272,6 +272,7 @@ for(i in 1:iter){
 summary(best_model3)
 
 ```
+
 This model still preferred state one, with a ~75% probability of staying in one and ~25% chance of transitioning to two. There was a ~61% change of state two to stay in state two and a ~39% chance to transition back to state one. Note there are values for the intercepts and sd for Re1 (coperich) and Re2 (PDO) in this model. 
 
 ```{r}
@@ -296,6 +297,7 @@ ggplot() +
   theme_minimal()
 
 ```
+
 ## Model 4 Copepods and PDO with transition informed by PDO 
 Next we wanted to look at copepod richness and PDO with the transition informed by the PDO.
 ```{r}
@@ -342,7 +344,7 @@ ggplot() +
   geom_line(data = dat, aes(x = years, y = CopeRich, color = "CopeRich"), linewidth = 1) +
   geom_line(data = dat, aes(x = years, y = PDO_DecMarch, color = "PDO"), linewidth = 1) +
   scale_color_manual(values = c("orange", "lightgreen", "blue")) +  # Assign distinct colors for each line in pred3
-  labs(title = "Model 3 - Transition ~ 1", x = "Year", y = "Value", color = "Variable") +
+  labs(title = " Model 4 - Transition ~ PDO", x = "Year", y = "Value", color = "Variable") +
   theme_minimal()
 
 ```
@@ -403,7 +405,12 @@ Copepod richness and PDO data have the closest correlation, and it seemed reason
 
 ## Model 6 Copepods informed by PDO with PDO informing transition
 This model is the same as model 5, but using PDO as a covariate for transition, which could be inappropriate for hmm model specification. But, we wanted to explore it. 
+
+For the intercept we chose to model Copepod Richness ~ PDO. These data sets have the closest correlation and so this was done to test of the fit could be improved by modeling the variation of Copepod Richness as a function of PDO. Admittedly, we are not sure if this is a appropriate entry to the `depmix()` function but the results for models 5 and 6 were interesting so we included them. 
+
+
 ```{r}
+
 #Copepods as they relate to PDO where the transition is informed by PDO
 mod6 = depmix(list(CopeRich ~PDO),
               nstates = 2, 
@@ -430,6 +437,7 @@ summary(best_model6)
 ```
 Again, given that we included PDO as a transition covariate, the matrix was not interpretable as is in the model summary, but we address this in the More Model Diagnostics Section.
 ```{r}
+
 plot(ts(posterior(best_model6, type="smoothing")[,1], start=c(2003,5), deltat=1/12),ylab="probability",
      main="Posterior probability of state 1 (copepods good?).",
      frame=FALSE)
@@ -454,7 +462,23 @@ ggplot() +
 
 Visually, model 6 produced the worst fit to the data. This model suggests there is a dominant state near the mean of the data and the second state is only marginally different. The dampening of the oscillation must be from the transition being informed directly by PDO. 
 
-#Model Selection with AIC
+# Results
+
+Summarize the model you've created. Specifically,
+
+-   Does it converge?
+
+All the models converged even when running the for loop over various seeds, however visual inspection of model fits revealed that several fits were quite poor, including our top model ranked by AICc.
+
+-   How many states seem to be most supported?
+
+Compared to model 1, model two with 3 states produced a poor visual fit to the data. Because of this we assumed 2 states in the other models we tested. This aligned with our visual estimates of two states.
+
+-   Plot the time series of estimated states. What does this mean?
+
+The plots of estimated states show the underlying pattern that may exist if there is in fact a shift between states. The variation in the data from this pattern would be related to unexplained error related to covariates other than the underlying states. Visually there appears to be good support for two underlying states, however, as shown below, the estimated states in our top AICc ranked model do not appear to fit the data well, indicating that AICc may not be the best metric to use here. It definitely highlights the dangers of blindly trusting AIC without further model checks.
+
+## Model Selection with AIC
 ```{r}
 mods <- c("1","2","3","4","5","6")
 aic <- c(AIC(best_model1), AIC(best_model2), AIC(best_model3), AIC(best_model4), AIC(best_model5),AIC(best_model6))
@@ -464,11 +488,13 @@ tab <- cbind.data.frame(mods, aic, delta.aic)
 tab
 
 ```
+
 AIC tells us that the best model would be model 6, although it is just marginally better than model 5 with a delta AIC of just over 2. The delta AIC values are only about 2 different between models 1-2 and 3-4 and 5-6 respectively. Each set of models are the most similar to each other within the models tested and these AIC values indicate little to no support for one approach within each group to be significantly better than the other. AIC values do indicate significantly better performance between these sets of models, however this support is not supported by looking at visual fits of the data. The two best models, 5 and 6, produce the worst visual fits to the data of any models tested. It is unclear why AIC is selecting these models as the best, but it does seem that AIC favors the simple models with only one intercept rather than models with two intercepts. Because of the apparent poor fit of models 5 and 6, it seems other methods of model selection such as Cross Validation or leave One Out may be more appropriate here than AIC. 
 
-# More Model Diagnostics
+## More Model Diagnostics
 
 The following function allows us to interpret the transition matrix when there is a covariate informing the transition. 
+
 ```{r}
 #create a funciton to help build transition matrices
 convert_probs <- function(fit, coef_value = 0) {
@@ -492,6 +518,7 @@ convert_probs <- function(fit, coef_value = 0) {
 ```
 
 Let's look at all the model together. Note that the above function was applied to models 4 and 6, which did not have an interpretable transition matrix. 
+
 ```{r}
 
 #Look at the transition matrices and variance
@@ -517,23 +544,6 @@ Model 5 appeared to have smaller intercept values which makes sense as the predi
 The transition matrix for model 6 was the most unique with a high likelihood that the model will transition to and stay in state 2. This is another good indication that the model is a poor fit to the data as the data visually appears to have at least two states, and the other models produced good visual fits with a two state approach.
 
 
-# Results
-
-Summarize the model you've created. Specifically,
-
--   Does it converge?
-
-All the models converged even when running the for loop over various seeds, however visual inspection of model fits revealed that several fits were quite poor, including our top model ranked by AICc.
-
--   How many states seem to be most supported?
-
-Compared to model 1, model two with 3 states produced a poor visual fit to the data. Because of this we assumed 2 states in the other models we tested. This aligned with our visual estimates of two states.
-
--   Plot the time series of estimated states. What does this mean?
-
-The plots of estimated states show the underlying pattern that may exist if there is in fact a shift between states. The variation in the data from this pattern would be related to unexplained error related to covariates other than the underlying states. Visually there appears to be good support for two underlying states, however the estimated states in our top AICc ranked model do not appear to fit the data well, indicating that AICc may not be the best metric to use here. It definitely highlights the dangers of blindly trusting AIC without further model checks.
-
-
 # Discussion
 PDO is an index of ocean conditions that is generally thought to act as a driver for abundance and richness of organisms in the North Pacific. Here we predicted that PDO would be a driver of copepod richness. The two time series of data appear to closely co-vary and seem to show a pattern of a high and low state with rapid swings between the two. Our models using 2 states produced good visual fits and we found little support for three states. AIC appears to be a relatively poor choice for model selection in this instance although it is unclear if that is specific to HMM models or if there was a programming error. Other types of model selection would likely increase our understanding of model performance. We saw no obvious difference between a rapid shift in states , `transition = ~1` and a shift proportional to the PDO data set. This suggests that there is in fact a very rapid shift between states, which aligns with our expected result based on the general lack of observations near neutral conditions. 
 
@@ -541,7 +551,7 @@ PDO is an index of ocean conditions that is generally thought to act as a driver
 ## What we're still confused about
 One question we had is that our 'best' model based on AIC values did not appear to be a good fit to the data visually. When this is the case, what should our next steps be? Visually confirming model fit seems to overrule AIC values when those diagnostics are contradictory, is this true?
 
-We didn't have a good handle on how the 'nstates' and 'transitions' inputs to the models interacted and what type of model diagnostics would help us quantify underlying relationships. After we were in pretty deep we realized having PDO in both the model list (related to copepod richness or as an independent intercept) and as a covarate for transition may be innappropriate, but are unsure and would like more information. 
+We didn't have a good handle on how the 'nstates' and 'transitions' inputs to the models interacted and what type of model diagnostics would help us quantify underlying relationships. After we were in pretty deep we realized having PDO in both the model list (related to copepod richness or as an independent intercept) and as a covarate for transition may be inappropriate, but are unsure and would like more information. 
 
 PDO has a very strong correlative pattern with copepod richness. We ran several combinations of model to examine the strength of this relationship. We produced some models with decent looking fits, but these models were not as highly ranked by AIC as other, seemingly less well fitting models. Is AIC a poor choice? We have a suspicion this question will be answered in the next lecture(s)...
 
