@@ -173,7 +173,6 @@ mod1 = depmix(CopeRich ~1,
                    data=dat)
 
 fitmod1 = fit(mod1)
-summary(fitmod1)
 
 #Find best fit 
 iter <-100
@@ -189,9 +188,9 @@ for(i in 1:iter){
   }
 }
 
-# plot(ts(posterior(best_model1, type="smoothing")[,1], start=c(2003,5), deltat=1/12),ylab="probability",
-#      main="Posterior probability of state 1 (copepods good?).",
-#      frame=FALSE)
+plot(ts(posterior(best_model1, type="smoothing")[,1], start=c(2003,5), deltat=1/12),ylab="probability",
+     main="Posterior probability of state 1 (copepods good?).",
+     frame=FALSE)
 
 prstates <- apply(posterior(best_model1)[,c("S1", "S2")],1, which.max)
 mu <- summary(best_model1)[,1]
@@ -212,7 +211,7 @@ ggplot() +
   theme_minimal()
 
 ```
-
+Model 1 produces a reasonably good fit to the data. 
 
 ```{r}
 # Model 2
@@ -262,7 +261,7 @@ ggplot() +
   theme_minimal()
 
 ```
-Compared to model 1, model two produces a poor visual fit when trying to fit three states to the data
+Compared to model 1, model two produces a poor visual fit to the data. Because of this we assumed 2 states in the other models we tested. 
 
 ```{r} 
 
@@ -309,7 +308,7 @@ ggplot() +
   geom_line(data = dat, aes(x = years, y = PDO_DecMarch, color = "PDO" ), size = 1)+
   scale_color_manual(values = c(PDO = "blue", SST = "red", CopeRich = "green",
                                 FishInx = "purple", predicted_states = "orange")) +
-  labs(title = " Model 3 - transition ~ 1", x = "Year", y = "Value", color = "Variable") +
+  labs(title = " Model 3 - Transition ~ 1", x = "Year", y = "Value", color = "Variable") +
   theme_minimal()
 
 
@@ -360,6 +359,9 @@ ggplot() +
 
 ```
 
+Models 3 and 4 produce similar fits to the data, the only obvious difference is that model 4 spends less time in the higher state than model 3. 
+
+
 ```{r}
 
 #Copepods as they relate to PDO
@@ -401,16 +403,14 @@ ggplot() +
   geom_line(data = dat, aes(x = years, y = PDO_DecMarch, color = "PDO" ), size = 1)+
   scale_color_manual(values = c(PDO = "blue", SST = "red", CopeRich = "green",
                                 FishInx = "purple", predicted_states = "orange")) +
-  labs(title = " Model 2 - Three States", x = "Year", y = "Value", color = "Variable") +
+  labs(title = " Model 5 - Copepod Richness ~ PDO , Transition ~1", x = "Year", y = "Value", color = "Variable") +
   theme_minimal()
-
-# ggplot() + geom_point(data = dat, aes(x = years, y = CopeRich, color = "Copepod Richness")) + 
-#   geom_line(data = pred2, aes(x = years, y = Fit, group = "Copepod Richness", color = "Copepod Richness")) + theme_classic()
-
 
 ```
 
+For the intercept we chose to model Copepod Richness ~ PDO. These data sets have the closest correlation and so this was done to test of the fit could be improved by modeling the variation of Copepod Richness as a function of PDO. Admittedly, we are not sure if this is a appropriate entry to the `depmix()` function but the results for models 5 and 6 were interesting so we included them. 
 
+# Model 6
 ```{r}
 
 #Copepods as they relate to PDO where the transition is informed by PDO
@@ -452,11 +452,67 @@ ggplot() +
   geom_line(data = dat, aes(x = years, y = PDO_DecMarch, color = "PDO" ), size = 1)+
   scale_color_manual(values = c(PDO = "blue", SST = "red", CopeRich = "green",
                                 FishInx = "purple", predicted_states = "orange")) +
-  labs(title = " Model 2 - Three States", x = "Year", y = "Value", color = "Variable") +
+  labs(title = " Model 6 - Copepod Richness ~ PDO, Transition ~ PDO", x = "Year", y = "Value", color = "Variable") +
   theme_minimal()
 
 
 ```
+
+Model 6 produced the worst visual fit to the data. This model suggests there is a dominant state near the mean of the data and the second state is only marginally different. 
+
+#model selection with AIC
+```{r}
+mods <- c("1","2","3","4","5","6")
+aic <- c(AIC(best_model1), AIC(best_model2), AIC(best_model3), AIC(best_model4), AIC(best_model5),AIC(best_model6))
+delta.aic <- aic-min(aic)
+tab <- cbind.data.frame(mods, aic, delta.aic)
+
+tab
+
+```
+
+# More model diagnostics
+```{r}
+#create a funciton to help build transition matrices
+convert_probs <- function(fit, coef_value = 0) {
+  # extract coefficients
+  p1 <- fit@transition[[1]]@parameters$coefficients
+  p2 <- fit@transition[[2]]@parameters$coefficients
+  
+  # assemble transition matrix in mlogit space
+  m <- matrix(0, 2, 2)
+  m[1,] <- p1[1,] + p1[2,] * coef_value #intercept + slope * coefficient
+  m[2,] <- p2[1,] + p2[2,] * coef_value
+  
+  # exponentiate
+  m <- exp(m)
+  
+  # normalize
+  m[1,] <- m[1,] / sum(m[1,])
+  m[2,] <- m[2,] / sum(m[2,])
+  return(m)
+}
+```
+
+
+```{r}
+
+#Look at the transition matrices and variance
+summary(fitmod1)
+summary(fitmod2)
+summary(fitmod3)
+summary(fitmod4) # no transition matrix
+summary(fitmod5)
+summary(fitmod6) # no transition matrix
+
+#get the transition matrices
+convert_probs(fitmod4)
+convert_probs(fitmod6)
+
+```
+
+AIC tells us that the best model would be model 6, although it is marginally better than model 5 with a delta AIC of just over 2. The delta AIC values are only about 2 different between models 1-2 and 3-4 and 5-6. Each set of models are the most similar to each other within the models tested and these AIC values indicate little to no support for one approach within each group to be significantly better than the other. AIC values do indicate significantly better performance between these sets of models, however this support is not supported by looking at visual fits of the data. The two best models, 5 and 6, produce the worst visual fits to the data of any models tested. It is unclear why AIC is selecting these models as the best, but it does seem that AIC favors the simple models with only one intercept rather than models with two intercepts. Becuase of the apparent poor fit of models 5 adn 6 is seems other methods of model selction such as Cross Validation or leave One Out may be more appropriate here than AIC. 
+
 
 # Results
 
