@@ -141,36 +141,6 @@ Pass the model responses in as list of formulas-- family also has to be in the l
 
 * Reference slides 55-60
 
-```{r wrangle_data}
-## add some code here
-class(stoplight)
-names(stoplight)
-
-#ecosystem indicators
-stoplight[,1]  
-years<-seq(1998:2021)
-
-#ecosystem indicators to pull
-PDO_DecMarch<-stoplight[1,] 
-SST<-stoplight[4,] 
-Copepod_richness<-stoplight[9,] 
-Ichthy_community_index<-stoplight[14,]
-
-#Example for PDO 
-
-pdo$Year[which(pdo$Month%in%c("Oct","Nov","Dec"))] <- pdo$Year[which(pdo$Month%in%c("Oct","Nov","Dec"))] + 1
-pdo <- dplyr::group_by(pdo, Year) %>%
-  dplyr::summarize(winter_pdo = mean(PDO[which(Month %in% c("Oct","Nov","Dec","Jan","Feb"))])) %>% 
-  dplyr::select(winter_pdo, Year)
-# The first year will be missing Oct-Dec
-pdo <- pdo[-1,]
-
-#five times series in response and keep things to your block 
-
-
-
-#pick some plankton, pick some drivers, 
-```
 
 
 # General tasks
@@ -193,27 +163,298 @@ A few tips:
     
    We also used a few options for the transition equatation in addition to PDO to explore if PDO was more effective than several simple numeric options for controlling transition dynamics.
    
-   
-   
-   
-    
     
 ```{r}
-#EXAMPLE FROM LECTURE 
+# Model 1
+mod1 = depmix(CopeRich ~1,
+                   nstates = 2, 
+                   transition = ~1, 
+                   family = gaussian(),
+                   data=dat)
 
-set.seed(123)
-mod = depmix(list(L_stilbius ~ 1, L_ochotensis~1), 
+fitmod1 = fit(mod1)
+summary(fitmod1)
+
+#Find best fit 
+iter <-100
+seeds<-sample(100:1000, size = iter, replace = F)
+best1 <- 1e10
+best_model1 <- NA
+for(i in 1:iter){
+  set.seed(seeds[i])
+  fitmod1 <- fit(mod1)
+  if(AIC(fitmod1)< best1){
+    best_model1 <- fitmod1
+    best1 <- AIC(fitmod1)
+  }
+}
+
+# plot(ts(posterior(best_model1, type="smoothing")[,1], start=c(2003,5), deltat=1/12),ylab="probability",
+#      main="Posterior probability of state 1 (copepods good?).",
+#      frame=FALSE)
+
+prstates <- apply(posterior(best_model1)[,c("S1", "S2")],1, which.max)
+mu <- summary(best_model1)[,1]
+
+pred <- tibble("Year" = dat$years, "Copepod Richness" = mu[prstates])
+
+#predicted values
+pred1<-pred %>% 
+  pivot_longer(-Year, names_to = "Copepod Richness", values_to = "Fit")
+
+ggplot() +
+  geom_line(data = pred1, aes(x = years, y = Fit, color = "predicted_states"), size = 1) +
+  geom_line(data = dat, aes(x = years, y = CopeRich, color = "CopeRich"), size = 1) +
+  geom_line(data = dat, aes(x = years, y = PDO_DecMarch, color = "PDO" ), size = 1)+
+  scale_color_manual(values = c(PDO = "blue", SST = "red", CopeRich = "green",
+                                FishInx = "purple", predicted_states = "orange")) +
+  labs(title = " Model 1 - Two States", x = "Year", y = "Value", color = "Variable") +
+  theme_minimal()
+
+```
+
+
+```{r}
+# Model 2
+mod2 = depmix(CopeRich ~1,
+                   nstates = 3, 
+                   transition = ~1, 
+                   family = gaussian(),
+                   data=dat)
+
+fitmod2 = fit(mod2)
+summary(fitmod2)
+
+#Find best fit 
+iter <-100
+seeds<-sample(100:1000, size = iter, replace = F)
+best2 <- 1e10
+best_model2 <- NA
+for(i in 1:iter){
+  set.seed(seeds[i])
+  fitmod2 <- fit(mod2)
+  if(AIC(fitmod2)< best2){
+    best_model2 <- fitmod2
+    best2 <- AIC(fitmod2)
+  }
+}
+
+# plot(ts(posterior(best_model1, type="smoothing")[,1], start=c(2003,5), deltat=1/12),ylab="probability",
+#      main="Posterior probability of state 1 (copepods good?).",
+#      frame=FALSE)
+
+prstates <- apply(posterior(best_model2)[,c("S1", "S2")],1, which.max)
+mu <- summary(best_model2)[,1]
+
+pred <- tibble("Year" = dat$years, "Copepod Richness" = mu[prstates])
+
+#predicted values
+pred2 <- pred %>% 
+  pivot_longer(-Year, names_to = "Copepod Richness", values_to = "Fit")
+
+ggplot() +
+   geom_line(data = pred2, aes(x = years, y = Fit, color = "predicted_states"), size = 1) +
+  geom_line(data = dat, aes(x = years, y = CopeRich, color = "CopeRich"), size = 1) +
+  geom_line(data = dat, aes(x = years, y = PDO_DecMarch, color = "PDO" ), size = 1)+
+  scale_color_manual(values = c(PDO = "blue", SST = "red", CopeRich = "green",
+                                FishInx = "purple", predicted_states = "orange")) +
+  labs(title = " Model 2 - Three States", x = "Year", y = "Value", color = "Variable") +
+  theme_minimal()
+
+```
+Compared to model 1, model two produces a poor visual fit when trying to fit three states to the data
+
+```{r} 
+
+############## The plot here needs work ##############
+
+
+#Copepods and PDO as intercepts 
+mod3 = depmix(list(CopeRich ~1, PDO~1),
              nstates = 2, 
+             transition = ~1, 
              family = list(gaussian(),gaussian()),
-             data=calcofi)
-fitmod = fit(mod)
+             data=dat)
 
-#plotting 
-#plot first object 
-object<-posterior(fitmod)[,c("S1","S2")]
+fitmod3 = fit(mod3)
+summary(fitmod3)
 
-#plot means of species in each state 
-#get a vector of elements (n=states), and use the above code and scale by the coeffients 
+#Find best fit 
+iter <-100
+seeds<-sample(100:1000, size = iter, replace = F)
+best3 <- 1e10
+best_model3 <- NA
+for(i in 1:iter){
+  set.seed(seeds[i])
+  fitmod3 <- fit(mod3)
+  if(AIC(fitmod3)< best3){
+    best_model3 <- fitmod3
+    best3 <- AIC(fitmod3)
+  }
+}
+
+plot(ts(posterior(best_model3, type="smoothing")[,1], start=c(2003,5), deltat=1/12),ylab="probability",
+     main="Posterior probability of state 1 (copepods good?).",
+     frame=FALSE)
+
+prstates<-apply(posterior(best_model3)[,c("S1", "S2")],1, which.max)
+mu<-summary(best_model3)[,1]
+mu3<-summary(best_model3)[,3]
+pred <- tibble("Year" = dat$years, "Copepod Richness" = mu[prstates],"PDO" = mu3[prstates])
+pred3<-pred %>% pivot_longer(-Year, names_to = "Covariates", values_to = "Fit")
+
+ggplot() +
+  geom_line(data = pred3, aes(x = Year, y = Fit, group = Covariates, color = Covariates)) +
+  geom_line(data = dat, aes(x = years, y = CopeRich, color = "CopeRich"), size = 1) +
+  geom_line(data = dat, aes(x = years, y = PDO_DecMarch, color = "PDO" ), size = 1)+
+  scale_color_manual(values = c(PDO = "blue", SST = "red", CopeRich = "green",
+                                FishInx = "purple", predicted_states = "orange")) +
+  labs(title = " Model 3 - transition ~ 1", x = "Year", y = "Value", color = "Variable") +
+  theme_minimal()
+
+
+```
+```{r}
+
+#Copepods and PDO as intercepts where the transition is informed by PDO
+mod4 = depmix(list(CopeRich ~1, PDO~1),
+              nstates = 2, 
+              transition = ~PDO, 
+              family = list(gaussian(),gaussian()),
+              data=dat)
+fitmod4 = fit(mod4)
+summary(fitmod4)
+
+#Find best fit 
+iter <-100
+seeds<-sample(100:1000, size = iter, replace = F)
+best4 <- 1e10
+best_model4 <- NA
+for(i in 1:iter){
+  set.seed(seeds[i])
+  fitmod4 <- fit(mod4)
+  if(AIC(fitmod4)< best4){
+    best_model4 <- fitmod4
+    best4 <- AIC(fitmod4)
+  }
+}
+
+plot(ts(posterior(best_model4, type="smoothing")[,1], start=c(2003,5), deltat=1/12),ylab="probability",
+     main="Posterior probability of state 1 (copepods good?).",
+     frame=FALSE)
+
+prstates<-apply(posterior(best_model4)[,c("S1", "S2")],1, which.max)
+mu<-summary(best_model4)[,1]
+mu4<-summary(best_model4)[,3]
+pred <- tibble("Year" = dat$years, "Copepod Richness" = mu[prstates],"PDO" = mu4[prstates])
+pred4<-pred %>% pivot_longer(-Year, names_to = "Covariates", values_to = "Fit")
+
+ggplot() +
+  geom_line(data = pred4, aes(x = Year, y = Fit, group = Covariates, color = Covariates)) +
+  geom_line(data = dat, aes(x = years, y = CopeRich, color = "CopeRich"), size = 1) +
+  geom_line(data = dat, aes(x = years, y = PDO_DecMarch, color = "PDO" ), size = 1)+
+  scale_color_manual(values = c(PDO = "blue", SST = "red", CopeRich = "green",
+                                FishInx = "purple", predicted_states = "orange")) +
+  labs(title = " Model 4 - Transition ~ PDO", x = "Year", y = "Value", color = "Variable") +
+  theme_minimal()
+
+```
+
+```{r}
+
+#Copepods as they relate to PDO
+mod5 = depmix(list(CopeRich ~PDO),
+              nstates = 2, 
+              transition = ~1, 
+              family = list(gaussian()),
+              data=dat)
+fitmod5 = fit(mod5)
+summary(fitmod5)
+
+#Find best fit 
+iter <-100
+seeds<-sample(100:1000, size = iter, replace = F)
+best5 <- 1e10
+best_model5 <- NA
+for(i in 1:iter){
+  set.seed(seeds[i])
+  fitmod5 <- fit(mod5)
+  if(AIC(fitmod5)< best5){
+    best_model5 <- fitmod5
+    best5 <- AIC(fitmod5)
+  }
+}
+
+plot(ts(posterior(best_model5, type="smoothing")[,1], start=c(2003,5), deltat=1/12),ylab="probability",
+     main="Posterior probability of state 1 (copepods good?).",
+     frame=FALSE)
+
+prstates<-apply(posterior(best_model5)[,c("S1", "S2")],1, which.max)
+mu<-summary(best_model5)[,1]
+
+pred <- tibble("Year" = dat$years, "Copepod Richness" = mu[prstates])
+pred5<-pred %>% pivot_longer(-Year, names_to = "Copepod Richness", values_to = "Fit")
+
+ggplot() +
+   geom_line(data = pred5, aes(x = years, y = Fit, color = "predicted_states"), size = 1) +
+  geom_line(data = dat, aes(x = years, y = CopeRich, color = "CopeRich"), size = 1) +
+  geom_line(data = dat, aes(x = years, y = PDO_DecMarch, color = "PDO" ), size = 1)+
+  scale_color_manual(values = c(PDO = "blue", SST = "red", CopeRich = "green",
+                                FishInx = "purple", predicted_states = "orange")) +
+  labs(title = " Model 2 - Three States", x = "Year", y = "Value", color = "Variable") +
+  theme_minimal()
+
+# ggplot() + geom_point(data = dat, aes(x = years, y = CopeRich, color = "Copepod Richness")) + 
+#   geom_line(data = pred2, aes(x = years, y = Fit, group = "Copepod Richness", color = "Copepod Richness")) + theme_classic()
+
+
+```
+
+
+```{r}
+
+#Copepods as they relate to PDO where the transition is informed by PDO
+mod6 = depmix(list(CopeRich ~PDO),
+              nstates = 2, 
+              transition = ~PDO, 
+              family = list(gaussian()),
+              data=dat)
+fitmod6 = fit(mod6)
+summary(fitmod6)
+
+#Find best fit 
+iter <-100
+seeds<-sample(100:1000, size = iter, replace = F)
+best6 <- 1e10
+best_model6 <- NA
+for(i in 1:iter){
+  set.seed(seeds[i])
+  fitmod6 <- fit(mod6)
+  if(AIC(fitmod6)< best6){
+    best_model6 <- fitmod6
+    best6 <- AIC(fitmod6)
+  }
+}
+
+plot(ts(posterior(best_model6, type="smoothing")[,1], start=c(2003,5), deltat=1/12),ylab="probability",
+     main="Posterior probability of state 1 (copepods good?).",
+     frame=FALSE)
+
+prstates<-apply(posterior(best_model6)[,c("S1", "S2")],1, which.max)
+mu<-summary(best_model6)[,1]
+
+pred <- tibble("Year" = dat$years, "Copepod Richness" = mu[prstates])
+pred6<-pred %>% pivot_longer(-Year, names_to = "Copepod Richness", values_to = "Fit")
+
+ggplot() +
+   geom_line(data = pred6, aes(x = years, y = Fit, color = "predicted_states"), size = 1) +
+  geom_line(data = dat, aes(x = years, y = CopeRich, color = "CopeRich"), size = 1) +
+  geom_line(data = dat, aes(x = years, y = PDO_DecMarch, color = "PDO" ), size = 1)+
+  scale_color_manual(values = c(PDO = "blue", SST = "red", CopeRich = "green",
+                                FishInx = "purple", predicted_states = "orange")) +
+  labs(title = " Model 2 - Three States", x = "Year", y = "Value", color = "Variable") +
+  theme_minimal()
+
 
 ```
 
@@ -235,7 +476,7 @@ Summarize the model you've created. Specifically,
 
 # Discussion
 
-
+## what we are still confused about
 
 
 

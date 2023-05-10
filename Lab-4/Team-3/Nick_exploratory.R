@@ -263,8 +263,8 @@ pred3 <- data.frame("year"=seq(min(years),
 
 # Three states does not look good, it only shows two and they 
 # only show up at the upper range of the data ?
-ggplot(pred, aes(x = years))+
-  geom_line(data=pred, aes( y=fit, color = "predicted_states"), size = 1)+
+ggplot(pred3, aes(x = years))+
+  geom_line(data=pred3, aes( y=fit, color = "predicted_states"), size = 1)+
   geom_line(aes(y = PDO_DecMarch, color = "PDO" ), size = 1)+
   geom_line(aes(y = Copepod_richness, color = "CopeRich"), size = 1) +
   scale_color_manual(values = c(PDO = "blue", SST = "red", CopeRich = "green",
