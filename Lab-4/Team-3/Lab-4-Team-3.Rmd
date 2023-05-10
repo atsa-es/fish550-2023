@@ -356,7 +356,6 @@ ggplot() +
   theme_minimal()
 
 ```
-
 Models 3 and 4 produce similar fits to the data, the only obvious difference is that model 4 spends less time in the higher state than model 3. 
 
 
@@ -468,7 +467,7 @@ tab <- cbind.data.frame(mods, aic, delta.aic)
 tab
 
 ```
-AIC tells us that the best model would be model 6, although it is marginally better than model 5 with a delta AIC of just over 2. The delta AIC values are only about 2 different between models 1-2 and 3-4 and 5-6. Each set of models are the most similar to each other within the models tested and these AIC values indicate little to no support for one approach within each group to be significantly better than the other. AIC values do indicate significantly better performance between these sets of models, however this support is not supported by looking at visual fits of the data. The two best models, 5 and 6, produce the worst visual fits to the data of any models tested. It is unclear why AIC is selecting these models as the best, but it does seem that AIC favors the simple models with only one intercept rather than models with two intercepts. Becuase of the apparent poor fit of models 5 adn 6 is seems other methods of model selction such as Cross Validation or leave One Out may be more appropriate here than AIC. 
+AIC tells us that the best model would be model 6, although it is marginally better than model 5 with a delta AIC of just over 2. The delta AIC values are only about 2 different between models 1-2 and 3-4 and 5-6 respectively. Each set of models are the most similar to each other within the models tested and these AIC values indicate little to no support for one approach within each group to be significantly better than the other. AIC values do indicate significantly better performance between these sets of models, however this support is not supported by looking at visual fits of the data. The two best models, 5 and 6, produce the worst visual fits to the data of any models tested. It is unclear why AIC is selecting these models as the best, but it does seem that AIC favors the simple models with only one intercept rather than models with two intercepts. Because of the apparent poor fit of models 5 and 6, it seems other methods of model selection such as Cross Validation or leave One Out may be more appropriate here than AIC. 
 
 # More model diagnostics
 ```{r}
@@ -523,11 +522,11 @@ The models converged, however visual inspection of model fits revealed that seve
 
 -   How many states seem to be most supported?
 
-Compared to model 1, model two produces a poor visual fit to the data. Because of this we assumed 2 states in the other models we tested. 
+Compared to model 1, model two with 3 states produced a poor visual fit to the data. Because of this we assumed 2 states in the other models we tested. 
 
 -   Plot the time series of estimated states. What does this mean?
 
-The estimated states in our top AICc ranked model do not appear to fit the data well. We are unsure of where to go from here.
+The estimated states in our top AICc ranked model do not appear to fit the data well, indicating that AICc may not be the best metric to use here. It definitely highlights the dangers of blindly trusting AIC without further model checks.
 
 -   What are the transition probabilities?
 
@@ -548,5 +547,4 @@ PDO has a very strong correlative pattern with copepod richness. We ran several 
 
 # Team contributions
 
-Example: "All team members helped decide on the goal and ran the analyses for the individual regions. Team members 2 & 3 wrote most of the code for the analysis. Team member 1 worked on the plotting section of the report using and adapting code that team member 3 wrote. All team members helped edit the report and wrote the discussion together."
-
+Madison took point on coding, Nick did some coding too, and Nick and Karl did writing and .Rmd organizing. 
