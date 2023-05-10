@@ -16,18 +16,15 @@ options(dplyr.summarise.inform = FALSE)
 
 # Data
 
-    When visually plotting copepod richness versus several predictors, PDO stood out as seemingly having a very strong correlative pattern with copepod richness that was worth further exploration.
+When visually plotting copepod richness versus several predictors, PDO stood out as seemingly having a very strong correlative pattern with copepod richness that was worth further exploration.
     
 ## Load the data
-
-We have included the `stoplight.csv` dataset for this week. One of the
-columns divides indicators into groups (e.g. Local Physical, Local
-Biological, etc). 
-
 ```{r load_data}
 
 library(hmmTMB)
 library(depmixS4)
+library(tidyverse)
+
 
 stoplight <- read.csv(here::here("Lab-4", "stoplight.csv"))
 
@@ -39,12 +36,13 @@ names(stoplight)
 ## Wrangle the data
 
 ```{r}
+# Reference slides 55-60
+# ecosystem indicators
 
-#ecosystem indicators
 stoplight[,1]  
 years<-seq(1998,2021,1)
 
-#ecosystem indicators to pull
+# Here we select several ecosystem indicators to examine
 PDO_DecMarch<-unlist(as.vector(stoplight[1,3:26])) 
 SST<-unlist(as.vector(stoplight[4,3:26])) 
 Copepod_richness<-unlist(as.vector(stoplight[9,3:26])) 
@@ -125,41 +123,20 @@ ggplot(dat, aes(x = PDO, y = CopeRich, color = CopeRich < 0)) +
   labs(x = "PDO", y = "CopeRich") +
   theme_minimal()
   
-
 #fish index is all over the place, let's not use it. 
-
 ```
 
 
-### Objective tips 
-
-Keep this relatively simple. select five times series pick some responses, pick some drivers.
-
-Pass the model responses in as list of formulas-- family also has to be in the list 
-
-* Reference slides 55-60
-
-
-
-# General tasks
-
-Each group has the same general tasks, but you will adapt them as you work on the data.
-
-Please pick a type of indicators, and develop a 2- or 3-state multivariate HMM. 
-
 # Methods
-
-A few tips:
-
--   Assume all responses are Gaussian.
-
--   You're welcome to include covariates (year? Climate variables?) --
-    but fitting a simple model without covariates is also totally fine
     
+We fit models with different numbers of PDO states to determine whether PDO seems to have 2 or 3 states. There appears to be high and low states but it is unclear if there is a 'neutral' state that modulates copepod richness in addition to the hot and cool phases. 
     
-    We fit models with different numbers of PDO states to determine whether PDO seems to have 2 or 3 states. It's unclear if there is a 'neutral' state that modulates copepod richness in addition to the hot and cool phases. 
-    
-   We also used a few options for the transition equation in addition to PDO to explore if PDO was more effective than several simple numeric options for controlling transition dynamics.
+We also set the transition equation equal to ~1 in addition to ~ PDO to explore if PDO was more effective than several simple numeric options for controlling transition dynamics.
+
+We assumed the familys were gaussian for all models tested. 
+
+We plotted the fit of all models to copepod richness and PDO data from the stoplight dataset. We then also compared model fits with AIC in an attempt to select the best model. 
+
    
 ```{r}
 # Model 1
@@ -356,7 +333,7 @@ ggplot() +
   theme_minimal()
 
 ```
-Models 3 and 4 produce similar fits to the data, the only obvious difference is that model 4 spends less time in the higher state than model 3. 
+Models 3 and 4 produce similar fits to the data, the only obvious difference is that model 4 spends less time in the higher state than model 3 in the later time periods. 
 
 
 ```{r}
@@ -405,7 +382,7 @@ ggplot() +
 
 ```
 
-For the intercept we chose to model Copepod Richness ~ PDO. These data sets have the closest correlation and so this was done to test of the fit could be improved by modeling the variation of Copepod Richness as a function of PDO. Admittedly, we are not sure if this is a appropriate entry to the `depmix()` function but the results for models 5 and 6 were interesting so we included them. 
+For the intercept we chose to model Copepod Richness ~ PDO. These data sets have the closest correlation and so this was done to test if the fit could be improved by modeling the variation of Copepod Richness as a function of PDO. Admittedly, we are not sure if this is a appropriate entry to the `depmix()` function but the results for models 5 and 6 were interesting so we included them. 
 
 # Model 6
 ```{r}
@@ -509,7 +486,13 @@ convert_probs(fitmod6)
 
 ```
 
+State 3 in model 2 appears to be fairly unstable as its state 3 to state 3 transition probability is 0, and it has a fairly low probability of other states transitioning to state 3, outside of state 2 to state 3. Our best model run did not generate any observations in state 3 so it is unclear if this is a middle state as we hypothesized or not. 
 
+The state 1 transition probabilities in models 3 and 4 showed an opposite pattern, yet produced very similar fits to the data. The difference appeared to only be shown in the most recent years, where in model 4 there was a more rapid shift out of the higher state. This aligns with what we would expect with the change in transition probabilities from state 1 to state 2. 
+
+Model 5 appeared to have smaller intercept values which makes sense as the predicted states were closer to 0 than in the other models. 
+
+The transition matrix for model 6 was the most unique with a high likelihood that the model will transition to and stay in state 2. This is another good indication that the model is a poor fit to the data as the data visually appears to have at least two states, and the other models produced good visual fits with a two state approach. 
 
 
 # Results
@@ -518,33 +501,28 @@ Summarize the model you've created. Specifically,
 
 -   Does it converge?
 
-The models converged, however visual inspection of model fits revealed that several fits were quite poor, including our top model ranked by AICc.
+All the models converged even when running the for loop over various seeds, however visual inspection of model fits revealed that several fits were quite poor, including our top model ranked by AICc.
 
 -   How many states seem to be most supported?
 
-Compared to model 1, model two with 3 states produced a poor visual fit to the data. Because of this we assumed 2 states in the other models we tested. 
+Compared to model 1, model two with 3 states produced a poor visual fit to the data. Because of this we assumed 2 states in the other models we tested. This aligned with our visual estimates of two states.
 
 -   Plot the time series of estimated states. What does this mean?
 
-The estimated states in our top AICc ranked model do not appear to fit the data well, indicating that AICc may not be the best metric to use here. It definitely highlights the dangers of blindly trusting AIC without further model checks.
-
--   What are the transition probabilities?
-
-We fit models that had transitions of 1, as well as transitions mediated by PDO. 
-
+The plots of estimated states show the underlying pattern that may exist if there is in fact a shift between states. The variation in the data from this pattern would be related to unexplained error related to covariates other than the underlying states. Visually there appears to be good support for two underlying states, however the estimated states in our top AICc ranked model do not appear to fit the data well, indicating that AICc may not be the best metric to use here. It definitely highlights the dangers of blindly trusting AIC without further model checks.
 
 
 # Discussion
+PDO is an indice of ocean conditions that is generally thought to act as a driver for abundance and richness of organisms in the North Pacific. Here we predicted that PDO would be a driver of copepod richness. The two time series of data appear to closely co-vary and seem to show a pattern of a high and low state with rapid swings between the two. Our models using 2 states produced good visual fits and we found little support for three states. AIC appears to be a relatively poor choice for model selection in this instance although it is unclear if that is specific to HMM models or if there was a programming error. Other types of model selection would likely increase our understanding of model performance. We saw no obvious difference between a rapid shift in states , `transition = ~1` and a shift proportional to the PDO data set. This suggests that there is in fact a very rapid shift between states, which aligns with our expected result based on the general lack of observations near neutral conditions. 
+
 
 ## what we are still confused about
 One question we had is that our 'best' model based on AICc values did not appear to be a good fit to the data visually. When this is the case, what should our next steps be? Visually confirming model fit seems to overrule AICc values when those diagnsotics are contradictory, is this true?
 
-We didn't have a good handle on how the 'nstates' and 'transitions' inputs to the models interacted. 
+We didn't have a good handle on how the 'nstates' and 'transitions' inputs to the models interacted and what type of model diagnostics would help us quantify underlying relationships. 
 
-PDO has a very strong correlative pattern with copepod richness. We ran several combinations of model to examine the strength of this relationship. We produced some models with decent looking fits, but these models were not as highly ranked by AICc as other, seeminly less well fitting models. 
-
-
+PDO has a very strong correlative pattern with copepod richness. We ran several combinations of model to examine the strength of this relationship. We produced some models with decent looking fits, but these models were not as highly ranked by AICc as other, seeminly less well fitting models. Is AIC a poor choice? We have a suspicion this question will be anwered in the next lecture(s)...
 
 # Team contributions
 
-Madison took point on coding, Nick did some coding too, and Nick and Karl did writing and .Rmd organizing. 
+Madison took point on coding, Nick helped with coding and compiled it into the final rmd, and Nick and Karl did writing and .Rmd organizing. 
