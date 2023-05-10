@@ -7,6 +7,9 @@ output:
     code-folding: true
     toc: true
     toc_float: true
+editor_options: 
+  markdown: 
+    wrap: sentence
 ---
 
 ```{r setup, include = FALSE}
@@ -15,17 +18,20 @@ options(dplyr.summarise.inform = FALSE)
 
 # Data
 
-Here we will examine a model fitting 3 different local copepod metrics - copepod richness, northern copepod biomass, and southern copepod biomass - across the entire available time series. After spending some time looking at the time-series patterns prior to model fitting, we would also like to evaluate the effect of Pacific Decadal Oscillation (PDO) from December to March as a covariate on both the state and transition. We will evaluate both a 2 and 3 state model with 1 covariate. 
+Here we will examine a model fitting 3 different local copepod metrics - copepod richness, northern copepod biomass, and southern copepod biomass - across the entire available time series.
+After spending some time looking at the time-series patterns prior to model fitting, we would also like to evaluate the effect of Pacific Decadal Oscillation (PDO) from December to March as a covariate on both the state and transition.
+We will evaluate both a 2 and 3 state model with 1 covariate.
 
-## Note ?? 
-Also describe any standardization, centering or scaling 
-that was used. 
+## Note
 
+The variables we chose were already de-meaned.
+We did not zscore the data.
 
 ## Load the data
 
-```{r load_data}
+```{r load_data, include=FALSE}
 library(depmixS4)
+library(tidyverse)
 stoplight <- read.csv(here::here("Lab-4", "stoplight.csv"))
 ```
 
@@ -40,16 +46,18 @@ subset_data <- stoplight[c("Copepod_richness","N_copepod","S_copepod","PDO_DecMa
 #column names should be years
 colnames(subset_data) <- seq(1998,2021)
 
-par(mfrow = c(2,1), mai = c(0.5, 0.7, 0.1, 0.1), omi = c(0, 0, 0, 0))
+par(mfrow = c(2,1), mai = c(0.5, 1, 0.1, 0.1), omi = c(0, 0, 0, 0))
 plot(seq(1998,2021),subset_data["Copepod_richness",], type = "l", xlab = "years", ylab ="Copepod richness")
 plot(seq(1998,2021),subset_data["N_copepod",], type = "l", xlab = "years", ylab ="N_copepod")
 plot(seq(1998,2021),subset_data["S_copepod",], type = "l", xlab = "years", ylab ="S_copepod")
 plot(seq(1998,2021),subset_data["PDO_DecMarch",], type = "l", xlab = "years", ylab ="PDO_DecMarch")
 
 ```
+
 # Univariate test
 
-We will start by looking at copepod richness. 
+We will start by looking at copepod richness.
+
 ```{r}
 data <- data.frame(t(subset_data))
 fitmod <- depmix(Copepod_richness ~1,
@@ -68,7 +76,8 @@ AIC1 <- AIC(fitmod)
 
 ```
 
-Here we look at the effect of 1 covariate on copepod richness. 
+Here we look at the effect of 1 covariate on copepod richness.
+
 ```{r}
 fitmod_cov <- depmix(Copepod_richness ~1 + PDO_DecMarch,
                  nstates = 2,
@@ -87,7 +96,8 @@ AIC_cov <- AIC(fitmod_cov)
 
 # Reframe multivariate dataset
 
-Wrangle data to multivariate subset. 
+Wrangle data to multivariate subset.
+
 ```{r}
 subset_data_l <- subset_data
 subset_data_l$ID <- rownames(subset_data_l)
@@ -101,7 +111,9 @@ subset_multi <-pivot_wider(subset_data_long, names_from = ID, values_from = valu
 ```
 
 # HMM on 2 states
+
 Basic 2 state model
+
 ```{r}
 set.seed(123)
 mod2_1 = depmix(list(Copepod_richness ~ 1, N_copepod~1, S_copepod~1), 
@@ -118,16 +130,16 @@ plot(prstates, type="b", xlab="Time", ylab="State")
 
 ```
 
-
 ```{r}
-plot(ts(posterior(fitmod2_1, type="smoothing")[,1], start=1998, end = 2021),
+plot(subset_multi$variable, scale(apply(posterior(fitmod2_1) [,c("S1", "S2")], 1, which.max)),
      ylab="probability",
-main="Posterior probability of state 1",
-frame=FALSE, ylim = c(-1,8))
-points(subset_multi$variable,subset_multi$Copepod_richness)
+frame=FALSE, ylim = c(-1,4), type = "l")
+points(subset_multi$variable,scale(subset_multi$Copepod_richness))
 
 ```
+
 HMM with 2 states and covariate
+
 ```{r}
 set.seed(123)
 mod2_2 = depmix(list(Copepod_richness ~ PDO_DecMarch, N_copepod~ PDO_DecMarch, 
@@ -140,6 +152,7 @@ AIC2_2 = AIC(fitmod2_2)
 ```
 
 Covariate in the transition probabilty
+
 ```{r}
 set.seed(123)
 mod2_3 = depmix(list(Copepod_richness ~ 1, N_copepod ~ 1, 
@@ -150,10 +163,13 @@ mod2_3 = depmix(list(Copepod_richness ~ 1, N_copepod ~ 1,
              data=subset_multi)
 fitmod2_3 = fit(mod2_3)
 AIC2_3 = AIC(fitmod2_3)
+
 ```
+
 # HMM on 3 states
 
 Basic 3 state model
+
 ```{r}
 set.seed(123)
 mod3_1 = depmix(list(Copepod_richness ~ 1, N_copepod~1, S_copepod~1), 
@@ -165,7 +181,9 @@ AIC3_1 <- AIC(fitmod3_1)
 ```
 
 ## Effect of covariate on transition parameters
+
 3 state model with covariate effects on transition parameters
+
 ```{r}
 set.seed(123)
 mod3_2 = depmix(list(Copepod_richness ~ 1, N_copepod~1, S_copepod~1), 
@@ -181,6 +199,7 @@ AIC3_2 <- AIC(fitmod3_2)
 ```
 
 3 state model with covariate effects on state parameters
+
 ```{r}
 set.seed(123)
 mod3_3 = depmix(list(Copepod_richness ~ 1 +PDO_DecMarch, 
@@ -197,6 +216,7 @@ AIC3_3 <- AIC(fitmod3_3)
 ```
 
 3 state model with covariate effects on state and transition parameters
+
 ```{r}
 set.seed(123)
 mod3_4 = depmix(list(Copepod_richness ~ 1 +PDO_DecMarch, 
@@ -226,40 +246,71 @@ AIC3_4
 ```{r}
 print(fitmod3_3)
 ```
-PLotting the 3 state model
+
+Plotting the 3 state model
+
 ```{r}
 prstates = apply(posterior(fitmod3_3)[,c("S1","S2", "S3")], 1, which.max)
 plot(prstates, type="b", xlab="Time", ylab="State")
 ```
 
-Based on the AIC values, the best model for assessing our subset of copepod data is the multivariate 3 state HMM model with covariate effects on the state parameters. 
 
-# Results / Discussion ?
 
--   Does it converge?
-Our model does converge. 
+Based on the AIC values, the best model for assessing our subset of copepod data is the multivariate 3 state HMM model with covariate effects on the state parameters.
+
+# Results / Discussion
+
+Does it converge?
+
+-   Yes, all our models converge.
 
 How many states seem to be most supported?
-- An HMM model with 3 states is the most supported by AIC comparison but the fit looks better with a 2 state model. 
 
-Plot the time series of estimated states. What does this mean?
-- The 3 state model shows that shows a smooth transition between states 1 - 3. While the transition probabilities below show that it is possible for the model to jump from state 3 to state 1, the opposite is not true (probability of moving from state 1 to state 3 is zero). This is reflected when plotting the likely states. It is more likely to switch smoothly between the states over time, which makes sense when considering the influence of PDO - which indicates an overall warm or cool phase of ocean activity. It is more likely that temperature fluctuations have smooth transitions than drastic jumps over a large time scale, and this is reflected in the 3 state model. It also explains why the 2 state model with the same covariate effects also fits the data well - eliminating the middle state from a time series with smooth transitions shouldn't drastically effect the model. 
+-   An HMM model with 3 states is the most supported by AIC comparison but the fit looks better with a 2 state model.
+
+Plot the time series of estimated states.
+
+```{r warning=FALSE}
+prstates = apply(posterior(fitmod3_3)[,c("S1","S2", "S3")], 1, which.max)
+plot(subset_multi$variable,scale(apply(posterior(fitmod3_3)[,c("S1","S2", "S3")], 1, which.max)), xlab="Time", ylab="State", type = "b")
+points(subset_multi$variable,scale(subset_multi$Copepod_richness), pch = 19)
+```
+
+
+What does this mean?
+- The 3 state model shows that shows a smooth transition between states 1 - 3.
+While the transition probabilities below show that it is possible for the model to jump from state 3 to state 1, the opposite is not true (probability of moving from state 1 to state 3 is zero).
+This is reflected when plotting the likely states.
+It is more likely to switch smoothly between the states over time, which makes sense when considering the influence of PDO - which indicates an overall warm or cool phase of ocean activity.
+It is more likely that temperature fluctuations have smooth transitions than drastic jumps over a large time scale, and this is reflected in the 3 state model.
+It also explains why the 2 state model with the same covariate effects also fits the data well - eliminating the middle state from a time series with smooth transitions shouldn't drastically effect the model.
+
+
+
 
 What are the transition probabilities?
 - Our transition matrix for the 3 state model: 
-        toS1  toS2 toS3
-fromS1 0.666 0.334  0.0
-fromS2 0.500 0.000  0.5
-fromS3 0.400 0.400  0.2
 
-If included, what are the covariate effects? What do these mean?
-- We evaluated the effect of the climate covariate Pacific Decadal Oscillation (PDO) from December to March and found that PDO allowed the HMM model to have a better fit to the data when influencing the state process. 
+
+
+\begin{bmatrix}
+0.66 &  0.33 & 0 \\
+0.5 &  0 & 0.5 \\
+0.4 &  0.4 & 0.2 \\
+\end{bmatrix}
+
+
+
+If included, what are the covariate effects?
+What do these mean?
+- We evaluated the effect of the climate covariate Pacific Decadal Oscillation (PDO) from December to March and found that PDO allowed the HMM model to have a better fit to the data when influencing the state process.
 
 Anything else interesting that you've discovered?
-- In both the 2 and 3 state HMM models, the covariate effects were best explained as state effects. 
-
+- In both the 2 and 3 state HMM models, the covariate effects were best explained as state effects.
 
 # Team contributions
-Miranda and Maria both decided on the variables and covariates to test. Maria fit the 2 state model and Miranda fit the 3 state model. Miranda drafted the contributions into a final report. Maria wrote the discussion and finalized the report. 
 
-
+Miranda and Maria both decided on the variables and covariates to test.
+Maria fit the 2 state model and Miranda fit the 3 state model.
+Miranda drafted the contributions into a final report.
+Maria wrote the discussion and finalized the report.
