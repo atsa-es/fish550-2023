@@ -470,6 +470,7 @@ tab <- cbind.data.frame(mods, aic, delta.aic)
 tab
 
 ```
+AIC tells us that the best model would be model 6, although it is marginally better than model 5 with a delta AIC of just over 2. The delta AIC values are only about 2 different between models 1-2 and 3-4 and 5-6. Each set of models are the most similar to each other within the models tested and these AIC values indicate little to no support for one approach within each group to be significantly better than the other. AIC values do indicate significantly better performance between these sets of models, however this support is not supported by looking at visual fits of the data. The two best models, 5 and 6, produce the worst visual fits to the data of any models tested. It is unclear why AIC is selecting these models as the best, but it does seem that AIC favors the simple models with only one intercept rather than models with two intercepts. Becuase of the apparent poor fit of models 5 adn 6 is seems other methods of model selction such as Cross Validation or leave One Out may be more appropriate here than AIC. 
 
 # More model diagnostics
 ```{r}
@@ -511,7 +512,7 @@ convert_probs(fitmod6)
 
 ```
 
-AIC tells us that the best model would be model 6, although it is marginally better than model 5 with a delta AIC of just over 2. The delta AIC values are only about 2 different between models 1-2 and 3-4 and 5-6. Each set of models are the most similar to each other within the models tested and these AIC values indicate little to no support for one approach within each group to be significantly better than the other. AIC values do indicate significantly better performance between these sets of models, however this support is not supported by looking at visual fits of the data. The two best models, 5 and 6, produce the worst visual fits to the data of any models tested. It is unclear why AIC is selecting these models as the best, but it does seem that AIC favors the simple models with only one intercept rather than models with two intercepts. Becuase of the apparent poor fit of models 5 adn 6 is seems other methods of model selction such as Cross Validation or leave One Out may be more appropriate here than AIC. 
+
 
 
 # Results
