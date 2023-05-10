@@ -16,10 +16,8 @@ options(dplyr.summarise.inform = FALSE)
 
 # Data
 
-Describe what plankton groups and covariates you used and indicate any temporal 
-subsetting you chose. Also describe any standardization, centering or scaling 
-that was used. 
-
+    When visually plotting copepod richness versus several predictors, PDO stood out as seemingly having a very strong correlative pattern with copepod richness that was worth further exploration.
+    
 ## Load the data
 
 We have included the `stoplight.csv` dataset for this week. One of the
@@ -159,11 +157,10 @@ A few tips:
     but fitting a simple model without covariates is also totally fine
     
     
-    We fit models with different numbers of PDO states to determine whether PDO seems to have 2 or 3 states.It's unclear if there is a 'neutral' state that modulates copepod richness in addition to the hot and cool phases. 
+    We fit models with different numbers of PDO states to determine whether PDO seems to have 2 or 3 states. It's unclear if there is a 'neutral' state that modulates copepod richness in addition to the hot and cool phases. 
     
-   We also used a few options for the transition equatation in addition to PDO to explore if PDO was more effective than several simple numeric options for controlling transition dynamics.
+   We also used a few options for the transition equation in addition to PDO to explore if PDO was more effective than several simple numeric options for controlling transition dynamics.
    
-    
 ```{r}
 # Model 1
 mod1 = depmix(CopeRich ~1,
@@ -313,6 +310,7 @@ ggplot() +
 
 
 ```
+
 ```{r}
 
 #Copepods and PDO as intercepts where the transition is informed by PDO
@@ -521,19 +519,30 @@ Summarize the model you've created. Specifically,
 
 -   Does it converge?
 
+The models converged, however visual inspection of model fits revealed that several fits were quite poor, including our top model ranked by AICc.
+
 -   How many states seem to be most supported?
+
+Compared to model 1, model two produces a poor visual fit to the data. Because of this we assumed 2 states in the other models we tested. 
 
 -   Plot the time series of estimated states. What does this mean?
 
+The estimated states in our top AICc ranked model do not appear to fit the data well. We are unsure of where to go from here.
+
 -   What are the transition probabilities?
 
--   If included, what are the covariate effects? What do these mean?
+We fit models that had transitions of 1, as well as transitions mediated by PDO. 
 
--   Anything else interesting that you've discovered?
+
 
 # Discussion
 
 ## what we are still confused about
+One question we had is that our 'best' model based on AICc values did not appear to be a good fit to the data visually. When this is the case, what should our next steps be? Visually confirming model fit seems to overrule AICc values when those diagnsotics are contradictory, is this true?
+
+We didn't have a good handle on how the 'nstates' and 'transitions' inputs to the models interacted. 
+
+PDO has a very strong correlative pattern with copepod richness. We ran several combinations of model to examine the strength of this relationship. We produced some models with decent looking fits, but these models were not as highly ranked by AICc as other, seeminly less well fitting models. 
 
 
 
