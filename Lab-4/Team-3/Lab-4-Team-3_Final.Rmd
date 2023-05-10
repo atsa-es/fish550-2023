@@ -11,38 +11,37 @@ output:
 
 ```{r setup, include = FALSE}
 options(dplyr.summarise.inform = FALSE)
-```
-
-
-# Data
-
-When visually plotting copepod richness versus several predictors, PDO stood out as seemingly having a very strong correlative pattern with copepod richness that was worth further exploration.
-    
-## Load the data
-```{r load_data}
-
-library(hmmTMB)
 library(depmixS4)
 library(tidyverse)
+library(kableExtra)
+library(hmmTMB)
+library(depmixS4)
+```
 
+# Data set 
+
+In this lab, we're looking at ecological indicators and exploring hidden Markov models and probabilities of shifting between underlying states. 
+    
+## Load the data
+
+We explored the `stoplight.csv` dataset for this week. One of the columns divides indicators into groups (e.g. Climate, Local Physical, Local Biological, etc) and we wanted to look at some biological indicators and climate/physical indicators. 
+
+```{r load_data}
 
 stoplight <- read.csv(here::here("Lab-4", "stoplight.csv"))
-
 head(stoplight)
-names(stoplight)
 
 ```
 
 ## Wrangle the data
-
+We initially selected the Pacific Decadal Osculation (PDO) for the Dec/March period, sea surface temperature (SST), and copepod richness and ichthy communitiy index, which we assumed was comperable to copepod richness (though maybe not).
 ```{r}
-# Reference slides 55-60
-# ecosystem indicators
 
+#ecosystem indicators
 stoplight[,1]  
 years<-seq(1998,2021,1)
 
-# Here we select several ecosystem indicators to examine
+#ecosystem indicators to pull
 PDO_DecMarch<-unlist(as.vector(stoplight[1,3:26])) 
 SST<-unlist(as.vector(stoplight[4,3:26])) 
 Copepod_richness<-unlist(as.vector(stoplight[9,3:26])) 
@@ -58,38 +57,23 @@ colnames(dat)<-c("years","PDO", "SST", "CopeRich", "FishInx")
 rownames(dat)<-seq(1,24,1)
 
 dat<-as.data.frame(dat)
-print(dat)
-#five times series in response and keep things to your block 
-
-
-#exploring the data more 
-#rule 1 plot your data 
-
-ggplot(dat, aes(x = years)) +
-  geom_line(aes(y = PDO, color = "PDO"), size = 1) +
-  geom_line(aes(y = SST, color = "SST"), size = 1) +
-  scale_color_manual(values = c(PDO = "blue", SST = "red", CopeRich = "green", FishInx = "purple")) +
-  labs(x = "Year", y = "Value", color = "Variable") +
-  theme_minimal()
-
+head(dat)
+```
+## Data Visualization
+The first rule of science is to plot your data! We started with looking at all our data together. 
+```{r}
 # Plotting all
 ggplot(dat, aes(x = years)) +
-  geom_line(aes(y = PDO, color = "PDO"), size = 1) +
-  geom_line(aes(y = SST, color = "SST"), size = 1) +
-  geom_line(aes(y = CopeRich, color = "CopeRich"), size = 1) +
-  geom_line(aes(y = FishInx, color = "FishInx"), size = 1) +
+  geom_line(aes(y = PDO, color = "PDO"), linewidth = 1) +
+  geom_line(aes(y = SST, color = "SST"), linewidth = 1) +
+  geom_line(aes(y = CopeRich, color = "CopeRich"), linewidth = 1) +
+  geom_line(aes(y = FishInx, color = "FishInx"), linewidth = 1) +
   scale_color_manual(values = c(PDO = "blue", SST = "red", CopeRich = "green", FishInx = "purple")) +
   labs(x = "Year", y = "Value", color = "Variable") +
   theme_minimal()
-
-# Plotting Coperich and env cov
-ggplot(dat, aes(x = years)) +
-  geom_line(aes(y = PDO, color = "PDO"), size = 1) +
-  geom_line(aes(y = SST, color = "SST"), size = 1) +
-  geom_line(aes(y = CopeRich, color = "CopeRich"), size = 1) +
-  scale_color_manual(values = c(PDO = "blue", SST = "red", CopeRich = "green", FishInx = "purple")) +
-  labs(x = "Year", y = "Value", color = "Variable") +
-  theme_minimal()
+```
+Sea surface temperature stats pretty consistent, while the fish index had a significant range, possibly following PDO if you squint, but was not immediatly compelling. We narrowed it down and decided to focus on copepod richness and PDO, which seemed to be incredibly correlated, and plotted the time series and their relationship to each other. In a positive PDO index, there is a positive correlation with copepod index. 
+```{r}
 
 # Plotting Coperich and env cov
 ggplot(dat, aes(x = years)) +
@@ -98,18 +82,6 @@ ggplot(dat, aes(x = years)) +
   scale_color_manual(values = c(PDO = "blue", SST = "red", CopeRich = "green", FishInx = "purple")) +
   labs(x = "Year", y = "Value", color = "Variable") +
   theme_minimal()
-
-# PDO states 
-ggplot(dat, aes(x = years)) +
-  geom_line(aes(y = PDO, color = "PDO"), size = 1) +
-  scale_color_manual(values = c(PDO = "blue", SST = "red", CopeRich = "green", FishInx = "purple")) +
-  labs(x = "Year", y = "Value", color = "Variable") +
-  geom_hline(yintercept = 0, linetype = "dotted") +
-  geom_hline(yintercept = 2.5, linetype = "dotted") +
-  geom_hline(yintercept = -2.5, linetype = "dotted") +
-  theme_minimal()
-
-#Think of weak vs strong PDO?
 
 #CopeRichness tracks very closely with PDO
 #SST seems to have a negligible correlation 
@@ -123,21 +95,45 @@ ggplot(dat, aes(x = PDO, y = CopeRich, color = CopeRich < 0)) +
   labs(x = "PDO", y = "CopeRich") +
   theme_minimal()
   
+
 #fish index is all over the place, let's not use it. 
+
+```
+We also wanted to think about our possible hidden states, and while there seems to be a clear two-state sytem with PDO in a negative or positive index, we wondered if there was a third state "weak" index. 
+```{r}
+# PDO states 
+ggplot(dat, aes(x = years)) +
+  geom_line(aes(y = PDO, color = "PDO"), size = 1) +
+  scale_color_manual(values = c(PDO = "blue", SST = "red", CopeRich = "green", FishInx = "purple")) +
+  labs(x = "Year", y = "Value", color = "Variable") +
+  geom_hline(yintercept = 0, linetype = "dotted") +
+  geom_hline(yintercept = 2.5, linetype = "dotted") +
+  geom_hline(yintercept = -2.5, linetype = "dotted") +
+  theme_minimal()
 ```
 
+### Objective tips 
+
+Our primary objectives for this lab were to gain a better understanding of hmm options and getting some practice with interpretation by exploring different model options considering copepod richness and PDO. While there was much more we could have done, we decided to explore model specification, and interpretation of AIC for these types of models, which can be misleading depending on the ecological assumptions being made. 
+
+# General tasks
+
+* Please pick a type of indicators, and develop a 2- or 3-state multivariate HMM. 
 
 # Methods
+
+We fit models with different either two or three states to determine whether copepod richness and/or PDO seems to have 2 or 3 states. It's unclear if there is a 'neutral' state that modulates copepod richness in addition to the hot and cool phases. 
     
-We fit models with different numbers of PDO states to determine whether PDO seems to have 2 or 3 states. There appears to be high and low states but it is unclear if there is a 'neutral' state that modulates copepod richness in addition to the hot and cool phases. 
-    
-We also set the transition equation equal to ~1 in addition to ~ PDO to explore if PDO was more effective than several simple numeric options for controlling transition dynamics.
+We also explored the transition option, by assuming either that there is no covariate informing the transition, or that PDO informed the transition.
 
 We assumed the familys were gaussian for all models tested. 
 
 We plotted the fit of all models to copepod richness and PDO data from the stoplight dataset. We then also compared model fits with AIC in an attempt to select the best model. 
 
-   
+Note that in the report we give probabilities of transitioning to and from states, but these models are very sensitive to starting conditions, so we iterate over many set seeds for each model to find the best fit. That being said, some of the values written in this report may be different upon knitting. 
+
+## Model 1 Copepods only: 2 states  
+We started with a very simple model, with copepod richness as the intercept and no covariates informing the transition. We started by assuming a two state system.  
 ```{r}
 # Model 1
 mod1 = depmix(CopeRich ~1,
@@ -162,8 +158,12 @@ for(i in 1:iter){
   }
 }
 
+summary(best_model1)
+```
+We see that there is a ~75% probability of state one staying in state one, and ~60% of state two staying in state two, with ~25% and 40% probability for transitioning from state 1 to state 2 and state 2 to state 1 respectively, showing that the system generally is more stable in state one.
+```{r}
 plot(ts(posterior(best_model1, type="smoothing")[,1], start=c(2003,5), deltat=1/12),ylab="probability",
-     main="Posterior probability of state 1 (copepods good?).",
+     main="Posterior Probability of Changing States",
      frame=FALSE)
 
 prstates <- apply(posterior(best_model1)[,c("S1", "S2")],1, which.max)
@@ -187,6 +187,8 @@ ggplot() +
 ```
 Model 1 produces a reasonably good fit to the data. 
 
+## Model 2 Copepods only: 3 states 
+We continued by using the same simple model from above, and assuming 3 states. 
 ```{r}
 # Model 2
 mod2 = depmix(CopeRich ~1,
@@ -196,7 +198,6 @@ mod2 = depmix(CopeRich ~1,
                    data=dat)
 
 fitmod2 = fit(mod2)
-summary(fitmod2)
 
 #Find best fit 
 iter <-100
@@ -212,6 +213,11 @@ for(i in 1:iter){
   }
 }
 
+summary(best_model2)
+```
+This transition matrix is a little trickier to interpret, but the likelihood of transitioning to state three was low, ~7% for state one and 0% of transitioning from 2 to 3. This may not be a great specification. 
+
+```{r}
 # plot(ts(posterior(best_model1, type="smoothing")[,1], start=c(2003,5), deltat=1/12),ylab="probability",
 #      main="Posterior probability of state 1 (copepods good?).",
 #      frame=FALSE)
@@ -235,13 +241,11 @@ ggplot() +
   theme_minimal()
 
 ```
-Compared to model 1, model two produces a poor visual fit to the data. Because of this we assumed 2 states in the other models we tested. 
+Compared to model 1, model 2 produces a poor visual fit to the data, with a narrower peak later in the timeseries. Because of this we assumed 2 states in the other models we tested. 
 
+## Model 3 Copepods and PDO 
+Because Copepods and PDO have such a clear relationship visually, we started by looking at a model considering both copepod richness and PDO as intercepts, with no covariates informing the transition.
 ```{r} 
-
-############## The plot here needs work ##############
-
-
 #Copepods and PDO as intercepts 
 mod3 = depmix(list(CopeRich ~1, PDO~1),
              nstates = 2, 
@@ -250,7 +254,6 @@ mod3 = depmix(list(CopeRich ~1, PDO~1),
              data=dat)
 
 fitmod3 = fit(mod3)
-summary(fitmod3)
 
 #Find best fit 
 iter <-100
@@ -266,6 +269,13 @@ for(i in 1:iter){
   }
 }
 
+summary(best_model3)
+
+```
+This model still preferred state one, with a ~75% probability of staying in one and ~25% chance of transitioning to two. There was a ~61% change of state two to stay in state two and a ~39% chance to transition back to state one. Note there are values for the intercepts and sd for Re1 (coperich) and Re2 (PDO) in this model. 
+
+```{r}
+
 plot(ts(posterior(best_model3, type="smoothing")[,1], start=c(2003,5), deltat=1/12),ylab="probability",
      main="Posterior probability of state 1 (copepods good?).",
      frame=FALSE)
@@ -276,18 +286,18 @@ mu3<-summary(best_model3)[,3]
 pred <- tibble("Year" = dat$years, "Copepod Richness" = mu[prstates],"PDO" = mu3[prstates])
 pred3<-pred %>% pivot_longer(-Year, names_to = "Covariates", values_to = "Fit")
 
+
 ggplot() +
   geom_line(data = pred3, aes(x = Year, y = Fit, group = Covariates, color = Covariates)) +
-  geom_line(data = dat, aes(x = years, y = CopeRich, color = "CopeRich"), size = 1) +
-  geom_line(data = dat, aes(x = years, y = PDO_DecMarch, color = "PDO" ), size = 1)+
-  scale_color_manual(values = c(PDO = "blue", SST = "red", CopeRich = "green",
-                                FishInx = "purple", predicted_states = "orange")) +
-  labs(title = " Model 3 - Transition ~ 1", x = "Year", y = "Value", color = "Variable") +
+  geom_line(data = dat, aes(x = years, y = CopeRich, color = "CopeRich"), linewidth = 1) +
+  geom_line(data = dat, aes(x = years, y = PDO_DecMarch, color = "PDO"), linewidth = 1) +
+  scale_color_manual(values = c("orange", "lightgreen", "blue")) +  # Assign distinct colors for each line in pred3
+  labs(title = "Model 3 - Transition ~ 1", x = "Year", y = "Value", color = "Variable") +
   theme_minimal()
 
-
 ```
-
+## Model 4 Copepods and PDO with transition informed by PDO 
+Next we wanted to look at copepod richness and PDO with the transition informed by the PDO.
 ```{r}
 
 #Copepods and PDO as intercepts where the transition is informed by PDO
@@ -297,7 +307,6 @@ mod4 = depmix(list(CopeRich ~1, PDO~1),
               family = list(gaussian(),gaussian()),
               data=dat)
 fitmod4 = fit(mod4)
-summary(fitmod4)
 
 #Find best fit 
 iter <-100
@@ -313,6 +322,11 @@ for(i in 1:iter){
   }
 }
 
+summary(best_model4)
+```
+This transition matrix isn't interpretable as is, but we'll come back to that later. One question is whether or not this is appropriate, to model PDO as an intercept and use it also as a covariate. Is this confounding? Poor practice? 
+```{r}
+
 plot(ts(posterior(best_model4, type="smoothing")[,1], start=c(2003,5), deltat=1/12),ylab="probability",
      main="Posterior probability of state 1 (copepods good?).",
      frame=FALSE)
@@ -325,19 +339,18 @@ pred4<-pred %>% pivot_longer(-Year, names_to = "Covariates", values_to = "Fit")
 
 ggplot() +
   geom_line(data = pred4, aes(x = Year, y = Fit, group = Covariates, color = Covariates)) +
-  geom_line(data = dat, aes(x = years, y = CopeRich, color = "CopeRich"), size = 1) +
-  geom_line(data = dat, aes(x = years, y = PDO_DecMarch, color = "PDO" ), size = 1)+
-  scale_color_manual(values = c(PDO = "blue", SST = "red", CopeRich = "green",
-                                FishInx = "purple", predicted_states = "orange")) +
-  labs(title = " Model 4 - Transition ~ PDO", x = "Year", y = "Value", color = "Variable") +
+  geom_line(data = dat, aes(x = years, y = CopeRich, color = "CopeRich"), linewidth = 1) +
+  geom_line(data = dat, aes(x = years, y = PDO_DecMarch, color = "PDO"), linewidth = 1) +
+  scale_color_manual(values = c("orange", "lightgreen", "blue")) +  # Assign distinct colors for each line in pred3
+  labs(title = "Model 3 - Transition ~ 1", x = "Year", y = "Value", color = "Variable") +
   theme_minimal()
 
 ```
-Models 3 and 4 produce similar fits to the data, the only obvious difference is that model 4 spends less time in the higher state than model 3 in the later time periods. 
+Models 3 and 4 produce similar fits to the data, the only obvious difference is that model 4 spends less time in the higher state than model 3. 
 
-
+## Model 5 Copepods informed by PDO 
+In this model, we wanted to relate copepod richness to PDO directly, with no transtion. 
 ```{r}
-
 #Copepods as they relate to PDO
 mod5 = depmix(list(CopeRich ~PDO),
               nstates = 2, 
@@ -345,7 +358,6 @@ mod5 = depmix(list(CopeRich ~PDO),
               family = list(gaussian()),
               data=dat)
 fitmod5 = fit(mod5)
-summary(fitmod5)
 
 #Find best fit 
 iter <-100
@@ -361,6 +373,12 @@ for(i in 1:iter){
   }
 }
 
+summary(best_model5)
+
+```
+This model has an interpreatable transition matrix, where the probability of staying or leaving each respective state is about ~70-30. Note that we now have PDO as informing our copepod richness in the response parameters. 
+
+```{r}
 plot(ts(posterior(best_model5, type="smoothing")[,1], start=c(2003,5), deltat=1/12),ylab="probability",
      main="Posterior probability of state 1 (copepods good?).",
      frame=FALSE)
@@ -381,12 +399,11 @@ ggplot() +
   theme_minimal()
 
 ```
+Copepod richness and PDO data have the closest correlation, and it seemed reasonable to relate them to each other and model the variation of Copepod Richness as a function of PDO. Admittedly, we are not sure if this is a appropriate entry to the `depmix()` function but the results for models 5 and 6 were interesting so we included them. 
 
-For the intercept we chose to model Copepod Richness ~ PDO. These data sets have the closest correlation and so this was done to test if the fit could be improved by modeling the variation of Copepod Richness as a function of PDO. Admittedly, we are not sure if this is a appropriate entry to the `depmix()` function but the results for models 5 and 6 were interesting so we included them. 
-
-# Model 6
+## Model 6 Copepods informed by PDO with PDO informing transition
+This model is the same as model 5, but using PDO as a covariate for transition, which could be inappropriate for hmm model specification. But, we wanted to explore it. 
 ```{r}
-
 #Copepods as they relate to PDO where the transition is informed by PDO
 mod6 = depmix(list(CopeRich ~PDO),
               nstates = 2, 
@@ -394,7 +411,6 @@ mod6 = depmix(list(CopeRich ~PDO),
               family = list(gaussian()),
               data=dat)
 fitmod6 = fit(mod6)
-summary(fitmod6)
 
 #Find best fit 
 iter <-100
@@ -410,6 +426,10 @@ for(i in 1:iter){
   }
 }
 
+summary(best_model6)
+```
+Again, given that we included PDO as a transition covariate, the matrix was not interpretable as is in the model summary, but we address this in the More Model Diagnostics Section.
+```{r}
 plot(ts(posterior(best_model6, type="smoothing")[,1], start=c(2003,5), deltat=1/12),ylab="probability",
      main="Posterior probability of state 1 (copepods good?).",
      frame=FALSE)
@@ -432,9 +452,9 @@ ggplot() +
 
 ```
 
-Model 6 produced the worst visual fit to the data. This model suggests there is a dominant state near the mean of the data and the second state is only marginally different. 
+Visually, model 6 produced the worst fit to the data. This model suggests there is a dominant state near the mean of the data and the second state is only marginally different. The dampening of the oscillation must be from the transition being informed directly by PDO. 
 
-#model selection with AIC
+#Model Selection with AIC
 ```{r}
 mods <- c("1","2","3","4","5","6")
 aic <- c(AIC(best_model1), AIC(best_model2), AIC(best_model3), AIC(best_model4), AIC(best_model5),AIC(best_model6))
@@ -444,9 +464,11 @@ tab <- cbind.data.frame(mods, aic, delta.aic)
 tab
 
 ```
-AIC tells us that the best model would be model 6, although it is marginally better than model 5 with a delta AIC of just over 2. The delta AIC values are only about 2 different between models 1-2 and 3-4 and 5-6 respectively. Each set of models are the most similar to each other within the models tested and these AIC values indicate little to no support for one approach within each group to be significantly better than the other. AIC values do indicate significantly better performance between these sets of models, however this support is not supported by looking at visual fits of the data. The two best models, 5 and 6, produce the worst visual fits to the data of any models tested. It is unclear why AIC is selecting these models as the best, but it does seem that AIC favors the simple models with only one intercept rather than models with two intercepts. Because of the apparent poor fit of models 5 and 6, it seems other methods of model selection such as Cross Validation or leave One Out may be more appropriate here than AIC. 
+AIC tells us that the best model would be model 6, although it is just marginally better than model 5 with a delta AIC of just over 2. The delta AIC values are only about 2 different between models 1-2 and 3-4 and 5-6 respectively. Each set of models are the most similar to each other within the models tested and these AIC values indicate little to no support for one approach within each group to be significantly better than the other. AIC values do indicate significantly better performance between these sets of models, however this support is not supported by looking at visual fits of the data. The two best models, 5 and 6, produce the worst visual fits to the data of any models tested. It is unclear why AIC is selecting these models as the best, but it does seem that AIC favors the simple models with only one intercept rather than models with two intercepts. Because of the apparent poor fit of models 5 and 6, it seems other methods of model selection such as Cross Validation or leave One Out may be more appropriate here than AIC. 
 
-# More model diagnostics
+# More Model Diagnostics
+
+The following function allows us to interpret the transition matrix when there is a covariate informing the transition. 
 ```{r}
 #create a funciton to help build transition matrices
 convert_probs <- function(fit, coef_value = 0) {
@@ -469,7 +491,7 @@ convert_probs <- function(fit, coef_value = 0) {
 }
 ```
 
-
+Let's look at all the model together. Note that the above function was applied to models 4 and 6, which did not have an interpretable transition matrix. 
 ```{r}
 
 #Look at the transition matrices and variance
@@ -492,7 +514,7 @@ The state 1 transition probabilities in models 3 and 4 showed an opposite patter
 
 Model 5 appeared to have smaller intercept values which makes sense as the predicted states were closer to 0 than in the other models. 
 
-The transition matrix for model 6 was the most unique with a high likelihood that the model will transition to and stay in state 2. This is another good indication that the model is a poor fit to the data as the data visually appears to have at least two states, and the other models produced good visual fits with a two state approach. 
+The transition matrix for model 6 was the most unique with a high likelihood that the model will transition to and stay in state 2. This is another good indication that the model is a poor fit to the data as the data visually appears to have at least two states, and the other models produced good visual fits with a two state approach.
 
 
 # Results
@@ -513,16 +535,16 @@ The plots of estimated states show the underlying pattern that may exist if ther
 
 
 # Discussion
-PDO is an indice of ocean conditions that is generally thought to act as a driver for abundance and richness of organisms in the North Pacific. Here we predicted that PDO would be a driver of copepod richness. The two time series of data appear to closely co-vary and seem to show a pattern of a high and low state with rapid swings between the two. Our models using 2 states produced good visual fits and we found little support for three states. AIC appears to be a relatively poor choice for model selection in this instance although it is unclear if that is specific to HMM models or if there was a programming error. Other types of model selection would likely increase our understanding of model performance. We saw no obvious difference between a rapid shift in states , `transition = ~1` and a shift proportional to the PDO data set. This suggests that there is in fact a very rapid shift between states, which aligns with our expected result based on the general lack of observations near neutral conditions. 
+PDO is an index of ocean conditions that is generally thought to act as a driver for abundance and richness of organisms in the North Pacific. Here we predicted that PDO would be a driver of copepod richness. The two time series of data appear to closely co-vary and seem to show a pattern of a high and low state with rapid swings between the two. Our models using 2 states produced good visual fits and we found little support for three states. AIC appears to be a relatively poor choice for model selection in this instance although it is unclear if that is specific to HMM models or if there was a programming error. Other types of model selection would likely increase our understanding of model performance. We saw no obvious difference between a rapid shift in states , `transition = ~1` and a shift proportional to the PDO data set. This suggests that there is in fact a very rapid shift between states, which aligns with our expected result based on the general lack of observations near neutral conditions. 
 
 
-## what we are still confused about
-One question we had is that our 'best' model based on AICc values did not appear to be a good fit to the data visually. When this is the case, what should our next steps be? Visually confirming model fit seems to overrule AICc values when those diagnsotics are contradictory, is this true?
+## What we're still confused about
+One question we had is that our 'best' model based on AIC values did not appear to be a good fit to the data visually. When this is the case, what should our next steps be? Visually confirming model fit seems to overrule AIC values when those diagnostics are contradictory, is this true?
 
-We didn't have a good handle on how the 'nstates' and 'transitions' inputs to the models interacted and what type of model diagnostics would help us quantify underlying relationships. 
+We didn't have a good handle on how the 'nstates' and 'transitions' inputs to the models interacted and what type of model diagnostics would help us quantify underlying relationships. After we were in pretty deep we realized having PDO in both the model list (related to copepod richness or as an independent intercept) and as a covarate for transition may be innappropriate, but are unsure and would like more information. 
 
-PDO has a very strong correlative pattern with copepod richness. We ran several combinations of model to examine the strength of this relationship. We produced some models with decent looking fits, but these models were not as highly ranked by AICc as other, seeminly less well fitting models. Is AIC a poor choice? We have a suspicion this question will be anwered in the next lecture(s)...
+PDO has a very strong correlative pattern with copepod richness. We ran several combinations of model to examine the strength of this relationship. We produced some models with decent looking fits, but these models were not as highly ranked by AIC as other, seemingly less well fitting models. Is AIC a poor choice? We have a suspicion this question will be answered in the next lecture(s)...
 
 # Team contributions
 
-Madison took point on coding, Nick helped with coding and compiled it into the final rmd, and Nick and Karl did writing and .Rmd organizing. 
+Madison took point on coding, Nick helped with coding and compiled it into the final rmd, and Nick and Karl did writing and Madison proofread and organized the .Rmd document. 
