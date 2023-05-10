@@ -313,5 +313,5 @@ Temperature covariates seem to be minmally important in explaining the state tra
 
 # Team contributions
 
-All team members contributed to experimental design and planning. ETS did the first draft of the 2- and 3- state HMMs and provided feedback and editing of the other team members' work. Liz wrote the initial code to include the effect of covariates on the transition probabilities. Terrance improved and cleaned up code, and created the for loops for model selection. (Terrance feel free to add to/change this). All members edited and contributed to writing the Methods, Results and Discussions sections.
+All team members contributed to experimental design and planning. ETS did the first draft of the 2- and 3- state HMMs and provided feedback and editing of the other team members' work. Liz wrote the initial code to include the effect of covariates on the transition probabilities. Terrance improved and cleaned up code, and created the for loops for model selection with z scores. All members edited and contributed to writing the Methods, Results and Discussions sections.
 
