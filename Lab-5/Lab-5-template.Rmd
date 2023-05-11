@@ -1,8 +1,8 @@
 ---
-title: "Lab 3 - Common trends in plankton data"
-subtitle: "Dynamic Factor Analysis (DFA)"
+title: "Lab 5 - Time-varying productivity of salmon"
+subtitle: "Dynamic Linear Models (DLMs)"
 author: "Person 1, Person 2, Person 3"
-date: April 20, 2023
+date: May 11, 2023
 output: 
   html_document:
     code-folding: true
@@ -18,28 +18,30 @@ options(dplyr.summarise.inform = FALSE)
 
 # Data
 
-Describe what plankton groups and covariates you used and indicate any temporal subsetting you chose. 
+Describe the salmon data an dany environmental covariates you decide to examine. 
 
 
 ## Load the data
 
-```{r load_data}
-## load MARSS for data and analyses
-library(MARSS)
+```{r dlm-load-atsa, eval=FALSE}
+## library(devtools)
+## Windows users will likely need to set this
+## Sys.setenv("R_REMOTES_NO_ERRORS_FROM_WARNINGS" = "true")
+devtools::install_github("nwfsc-timeseries/atsalibrary")
 
-## load the raw data (there are 3 datasets contained here)
-data(lakeWAplankton, package = "MARSS")
+## get data
+data(KvichakSockeye, package="atsalibrary")
+SR_data <- KvichakSockeye
+```
 
-## we want `lakeWAplanktonTrans`, which has been transformed
-## so the 0's are replaced with NA's and the data z-scored
-all_dat <- lakeWAplanktonTrans
+The data are a dataframe with columns for brood year (`brood_year`), number of spawners (`spawners`), number of recruits (`recruits`) and PDO at year $t-2$ in summer (`pdo_summer_t2`) and in winter (`pdo_winter_t2`).
+
+```{r dlm-data-head}
+## head of data file
+head(SR_data)
 ```
 
 ## Wrangle the data
-
-* You can choose any taxa to include in your analyses, but make sure there are at least 5 groups. You can mix phytoplankton and zooplankton, if you'd like, but justify any choices you make. 
-
-* You will want to subset the data to a time period with adequate observations for the taxa of interest. Your time window should include at lest 5 years (60 months).
 
 ```{r wrangle_data}
 ## add some code here
@@ -48,24 +50,32 @@ all_dat <- lakeWAplanktonTrans
 
 # General tasks
 
-Each group has the same general tasks, but you will adapt them as you work on the data.
+Use the information and data in the previous section to answer the following questions. Note that if any model is not converging, then you will need to increase the `maxit` parameter in the `control` argument/list that gets passed to `MARSS()`. For example, you might try `control=list(maxit=2000)`.
 
-1) Find the most parsimonious model among a set that examines the effects of environmental covariates and/or an indicator of seasonality, varying numbers of trends, and different forms of variance-covariance matrices for the observation errors.
+1. Begin by fitting a reduced form of Ricker's model that includes only a time-varying level ($\alpha_t$) and observation error ($v_t$). That is,
 
-2) Plot trends and individual loadings for the model identified in task (1) above.
+\begin{align*}
+\text{log}(R_t) &= \alpha_t + \text{log}(S_t) + v_t \\
+\text{log}(R_t/S_t) &= \alpha_t + v_t
+\end{align*}
 
-3) Plot model fits and uncertainty intervals for the model identified in task (1) above.
+This model assumes no density-dependent survival in that the number of recruits is an ascending function of spawners. Plot the ts of $\alpha_t$ and note the AICc for this model. Also plot appropriate model diagnostics.
 
-4) Describe the effects of environmental or dummy variables on (possibly seasonal) patterns in the data.
+2. Fit the full Ricker model with a time-varying intercept and a static effect of spawners. For this model, obtain the time series of $\alpha_t$, which is an estimate of the stock productivity in the absence of density-dependent effects. How do these estimates of productivity compare to those from the previous question? Plot the ts of $\alpha_t$ and note the AICc for this model. Also plot appropriate model diagnostics. ($Hint$: If you don't want a parameter to vary with time, what does that say about its process variance?)
+
+3. Fit the expanded model that includes the summer PDO index as the covariate (`pdo_summer_t2`). What is the mean level of productivity? Plot the ts of $\delta_t$ and note the AICc for this model. Also plot appropriate model diagnostics.
+
+4. Fit the expanded model that includes the winter PDO index as the covariate (`pdo_winter_t2`). What is the mean level of productivity? Plot the ts of $\delta_t$ and note the AICc for this model. Also plot appropriate model diagnostics.
+
+5. Based on AICc, which of the models above is the most parsimonious? Is it well behaved (i.e., are the model assumptions met)? Plot the model forecasts for the best model. Is this a good forecast model?
+
+6. Consider other environmental factors that could influence the time-varying intrinsic productivity of these salmon. For example, are there other large-scale indices of ocean conditions (e.g., sea-surface temperature, El Niño Southern Oscillation)? You could also consider the possible influence of other salmon stocks such as those we examined in Lab 1.
+
 
 
 # Methods
 
 Please address the following in your methods:
-
-* Which plankton taxa did you choose and how did you choose them?
-   
-* What time period(s) did you examine and why?
 
 * What environmental or dummy variables did you include and why?
 
