@@ -1,11 +1,6 @@
 # Getting Started
 
-* Read the background at [Lab2-MARSS](https://atsa-es.github.io/atsa/Labs/Week%203/CR lab/Lab2-MARSS.html)
-
-* Do a pull of the Fish550-2023 repository so you have the most updated version.
-
-* Copy [Lab-2-template](https://github.com/atsa-es/fish550-2023/tree/main/Lab-2) into your team folder.
-
+* Read the background at [Lab2-ARIMA](https://atsa-es.github.io/atsa/Labs/Week%203/CR Lab/Lab1-ARIMA-2023.html)
 
 # Set up your Fish 550 repository on your computer
 
