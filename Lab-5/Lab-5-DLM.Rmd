@@ -1,0 +1,76 @@
+---
+title: Lab Intro
+subtitle: "Lab 3 Common trends in plankton data"
+author: "Mark Scheuerell"
+date: "April 20, 2023"
+output: 
+  html_document:
+    code-folding: true
+    toc: true
+    toc_float: true
+---
+
+```{r setup, echo = FALSE, message = FALSE}
+options(dplyr.summarise.inform = FALSE)
+```
+
+## Background
+
+For this lab you will use dynamic factor analysis (DFA) to examine common temporal patterns in multivariate plankton data from Lake Washington. These data are a bit noisy and gappy, so you will need to make some choices about which species and time period(s) to examine.
+
+
+## Teams
+
+1) Liz Elmstrom (SAFS), Dylan Hubl (SEFS) 
+
+2) Maria Kuruvilla (QERM), Eric French (CEE), Madison Shipley (SAFS)
+
+3) Nick Chambers (SAFS), Terrance Wang (SAFS), Zoe Rand (QERM)
+
+4) Emma Timmins-Schiffman (Genome Sci), Karl Veggerby (SAFS), Miranda Mudge (Molecular & Cellular)
+
+
+## Lake Washington data
+
+For reference, here are the columns in the Lake Washington data set:
+
+### Indices
+
+* `Year`: year  
+* `Month`: month as an integer  
+
+### Environmental data
+
+* `Temp`: water temperature in degrees C  
+* `TP`: total phosphorous concentration in mg m<sup>-3</sup>  
+* `pH`: pH. 
+
+### Phytoplankton
+
+* `Cryptomonas`: small brown or green algae (edible)  
+* `Diatoms`: small algae rich in silica (edible)  
+* `Greens`: general class of algae (edible)  
+* `Bluegreens`: cyanobacteria that can fix nitrogen (inedible)  
+* `Unicells`: very small algae (edible)  
+* `Other.algae`: generic catch-all for atypical species (edible)  
+
+### Zooplankton
+
+* `Conochilus`: colonial form of rotifer (grazer)  
+* `Cyclops`: cyclopoid copepod (grazer)  
+* `Daphnia`: cladoceran (grazer)  
+* `Diaptomus`: calanoid copepod (grazer)  
+* `Epischura`: very large calanoid copepod (predator)  
+* `Leptodora`: very large cladoceran (predator)  
+* `Neomysis`: opossum shrimp (predator)  
+* `Non.daphnid.cladocerans`: catch-all for other cladocerans (grazers)
+* `Non.colonial.rotifers`: free-floating rotifers (grazers)
+
+
+## Resources
+
+Lab materials from April 20 [[online here](https://atsa-es.github.io/atsa/Labs/Week%204/intro-to-dfa.html)]
+
+Chapter 10 Dynamic Factor Analysis. ATSA Lab Book. [[online here](https://atsa-es.github.io/atsa-labs/sec-dfa.html)]
+
+
