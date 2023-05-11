@@ -1,76 +1,132 @@
 ---
-title: Lab Intro
-subtitle: "Lab 3 Common trends in plankton data"
+title: "Lab 5 - Dynamic Linear Models"
 author: "Mark Scheuerell"
-date: "April 20, 2023"
+date: "May 11, 2023"
 output: 
-  html_document:
-    code-folding: true
-    toc: true
-    toc_float: true
+ html_document:
+  code-folding: true
+  toc: true
+  toc_float: true
 ---
 
 ```{r setup, echo = FALSE, message = FALSE}
 options(dplyr.summarise.inform = FALSE)
 ```
 
-## Background
-
-For this lab you will use dynamic factor analysis (DFA) to examine common temporal patterns in multivariate plankton data from Lake Washington. These data are a bit noisy and gappy, so you will need to make some choices about which species and time period(s) to examine.
-
-
 ## Teams
 
-1) Liz Elmstrom (SAFS), Dylan Hubl (SEFS) 
+1) Liz Elmstrom (SAFS), Dylan Hubl (SEFS), Maria Kuruvilla (QERM)
 
-2) Maria Kuruvilla (QERM), Eric French (CEE), Madison Shipley (SAFS)
+2) Terrance Wang (SAFS), Zoe Rand (QERM) 
 
-3) Nick Chambers (SAFS), Terrance Wang (SAFS), Zoe Rand (QERM)
+3) Eric French (CEE), Madison Shipley (SAFS), Karl Veggerby (SAFS)
 
-4) Emma Timmins-Schiffman (Genome Sci), Karl Veggerby (SAFS), Miranda Mudge (Molecular & Cellular)
+4) Nick Chambers (SAFS), Emma Timmins-Schiffman (Genome Sci), Miranda Mudge (Molecular & Cellular)
 
 
-## Lake Washington data
+## Background {#sec-dlm-homework}
 
-For reference, here are the columns in the Lake Washington data set:
+For the lab this week we will use DLM's to examine some of the time-varying properties of the spawner-recruit relationship for Pacific salmon. Much work has been done on this topic, particularly by Randall Peterman and his students and post-docs at Simon Fraser University. To do so, researchers commonly use a Ricker model because of its relatively simple form, such that the number of recruits (offspring) born in year $t$ ($R_t$) from the number of spawners (parents) ($S_t$) is
 
-### Indices
+\begin{equation}
+R_t = a S_t e^{-b S + v_t}.
+\end{equation}
 
-* `Year`: year  
-* `Month`: month as an integer  
 
-### Environmental data
+\noindent The parameter $a$ determines the maximum reproductive rate in the absence of any density-dependent effects (the slope of the curve at the origin), $b$ is the strength of density dependence, and $v_t \sim N(0,\sigma)$. In practice, the model is typically log-transformed so as to make it linear with respect to the predictor variable $S_t$, such that
 
-* `Temp`: water temperature in degrees C  
-* `TP`: total phosphorous concentration in mg m<sup>-3</sup>  
-* `pH`: pH. 
+\begin{align}
+\text{log}(R_t) &= \text{log}(a) + \text{log}(S_t) -b S_t + v_t \\
+\text{log}(R_t) - \text{log}(S_t) &= \text{log}(a) -b S_t + v_t \\
+\text{log}(R_t/S_t) &= \text{log}(a) - b S_t + v_t.
+\end{align}
 
-### Phytoplankton
 
-* `Cryptomonas`: small brown or green algae (edible)  
-* `Diatoms`: small algae rich in silica (edible)  
-* `Greens`: general class of algae (edible)  
-* `Bluegreens`: cyanobacteria that can fix nitrogen (inedible)  
-* `Unicells`: very small algae (edible)  
-* `Other.algae`: generic catch-all for atypical species (edible)  
+\noindent Substituting $y_t = \text{log}(R_t/S_t)$, $x_t = S_t$, and $\alpha = \text{log}(a)$ yields a simple linear regression model with intercept $\alpha$ and slope $b$.
 
-### Zooplankton
+Unfortunately, however, residuals from this simple model typically show high-autocorrelation due to common environmental conditions that affect overlapping generations. Therefore, to correct for this and allow for an index of stock productivity that controls for any density-dependent effects, the model may be re-written as
 
-* `Conochilus`: colonial form of rotifer (grazer)  
-* `Cyclops`: cyclopoid copepod (grazer)  
-* `Daphnia`: cladoceran (grazer)  
-* `Diaptomus`: calanoid copepod (grazer)  
-* `Epischura`: very large calanoid copepod (predator)  
-* `Leptodora`: very large cladoceran (predator)  
-* `Neomysis`: opossum shrimp (predator)  
-* `Non.daphnid.cladocerans`: catch-all for other cladocerans (grazers)
-* `Non.colonial.rotifers`: free-floating rotifers (grazers)
+\begin{align}
+\text{log}(R_t/S_t) &= \alpha_t - b S_t + v_t, \\
+\alpha_t &= \alpha_{t-1} + w_t,
+\end{align}
 
+\noindent and $w_t \sim N(0,q)$. By treating the brood-year specific productivity as a random walk, we allow it to vary, but in an autocorrelated manner so that consecutive years are not independent from one another.
+
+More recently, interest has grown in using covariates ($e.g.$, sea-surface temperature) to explain the interannual variability in productivity. In that case, we can can write the model as
+
+\begin{equation}
+\text{log}(R_t/S_t) = \alpha + \delta_t X_t - b S_t + v_t.
+\end{equation}
+
+\noindent In this case we are estimating some base-level productivity ($\alpha$) plus the time-varying effect of some covariate $X_t$ ($\delta_t$). 
+
+
+
+### Spawner-recruit data {#sec-dlm-spawner-recruit-data}
+
+The data come from a large public database begun by Ransom Myers many years ago. If you are interested, you can find lots of time series of spawning-stock, recruitment, and harvest for a variety of fishes around the globe. The website is [here](https://www.ramlegacy.org/).
+
+For this exercise, we will use spawner-recruit data for sockeye salmon (_Oncorhynchus nerka_) from the Kvichak River in SW Alaska that span the years 1952-1989. In addition, we'll examine the potential effects of the Pacific Decadal Oscillation (PDO) during the salmon's first year in the ocean, which is widely believed to be a "bottleneck" to survival.
+
+```{r echo=FALSE}
+knitr::include_graphics("images/BB_sockeye_rivers_inset.png")
+# ![](images/BB_sockeye_rivers_inset.png)
+```
+
+
+These data are in the **atsalibrary** package on GitHub. If needed, install using the **devtools** package.
+
+```{r dlm-load-atsa, eval=FALSE}
+## library(devtools)
+## Windows users will likely need to set this
+## Sys.setenv("R_REMOTES_NO_ERRORS_FROM_WARNINGS" = "true")
+devtools::install_github("nwfsc-timeseries/atsalibrary")
+```
+
+Load the data.
+
+```{r dlm-read-data}
+data(KvichakSockeye, package="atsalibrary")
+SR_data <- KvichakSockeye
+```
+
+The data are a dataframe with columns for brood year (`brood_year`), number of spawners (`spawners`), number of recruits (`recruits`) and PDO at year $t-2$ in summer (`pdo_summer_t2`) and in winter (`pdo_winter_t2`).
+
+```{r dlm-data-head}
+## head of data file
+head(SR_data)
+```
+
+\clearpage
+
+## Problems {#sec-dlm-problems}
+
+\noindent Use the information and data in the previous section to answer the following questions. Note that if any model is not converging, then you will need to increase the `maxit` parameter in the `control` argument/list that gets passed to `MARSS()`. For example, you might try `control=list(maxit=2000)`.
+
+1. Begin by fitting a reduced form of Ricker's model that includes only a time-varying level ($\alpha_t$) and observation error ($v_t$). That is,
+
+\begin{align*}
+\text{log}(R_t) &= \alpha_t + \text{log}(S_t) + v_t \\
+\text{log}(R_t/S_t) &= \alpha_t + v_t
+\end{align*}
+
+This model assumes no density-dependent survival in that the number of recruits is an ascending function of spawners. Plot the ts of $\alpha_t$ and note the AICc for this model. Also plot appropriate model diagnostics.
+
+2. Fit the full Ricker model with a time-varying intercept and a static effect of spawners. For this model, obtain the time series of $\alpha_t$, which is an estimate of the stock productivity in the absence of density-dependent effects. How do these estimates of productivity compare to those from the previous question? Plot the ts of $\alpha_t$ and note the AICc for this model. Also plot appropriate model diagnostics. ($Hint$: If you don't want a parameter to vary with time, what does that say about its process variance?)
+
+3. Fit the expanded model that includes the summer PDO index as the covariate (`pdo_summer_t2`). What is the mean level of productivity? Plot the ts of $\delta_t$ and note the AICc for this model. Also plot appropriate model diagnostics.
+
+4. Fit the expanded model that includes the winter PDO index as the covariate (`pdo_winter_t2`). What is the mean level of productivity? Plot the ts of $\delta_t$ and note the AICc for this model. Also plot appropriate model diagnostics.
+
+5. Based on AICc, which of the models above is the most parsimonious? Is it well behaved (i.e., are the model assumptions met)? Plot the model forecasts for the best model. Is this a good forecast model?
+
+6. Consider other environmental factors that could influence the time-varying intrinsic productivity of these salmon. For example, are there other large-scale indices of ocean conditions (e.g., sea-surface temperature, El Niño Southern Oscillation)? You could also consider the possible influence of other salmon stocks such as those we examined in Lab 1.
 
 ## Resources
 
-Lab materials from April 20 [[online here](https://atsa-es.github.io/atsa/Labs/Week%204/intro-to-dfa.html)]
+Lab materials from April 20 [[online here](https://atsa-es.github.io/atsa/Labs/Week%205/intro-to-dlms.html)]
 
-Chapter 10 Dynamic Factor Analysis. ATSA Lab Book. [[online here](https://atsa-es.github.io/atsa-labs/sec-dfa.html)]
+Chapter 10 Dynamic Factor Analysis. ATSA Lab Book. [[online here](https://atsa-es.github.io/atsa-labs/chap-dlm-dynamic-linear-models.html)]
 
 
