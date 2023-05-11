@@ -33,7 +33,7 @@ R_t = a S_t e^{-b S + v_t}.
 \end{equation}
 
 
-\noindent The parameter $a$ determines the maximum reproductive rate in the absence of any density-dependent effects (the slope of the curve at the origin), $b$ is the strength of density dependence, and $v_t \sim N(0,\sigma)$. In practice, the model is typically log-transformed so as to make it linear with respect to the predictor variable $S_t$, such that
+The parameter $a$ determines the maximum reproductive rate in the absence of any density-dependent effects (the slope of the curve at the origin), $b$ is the strength of density dependence, and $v_t \sim N(0,\sigma)$. In practice, the model is typically log-transformed so as to make it linear with respect to the predictor variable $S_t$, such that
 
 \begin{align}
 \text{log}(R_t) &= \text{log}(a) + \text{log}(S_t) -b S_t + v_t \\
@@ -42,7 +42,7 @@ R_t = a S_t e^{-b S + v_t}.
 \end{align}
 
 
-\noindent Substituting $y_t = \text{log}(R_t/S_t)$, $x_t = S_t$, and $\alpha = \text{log}(a)$ yields a simple linear regression model with intercept $\alpha$ and slope $b$.
+Substituting $y_t = \text{log}(R_t/S_t)$, $x_t = S_t$, and $\alpha = \text{log}(a)$ yields a simple linear regression model with intercept $\alpha$ and slope $b$.
 
 Unfortunately, however, residuals from this simple model typically show high-autocorrelation due to common environmental conditions that affect overlapping generations. Therefore, to correct for this and allow for an index of stock productivity that controls for any density-dependent effects, the model may be re-written as
 
@@ -51,7 +51,7 @@ Unfortunately, however, residuals from this simple model typically show high-aut
 \alpha_t &= \alpha_{t-1} + w_t,
 \end{align}
 
-\noindent and $w_t \sim N(0,q)$. By treating the brood-year specific productivity as a random walk, we allow it to vary, but in an autocorrelated manner so that consecutive years are not independent from one another.
+and $w_t \sim N(0,q)$. By treating the brood-year specific productivity as a random walk, we allow it to vary, but in an autocorrelated manner so that consecutive years are not independent from one another.
 
 More recently, interest has grown in using covariates ($e.g.$, sea-surface temperature) to explain the interannual variability in productivity. In that case, we can can write the model as
 
@@ -59,7 +59,7 @@ More recently, interest has grown in using covariates ($e.g.$, sea-surface tempe
 \text{log}(R_t/S_t) = \alpha + \delta_t X_t - b S_t + v_t.
 \end{equation}
 
-\noindent In this case we are estimating some base-level productivity ($\alpha$) plus the time-varying effect of some covariate $X_t$ ($\delta_t$). 
+In this case we are estimating some base-level productivity ($\alpha$) plus the time-varying effect of some covariate $X_t$ ($\delta_t$). 
 
 
 
@@ -98,30 +98,6 @@ The data are a dataframe with columns for brood year (`brood_year`), number of s
 head(SR_data)
 ```
 
-\clearpage
-
-## Problems {#sec-dlm-problems}
-
-\noindent Use the information and data in the previous section to answer the following questions. Note that if any model is not converging, then you will need to increase the `maxit` parameter in the `control` argument/list that gets passed to `MARSS()`. For example, you might try `control=list(maxit=2000)`.
-
-1. Begin by fitting a reduced form of Ricker's model that includes only a time-varying level ($\alpha_t$) and observation error ($v_t$). That is,
-
-\begin{align*}
-\text{log}(R_t) &= \alpha_t + \text{log}(S_t) + v_t \\
-\text{log}(R_t/S_t) &= \alpha_t + v_t
-\end{align*}
-
-This model assumes no density-dependent survival in that the number of recruits is an ascending function of spawners. Plot the ts of $\alpha_t$ and note the AICc for this model. Also plot appropriate model diagnostics.
-
-2. Fit the full Ricker model with a time-varying intercept and a static effect of spawners. For this model, obtain the time series of $\alpha_t$, which is an estimate of the stock productivity in the absence of density-dependent effects. How do these estimates of productivity compare to those from the previous question? Plot the ts of $\alpha_t$ and note the AICc for this model. Also plot appropriate model diagnostics. ($Hint$: If you don't want a parameter to vary with time, what does that say about its process variance?)
-
-3. Fit the expanded model that includes the summer PDO index as the covariate (`pdo_summer_t2`). What is the mean level of productivity? Plot the ts of $\delta_t$ and note the AICc for this model. Also plot appropriate model diagnostics.
-
-4. Fit the expanded model that includes the winter PDO index as the covariate (`pdo_winter_t2`). What is the mean level of productivity? Plot the ts of $\delta_t$ and note the AICc for this model. Also plot appropriate model diagnostics.
-
-5. Based on AICc, which of the models above is the most parsimonious? Is it well behaved (i.e., are the model assumptions met)? Plot the model forecasts for the best model. Is this a good forecast model?
-
-6. Consider other environmental factors that could influence the time-varying intrinsic productivity of these salmon. For example, are there other large-scale indices of ocean conditions (e.g., sea-surface temperature, El Niño Southern Oscillation)? You could also consider the possible influence of other salmon stocks such as those we examined in Lab 1.
 
 ## Resources
 

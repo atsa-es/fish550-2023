@@ -211,25 +211,6 @@ R_t = a S_t e^{-b S + v_t}.
 </div>
 </section>
 </section>
-<section id="sec-dlm-problems" class="level2">
-<h2 class="anchored" data-anchor-id="sec-dlm-problems">Problems</h2>
-<p>Use the information and data in the previous section to answer the following questions. Note that if any model is not converging, then you will need to increase the <code>maxit</code> parameter in the <code>control</code> argument/list that gets passed to <code>MARSS()</code>. For example, you might try <code>control=list(maxit=2000)</code>.</p>
-<ol type="1">
-<li>Begin by fitting a reduced form of Ricker’s model that includes only a time-varying level (<span class="math inline">\(\alpha_t\)</span>) and observation error (<span class="math inline">\(v_t\)</span>). That is,</li>
-</ol>
-<p><span class="math display">\[\begin{align*}
-\text{log}(R_t) &amp;= \alpha_t + \text{log}(S_t) + v_t \\
-\text{log}(R_t/S_t) &amp;= \alpha_t + v_t
-\end{align*}\]</span></p>
-<p>This model assumes no density-dependent survival in that the number of recruits is an ascending function of spawners. Plot the ts of <span class="math inline">\(\alpha_t\)</span> and note the AICc for this model. Also plot appropriate model diagnostics.</p>
-<ol start="2" type="1">
-<li><p>Fit the full Ricker model with a time-varying intercept and a static effect of spawners. For this model, obtain the time series of <span class="math inline">\(\alpha_t\)</span>, which is an estimate of the stock productivity in the absence of density-dependent effects. How do these estimates of productivity compare to those from the previous question? Plot the ts of <span class="math inline">\(\alpha_t\)</span> and note the AICc for this model. Also plot appropriate model diagnostics. (<span class="math inline">\(Hint\)</span>: If you don’t want a parameter to vary with time, what does that say about its process variance?)</p></li>
-<li><p>Fit the expanded model that includes the summer PDO index as the covariate (<code>pdo_summer_t2</code>). What is the mean level of productivity? Plot the ts of <span class="math inline">\(\delta_t\)</span> and note the AICc for this model. Also plot appropriate model diagnostics.</p></li>
-<li><p>Fit the expanded model that includes the winter PDO index as the covariate (<code>pdo_winter_t2</code>). What is the mean level of productivity? Plot the ts of <span class="math inline">\(\delta_t\)</span> and note the AICc for this model. Also plot appropriate model diagnostics.</p></li>
-<li><p>Based on AICc, which of the models above is the most parsimonious? Is it well behaved (i.e., are the model assumptions met)? Plot the model forecasts for the best model. Is this a good forecast model?</p></li>
-<li><p>Consider other environmental factors that could influence the time-varying intrinsic productivity of these salmon. For example, are there other large-scale indices of ocean conditions (e.g., sea-surface temperature, El Niño Southern Oscillation)? You could also consider the possible influence of other salmon stocks such as those we examined in Lab 1.</p></li>
-</ol>
-</section>
 <section id="resources" class="level2">
 <h2 class="anchored" data-anchor-id="resources">Resources</h2>
 <p>Lab materials from April 20 [<a href="https://atsa-es.github.io/atsa/Labs/Week%205/intro-to-dlms.html">online here</a>]</p>
