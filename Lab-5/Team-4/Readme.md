@@ -1,3 +1,3 @@
 # Team 4
 
-Emma Timmins-Schiffman (Genome Sci), Karl Veggerby (SAFS), Miranda Mudge (Molecular & Cellular)
+Nick Chambers (SAFS), Emma Timmins-Schiffman (Genome Sci), Miranda Mudge (Molecular & Cellular)

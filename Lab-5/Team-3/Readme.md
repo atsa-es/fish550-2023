@@ -1,3 +1,3 @@
 # Team 3
 
-Nick Chambers (SAFS), Terrance Wang (SAFS), Zoe Rand (QERM)
+Eric French (CEE), Madison Shipley (SAFS), Karl Veggerby (SAFS)
