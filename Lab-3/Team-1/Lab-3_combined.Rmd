@@ -1,0 +1,787 @@
+---
+title: "Lab 3 - Common trends in plankton data"
+subtitle: "Dynamic Factor Analysis (DFA)"
+author: "Liz Elmstrom, Dylan Hubl"
+date: April 20, 2023
+output: 
+  html_document:
+    code-folding: true
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include = FALSE}
+options(dplyr.summarise.inform = FALSE)
+```
+
+------------------------------------------------------------------------
+
+# Data
+
+## Load the data
+
+```{r load_data}
+## load MARSS for data and analyses
+library(MARSS)
+library(dplyr)
+library(tidyverse)
+library(rje)
+library(stringr)
+library(knitr)
+library(ggpubr)
+## load the raw data (there are 3 datasets contained here)
+data(lakeWAplankton, package = "MARSS")
+
+## we want `lakeWAplanktonTrans`, which has been transformed
+## so the 0's are replaced with NA's and the data z-scored
+all_dat <- lakeWAplanktonTrans
+```
+
+## Explore the data
+
+```{r explore_data}
+## add some code here
+
+cat("colnames: ", colnames(all_dat), "\n")
+
+#Phytoplankton
+phyto_long <- as_tibble(all_dat) %>%
+  pivot_longer(values_to = 'value', cols = Cryptomonas:Other.algae)
+
+ggplot(phyto_long, aes(x = Year, y= value), color=name) +
+  geom_point(size=2, pch= 21, na.rm = TRUE) +
+  theme_bw()+
+  facet_wrap(~name)+ ggtitle('Phytoplankton raw data')
+
+#Zooplankton
+zoop_long <- as_tibble(all_dat) %>%
+  pivot_longer(values_to = 'value', cols = Conochilus:Non.colonial.rotifers)
+
+ggplot(zoop_long, aes(x = Year, y= value), color=name) +
+  geom_point(size=2, pch= 21, na.rm = TRUE) +
+  theme_bw()+
+  facet_wrap(~name)+ ggtitle('Zooplankton raw data')
+
+#Covariates
+covar_long <- as_tibble(all_dat) %>%
+  pivot_longer(values_to = 'value', cols = Temp:pH)
+
+ggplot(covar_long, aes(x = Year, y= value), color=name) +
+  geom_point(size=2, pch= 21, na.rm = TRUE) +
+  theme_bw()+
+  facet_wrap(~name)+ ggtitle('Covariates raw data')
+
+```
+
+## Wrangle the data
+
+Filtering the data to our time period of study and 5 chosen plankton species. 
+
+```{r}
+
+#We want diatoms, greens, unicells, cyclops and non-colonial rotifers. 
+#we only want 5 of them
+crit <- all_dat[c(61:300),c(1:5,7,8,10,13,20)]
+
+head(crit)
+tail(crit)
+plankton_ts <- t(crit[,6:10])
+colnames(plankton_ts) <- crit[,1]
+
+#get the number of time series (y)
+n_ts <- nrow(plankton_ts)
+#get length of time series
+TT <- ncol(plankton_ts)
+
+#find the mean of each time series and remove it
+y_bar <- apply(plankton_ts, 1, mean, na.rm = TRUE)
+plankton_av <- plankton_ts - y_bar
+
+plankton_z <- zscore(plankton_ts)
+
+```
+
+We are interested in examining how populations of Diatoms, Greens, Unicells, Cyclops, and Non-colonial-rotifers are associated with one another and environmental factors such as temperature, pH of the water, amount of phosphorus in the water, and season. We selected a window of years to include data from 1967 to 1986.
+
+We standardized the observations of these populations by z scoring to allow the models to make better parameter estimates. We will z score the covariate data as well when we begin fitting models with covariates.
+
+# Methods
+
+**Which plankton taxa did you choose and how did you choose them?**
+
+We chose to examine time series of Diatoms, Greens, Unicells, Cyclops, and Non-colonial-rotifers. We chose these taxa based on available data and our previous knowledge of relationships between environmental covariates (specifically total phosphorus and pH) and phytoplankton. We additionally chose two zooplankton taxa to see if we examine any community interactions.
+
+**What time period(s) did you examine and why?**
+
+We selected a window of years to include data from 1967 to 1986. This gave us roughly twenty years of data to work with and excluded NAs from our covariate datasets.
+
+**What environmental or dummy variables did you include and why?**
+
+We chose to include total phosphorus, temperature, pH, and a dummy variable of season in our global DFA model. Given that these are monthly data, it is likely that they exhibit some sort of seasonal pattern. It is well known that nutrients, pH, and water temperature all driven plankton growth and community dynamics. We then tested data support for different combinations of covariates using AIC. 
+
+**What forms of models did you fit (ie, write them out in matrix form)?**
+
+We tested support for three options for the Z matrix:
+$$
+\begin{equation*}
+\begin{array}{rcccc}
+&m = 1&m = 2&m=3\\
+\hline
+\begin{array}{r}\text{Diatoms}\\ \text{Greens} \\ \text{Unicells} \\ \text{Cyclopes} \\ 
+\text{Rotifters} \end{array}&
+\begin{bmatrix}
+z_{11} \\
+z_{21}\\
+z_{31}\\
+z_{41}\\
+z_{51}\\
+\end{bmatrix}&
+\begin{bmatrix}
+z_{11} &  0 \\
+z_{21} & z_{22}\\
+z_{31} & z_{32}\\
+z_{41} &  z_{42}\\
+z_{51} &  z_{52}\\
+\end{bmatrix}&
+\begin{bmatrix}
+z_{11} &  0 &  0\\
+z_{21} & z_{22} &  0\\
+z_{31} & z_{32} & z_{33}\\
+z_{41} &  z_{42} &  z_{43}\\
+z_{51} &  z_{52} &  z_{53}\\
+\end{bmatrix}&
+\end{array}
+\end{equation*}
+$$ 
+Based on sample design, we assumed that R was diagonal and equal. In a DFA model, Q is set to identity. Because we z-scored our response variables and covariates, A is set to zero. Our global model is written in matrix form below. 
+
+Observation model:
+$$
+\begin{bmatrix}
+y_1\\
+y_2\\
+y_3\\
+y_4\\
+y_5\\
+\end{bmatrix}_t=
+\begin{bmatrix}
+z_{11} &  0 &  0\\
+z_{21} & z_{22} &  0\\
+z_{31} & z_{32} & z_{33}\\
+z_{41} &  z_{42} &  z_{43}\\
+z_{51} &  z_{52} &  z_{53}\\
+\end{bmatrix}*
+\begin{bmatrix}
+x_1\\
+x_2\\
+x_3\\
+\end{bmatrix}_t+
+\begin{bmatrix}
+D_{1,TP}&  D_{1,pH}& D_{1,cos}& D_{1,sin}\\
+D_{2,TP}& D_{2,pH}& D_{2,cos}& D_{2,sin}\\
+D_{3,TP}&  D_{3,pH}&  D_{3,cos}& D_{3,sin}\\
+D_{4,TP}&  D_{4,pH}&  D_{4,cos}& D_{4,sin}\\
+D_{5,TP}& D_{5,pH}&  D_{5,cos}& D_{5,sin}\\
+\end{bmatrix}*
+\begin{bmatrix}
+d_{TP}\\
+d_{pH}\\
+d_{cos}\\
+d_{sin}\\
+\end{bmatrix}_t+
+\begin{bmatrix}
+w_1\\
+w_2\\
+w_3\\
+w_4\\
+w_5\\
+\end{bmatrix}_t
+$$ 
+$$
+\text{Where }w_i \sim MVN
+\begin{pmatrix}
+\text{0,}\begin{bmatrix}
+R&0&0&0&0\\
+0&R&0&0&0\\
+0&0&R&0&0\\
+0&0&0&R&0\\
+0&0&0&0&R\\
+\end{bmatrix}
+\end{pmatrix}
+$$ 
+Process model:
+$$
+\begin{bmatrix}
+x_1\\
+x_2\\
+x_3\\
+\end{bmatrix}_t=
+\begin{bmatrix}
+1 &  0 &  0\\
+0 &  1 &  0\\
+0 & 0 & 1\\
+\end{bmatrix}*
+\begin{bmatrix}
+x_1\\
+x_2\\
+x_3\\
+\end{bmatrix}_{t-1}+
+\begin{bmatrix}
+v_1\\
+v_2\\
+v_3\\
+v_4\\
+v_5\\
+\end{bmatrix}_t 
+$$
+
+$$ 
+\text{Where }v_i \sim MVN
+\begin{pmatrix}
+\text{0,}\begin{bmatrix}
+1&0&0\\
+0&1&0\\
+0&0&1\\
+\end{bmatrix}
+\end{pmatrix}
+$$
+We assessed data support for different combinations of covariates in the D matrix in Step 3 of our model selection process below. 
+
+**What sort of model diagnostics did you use to examine model assumptions?**
+
+Finally, we assessed our model performance by examining our model residuals for normality and homogeniety, and examined any residual autocorrelation using ACF plots. 
+
+# Results: DFA Model Selection
+
+## Step 1- Fit global model with all covariates and number of trends
+
+We are keeping R to diagonal and equal based on the sample design. The default DFA setting within MARSS sets our Z matrix, A to scaling and Q to identity.
+
+```{r}
+#set up observation model parameters
+
+#covariates
+#create a matrix for each of the covariates
+covar_ts <- t(crit[,3:5])
+colnames(covar_ts) <- crit[,1]
+
+covar_z <- zscore(covar_ts) ## If we zscore the response, do we also zscore covariates? Mark says yes
+
+#make a season matrix
+cos_t <- cos(2 * pi * seq(TT)/12)
+sin_t <- sin(2 * pi * seq(TT)/12)
+season <- rbind(cos_t,sin_t)
+season_z <- zscore(season)
+
+#dim(season)
+
+d <- rbind(covar_z,season_z)
+# In this case, we are not altering the upper D matrix, so every covariate will have its own effect
+
+#tell MARSS what values to use to start with
+mm <- 3
+init_list <- list(x0 = matrix(rep(0, mm), mm, 1))
+
+#Setting latent trends to 3 and R to diagonal and equal
+mod_list = list(m = 3, R = "diagonal and equal", A = "zero") # If we zscore, A goes to zero (Also prob the same for demean? Not sure.)
+
+# Model iterations
+cont_list <- list(maxit = 3000, allow.degen = TRUE)
+
+## Fit global modal, using the zscored plankton data, right now covariates are  Z-scored
+dfa_global <- MARSS(plankton_z, model = mod_list, control = cont_list, inits = init_list, form = "dfa",
+                    z.score = FALSE, covariates = d)
+
+```
+
+The covariates including the season were zscored to ensure they each have a variance of 1. Which will help the model produce better estimates of the parameters.
+
+## Step 2- Testing number of trends
+
+Fitting full DFA model of covariates and testing for different latent trends.
+
+```{r}
+
+## Liz's original for loop
+mod_list = list(R = "diagonal and equal", A = "zero") # All other parameters are the default
+
+m_list <- 1:3 # Latent trends to loop through
+  
+out.tab <- NULL
+fits <- list()
+for(i in 1:length(m_list)){
+      fit.model = c(list(m=m_list[[i]]), mod_list) ## model list to loop through
+      
+      fit = MARSS(plankton_z, model = fit.model, control = cont_list, 
+                  form = "dfa", z.score = FALSE, covariates = d)
+      
+      out=data.frame(
+                   m=m_list[[i]],logLik=fit$logLik, AICc=fit$AICc, num.param=fit$num.params,
+                   num.iter=fit$numIter, converged=!fit$convergence,
+                   stringsAsFactors = FALSE)
+      
+      out.tab=rbind(out.tab,out)
+      fits=c(fits,list(fit))
+} 
+
+min.AICc <- order(out.tab$AICc)
+out.tab.1 <- out.tab[min.AICc, ]
+out.tab.1 <- cbind(out.tab.1, delta.AICc = out.tab.1$AICc - out.tab.1$AICc[1])
+out.tab.1
+```
+
+In step 2, we used the global model and information criterion to test various numbers of latent states (m = 1-3). This resulted in a top model, as indicated by AICc scores, with three latent trends.
+
+We can also alter the for loop to test for different R structures. We do this below as a general exercise to show how to loop through the stochastic or "random" effects of the DFA model as a part of model selection. However, considering our study design, we opt to consider only models with R equal to "diagonal and equal" moving forward.
+
+```{r}
+## for loop testing m and R adapted from the user manual
+
+m_list <- 1:3 # Latent trends to loop through
+R_list <- list("diagonal and equal", "diagonal and unequal")# just testing two options for R, could be expanded to fit other structures
+
+#In this we loop use BFGS method to get all models to converge
+cont_BFGS <- list(maxit = 3000)
+model.data <- data.frame(stringsAsFactors = FALSE)
+for (R in R_list) {
+  for (m in 1:length(m_list)) {
+    dfa.model <- list(R = R, m = m, A = "zero") 
+      
+    fit = MARSS(plankton_z, model = dfa.model, control = cont_BFGS, 
+                  form = "dfa",method = "BFGS", z.score = FALSE, covariates = d)
+    
+    
+  model.data <- rbind(model.data, data.frame(R = R, m = m,
+                      fit$logLik, AICc=fit$AICc, num.param=fit$num.params,
+                      converged=!fit$convergence,
+                      stringsAsFactors = FALSE))
+  }
+}
+#model.data
+min.AICc_2 <- order(model.data$AICc)
+model.data <- model.data[min.AICc_2, ]
+model.data.delta <- cbind(model.data, delta.AICc = model.data$AICc - model.data$AICc[1])
+model.data.delta
+
+```
+
+Note - The Diagonal and unequal models do not converge using the default MARSS methods. Running the BFGS method allows all models to converge.
+
+In this comparison, diagonal and unequal with 3 latent states is the top model. However, as mentioned above, this does not make sense for our study design, so moving forward we test different combinations of covariates with R = diagonal and equal and m = 3.
+
+## Step 3- Testing covariates
+
+```{r}
+#use this to create every combo of rows in the covariate matrix possible
+#NOTE: there is a saved .RDS table at the bottom that is the output of the loop
+#so you don't have to rerun (its a long time)
+combo <- powerSet(1:4)
+#make sure cos and sin are always together as season
+for (i in 9:16) {
+  combo[[i]] <- c(combo[[i]],5)
+}
+#d[combo[[1]],]  # [[1]] is empty so dont loop it
+cont_BFGS <- list(maxit = 3000)
+# model.cov.data <- data.frame(stringsAsFactors = FALSE)
+# for (i in 2:16) {
+#     fit2 <- MARSS(plankton_z, model = list(R = "diagonal and equal", m = 3,
+#                                            A = "zero"), control = cont_BFGS,
+#                                            form = "dfa", z.score = FALSE,
+#                                            method = "BFGS",
+#                                            covariates = d[combo[[i]],])
+# 
+#    model.cov.data <- rbind(model.cov.data,
+#                            data.frame(Covariates =                       toString(rownames(d)[combo[[i]]]),
+#                       LogLik = fit2$logLik, AICc=fit2$AICc, num.param=fit2$num.params,
+#                       stringsAsFactors = FALSE))
+# }
+# #model.cov.data
+# min.AICc_3 <- order(model.cov.data$AICc)
+# model.cov.data <- model.cov.data[min.AICc_3, ]
+# covariate.table <- cbind(model.cov.data, delta.AICc = model.cov.data$AICc - model.cov.data$AICc[1])
+# #covariate.table
+# covariate.table$Covariates <- str_replace(covariate.table$Covariates, "cos_t, sin_t", "Season")
+# covariate.table
+
+#this will save our table that is generated so the whole thing doesn't need to
+#be re-run in the future (i hope)
+#saveRDS(covariate.table, "covariate_table2.rds")
+table <- readRDS("covariate_table.rds")
+table
+```
+
+We used the BFGS method to estimate the parameters for the best model as running the models without this method 1) took a very long time and 2) resulted in a lot of models failing to converge.
+
+To select the covariate combination that resulted in a model that fit the data the best, we held the R matrix at "diagonal and unequal" and the number of latent states at three. Previously, we found these to be the best options when testing the global covariate model.
+
+We see that of the 15 combinations of Temperature, Total Phosphorus (TP), pH, and Season that the top model used *TP, pH and Season* as covariates. The second top model, based on AICc, was close but with fewer parameters we would expect it to be closer to 10 AICc points away if the models were equivalent.
+
+Thus, our top model has an R matrix that is diagonal and equal, three latent states, and uses TP, pH and Season as its covariates. The observation model and process model are written in matrix form below.
+
+Observation model:
+$$
+\begin{bmatrix}
+y_1\\
+y_2\\
+y_3\\
+y_4\\
+y_5\\
+\end{bmatrix}_t=
+\begin{bmatrix}
+0.394 &  0.000 &  0.000\\
+0.068 &  0.361 &  0.000\\
+0.317 & -0.014 & -0.233\\
+0.453 &  0.196 &  0.246\\
+0.429 &  0.017 &  0.158\\
+\end{bmatrix}*
+\begin{bmatrix}
+x_1\\
+x_2\\
+x_3\\
+\end{bmatrix}_t+
+\begin{bmatrix}
+-0.234&  0.088& -0.285& 0.409\\
+-0.134& -0.076& -0.389& -0.206\\
+0.317&  0.159&  -0.381& -0.259\\
+0.108&  0.320&  -0.259& -0.011\\
+-0.017& 0.228&  -0.439& -0.056\\
+\end{bmatrix}*
+\begin{bmatrix}
+d_{TP}\\
+d_{pH}\\
+d_{cos}\\
+d_{sin}\\
+\end{bmatrix}_t+
+\begin{bmatrix}
+w_1\\
+w_2\\
+w_3\\
+w_4\\
+w_5\\
+\end{bmatrix}_t
+$$ 
+$$
+\text{Where }w_i \sim MVN
+\begin{pmatrix}
+\text{0,}\begin{bmatrix}
+R&0&0&0&0\\
+0&R&0&0&0\\
+0&0&R&0&0\\
+0&0&0&R&0\\
+0&0&0&0&R\\
+\end{bmatrix}
+\end{pmatrix}
+$$ 
+Process model:
+$$
+\begin{bmatrix}
+x_1\\
+x_2\\
+x_3\\
+\end{bmatrix}_t=
+\begin{bmatrix}
+1 &  0 &  0\\
+0 &  1 &  0\\
+0 & 0 & 1\\
+\end{bmatrix}*
+\begin{bmatrix}
+x_1\\
+x_2\\
+x_3\\
+\end{bmatrix}_{t-1}+
+\begin{bmatrix}
+v_1\\
+v_2\\
+v_3\\
+v_4\\
+v_5\\
+\end{bmatrix}_t 
+$$
+
+$$ 
+\text{Where }v_i \sim MVN
+\begin{pmatrix}
+\text{0,}\begin{bmatrix}
+1&0&0\\
+0&1&0\\
+0&0&1\\
+\end{bmatrix}
+\end{pmatrix}
+$$
+
+# Results: Trends and individual loadings 
+
+Now we can look at our top model which has Total Phosporus, pH, and season as covariates with an R matrix set to "diagonal and equal" and three latent states.
+
+```{r}
+
+#create an object of the top model
+top.mod <- MARSS(plankton_z, model = list(R = "diagonal and equal", m = 3,
+                                           A = "zero"), control = cont_BFGS,
+                                           form = "dfa", z.score = FALSE, 
+                                           covariates = d[combo[[15]],])
+
+```
+
+```{r}
+#plot to states and loadings of top model
+## get the estimated ZZ
+Z_est <- coef(top.mod, type = "matrix")$Z
+## get the inverse of the rotation matrix
+H_inv <- varimax(Z_est)$rotmat
+# rotate factor loadings
+Z_rot = Z_est %*% H_inv
+## rotate processes
+proc_rot = solve(H_inv) %*% top.mod$states
+mm <- 3
+
+
+#info needed for plotting for loops
+ylbl <- c("Diatoms","Greens","Unicells","Cyclops","Rotifers")
+w_ts <- seq(dim(plankton_z)[2])
+yr_start <- 1967
+spp <- c("Diatoms","Greens","Unicells","Cyclops","Rotifers")
+clr <- c("brown", "blue", "darkgreen", "darkred", "purple")
+cnt <- 1
+
+layout(matrix(c(1, 2, 3, 4, 5, 6), mm, 2), widths = c(2, 1))
+par(mai = c(0.25, 0.5, 0.25, 0.1), omi = c(0, 0, 0, 0))
+
+## plot the latent processes
+for (i in 1:mm) {
+  ylm <- c(-1, 1) * max(abs(proc_rot[i, ]))
+  ## set up plot area
+  plot(w_ts, proc_rot[i, ], type = "n", bty = "L", ylim = ylm, 
+       xlab = "", ylab = "", xaxt = "n")
+  ## draw zero-line
+  abline(h = 0, col = "gray")
+  ## plot trend line
+  lines(w_ts, proc_rot[i, ], lwd = 2)
+  lines(w_ts, proc_rot[i, ], lwd = 2)
+  ## add panel labels
+  mtext(paste("State", i), side = 3, line = 0.5)
+  axis(1, 12 * (0:dim(plankton_z)[2]) + 1, yr_start + 0:dim(plankton_z)[2])
+}
+
+## plot the loadings
+minZ <- 0
+ylm <- c(-1, 1) * max(abs(Z_rot))
+for (i in 1:mm) {
+  plot(c(1:n_ts)[abs(Z_rot[, i]) > minZ], as.vector(Z_rot[abs(Z_rot[, 
+                                                                    i]) > minZ, i]), type = "h", lwd = 2, xlab = "", ylab = "", 
+       xaxt = "n", ylim = ylm, xlim = c(0.5, n_ts + 0.5), col = clr)
+  for (j in 1:n_ts) {
+    if (Z_rot[j, i] > minZ) {
+      text(j, -0.03, ylbl[j], srt = 90, adj = 1, cex = 1.2, 
+           col = clr[j])
+    }
+    if (Z_rot[j, i] < -minZ) {
+      text(j, 0.03, ylbl[j], srt = 90, adj = 0, cex = 1.2, 
+           col = clr[j])
+    }
+    abline(h = 0, lwd = 1.5, col = "gray")
+  }
+  mtext(paste("Factor loadings on state", i), side = 3, line = 0.5)
+}
+```
+
+```{r}
+#display Z matrix
+coef(top.mod, type = "matrix")$Z
+```
+
+```{r}
+#display rotated z matrix that loadings come from
+Z_rot
+```
+
+The plots show the loadings, or the weights, for each of the latent states. The loadings in the plots do not match with the values in the z matrix above because the must be rotated using the varimax function to produce the loading values we see plotted. Thus, the second table's values match with the loadings plot
+
+# Results: Model fits and uncertainty 
+
+The DFA fitting function comes from the lab notebook
+
+```{r}
+
+#this function was taken from the lab book
+#get model fits 
+get_DFA_fits <- function(MLEobj, dd = NULL, alpha = 0.05) {
+  ## empty list for results
+  fits <- list()
+  ## extra stuff for var() calcs
+  Ey <- MARSS:::MARSShatyt(MLEobj)
+  ## model params
+  ZZ <- coef(MLEobj, type = "matrix")$Z
+  ## number of obs ts
+  nn <- dim(Ey$ytT)[1]
+  ## number of time steps
+  TT <- dim(Ey$ytT)[2]
+  ## get the inverse of the rotation matrix
+  H_inv <- varimax(ZZ)$rotmat
+  ## check for covars
+  if (!is.null(dd)) {
+    DD <- coef(MLEobj, type = "matrix")$D
+    ## model expectation
+    fits$ex <- ZZ %*% H_inv %*% MLEobj$states + DD %*% dd
+  } else {
+    ## model expectation
+    fits$ex <- ZZ %*% H_inv %*% MLEobj$states
+  }
+  ## Var in model fits
+  VtT <- MARSSkfss(MLEobj)$VtT
+  VV <- NULL
+  for (tt in 1:TT) {
+    RZVZ <- coef(MLEobj, type = "matrix")$R - ZZ %*% VtT[, 
+                                                         , tt] %*% t(ZZ)
+    SS <- Ey$yxtT[, , tt] - Ey$ytT[, tt, drop = FALSE] %*% 
+      t(MLEobj$states[, tt, drop = FALSE])
+    VV <- cbind(VV, diag(RZVZ + SS %*% t(ZZ) + ZZ %*% t(SS)))
+  }
+  SE <- sqrt(VV)
+  ## upper & lower (1-alpha)% CI
+  fits$up <- qnorm(1 - alpha/2) * SE + fits$ex
+  fits$lo <- qnorm(alpha/2) * SE + fits$ex
+  return(fits)
+}
+
+```
+
+Plotting the model fits.
+
+```{r}
+
+#get model fit
+top.fit <- get_DFA_fits(top.mod, dd = d[combo[[15]],])
+
+#plot the fit of the top model
+ylbl <- c("Diatoms","Greens","Unicells","Cyclops","Rotifers")
+w_ts <- seq(dim(plankton_z)[2])
+yr_start <- 1967
+spp <- c("Diatoms","Greens","Unicells","Cyclops","Rotifers")
+clr <- c("brown", "blue", "darkgreen", "darkred", "purple")
+cnt <- 1
+
+#plot the fit
+par(mfrow = c(n_ts, 1), mai = c(0.5, 0.7, 0.1, 0.1), omi = c(0, 
+                                                             0, 0, 0))
+for (i in 1:n_ts) {
+  up <- top.fit$up[i, ]
+  mn <- top.fit$ex[i, ]
+  lo <- top.fit$lo[i, ]
+  plot(w_ts, mn, xlab = "", ylab = ylbl[i], xaxt = "n", type = "n", 
+       cex.lab = 1.2, ylim = c(min(lo), max(up)))
+  axis(1, 12 * (0:dim(plankton_z)[2]) + 1, yr_start + 0:dim(plankton_z)[2])
+  points(w_ts, plankton_z[i, ], pch = 16, col = clr[i])
+  lines(w_ts, up, col = "darkgray")
+  lines(w_ts, mn, col = "black", lwd = 2)
+  lines(w_ts, lo, col = "darkgray")
+}
+
+
+
+
+```
+
+The model fits look okay, but are not perfect for all time steps in some of the taxa (e.g., Diatoms, cylops, rotifers). This is probably because the plankton aren't perfectly synchronized through time and the three latent trends can't describe all of the variation across the five time series.
+
+# Results: Covariate effects
+
+```{r}
+
+coef <- as.data.frame(top.mod$coef[14:33])
+colnames(coef)[1] <- "effect"
+coef$covariate <- c(rep("TP", 5), rep("pH", 5), rep("cos_t", 5), rep("sin_t", 5))
+coef$species <- rep(c('Diatoms', 'Greens', 'Unicells', 'Cyclops', 'Rotifers'), 4)
+
+effect_plot <- function(plot_object){
+  ggplot(plot_object, mapping = aes(y = species, x = effect, col = species))+
+    geom_point(cex = 3)+
+    theme_classic()+
+    geom_vline(xintercept=0, linetype="dashed", 
+                               color = "grey60", size=0.5)+
+    xlim(c(-.5,.5))+
+    xlab("")+ylab("")
+}
+
+TP <- coef[which(coef$covariate=="TP"),] %>%
+  effect_plot()
+
+pH <- coef[which(coef$covariate=="pH"),]%>%
+  effect_plot()
+
+cos <- coef[which(coef$covariate=="cos_t"),]%>%
+  effect_plot()
+
+
+sin <- coef[which(coef$covariate=="sin_t"),]%>%
+  effect_plot()
+
+library(ggpubr)
+print(ggarrange(TP+rremove("legend")+ggtitle("TP"),
+                pH+rremove("legend")+ggtitle("pH"),
+                cos+rremove("legend")+ggtitle("cosine"),
+                sin+rremove("legend")+ggtitle("sine"),
+                ncol = 2, nrow = 2))
+```
+
+```{r}
+D_mat <- coef(top.mod, type = "matrix")$D
+colnames(D_mat) <-  c("TP","pH","cosine","sine") 
+D_mat
+```
+
+TP has a negative effect on diatoms and green algae, a positive effect on unicells and cylops, and no effect on rotifers. The effect of TP on diatoms and unicells tracks on with the literature-- increased P has been shown to increase the growth of bluegreen algae and dinoflagellates (unicells), decreasing the competitive availability of diatoms. Although not included in our analyses, we can see by looking at the raw data that during times of high phosphorus, cyanobacteria (bluegreen algae) bloomed. This likely influenced diatom and green algae populations through competitive exclusion processes.
+
+pH largely has a positive effect on all species of study, with the acceptance of green algal species. This suggests that greens do better under more acidic conditions (more carbon), whereas others are better suited to low CO2 (less acidic) levels.
+
+Our seasonality dummy variables (cosine and sine) represent winter (cosine) and and springtime (sine) periods. During winter months when the curve is high, the effect of season on algal species is negative. The springtime curve has a negative effect on unicells, rotifers, and greens, a strong postive effect on diatoms, and no effect on cylops. This makes sense considering that spring algae blooms are generally dominated by diatoms.
+
+# Model diagnostics
+
+Below we check our model residuals and plot the acfs.
+
+```{r}
+
+par(mfrow = c(3, 2), mai = c(0.5, 0.7, 0.2, 0.1), omi = c(0, 0, 0, 0))
+resids <- MARSSresiduals(top.mod, type = "tt1")
+for (i in 1:5) {
+    plot(resids$model.residuals[i, ], ylab = "model residuals", 
+        xlab = "")
+    abline(h = 0)
+    title(rownames(plankton_z)[i])
+}
+
+plot(top.mod, plot.type = "qqplot.std.model.resids.ytt1")
+plot(top.mod, plot.type = "acf.std.model.resids.ytt1")
+```
+
+For the most part our model residuals look okay, with some potential residual pattern remaining in our Diatoms, Unicells, and Cyclops time series.
+
+Our data do appear to be normally distributed based on our qq-norm plots.
+
+The acf plots show some remaining auto-correlation in all of our algal time series with the exception of green algae. This suggests that there is some remaining variance not explained by our latent trends and model covariates. State 1 for example looks like it could maybe be some sort of oscillation (maybe). Future studies may want to consider some sort of larger climate variables that may influence algal abundance in Lake Washington.
+
+# Discussion
+
+We z scored the response data and all of the covariates to help the MARSS models make better parameter estimations. We then found that the observed data was best explained by 3 latent states when we held the R matrix constant at Diagonal and equal and included all covariates. This was the maximum number of latent states that we tested and had we tested more latent states, it is likely a higher number would have won out over the rest. This is because a higher number of latent states would allow for more flexibility in the models to explain our data. A latent state of for each of the individual species would likely have had the lowest AIC but our goal was to "reduce dimensions" and still be able to make predictions.
+
+This reduction in dimensions, explaining 5 observed datasets with 3 latent states, and the differences between the 5 species is why on areas of our fitted plots the predictions did not fit the data well.
+
+The direction of the effects of the covariates on each of the species made biological sense. We saw that the winter component of the season covariate strongly limited all of the species. The season covariate was present in a number of the top models and may have had enough predictive power to reduce the predictive value of temperature.We also saw that species capable of blooms, such as diatoms in the spring or dinoflagellates in the presence of high amounts of free phosphorus were capable of suppressing the populations. This could explain why the majority of species did not respond positively to the spring portion of the season covariate.
+
+Model diagnostics showed that the systematic form of our models may not have captured and removed all of the structure from the residuals. Future analyses could investigate other covariates like water turbidity which could affect the amount of light reaching into the water column which would be important for plankton species. Furthermore, another cyclical climatic variable may help reduce autocorrelation observed in the ACF plots. 
+
+# Team contributions 
+
+Both Dylan and Liz contributed code, interpretation, and discussion to this analysis.
+
+Outlined as general steps... 
+
+1) Find the most parsimonious model among a set that examines the effects of environmental covariates and/or an indicator of seasonality (Dylan), varying numbers of trends (Liz), and different forms of variance-covariance matrices for the observation errors (Liz and Dylan).
+
+2)  Plot trends and individual loadings for the model identified in task (1) above. (Dylan)
+
+3)  Plot model fits and uncertainty intervals for the model identified in task (1) above. (Dylan)
+
+4)  Describe the effects of environmental or dummy variables on (possibly seasonal) patterns in the data. (Liz)
+

@@ -1,5 +1,29 @@
+---
+title: "Lab 3 - Common trends in plankton data"
+subtitle: "Dynamic Factor Analysis (DFA)"
+author: "Eric, Madison, Maria"
+date: April 20, 2023
+output: 
+  html_document:
+    code-folding: true
+    toc: true
+    toc_float: true
+---
 
-# load MARSS for data and analyses
+```{r setup, include = FALSE}
+options(dplyr.summarise.inform = FALSE)
+```
+
+------------------------------------------------------------------------
+
+# Data
+
+Describe what plankton groups and covariates you used and indicate any temporal subsetting you chose.
+
+## Load the data
+
+```{r load_data}
+## load MARSS for data and analyses
 library(MARSS)
 
 ## load the raw data (there are 3 datasets contained here)
@@ -8,69 +32,17 @@ data(lakeWAplankton, package = "MARSS")
 ## we want `lakeWAplanktonTrans`, which has been transformed
 ## so the 0's are replaced with NA's and the data z-scored
 all_dat <- lakeWAplanktonTrans
+```
 
-head(all_dat)
+## Wrangle the data
 
-## use only the 10 years from 1980-1989
-yr_frst <- 1962
-yr_last <- 1994
-plank_dat <- all_dat[all_dat[, "Year"] >= yr_frst & 
-                       all_dat[, "Year"] <= yr_last,]
+-   You can choose any taxa to include in your analyses, but make sure there are at least 5 groups. You can mix phytoplankton and zooplankton, if you'd like, but justify any choices you make.
 
-## create vector of phytoplankton group names
-phytoplankton1 <- c("Cryptomonas", "Diatoms", "Greens",
-                   "Bluegreens", "Unicells")
-phytoplankton2 <- c("Other.algae", "Conochilus", "Cyclops",
-                   "Daphnia", "Diaptomus")
-phytoplankton3 <- c("Epischura", "Leptodora", "Neomysis",
-                   "Non.daphnid.cladocerans", "Non.colonial.rotifers")
+-   You will want to subset the data to a time period with adequate observations for the taxa of interest. Your time window should include at lest 5 years (60 months).
 
-## get only the phytoplankton
-dat_init <- plank_dat[, phytoplankton3]
+```{r wrangle_data}
+## add some code here
 
-## transpose data so time goes across columns
-dat_init <- t(dat_init)
-
-## get number of time series
-N_ts <- dim(dat_init)[1]
-
-## get length of time series
-TT <- dim(dat_init)[2] 
-
-## mean of each taxon
-y_bar <- apply(dat_init, 1, mean, na.rm = TRUE)
-
-## subtract the means
-dat <- dat_init - y_bar
-
-## assign new column names
-spp <- rownames(dat_init)
-rownames(dat) <- spp
-
-
-## set plot colors
-clr <- c("brown", "blue", "darkgreen", "darkred", "purple")
-
-## initialize a counter
-cnt <- 1
-
-## set up plotting space & make plots
-par(mfrow = c(N_ts, 1), mai = c(0.5, 0.7, 0.1, 0.1), omi = c(0, 0, 0, 0))
-
-for(i in spp){
-  plot(dat[i,],  bty = "L", xaxt = "n", pch = 16,
-       xlab = "",
-       ylab = "Abundance index", col=clr[cnt], type="b")
-  axis(1, 12 * (0:dim(dat_init)[2]) + 1, yr_frst + 0:dim(dat_init)[2])
-  title(i)
-  cnt <- cnt + 1
-}
-
-
-#================================
-#Official RMarkdown start 
-#=================================
-# set the window we wish to examine
 yr_frst <- 1978
 yr_last <- 1985
 init_dat <- all_dat[all_dat[, "Year"] >= yr_frst & 
@@ -93,15 +65,18 @@ spp <- rownames(plank_dat)
 rownames(plank_dat) <- spp
 
 # create a covariates matrix
-covnames <- c("Temp","TP") #pH has missing data points so it will only work in certain date ranges
+covnames <- c("Temp","TP","pH") #pH has missing data points so it will only work in certain date ranges
 covar <- init_dat[,covnames] %>%
   t()
+print(plank_dat[,1:5])
 
-#==========
-#Plot Taxa
-#==========
+print(covar[,1:5])
 
-## set plot colors
+
+```
+```{r plot_data}
+
+
 clr <- c("brown", "blue", "darkgreen", "darkred", "purple")
 
 ## initialize a counter
@@ -120,9 +95,6 @@ for(i in spp){
   cnt <- cnt + 1
 }
 
-#================
-#Plot covariates 
-#===============
 
 ## set plot colors
 clr <- c("brown", "blue", "darkgreen","purple")
@@ -142,9 +114,12 @@ for(i in row.names(covar)){
   cnt <- cnt + 1
 }
 
-#================
-#Model Set up 
-#================
+
+```
+
+We are choosing two primary producers (Diatoms & Other Algae), two grazers (Daphnia & Cyclops), and one predator (Epischura). We are choosing years 1978 to 1985 since Daphnia data is more consistent after 1978 and we are able to capture an interesting trend in Total Phosphorus. 
+
+```{r model_params}
 model.states <- 2:4
 names(model.states) <- c("two_states","three_states","four_states")
 
@@ -173,16 +148,21 @@ mod.list = list(
   x0 = "zero" # x0 can be also be set to "unconstrained" or "unequal" it might be useful to try these later
 )
 
-#DFA form for mars model Q--reduces option to streamline runtime
+
 
 # all other params are left to their default settings
 
+```
+
+
+```{r MARSS_models, cache = TRUE}
+# Added in another for loop to run through cycling options, be warned, this means there are 80 total models. It takes a long time to run
 start.time <- Sys.time()
 
 
 out.tab <- NULL
 fits <- list()
-#for(i in model.states){
+for(i in model.states){
   for (j in 1:length(d.models)){
     for(R.model in R.models){
       fit.model = c(list(m=i, R=R.model), mod.list)
@@ -194,13 +174,10 @@ fits <- list()
       #                control=list(maxit=2000, allow.degen=TRUE))
       #      }
       #      else {
-      
-      fit <- MARSS(plank_dat, model=fit.model,
+      fit <- MARSS(plank_dat, model=fit.model, 
                    form = "dfa", z.score = FALSE, silent = TRUE,
-                   control=list(maxit=800, allow.degen = TRUE),
+                   control=list(maxit=2000, allow.degen = TRUE), 
                    covariates = d.models[[j]])
-
-      
       #      }
       
       out=data.frame(States=names(model.states)[i-1],d=names(d.models)[j],R=R.model, # 
@@ -220,13 +197,14 @@ print(elapsed.time)
 min.AICc <- order(out.tab$AICc)
 out.tab.1 <- out.tab[min.AICc, ]
 out.tab.1
+```
 
-#===============
-#Diagnostics 
-#===============
+The model that has the least AICc is the model with two states, diagonal and unequal errors and all 3 covariates.
 
+
+```{r factor_loadings}
 # Rotating the model, plotting the states and loadings
-best_fit <- fits[[19]]
+best_fit <- fits[[13]]
 
 # Get Z Estimations and rotate the data
 ## get the estimated ZZ
@@ -286,49 +264,83 @@ for(i in 1:m) {
 ## plot CCF's
 ccf(proc_rot[1,],proc_rot[2,], lag.max = 15, main="")
 title(main = "State 1 vs 2")
+```
 
-####
-#More plots 
+It looks like Epischura is following the negative of state two whereas most of the other species are following either just state 1 or a mixture of state one and state two.  
 
-###
 
+## General Notes
+
+labmate emails:
+
+Madi Heller-Shipley --[shipmadison\@gmail.com](mailto:shipmadison@gmail.com){.email} Eric French -- [ericvfrench\@gmail.com](mailto:ericvfrench@gmail.com){.email} Maria Kuruvilla -- [mariakur\@uw.edu](mailto:mariakur@uw.edu){.email}
+
+*Diatoms* dominated in early spring time (Phytoplankton) *Daphnia* eat diatoms --\> bloom after diatoms (zooplankton)
+
+*bluegreen* (Cyano-bacteria) is toxic --\> dominace correlated to TP (not as nitrogen limited)
+
+*Epischura* --\> calanus copepod peaks after diatoms
+
+*Neomysis* --\> opossum shrimp (predator) Data limited
+
+# First Steps
+
+1)  Plot all species all years and look for data-based relationships -connect what we see in the data to literature and the biology of Lake Washington
+
+2)  Pick our species and connect them!!!
+
+3)  Connect species to avaialable environmental data
+
+4)  Play with models, move to general tasks
+
+# General tasks
+
+Each group has the same general tasks, but you will adapt them as you work on the data.
+
+1)  Find the most parsimonious model among a set that examines the effects of environmental covariates and/or an indicator of seasonality, varying numbers of trends, and different forms of variance-covariance matrices for the observation errors.
+
+2)  Plot trends and individual loadings for the model identified in task (1) above.
+
+3)  Plot model fits and uncertainty intervals for the model identified in task (1) above.
+
+```{r}
 get_DFA_fits <- function(MLEobj, dd = NULL, alpha = 0.05) {
-  ## empty list for results
-  fits <- list()
-  ## extra stuff for var() calcs
-  Ey <- MARSS:::MARSShatyt(MLEobj)
-  ## model params
-  ZZ <- coef(MLEobj, type = "matrix")$Z
-  ## number of obs ts
-  nn <- dim(Ey$ytT)[1]
-  ## number of time steps
-  TT <- dim(Ey$ytT)[2]
-  ## get the inverse of the rotation matrix
-  H_inv <- varimax(ZZ)$rotmat
-  ## check for covars
-  if (!is.null(dd)) {
-    DD <- coef(MLEobj, type = "matrix")$D
-    ## model expectation
-    fits$ex <- ZZ %*% H_inv %*% MLEobj$states + DD %*% dd
-  } else {
-    ## model expectation
-    fits$ex <- ZZ %*% H_inv %*% MLEobj$states
-  }
-  ## Var in model fits
-  VtT <- MARSSkfss(MLEobj)$VtT
-  VV <- NULL
-  for (tt in 1:TT) {
-    RZVZ <- coef(MLEobj, type = "matrix")$R - ZZ %*% VtT[, 
-                                                         , tt] %*% t(ZZ)
-    SS <- Ey$yxtT[, , tt] - Ey$ytT[, tt, drop = FALSE] %*% 
-      t(MLEobj$states[, tt, drop = FALSE])
-    VV <- cbind(VV, diag(RZVZ + SS %*% t(ZZ) + ZZ %*% t(SS)))
-  }
-  SE <- sqrt(VV)
-  ## upper & lower (1-alpha)% CI
-  fits$up <- qnorm(1 - alpha/2) * SE + fits$ex
-  fits$lo <- qnorm(alpha/2) * SE + fits$ex
-  return(fits)
+    ## empty list for results
+    fits <- list()
+    ## extra stuff for var() calcs
+    Ey <- MARSS:::MARSShatyt(MLEobj)
+    ## model params
+    ZZ <- coef(MLEobj, type = "matrix")$Z
+    ## number of obs ts
+    nn <- dim(Ey$ytT)[1]
+    ## number of time steps
+    TT <- dim(Ey$ytT)[2]
+    ## get the inverse of the rotation matrix
+    H_inv <- varimax(ZZ)$rotmat
+    ## check for covars
+    if (!is.null(dd)) {
+        DD <- coef(MLEobj, type = "matrix")$D
+        ## model expectation
+        fits$ex <- ZZ %*% H_inv %*% MLEobj$states + DD %*% dd
+    } else {
+        ## model expectation
+        fits$ex <- ZZ %*% H_inv %*% MLEobj$states
+    }
+    ## Var in model fits
+    VtT <- MARSSkfss(MLEobj)$VtT
+    VV <- NULL
+    for (tt in 1:TT) {
+        RZVZ <- coef(MLEobj, type = "matrix")$R - ZZ %*% VtT[, 
+            , tt] %*% t(ZZ)
+        SS <- Ey$yxtT[, , tt] - Ey$ytT[, tt, drop = FALSE] %*% 
+            t(MLEobj$states[, tt, drop = FALSE])
+        VV <- cbind(VV, diag(RZVZ + SS %*% t(ZZ) + ZZ %*% t(SS)))
+    }
+    SE <- sqrt(VV)
+    ## upper & lower (1-alpha)% CI
+    fits$up <- qnorm(1 - alpha/2) * SE + fits$ex
+    fits$lo <- qnorm(alpha/2) * SE + fits$ex
+    return(fits)
 }
 
 
@@ -340,26 +352,27 @@ mod_fit <- get_DFA_fits(best_fit)
 ## plot the fits
 ylbl <- plank_taxa
 par(mfrow = c(N_ts, 1), mai = c(0.5, 0.7, 0.1, 0.1), omi = c(0, 
-                                                             0, 0, 0))
+    0, 0, 0))
 for (i in 1:N_ts) {
-  up <- mod_fit$up[i, ]
-  mn <- mod_fit$ex[i, ]
-  lo <- mod_fit$lo[i, ]
-  plot(w_ts, mn, xlab = "", ylab = ylbl[i], xaxt = "n", type = "n", 
-       cex.lab = 1.2, ylim = c(min(lo), max(up)))
-  axis(1, 12 * (0:dim(plank_dat)[2]) + 1, yr_frst + 0:dim(plank_dat)[2])
-  points(w_ts, plank_dat[i, ], pch = 16, col = clr[i])
-  lines(w_ts, up, col = "darkgray")
-  lines(w_ts, mn, col = "black", lwd = 2)
-  lines(w_ts, lo, col = "darkgray")
+    up <- mod_fit$up[i, ]
+    mn <- mod_fit$ex[i, ]
+    lo <- mod_fit$lo[i, ]
+    plot(w_ts, mn, xlab = "", ylab = ylbl[i], xaxt = "n", type = "n", 
+        cex.lab = 1.2, ylim = c(min(lo), max(up)))
+    axis(1, 12 * (0:dim(plank_dat)[2]) + 1, yr_frst + 0:dim(plank_dat)[2])
+    points(w_ts, plank_dat[i, ], pch = 16, col = clr[i])
+    lines(w_ts, up, col = "darkgray")
+    lines(w_ts, mn, col = "black", lwd = 2)
+    lines(w_ts, lo, col = "darkgray")
 }
+```
 
-#=====================
-#Cycling Assumptions 
-#=====================
 
+4)  Describe the effects of environmental or dummy variables on (possibly seasonal) patterns in the data.
+
+```{r fourier}
 TT <- dim(plank_dat)[2]
-period <- 6
+period <- 12
 cos.t <- cos(2 * pi * seq(TT)/period)
 sin.t <- sin(2 * pi * seq(TT)/period)
 c.Four <- rbind(cos.t, sin.t)
@@ -372,12 +385,11 @@ R.models <- c("diagonal and unequal")
 
 # Ignoring pH for now because it does not have a complete dataset. May add seasonal variables later. From early results it looks like best fits all have covariation. I have taken out a few of the options to reduce the number of models
 # Also the covariates must be z-scored if the response variables are demeaned
-d10 = zscore(t(init_dat[,c("Temp","TP", "pH")]))
-d9 = rbind(c.Four,d10)
-
-d.models <- list(d10, d9)
+d.models <- list( 
+  d10 = zscore(t(init_dat[,c("Temp","TP", "pH")])),
+  d9 = rbind(c.Four,d10)
   
-
+)
 names(d.models) <- c("Temp,TP, and pH", "with seasonality")
 
 
@@ -389,6 +401,15 @@ mod.list = list(
 )
 
 
+
+
+```
+
+
+
+
+
+```{r fourier_fit}
 # Added in another for loop to run through cycling options, be warned, this means there are 80 total models. It takes a long time to run
 start.time <- Sys.time()
 
@@ -430,15 +451,29 @@ print(elapsed.time)
 min.AICc <- order(out.tab$AICc)
 out.tab.1 <- out.tab[min.AICc, ]
 out.tab.1
+```
 
 
-######
 
-#Notes on CCF 
 
-#three states, out to ~40 steps were correlation 
+# Methods
 
-#Hole where values are 
+Please address the following in your methods:
 
-## 50 day lag between season change and temperature change 
+-   Which plankton taxa did you choose and how did you choose them?
 
+-   What time period(s) did you examine and why?
+
+-   What environmental or dummy variables did you include and why?
+
+-   What forms of models did you fit (ie, write them out in matrix form)?
+
+-   What sort of model diagnostics did you use to examine model assumptions?
+
+# Results
+
+# Discussion
+
+# Team contributions
+
+Example: "All team members helped decide on the goal and ran the analyses for the individual regions. Team members 2 & 3 wrote most of the code for the analysis. Team member 1 worked on the plotting section of the report using and adapting code that team member 3 wrote. All team members helped edit the report and wrote the discussion together."
