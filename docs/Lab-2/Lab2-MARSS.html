@@ -240,6 +240,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Lab Intro</span></span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Lab-3/Final_Write_ups/Lab-3-team-1_final.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Lab 3 - Common trends in plankton data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Lab-3/Final_Write_ups/Lab-3-team-2_final.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Lab 3 - Common trends in plankton data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Lab-3/Final_Write_ups/Lab-3-team-3_final.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Lab 3 - Common trends in plankton data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Lab-3/Final_Write_ups/Lab-3-team-4_final.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Lab 3 - Common trends in plankton data</span></span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -254,7 +278,31 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Lab-4/Lab-4-HMM.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Lab Intro</span></span></a>
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Lab Intro</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Lab-4/Final_Write_ups/Lab-4-team-1_final.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Lab 4 - Hidden Markov Models</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Lab-4/Final_Write_ups/Lab-4-team-2_final.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Lab 4 - Hidden Markov Models</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Lab-4/Final_Write_ups/Lab-4-team-3_final.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Lab 4 - Hidden Markov Models</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Lab-4/Final_Write_ups/Lab-4-team-4_final.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Lab 4 - Hidden Markov Models</span></span></a>
   </div>
 </li>
       </ul>
@@ -574,12 +622,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>fit1 <span class="ot">&lt;-</span> <span class="fu">MARSS</span>(dat, <span class="at">model=</span>mod.list1, <span class="at">method=</span><span class="st">"BFGS"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>Success! Converged in 235 iterations.
+<pre><code>Success! Converged in 76 iterations.
 Function MARSSkfas used for likelihood calculation.
 
 MARSS fit is
 Estimation method: BFGS 
-Estimation converged in 235 iterations. 
+Estimation converged in 76 iterations. 
 Log-likelihood: -109.4078 
 AIC: 256.8155   AICc: 262.1676   
  
@@ -730,7 +778,7 @@ Estimation method: kem
 Convergence test: conv.test.slope.tol = 0.5, abstol = 0.001
 WARNING: maxit reached at  500  iter before convergence.
  Neither abstol nor log-log convergence test were passed.
- The likelihood and params are not at the ML values.
+ The likelihood and params are not at the MLE values.
  Try setting control$maxit higher.
 Log-likelihood: -137.532 
 AIC: 295.064   AICc: 296.5209   

@@ -241,6 +241,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Lab Intro</span></span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lab-3/Final_Write_ups/Lab-3-team-1_final.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Lab 3 - Common trends in plankton data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lab-3/Final_Write_ups/Lab-3-team-2_final.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Lab 3 - Common trends in plankton data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lab-3/Final_Write_ups/Lab-3-team-3_final.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Lab 3 - Common trends in plankton data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lab-3/Final_Write_ups/Lab-3-team-4_final.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Lab 3 - Common trends in plankton data</span></span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -255,7 +279,31 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../Lab-4/Lab-4-HMM.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Lab Intro</span></span></a>
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Lab Intro</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lab-4/Final_Write_ups/Lab-4-team-1_final.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Lab 4 - Hidden Markov Models</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lab-4/Final_Write_ups/Lab-4-team-2_final.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Lab 4 - Hidden Markov Models</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lab-4/Final_Write_ups/Lab-4-team-3_final.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Lab 4 - Hidden Markov Models</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lab-4/Final_Write_ups/Lab-4-team-4_final.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Lab 4 - Hidden Markov Models</span></span></a>
   </div>
 </li>
       </ul>
@@ -520,12 +568,12 @@ p &amp; p &amp; p  &amp; q \end{bmatrix}
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>fit1<span class="ot">&lt;-</span><span class="fu">MARSS</span>(chin_newdat, <span class="at">model=</span>mod.list1, <span class="at">method =</span> <span class="st">"BFGS"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>Success! Converged in 528 iterations.
+<pre><code>Success! Converged in 167 iterations.
 Function MARSSkfas used for likelihood calculation.
 
 MARSS fit is
 Estimation method: BFGS 
-Estimation converged in 528 iterations. 
+Estimation converged in 167 iterations. 
 Log-likelihood: -414.6942 
 AIC: 897.3884   AICc: 905.3217   
  
@@ -802,12 +850,12 @@ Use MARSSparamCIs to compute CIs and bias estimates.</code></pre>
 <span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>fit4<span class="ot">&lt;-</span><span class="fu">MARSS</span>(chin_newdat, <span class="at">model =</span> mod.list4, <span class="at">method =</span> <span class="st">"BFGS"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>Success! Converged in 568 iterations.
+<pre><code>Success! Converged in 243 iterations.
 Function MARSSkfas used for likelihood calculation.
 
 MARSS fit is
 Estimation method: BFGS 
-Estimation converged in 568 iterations. 
+Estimation converged in 243 iterations. 
 Log-likelihood: -501.0319 
 AIC: 1038.064   AICc: 1040.228   
  
@@ -1135,12 +1183,12 @@ Use MARSSparamCIs to compute CIs and bias estimates.</code></pre>
 <span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a>fit1.unconst<span class="ot">&lt;-</span><span class="fu">MARSS</span>(chin_newdat, <span class="at">model=</span>mod.list1.unconst, <span class="at">method =</span> <span class="st">"BFGS"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>Success! Converged in 1539 iterations.
+<pre><code>Success! Converged in 443 iterations.
 Function MARSSkfas used for likelihood calculation.
 
 MARSS fit is
 Estimation method: BFGS 
-Estimation converged in 1539 iterations. 
+Estimation converged in 443 iterations. 
 Log-likelihood: -358.8132 
 AIC: 895.6264   AICc: 961.0141   
  
@@ -1265,12 +1313,12 @@ Use MARSSparamCIs to compute CIs and bias estimates.</code></pre>
 <span id="cb58-7"><a href="#cb58-7" aria-hidden="true" tabindex="-1"></a>fit4.unconst<span class="ot">&lt;-</span><span class="fu">MARSS</span>(chin_newdat, <span class="at">model=</span>mod.list4.unconst, <span class="at">method =</span> <span class="st">"BFGS"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>Success! Converged in 431 iterations.
+<pre><code>Success! Converged in 187 iterations.
 Function MARSSkfas used for likelihood calculation.
 
 MARSS fit is
 Estimation method: BFGS 
-Estimation converged in 431 iterations. 
+Estimation converged in 187 iterations. 
 Log-likelihood: -496.1341 
 AIC: 1034.268   AICc: 1037.22   
  
@@ -1324,12 +1372,12 @@ Use MARSSparamCIs to compute CIs and bias estimates.</code></pre>
 <span id="cb61-7"><a href="#cb61-7" aria-hidden="true" tabindex="-1"></a>fit7<span class="ot">&lt;-</span><span class="fu">MARSS</span>(chin_newdat, <span class="at">model=</span>mod.list7, <span class="at">method =</span> <span class="st">"BFGS"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>Success! Converged in 614 iterations.
+<pre><code>Success! Converged in 243 iterations.
 Function MARSSkfas used for likelihood calculation.
 
 MARSS fit is
 Estimation method: BFGS 
-Estimation converged in 614 iterations. 
+Estimation converged in 243 iterations. 
 Log-likelihood: -492.6786 
 AIC: 1049.357   AICc: 1056.351   
  
@@ -1394,12 +1442,12 @@ Use MARSSparamCIs to compute CIs and bias estimates.</code></pre>
 <span id="cb64-7"><a href="#cb64-7" aria-hidden="true" tabindex="-1"></a>fit8<span class="ot">&lt;-</span><span class="fu">MARSS</span>(chin_newdat, <span class="at">model=</span>mod.list8, <span class="at">method =</span> <span class="st">"BFGS"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>Success! Converged in 711 iterations.
+<pre><code>Success! Converged in 291 iterations.
 Function MARSSkfas used for likelihood calculation.
 
 MARSS fit is
 Estimation method: BFGS 
-Estimation converged in 711 iterations. 
+Estimation converged in 291 iterations. 
 Log-likelihood: -499.9098 
 AIC: 1043.82   AICc: 1047.063   
  
@@ -1542,12 +1590,12 @@ Lewis River - late fall    9.467151 9.187583 8.530307 8.218248 8.609772</code></
 <span id="cb74-9"><a href="#cb74-9" aria-hidden="true" tabindex="-1"></a>fit_cycle <span class="ot">&lt;-</span> <span class="fu">MARSS</span>(chin_subset, <span class="at">model=</span>mod.list_cycle, <span class="at">method =</span> <span class="st">"BFGS"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>Success! Converged in 273 iterations.
+<pre><code>Success! Converged in 65 iterations.
 Function MARSSkfas used for likelihood calculation.
 
 MARSS fit is
 Estimation method: BFGS 
-Estimation converged in 273 iterations. 
+Estimation converged in 65 iterations. 
 Log-likelihood: -113.3892 
 AIC: 270.7784   AICc: 279.8141   
  
@@ -1652,12 +1700,12 @@ Use MARSSparamCIs to compute CIs and bias estimates.</code></pre>
 <span id="cb79-7"><a href="#cb79-7" aria-hidden="true" tabindex="-1"></a>fit_wo_cycle <span class="ot">&lt;-</span> <span class="fu">MARSS</span>(chin_subset, <span class="at">model=</span>mod.list_wo_cycle, <span class="at">method =</span> <span class="st">"BFGS"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>Success! Converged in 107 iterations.
+<pre><code>Success! Converged in 28 iterations.
 Function MARSSkfas used for likelihood calculation.
 
 MARSS fit is
 Estimation method: BFGS 
-Estimation converged in 107 iterations. 
+Estimation converged in 28 iterations. 
 Log-likelihood: -118.5044 
 AIC: 257.0088   AICc: 258.783   
  
