@@ -1,0 +1,300 @@
+---
+title: "Lab 4 - Hidden Markov Models"
+author: "Dylan Hub, Eric French, Zoe Rand"
+date: May 9, 2023
+output: 
+  html_document:
+    code-folding: true
+    toc: true
+    toc_float: true
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, include = FALSE}
+options(dplyr.summarise.inform = FALSE)
+```
+
+-   Team 1: Dylan Hubl, Eric French, Zoe Rand
+-   Team 2: Maria Kuruvilla, Miranda Mudge
+-   Team 3: Nick Chambers, Madison Shipley, Karl Veggerby
+-   Team 4: Liz Elmstrom, Terrance Wang, Emma Timmins-Schiffman
+
+Make sure to label your final write-up with "final" in the title so we
+know which one is the final one.
+
+```{r}
+library(tidyverse)
+library(depmixS4)
+library(knitr)
+```
+
+# Data
+
+As part of the California Current Integrated Ecosystem Report, NOAA
+scientists do annual updates of [stoplight charts for ecosystem
+indicators](https://www.fisheries.noaa.gov/west-coast/science-data/ocean-conditions-indicators-trends).
+
+We have included the `stoplight.csv` dataset for this week. One of the
+columns divides indicators into groups (e.g. Local Physical, Local
+Biological, etc). Please pick a type of indicators, and develop a 2- or
+3-state multivariate HMM. A few tips:
+
+Describe what plankton groups and covariates you used and indicate any
+temporal subsetting you chose. Also describe any standardization,
+centering or scaling that was used.
+
+## Load the data
+
+One of the columns divides indicators into groups (e.g. Local Physical,
+Local Biological, etc).
+
+```{r load_data}
+stoplight <- read.csv(here::here("Lab-4", "stoplight.csv"))
+```
+
+## Wrangle the data
+
+```{r wrangle_data}
+## add some code here
+# we will look at Copepod_richness, N_copepod, S_copepod
+
+df <- rbind.data.frame(stoplight[stoplight$Ecosystem.Indicators == "Copepod_richness",],stoplight[stoplight$Ecosystem.Indicators == "N_copepod",],stoplight[stoplight$Ecosystem.Indicators == "S_copepod",])
+```
+
+```{r plot_data}
+newdf<-df%>%pivot_longer(-c(Ecosystem.Indicators, Type), names_to = "Year") %>%
+  mutate(Year = as.numeric(gsub("X","",Year)))
+
+ggplot(newdf) + 
+  geom_line(aes(x = Year, y = value, color = Ecosystem.Indicators)) + 
+  theme_classic()
+```
+
+We see that Copepod Richness and the Southern Copepod biomass measures
+are in phase with one another across the plot.
+
+```{r wrangle_data_mods}
+#arranging data for model fits
+df2<-df %>% dplyr::select(-Type) %>%
+  gather(Year, value, -Ecosystem.Indicators) %>% 
+  spread(Ecosystem.Indicators, value) 
+
+df2$Year<-as.numeric(gsub("X","",df2$Year))
+head(df2)
+```
+
+## 2-State HMM
+
+```{r 2_state_HMM}
+set.seed(123)
+#set up 2-state model
+mod<-depmix(list(Copepod_richness ~1, N_copepod ~1, S_copepod ~1), 
+           nstates = 2, 
+           #assume gaussian errors for all
+           family = list(gaussian(), gaussian(), gaussian()), 
+           data = df2)
+#fit the model
+fitmod<-fit(mod)
+#model results
+summary(fitmod)
+```
+
+The model results change slightly depending on the seed, so making sure
+it found the best model:
+
+```{r}
+iter <-100 #number of times to run the model
+seeds<-sample(100:1000, size = iter, replace = F) #get 100 seed values
+best <- 1e10 #this is large so first AIC is definitely smaller
+best_model <- NA
+for(i in 1:iter){
+  #set the seed from the ones we picked (makes sure its new each time)
+  set.seed(seeds[i]) 
+  #fit the model
+  fitmod <- fit(mod)
+  #is this model better than the last?
+  if(AIC(fitmod)< best){
+    best_model <- fitmod
+    best <- AIC(fitmod)
+  }
+}
+
+summary(best_model)
+```
+
+The transition probabilities for the best model are in the table below:
+
+```{r}
+FromS1 <- c(0.555, 0.445)
+FromS2 <- c(0.217, 0.783)
+tab <- rbind.data.frame(FromS1,FromS2)
+colnames(tab) <- c("To S1", "To S2")
+row.names(tab) <- c("From S1", "From S2")
+tab
+```
+
+Plot of states and data from the 2-State HMM
+
+```{r}
+prstates<-apply(posterior(fitmod)[,c("S1", "S2")],1, which.max)
+mu<-summary(best_model)[,1]
+mu2<-summary(best_model)[,3]
+mu3<-summary(best_model)[,5]
+pred <- tibble("Year" = df2$Year, "Copepod_richness" = mu[prstates], "N_copepod" = mu2[prstates], "S_copepod" = mu3[prstates])
+pred2<-pred %>% pivot_longer(-Year, names_to = "Ecosystem.Indicators", values_to = "Fit")
+ggplot() + geom_point(data = newdf, aes(x = Year, y = value, color = Ecosystem.Indicators)) + 
+  geom_line(data = pred2, aes(x = Year, y = Fit, group = Ecosystem.Indicators, color = Ecosystem.Indicators)) + theme_classic()
+
+
+```
+
+Our best model does converge for the two state model.
+
+We see that the predicted fit lines follow the general trend of the
+data. Southern Copepod Biomass is in phase with the Copepod Richness
+measure. The observations for Northern and Southern Copepod Biomass have
+much less variance than the Copepod Richness measurement and thus the
+fitted lines are much closer to the observed points.
+
+## 3-State HMM
+
+```{r 3_state_HMM}
+set.seed(123)
+#set up 3-state model
+mod3<-depmix(list(Copepod_richness ~1, N_copepod ~1, S_copepod ~1), 
+           nstates = 3, 
+           #assume gaussian errors for all
+           family = list(gaussian(), gaussian(), gaussian()), 
+           data = df2)
+#fit the model
+fitmod3<-fit(mod3)
+#model results
+summary(fitmod3)
+```
+
+Again, the model results change slightly depending on the seed, so
+making sure it found the best model:
+
+```{r}
+iter <-100 #number of times to run the model
+seeds<-sample(100:1000, size = iter, replace = F) #get 100 seed values
+best <- 1e10 #this is large so first AIC is definitely smaller
+best_model <- NA
+for(i in 1:iter){
+  #set the seed from the ones we picked (makes sure its new each time)
+  set.seed(seeds[i]) 
+  #fit the model
+  fitmod3 <- fit(mod3)
+  #is this model better than the last?
+  if(AIC(fitmod3)< best){
+    best_model <- fitmod3
+    best <- AIC(fitmod3)
+  }
+}
+
+summary(best_model)
+```
+
+The transition probabilities for the 3-State model are in the table
+below
+
+```{r}
+FromS1 <- c(0.400, 0.200, 0.400)
+FromS2 <- c(0.000, 0.700, 0.300)
+FromS3 <- c(0.250, 0.375, 0.375)
+tab2 <- rbind.data.frame(FromS1,FromS2,FromS3)
+colnames(tab2) <- c("To S1", "To S2", "To S3")
+row.names(tab2) <- c("From S1", "From S2", "From S3")
+tab2
+```
+
+Plot of states and data from the 3-State HMM
+
+```{r}
+prstates<-apply(posterior(fitmod3)[,c("S1", "S2","S3")],1, which.max)
+mu<-summary(best_model)[,1]
+mu2<-summary(best_model)[,3]
+mu3<-summary(best_model)[,5]
+pred <- tibble("Year" = df2$Year, "Copepod_richness" = mu[prstates], "N_copepod" = mu2[prstates], "S_copepod" = mu3[prstates])
+pred2<-pred %>% pivot_longer(-Year, names_to = "Ecosystem.Indicators", values_to = "Fit")
+ggplot() + geom_point(data = newdf, aes(x = Year, y = value, color = Ecosystem.Indicators)) + 
+  geom_line(data = pred2, aes(x = Year, y = Fit, group = Ecosystem.Indicators, color = Ecosystem.Indicators)) + theme_classic()
+
+# The 3-State HMM seems to fit the data worse than the 2-State HMM
+```
+
+The best model does converge for the 3 state model.
+
+The predicted values do not appear to fit the data well in the three
+state model. The Northern and Southern Copepod predicted values seem to
+switch states away from their respective observations in a few places.
+And the Copepod Richness predicted values do not drop down to the lowest
+state in a few sections where it seems like it would be appropriate to
+do so.
+
+One thing to note is that the transition probabilities state that there
+is a 0.00 chance of switching from state 2 to state 1. State 2 being the
+lowest level for each of the fitted lines and State 1 being the highest.
+We do see that the fitted values do make this transition so this is
+apparently just a very small number that is left at 0.00 due to rounding
+in the table.
+
+# Results
+
+```{r}
+`3-State` <- AIC(fitmod3)
+`2-State` <- AIC(fitmod)
+d <- c(`3-State`,`2-State`)-min(`3-State`,`2-State`)
+
+e <- cbind.data.frame(rbind(`3-State`,`2-State`),d)
+colnames(e) <- c("AIC","delta AIC")
+row.names(e) <- c("3-State","2-State")
+e
+```
+
+The three state model has the lower AIC value despite appearing to not
+fit the data as well.
+
+# Discussion
+
+When looking at the three Copepod measurements, both of our models
+converge. We did not use any covariates in order to keep our models
+simple. The AIC score indicates that the 3-state model is better
+supported than the 2-state. However, visually it appears that the two
+state model fits the data better. Additionally, when thinking of a
+biological reason for selecting a 2 vs 3 state model, it seems to make
+more sense to go with a two state model as we see on the NOAA website
+that copepods richness gradually increases as the summer starts and then
+decreases at the end of the summer. There is a very brief plateau in May
+but the 3 state model doesn't seem to follow that general pattern,
+instead it seems to make large random jumps. At one point Copepod
+Richness drops to the lowest state but there is no observed data there.
+In contrast, the 2 state model seems to follow the general pattern of
+the observed data quite well.
+
+We see that Southern Copepod Biomass is in phase with the Copepod
+Richness measurement in both models. This is because there are more
+species representing the Southern Copepod group than the Northern so
+when the Southern Copepod biomass is high the total richness is higher
+as well due to the increased number of species present. It also makes
+sense that the Northern and Southern groups are out of phase as two
+different water currents which are opposed to one another carry the
+copepods from each group.
+
+All three sets of observations are tied to the same transition
+probabilities and therefore the model must balance each set of
+observation data to estimate the probabilities. At each data point the
+model gives decides based on the probabilities whether the fitted line
+should change states. Sometimes the model makes a switch that does not
+seem appropriate based on those probabilities. This is why we see that
+some of the transition switches in the 3 state model don't seem to make
+sense.
+
+# Team contributions
+
+Dylan and Zoe did the data wrangling. Zoe coded the 2 state model. Eric
+adapted this code for the 3 state model. Dylan created tables, results,
+and led discussion section for group. Entire group contributed thoughts
+and comments to the discussion section.
