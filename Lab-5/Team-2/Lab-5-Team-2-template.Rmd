@@ -1,7 +1,7 @@
 ---
 title: "Lab 5 - Time-varying productivity of salmon"
 subtitle: "Dynamic Linear Models (DLMs)"
-author: "Person 1, Person 2, Person 3"
+author: "Zoe Rand, Terrance Wang"
 date: May 11, 2023
 output: 
   html_document:
@@ -42,8 +42,15 @@ head(SR_data)
 
 ## Wrangle the data
 
+```{r, message = FALSE, warning = FALSE}
+library(tidyverse)
+```
+
 ```{r wrangle_data}
-## add some code here
+#creating log (recruits/spawners)
+SR_data<-SR_data %>% mutate(logSR = log(recruits/spawners))
+head(SR_data)
+ggplot(SR_data) + geom_line(aes(x = brood_year, y = logSR))
 ```
 
 # General tasks
@@ -80,7 +87,66 @@ Please address the following in your methods:
 
 -   What sort of model diagnostics did you use to examine model assumptions?
 
+## 1. Reduced Ricker Model:
+
+### Equations:
+
+$$
+\text{log}(R_t/S_t) = \alpha_t + v_t
+$$
+
+$$
+\alpha_t = \alpha_{t-1} + w_t
+$$
+
+This is a MARSS model where $Z = 1$, a random walk with observation error:
+
+Set $y_t = log(R_t/S_t)$
+
+$$
+y_t = Zx_t + v_t
+$$
+
+$$
+x_t = x_{t-1} + w_t
+$$
+
+### MARSS:
+
+```{r, message = FALSE, warning = FALSE}
+library(MARSS)
+```
+
+```{r}
+mod_list1<-list(B = "identity", Z = "identity", U = "zero", A = "zero", Q = matrix("q"), R = matrix("r"))
+
+```
+
+```{r}
+#fit model with MARSS:
+fit1<-MARSS(SR_data$logSR, mod_list1)
+```
+
+```{r}
+#model diagnostics
+autoplot(fit1, plot.type="fitted.ytT")
+```
+
+## 2. Full Ricker Model:
+
+### Equations:
+
+### MARSS:
+
 # Results
+
+## 1. Reduced Ricker Model
+
+Plot of model fit
+
+```{r}
+ggplot(data = SR_data) + geom_line(aes(x = brood_year, y = logSR), color = "black") + geom_ribbon(aes(x = brood_year, ymin = t(fit1$states - 2*fit1$states.se), ymax = t(fit1$states + 2*fit1$states.se)), linetype = "dashed", color = "blue", fill = NA) + geom_line(aes(x = brood_year, y = t(fit1$states)), color = 'blue') + theme_classic()
+```
 
 # Discussion
 
