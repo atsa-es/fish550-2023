@@ -1,0 +1,252 @@
+---
+title: "Lab 5 - Time-varying productivity of salmon"
+subtitle: "Dynamic Linear Models (DLMs)"
+author: "Person 1, Person 2, Person 3"
+date: May 11, 2023
+output: 
+  html_document:
+    code-folding: true
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include = FALSE}
+options(dplyr.summarise.inform = FALSE)
+```
+
+***
+
+# General tasks
+
+Use the information and data in the previous section to answer the following questions. Note that if any model is not converging, then you will need to increase the `maxit` parameter in the `control` argument/list that gets passed to `MARSS()`. For example, you might try `control=list(maxit=2000)`.
+
+1. Begin by fitting a reduced form of Ricker's model that includes only a time-varying level ($\alpha_t$) and observation error ($v_t$). That is,
+
+\begin{align*}
+\text{log}(R_t) &= \alpha_t + \text{log}(S_t) + v_t \\
+\text{log}(R_t/S_t) &= \alpha_t + v_t
+\end{align*}
+
+This model assumes no density-dependent survival in that the number of recruits is an ascending function of spawners. Plot the ts of $\alpha_t$ and note the AICc for this model. Also plot appropriate model diagnostics.
+
+2. Fit the full Ricker model with a time-varying intercept and a static effect of spawners. For this model, obtain the time series of $\alpha_t$, which is an estimate of the stock productivity in the absence of density-dependent effects. How do these estimates of productivity compare to those from the previous question? Plot the ts of $\alpha_t$ and note the AICc for this model. Also plot appropriate model diagnostics. ($Hint$: If you don't want a parameter to vary with time, what does that say about its process variance?)
+
+3. Fit the expanded model that includes the summer PDO index as the covariate (`pdo_summer_t2`). What is the mean level of productivity? Plot the ts of $\delta_t$ and note the AICc for this model. Also plot appropriate model diagnostics.
+
+4. Fit the expanded model that includes the winter PDO index as the covariate (`pdo_winter_t2`). What is the mean level of productivity? Plot the ts of $\delta_t$ and note the AICc for this model. Also plot appropriate model diagnostics.
+
+5. Based on AICc, which of the models above is the most parsimonious? Is it well behaved (i.e., are the model assumptions met)? Plot the model forecasts for the best model. Is this a good forecast model?
+
+6. Consider other environmental factors that could influence the time-varying intrinsic productivity of these salmon. For example, are there other large-scale indices of ocean conditions (e.g., sea-surface temperature, El Niño Southern Oscillation)? You could also consider the possible influence of other salmon stocks such as those we examined in Lab 1.
+
+# Methods
+
+Please address the following in your methods:
+
+* What environmental or dummy variables did you include and why?
+
+* What forms of models did you fit (ie, write them out in matrix form)?
+
+* What sort of model diagnostics did you use to examine model assumptions?
+
+# Data
+
+Describe the salmon data and any environmental covariates you decide to examine. 
+
+## Load the data
+
+```{r dlm-load-atsa, eval=FALSE}
+## library(devtools)
+## Windows users will likely need to set this
+#Sys.setenv("R_REMOTES_NO_ERRORS_FROM_WARNINGS" = "true")
+#devtools::install_github("nwfsc-timeseries/atsalibrary")
+
+library(tidyverse)
+## get data
+data(KvichakSockeye, package="atsalibrary")
+SR_data <- KvichakSockeye
+```
+
+The data are a dataframe with columns for brood year (`brood_year`), number of spawners (`spawners`), number of recruits (`recruits`) and PDO at year $t-2$ in summer (`pdo_summer_t2`) and in winter (`pdo_winter_t2`).
+
+```{r dlm-data-head}
+## head of data file
+head(SR_data)
+tail(SR_data)
+```
+
+## Wrangle the data
+
+```{r wrangle_data}
+
+## get time indices
+years <- t(SR_data[, 1])
+## number of years of data
+TT <- length(years)
+
+## get response variable: log(Recruits/Spawners)
+dat <- matrix(log(SR_data$recruits/SR_data$spawners), nrow = 1)
+dat_z <- zscore(dat)
+
+## plot response variable
+dat.ts <- ts(log(SR_data$recruits/SR_data$spawners), start = 1952, end = 2005, frequency =1)
+plot.ts(dat.ts)
+
+## get predictor variable
+
+```
+
+# Results
+
+## Reduced Ricker
+
+1. Begin by fitting a reduced form of Ricker's model that includes only a time-varying level ($\alpha_t$) and observation error ($v_t$). That is,
+
+\begin{align*}
+\text{log}(R_t) &= \alpha_t + \text{log}(S_t) + v_t \\
+\text{log}(R_t/S_t) &= \alpha_t + v_t
+\end{align*}
+
+This model assumes no density-dependent survival in that the number of recruits is an ascending function of spawners. 
+
+```{r reduced Ricker}
+
+# NO density dependence and stochastic level with drift
+
+## B matrix
+BB <- matrix(c(1, 0, 1, 1), 2, 2)
+
+## Z matrix (vector)
+ZZ <- matrix(c(1, 0), 1, 2)
+
+## define model list
+mod_list <- list(B = BB, U = "zero", Q = "diagonal and equal",
+                 Z = ZZ, A = matrix(0), R = matrix("r")) 
+
+## initial starting values for parameters
+inits_list <- list(x0 = matrix(c(0, 0), 2, 1))
+
+## fit the model with MARSS
+fit_2 <- MARSS(matrix(dat, nrow = 1),
+               model = mod_list,
+               inits = inits_list)
+
+```
+
+
+
+Plot the ts of $\alpha_t$ and note the AICc for this model. 
+
+```{r reduced ricker plots}
+
+## get estimates of alpha
+alpha_hat <- c(fit_2$states[1,1],
+               fit_2$states[1,-1] - fit_2$states[2,length(dat)])
+
+## get estimates of eta
+eta_hat <- fit_2$states[2,]
+
+## plot the estimated level and drift
+#par(mfrow = c(2,1), mai = c(0.8, 0.8, 0.2, 0.2), omi = c(0, 0, 0, 0))
+## plot alpha
+plot.ts(alpha_hat, las = 1, lwd = 2, col = "blue",
+        ylab = expression(alpha[t]))
+# ## plot eta
+# plot.ts(eta_hat, las = 1, lwd = 2, col = "blue",
+#         ylab = expression(eta[t]))
+
+AIC(fit_2)
+```
+
+Also plot appropriate model diagnostics.
+
+```{r}
+
+## plot the data and fit
+plot.ts(log(SR_data$recruits/SR_data$spawners), las = 1, lwd = 2,
+        ylab = expression(italic(y[t])))
+lines(seq(54), fit_2$states[1,],
+       lwd = 2, col = "blue")
+lines(seq(54), fit_2$states[1,] + 2*fit_2$states.se[1,],
+       lwd = 2, lty = "dashed", col = "blue")
+lines(seq(54), fit_2$states[1,] - 2*fit_2$states.se[1,],
+       lwd = 2, lty = "dashed", col = "blue")
+```
+
+```{r diagnostics}
+
+resids <- MARSSresiduals(fit_2, type = "tt1")
+plot(resids$model.residuals[i, ], ylab = "model residuals", 
+        xlab = "")
+abline(h = 0)
+
+plot(fit_2, plot.type = "qqplot.std.model.resids.ytt1")
+plot(fit_2, plot.type = "acf.std.model.resids.ytt1")
+
+```
+## Full Ricker Model
+
+2. Fit the full Ricker model with a time-varying intercept and a static effect of spawners. For this model, obtain the time series of $\alpha_t$, which is an estimate of the stock productivity in the absence of density-dependent effects. How do these estimates of productivity compare to those from the previous question? Plot the ts of $\alpha_t$ and note the AICc for this model. Also plot appropriate model diagnostics. ($Hint$: If you don't want a parameter to vary with time, what does that say about its process variance?)
+
+```{r }
+
+## time varying intercept and 
+
+## get response variable: logit(recruits)
+recruits <- matrix(log(SR_data$recruits), nrow = 1)
+
+# predictor variable?
+spawners <- matrix(log(SR_data$spawners), nrow = 1)
+spawners_z <- zscore(spawners)
+
+m <- dim(spawners_z)[1] + 1
+
+```
+
+
+
+
+
+
+########################################################################################
+```{r stochastic level simple}
+
+B <- "identity"
+
+## define model list
+mod_list <- list(B = "identity", U = "zero", Q = matrix("q"),
+                 Z = "identity", A = matrix("a"), R = matrix("r"))
+
+## fit the model with MARSS
+fit <- MARSS(dat, mod_list)
+
+
+```
+
+```{r reduced ricker plots}
+
+## get estimates of alpha
+alpha_hat <- c(fit$states[1,1],
+               fit$states[1,-1] - fit$states[2,length(dat)])
+
+## get estimates of eta
+eta_hat <- fit_2$states[2,]
+
+## plot the estimated level and drift
+#par(mfrow = c(2,1), mai = c(0.8, 0.8, 0.2, 0.2), omi = c(0, 0, 0, 0))
+## plot alpha
+plot.ts(alpha_hat, las = 1, lwd = 2, col = "blue",
+        ylab = expression(alpha[t]))
+# ## plot eta
+# plot.ts(eta_hat, las = 1, lwd = 2, col = "blue",
+#         ylab = expression(eta[t]))
+```
+
+
+# Discussion
+
+
+# Team contributions
+
+Example: "All team members helped decide on the goal and ran the analyses for the individual regions. Team members 2 & 3 wrote most of the code for the analysis. Team member 1 worked on the plotting section of the report using and adapting code that team member 3 wrote. All team members helped edit the report and wrote the discussion together."
+
