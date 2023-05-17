@@ -14,12 +14,11 @@ output:
 options(dplyr.summarise.inform = FALSE)
 ```
 
-***
+------------------------------------------------------------------------
 
 # Data
 
-Describe the salmon data an dany environmental covariates you decide to examine. 
-
+Describe the salmon data an dany environmental covariates you decide to examine.
 
 ## Load the data
 
@@ -38,7 +37,7 @@ The data are a dataframe with columns for brood year (`brood_year`), number of s
 
 ```{r dlm-data-head}
 ## head of data file
-head(SR_data)
+#head(SR_data)
 ```
 
 ## Wrangle the data
@@ -47,50 +46,44 @@ head(SR_data)
 ## add some code here
 ```
 
-
 # General tasks
 
 Use the information and data in the previous section to answer the following questions. Note that if any model is not converging, then you will need to increase the `maxit` parameter in the `control` argument/list that gets passed to `MARSS()`. For example, you might try `control=list(maxit=2000)`.
 
-1. Begin by fitting a reduced form of Ricker's model that includes only a time-varying level ($\alpha_t$) and observation error ($v_t$). That is,
+1.  Begin by fitting a reduced form of Ricker's model that includes only a time-varying level ($\alpha_t$) and observation error ($v_t$). That is,
 
+```{=tex}
 \begin{align*}
 \text{log}(R_t) &= \alpha_t + \text{log}(S_t) + v_t \\
 \text{log}(R_t/S_t) &= \alpha_t + v_t
 \end{align*}
-
+```
 This model assumes no density-dependent survival in that the number of recruits is an ascending function of spawners. Plot the ts of $\alpha_t$ and note the AICc for this model. Also plot appropriate model diagnostics.
 
-2. Fit the full Ricker model with a time-varying intercept and a static effect of spawners. For this model, obtain the time series of $\alpha_t$, which is an estimate of the stock productivity in the absence of density-dependent effects. How do these estimates of productivity compare to those from the previous question? Plot the ts of $\alpha_t$ and note the AICc for this model. Also plot appropriate model diagnostics. ($Hint$: If you don't want a parameter to vary with time, what does that say about its process variance?)
+2.  Fit the full Ricker model with a time-varying intercept and a static effect of spawners. For this model, obtain the time series of $\alpha_t$, which is an estimate of the stock productivity in the absence of density-dependent effects. How do these estimates of productivity compare to those from the previous question? Plot the ts of $\alpha_t$ and note the AICc for this model. Also plot appropriate model diagnostics. ($Hint$: If you don't want a parameter to vary with time, what does that say about its process variance?)
 
-3. Fit the expanded model that includes the summer PDO index as the covariate (`pdo_summer_t2`). What is the mean level of productivity? Plot the ts of $\delta_t$ and note the AICc for this model. Also plot appropriate model diagnostics.
+3.  Fit the expanded model that includes the summer PDO index as the covariate (`pdo_summer_t2`). What is the mean level of productivity? Plot the ts of $\delta_t$ and note the AICc for this model. Also plot appropriate model diagnostics.
 
-4. Fit the expanded model that includes the winter PDO index as the covariate (`pdo_winter_t2`). What is the mean level of productivity? Plot the ts of $\delta_t$ and note the AICc for this model. Also plot appropriate model diagnostics.
+4.  Fit the expanded model that includes the winter PDO index as the covariate (`pdo_winter_t2`). What is the mean level of productivity? Plot the ts of $\delta_t$ and note the AICc for this model. Also plot appropriate model diagnostics.
 
-5. Based on AICc, which of the models above is the most parsimonious? Is it well behaved (i.e., are the model assumptions met)? Plot the model forecasts for the best model. Is this a good forecast model?
+5.  Based on AICc, which of the models above is the most parsimonious? Is it well behaved (i.e., are the model assumptions met)? Plot the model forecasts for the best model. Is this a good forecast model?
 
-6. Consider other environmental factors that could influence the time-varying intrinsic productivity of these salmon. For example, are there other large-scale indices of ocean conditions (e.g., sea-surface temperature, El Niño Southern Oscillation)? You could also consider the possible influence of other salmon stocks such as those we examined in Lab 1.
-
-
+6.  Consider other environmental factors that could influence the time-varying intrinsic productivity of these salmon. For example, are there other large-scale indices of ocean conditions (e.g., sea-surface temperature, El Niño Southern Oscillation)? You could also consider the possible influence of other salmon stocks such as those we examined in Lab 1.
 
 # Methods
 
 Please address the following in your methods:
 
-* What environmental or dummy variables did you include and why?
+-   What environmental or dummy variables did you include and why?
 
-* What forms of models did you fit (ie, write them out in matrix form)?
+-   What forms of models did you fit (ie, write them out in matrix form)?
 
-* What sort of model diagnostics did you use to examine model assumptions?
-
+-   What sort of model diagnostics did you use to examine model assumptions?
 
 # Results
 
-
 # Discussion
-
 
 # Team contributions
 
 Example: "All team members helped decide on the goal and ran the analyses for the individual regions. Team members 2 & 3 wrote most of the code for the analysis. Team member 1 worked on the plotting section of the report using and adapting code that team member 3 wrote. All team members helped edit the report and wrote the discussion together."
-
