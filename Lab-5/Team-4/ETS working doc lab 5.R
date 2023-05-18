@@ -86,6 +86,7 @@ dlm_2 <- MARSS(dat.z, inits = inits_list, model = mod_list)
 autoplot(dlm_2)
 #AICc: 126.0491
 
+test
 ######time-varying alpha; static beta
 B <- diag(2)  ## 2x2; Identity
 U <- matrix(0, nrow = 2, ncol = 1)  ## 2x1; both elements = 0
