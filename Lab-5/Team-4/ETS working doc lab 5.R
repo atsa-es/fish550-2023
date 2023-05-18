@@ -71,8 +71,7 @@ U <- matrix(0, nrow = 2, ncol = 1)  ## 2x1; both elements = 0
 Q <- matrix(list(0), 2, 2)  ## 2x2; all 0 for now
 diag(Q) <- c("q.alpha", "q.beta")
 
-#Miranda wants no covariates
-MirandaZ<-"identity"
+Z<-matrix(1, nrow = 1, ncol = 2)
 A <- matrix(0)  ## 1x1; scalar = 0
 R <- matrix("r")  ## 1x1; scalar = r
 
@@ -80,7 +79,36 @@ R <- matrix("r")  ## 1x1; scalar = r
 inits_list <- list(x0 = matrix(c(0, 0), nrow = 2))
 
 ## list of model matrices & vectors
-mod_list <- list(B = B, U = U, Q = Q, Z = MirandaZ, A = A, R = R)
+mod_list <- list(B = B, U = U, Q = Q, Z = Z, A = A, R = R)
 
 #DLM without covariates
 dlm_2 <- MARSS(dat.z, inits = inits_list, model = mod_list)
+autoplot(dlm_2)
+#AICc: 126.0491
+
+######time-varying alpha; static beta
+B <- diag(2)  ## 2x2; Identity
+U <- matrix(0, nrow = 2, ncol = 1)  ## 2x1; both elements = 0
+
+alpha <- log(SR_56to98$recruits)
+## z-score
+alpha_z <- matrix(zscore(alpha), nrow = 1)
+Q <- array(NA, c(2, 2, TT))  ## NxMxT; empty for now
+Q[1, 1, ] <- alpha_z
+Q[1, 2, ] <- 0
+Q[2, 1, ] <- 0
+Q[2, 2, ] <- 1
+
+Z<-matrix(1, nrow = 1, ncol = 2)
+A <- matrix(0)  ## 1x1; scalar = 0
+R <- matrix("r")  ## 1x1; scalar = r
+
+## only need starting values for regr parameters
+inits_list <- list(x0 = matrix(c(0, 0), nrow = 2))
+
+## list of model matrices & vectors
+mod_list <- list(B = B, U = U, Q = Q, Z = Z, A = A, R = R)
+
+#DLM without covariates
+dlm_3 <- MARSS(dat.z, inits = inits_list, model = mod_list, control=list(maxit=1000))
+  
