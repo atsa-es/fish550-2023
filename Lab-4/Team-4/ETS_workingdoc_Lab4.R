@@ -10,6 +10,19 @@ cop.row<-cop.dat[,1]
 cop.dat<-cop.dat[,3:26]
 rownames(cop.dat)<-cop.row
 
+bio.dat<-stoplight[12,]
+bio.row<-bio.dat[,1]
+bio.dat<-bio.dat[,3:26]
+rownames(bio.dat)<-bio.row
+
+bio.t<-t(bio.dat)
+rows <- gsub("X","", rownames(bio.t))
+row.names(bio.t)<-rows
+bio.df<-data.frame(bio.t)
+bio.df$Year<-row.names(bio.df)
+
+plot(x=bio.df$Year, y=bio.df$Biological_transition, type='l')
+
 #look at the data over time
 cop.t<-t(cop.dat)
 rows <- gsub("X","", rownames(cop.t))
