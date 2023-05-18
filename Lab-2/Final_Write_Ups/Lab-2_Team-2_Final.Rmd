@@ -1,6 +1,6 @@
 ---
-title: "Lab 2 MARSS Models"
-author: "Liz Elmstrom (SAFS), Terrance Wang, Eric French"
+title: "Team 1 -Lab 2"
+author: "Liz Elmstrom, Terrance Wang, Eric French"
 date: "April 20, 2023"
 output:
   html_document:

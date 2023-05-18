@@ -1,6 +1,7 @@
 ---
-title: "Lab 4 - Hidden Markov Models"
-author: "Dylan Hub, Eric French, Zoe Rand"
+title: "Team 1 - Lab 4"
+subtitle: "Hidden Markov Models"
+author: "Dylan Hubl, Eric French, Zoe Rand"
 date: May 9, 2023
 output: 
   html_document:

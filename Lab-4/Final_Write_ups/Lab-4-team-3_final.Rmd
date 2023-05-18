@@ -1,5 +1,6 @@
 ---
-title: "Lab 4 - Hidden Markov Models"
+title: "Team 3 - Lab 4"
+subtitle: "Hidden Markov Models"
 author: "Nick Chambers, Madison Shipley, Karl Veggerby"
 date: May 9, 2023
 output: 

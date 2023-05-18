@@ -1,5 +1,5 @@
 ---
-title: "Lab 3 - Common trends in plankton data"
+title: "Team 3 - Lab 3"
 subtitle: "Dynamic Factor Analysis (DFA)"
 author: "Nick Chambers, Terrance Wang, Zoe Rand"
 date: May 2, 2023

@@ -1,5 +1,6 @@
 ---
-title: "Lab 4 - Hidden Markov Models"
+title: "Team 2 - Lab 4"
+subtitle: "Hidden Markov Models"
 author: "Maria Kuruvilla, Miranda Mudge"
 date: May 9, 2023
 output: 

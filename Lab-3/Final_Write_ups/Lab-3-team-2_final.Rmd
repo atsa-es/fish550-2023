@@ -1,5 +1,5 @@
 ---
-title: "Lab 3 - Common trends in plankton data"
+title: "Team 2 - Lab 3"
 subtitle: "Dynamic Factor Analysis (DFA)"
 author: "Eric, Madison, Maria"
 date: April 20, 2023

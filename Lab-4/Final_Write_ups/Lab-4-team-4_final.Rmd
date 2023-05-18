@@ -1,5 +1,6 @@
 ---
-title: "Lab 4 - Hidden Markov Models"
+title: "Team 4 - Lab 4"
+subtitle: "Hidden Markov Models"
 author: "Liz Elmstrom, Terrance Wang, Emma Timmins-Schiffman"
 date: May 9, 2023
 output: 
