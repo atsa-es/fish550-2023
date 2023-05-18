@@ -8,7 +8,7 @@ output:
     code-folding: true
     toc: true
     toc_float: true
-bibliography: references.bib
+bibliography: team3-lab3-references.bib
 ---
 
 ```{r setup, include = FALSE}
