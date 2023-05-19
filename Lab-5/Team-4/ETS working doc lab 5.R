@@ -35,6 +35,13 @@ pdosum_z <- matrix(zscore(pdosum), nrow = 1)
 ## number of regr params (slope + intercept)
 m <- dim(pdosum_z)[1] + 1
 
+# Now do winter
+pdowin <- SR_56to98$pdo_winter_t2
+## z-score the CUI
+pdowin_z <- matrix(zscore(pdowin), nrow = 1)
+## number of regr params (slope + intercept)
+m <- dim(pdowin_z)[1] + 1
+
 ##### Estimate 1 regression parameter
 B <- 'identity'  
 U <- matrix(0, nrow = 1, ncol = 1)  ## 2x1; both elements = 0
@@ -88,21 +95,10 @@ autoplot(dlm_2)
 #AICc: 126.0491
 
 
-
-
-
-######time-varying alpha; static beta
+#model 1
+###### time-varying alpha; static beta ####
 B <- diag(2)  ## 2x2; Identity
 U <- matrix(0, nrow = 2, ncol = 1)  ## 2x1; both elements = 0
-
-#alpha <- log(SR_56to98$recruits)
-## z-score
-# alpha_z <- matrix(zscore(alpha), nrow = 1)
-# Q <- array(NA, c(2, 2, TT))  ## NxMxT; empty for now
-# Q[1, 1, ] <- alpha_z
-# Q[1, 2, ] <- 0
-# Q[2, 1, ] <- 0
-# Q[2, 2, ] <- 1
 
 Q <- matrix(list(0), 2, 2)  ## 2x2; all 0 for now
 diag(Q) <- list("q.alpha", 0)
@@ -131,31 +127,24 @@ plot(states[,1])
 
 #### Part 3 ####
 
-B <- diag(2)  ## 2x2; Identity
-U <- matrix(0, nrow = 2, ncol = 1)  ## 2x1; both elements = 0
+B <- diag(3)  ## 3x3; Identity
+U <- matrix(0, nrow = 3, ncol = 1)  ## 3x1; elements = 0
 
 
-Z <- array(NA, c(1, 2, TT))  ## NxMxT; pdo is effecting alpha
+Z <- array(NA, c(1, 3, TT))  ## NxMxT; pdo is effecting alpha
 Z[1, 1, ] <- pdosum_z
 Z[1, 2, ] <- rep(1,TT)
+Z[1, 3, ] <- rep(1,TT)
 
-Q <- matrix(list(0), 2, 2)  ## 2x2; all 0 for now
-diag(Q) <- list("q.alpha", 0)
+Q <- matrix(list(0), 3, 3)  ## 3x3; 
+diag(Q) <- list("q.alpha", 0, "g.alpha")
 
 A <- matrix("a")  ## 1x1; scalar = 0 # a matrix should be the intercept
 R <- matrix("r")  ## 1x1; scalar = r
 
 
-# # use d matrices to add alpha back in as an intercept so alpha is 
-# d <- array(1, c(1, 2, TT))  ## 
-# d[1, 1, ] <- pdosum_z
-# d[1, 2, ] <- rep(1,TT)
-#   
-# # fix matrix D at 1
-# D <- matrix(c("D1", 0),nrow = 1, ncol = 2)
-
 ## only need starting values for regr parameters
-inits_list <- list(x0 = matrix(c(0, 0), nrow = 2))
+inits_list <- list(x0 = matrix(c(0, 0,0), nrow = 3))
 
 ## list of model matrices & vectors
 mod_list <- list(B = B, U = U, Q = Q, Z = Z, A = A, R = R)
@@ -163,13 +152,43 @@ mod_list <- list(B = B, U = U, Q = Q, Z = Z, A = A, R = R)
 #DLM without covariates
 dlm_4 <- MARSS(dat.z, inits = inits_list, model = mod_list)
 
-#get alpha and beta
+# check out alpha, beta and gamma
 dlm_4$states
 
-states <- dlm_4$states
-states4 <- t(states)
 
-plot(states4[,1])
+autoplot(dlm_4)
 
 
+#### Part 4 ####
+# Model winter PDO instead of summer PDO
+
+B <- diag(3)  ## 3x3; Identity
+U <- matrix(0, nrow = 3, ncol = 1)  ## 3x1; elements = 0
+
+
+Z <- array(NA, c(1, 3, TT))  ## NxMxT; pdo is effecting alpha
+Z[1, 1, ] <- pdowin_z
+Z[1, 2, ] <- rep(1,TT)
+Z[1, 3, ] <- rep(1,TT)
+
+Q <- matrix(list(0), 3, 3)  ## 3x3; 
+diag(Q) <- list("q.alpha", 0, "g.alpha")
+
+A <- matrix("a")  ## 1x1; scalar = 0 # a matrix should be the intercept
+R <- matrix("r")  ## 1x1; scalar = r
+
+## only need starting values for regr parameters
+inits_list <- list(x0 = matrix(c(0, 0,0), nrow = 3))
+
+## list of model matrices & vectors
+mod_list <- list(B = B, U = U, Q = Q, Z = Z, A = A, R = R)
+
+#DLM without covariates
+dlm_5 <- MARSS(dat.z, inits = inits_list, model = mod_list)
+
+
+# check out alpha, beta and gamma
+dlm_5$states
+
+autoplot(dlm_5)
   
