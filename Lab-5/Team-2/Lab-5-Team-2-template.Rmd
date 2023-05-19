@@ -47,8 +47,9 @@ library(tidyverse)
 ```
 
 ```{r wrangle_data}
+#removing years with no spawner data
 #creating log (recruits/spawners)
-SR_data<-SR_data %>% mutate(logSR = log(recruits/spawners))
+SR_data<-SR_data %>% filter(!is.na(spawners)) %>%mutate(logSR = log(recruits/spawners))
 head(SR_data)
 ggplot(SR_data) + geom_line(aes(x = brood_year, y = logSR))
 ```
@@ -119,7 +120,6 @@ library(MARSS)
 
 ```{r}
 mod_list1<-list(B = "identity", Z = "identity", U = "zero", A = "zero", Q = matrix("q"), R = matrix("r"))
-
 ```
 
 ```{r}
@@ -136,20 +136,98 @@ autoplot(fit1, plot.type="fitted.ytT")
 
 ### Equations:
 
+$$
+\text{log}(R_t/S_t) = \alpha_t - bS_t +  v_t
+$$
+
+$$
+\alpha_t = \alpha_{t-1} + w_t
+$$
+
 ### MARSS:
+
+$$
+y_t = Zx_t + v_t
+$$
+
+$$
+v_t \sim N(0, r)
+$$
+
+$$
+x_t = Bx_{t-1} + w_t
+$$
+
+$$
+w_t \sim N(0, \begin{bmatrix} q & 0 \\ 0 & 0 \end{bmatrix})
+$$
+
+where $B = \begin{bmatrix}1 & 0\\0 & 1\end{bmatrix}$, $x_t = \begin{bmatrix} \alpha_t \\ b \end{bmatrix}$, $Z = \begin{bmatrix} 1 & S_t \end{bmatrix}$
+
+```{r}
+#setting up model
+Bmat <- matrix(c(1,0,0,1), 2, 2, byrow = TRUE)
+TT<-nrow(SR_data)
+ZZ <- array(NA, c(1, 2, TT))  
+ZZ[1,1,] <- rep(1, TT) #intercept
+ZZ[1,2,]<-SR_data$spawners #St
+QQ<-matrix(list(0), 2, 2)
+QQ[1,1]<-"q"
+mod_list2<-list(B = Bmat, Z = ZZ, U = "zero", A = "zero", Q = QQ, R = matrix("r"))
+
+inits_list <- list(x0 = matrix(c(0, 0), nrow = 2))
+```
+
+```{r}
+fit2<-MARSS(SR_data$logSR, mod_list2, inits = inits_list)
+```
+
+```{r}
+#model diagnostics
+autoplot(fit2, plot.type="fitted.ytT")
+```
 
 # Results
 
 ## 1. Reduced Ricker Model
 
-Plot of model fit
+Plot of model fit (time series of $\alpha_t$)
 
 ```{r}
 ggplot(data = SR_data) + geom_line(aes(x = brood_year, y = logSR), color = "black") + geom_ribbon(aes(x = brood_year, ymin = t(fit1$states - 2*fit1$states.se), ymax = t(fit1$states + 2*fit1$states.se)), linetype = "dashed", color = "blue", fill = NA) + geom_line(aes(x = brood_year, y = t(fit1$states)), color = 'blue') + theme_classic()
 ```
 
+## 2. Full Ricker Model
+
+Time series of regression parameters
+
+```{r}
+#intercept
+int_mn<-fit2$states[1,]
+int_se<-fit2$states.se[1,]
+ggplot() + geom_ribbon(aes(x = SR_data$brood_year, ymin = int_mn-2*int_se, ymax = int_mn + 2*int_se), linetype = "dashed", fill = NA, color = "blue") + geom_line(aes(x = SR_data$brood_year, y = int_mn), color = "blue") + labs(x = "Brood Year", y = "alpha_t")
+```
+
+```{r}
+#slope results
+slp_mn<-fit2$states[2,1]
+slp_se<-fit2$states.se[2,1]
+print(paste("Mean: ", slp_mn))
+print(paste("SE: ", slp_se))
+```
+
+## Model Comparison
+
+```{r}
+AIC_tab<-tibble("Model" = c("Reduced Ricker", "Full Ricker"), "AICc" = c(fit1$AICc, fit2$AICc))
+AIC_tab<- AIC_tab %>% mutate(DeltaAIC = AICc-min(AICc))
+AIC_tab
+```
+
+Reduced ricker is the better model, which makes sense since the esimate for the b parameter is essentially 0, so both models are basically the same except the full ricker has an extra parameter.
+
 # Discussion
 
 # Team contributions
 
-Example: "All team members helped decide on the goal and ran the analyses for the individual regions. Team members 2 & 3 wrote most of the code for the analysis. Team member 1 worked on the plotting section of the report using and adapting code that team member 3 wrote. All team members helped edit the report and wrote the discussion together."
+ZR did the data wrangling and wrote the methods, code, and results for the first two models (reduced and full Ricker). TW wrote the methods, code, and results for the models with covariates. Both team members contributed to the discussion.
