@@ -78,7 +78,7 @@ Subset 1956-1998
 #look at 1956-1998
 SR_56to98<-subset(SR_data, brood_year > 1955 & brood_year < 1999)
 
-#plot.ts(x=SR_56to98$brood_year, SR_56to98$spawners, ylim=c(min(SR_56to98$recruits), max(SR_56to98$recruits)))
+plot.ts(x=SR_56to98$brood_year, SR_56to98$spawners, ylim=c(min(SR_56to98$recruits), max(SR_56to98$recruits)))
 lines(x=SR_56to98$brood_year,SR_56to98$recruits, col='blue')
 ```
 
