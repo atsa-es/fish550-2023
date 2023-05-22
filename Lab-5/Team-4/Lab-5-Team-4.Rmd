@@ -1,0 +1,384 @@
+---
+title: "Lab 5 - Team 4 - Dynamic Linear Models"
+author: "Nick Chambers, Emma Timmins-Schiffman, Miranda Mudge"
+date: "May 11, 2023"
+output: 
+ html_document:
+  code-folding: true
+  toc: true
+  toc_float: true
+---
+
+```{r setup, echo = FALSE, message = FALSE}
+options(dplyr.summarise.inform = FALSE)
+```
+
+## Background {#sec-dlm-homework}
+
+For the lab this week we will use DLM's to examine some of the time-varying properties of the spawner-recruit relationship for Pacific salmon. Much work has been done on this topic, particularly by Randall Peterman and his students and post-docs at Simon Fraser University. To do so, researchers commonly use a Ricker model because of its relatively simple form, such that the number of recruits (offspring) born in year $t$ ($R_t$) from the number of spawners (parents) ($S_t$) is
+
+\begin{equation}
+R_t = a S_t e^{-b S + v_t}.
+\end{equation}
+
+
+The parameter $a$ determines the maximum reproductive rate in the absence of any density-dependent effects (the slope of the curve at the origin), $b$ is the strength of density dependence, and $v_t \sim N(0,\sigma)$. In practice, the model is typically log-transformed so as to make it linear with respect to the predictor variable $S_t$, such that
+
+\begin{align}
+\text{log}(R_t) &= \text{log}(a) + \text{log}(S_t) -b S_t + v_t \\
+\text{log}(R_t) - \text{log}(S_t) &= \text{log}(a) -b S_t + v_t \\
+\text{log}(R_t/S_t) &= \text{log}(a) - b S_t + v_t.
+\end{align}
+
+
+Substituting $y_t = \text{log}(R_t/S_t)$, $x_t = S_t$, and $\alpha = \text{log}(a)$ yields a simple linear regression model with intercept $\alpha$ and slope $b$.
+
+Unfortunately, however, residuals from this simple model typically show high-autocorrelation due to common environmental conditions that affect overlapping generations. Therefore, to correct for this and allow for an index of stock productivity that controls for any density-dependent effects, the model may be re-written as
+
+\begin{align}
+\text{log}(R_t/S_t) &= \alpha_t - b S_t + v_t, \\
+\alpha_t &= \alpha_{t-1} + w_t,
+\end{align}
+
+and $w_t \sim N(0,q)$. By treating the brood-year specific productivity as a random walk, we allow it to vary, but in an autocorrelated manner so that consecutive years are not independent from one another.
+
+More recently, interest has grown in using covariates ($e.g.$, sea-surface temperature) to explain the interannual variability in productivity. In that case, we can can write the model as
+
+\begin{equation}
+\text{log}(R_t/S_t) = \alpha + \delta_t X_t - b S_t + v_t.
+\end{equation}
+
+In this case we are estimating some base-level productivity ($\alpha$) plus the time-varying effect of some covariate $X_t$ ($\delta_t$). 
+
+
+
+### Spawner-recruit data {#sec-dlm-spawner-recruit-data}
+
+The data come from a large public database begun by Ransom Myers many years ago. If you are interested, you can find lots of time series of spawning-stock, recruitment, and harvest for a variety of fishes around the globe. The website is [here](https://www.ramlegacy.org/).
+
+For this exercise, we will use spawner-recruit data for sockeye salmon (_Oncorhynchus nerka_) from the Kvichak River in SW Alaska that span the years 1952-1989. In addition, we'll examine the potential effects of the Pacific Decadal Oscillation (PDO) during the salmon's first year in the ocean, which is widely believed to be a "bottleneck" to survival.
+
+
+Load the data.
+```{r}
+library(MARSS)
+library(ggplot2)
+## get data
+data(KvichakSockeye, package="atsalibrary")
+SR_data <- KvichakSockeye
+plot.ts(x=SR_data$brood_year, SR_data$spawners)
+lines(x=SR_data$brood_year,SR_data$recruits, col='blue')
+
+#plot.ts(SR_data$recruits)
+#plot(x=SR_data$spawners, y=SR_data$recruits)
+```
+
+Subset 1956-1998
+```{r }
+#look at 1956-1998
+SR_56to98<-subset(SR_data, brood_year > 1955 & brood_year < 1999)
+
+#plot.ts(x=SR_56to98$brood_year, SR_56to98$spawners, ylim=c(min(SR_56to98$recruits), max(SR_56to98$recruits)))
+lines(x=SR_56to98$brood_year,SR_56to98$recruits, col='blue')
+```
+
+
+```{r}
+#alpha is intercept and beta is slope
+#log(Rt/St) = at - bSt + vt
+#where at is a RW
+#need to estimate a and b (as hidden states)
+TT<-length(SR_56to98$brood_year)
+SR_56to98$RtovSt<-log(SR_56to98$recruits/SR_56to98$spawners)
+dat <- matrix(SR_56to98$RtovSt, nrow = 1)
+dat.z<-zscore(dat)
+
+plot(x=SR_56to98$brood_year, y=SR_56to98$RtovSt, type='l')
+```
+
+Create covariate variables
+```{r}
+#covariate/predictor variable
+#start with pdo summer
+pdosum <- SR_56to98$pdo_summer_t2
+## z-score the CUI
+pdosum_z <- matrix(zscore(pdosum), nrow = 1)
+## number of regr params (slope + intercept)
+m <- dim(pdosum_z)[1] + 1
+
+# Now do winter
+pdowin <- SR_56to98$pdo_winter_t2
+## z-score the CUI
+pdowin_z <- matrix(zscore(pdowin), nrow = 1)
+## number of regr params (slope + intercept)
+m <- dim(pdowin_z)[1] + 1 # same as previous m so don't need to change
+
+```
+
+# Part 1: Estimate 1 regression parameter
+```{r}
+B <- 'identity'  
+U <- matrix(0, nrow = 1, ncol = 1)  ## 2x1; both elements = 0
+Q <- matrix(list(0), 1, 1)  ## 2x2; all 0 for now
+diag(Q) <- c("q.alpha")
+
+#Miranda wants no covariates
+MirandaZ<-"identity"
+A <- matrix(0)  ## 1x1; scalar = 0
+R <- matrix("r")  ## 1x1; scalar = r
+
+## only need starting values for regr parameters
+inits_list <- list(x0 = 0)
+
+## list of model matrices & vectors
+mod_list <- list(B = B, U = U, Q = Q, Z = MirandaZ, A = A, R = R)
+
+#DLM without covariates
+dlm_1 <- MARSS(dat.z, inits = inits_list, model = mod_list, silent = TRUE)
+
+plot(x=SR_56to98$brood_year, y=dlm_1$states, type='l')
+lines(x=SR_56to98$brood_year, y=zscore(SR_56to98$RtovSt), col='blue')
+
+dlm_1$AICc
+#121.0344
+
+autoplot(dlm_1)
+#bit of autocorrelation at 5 and 10 years
+
+```
+
+# Part 2 - Estimate 2 regression parameters
+```{r}
+#### Estimate 2 regression parameters
+B <- diag(2)  ## 2x2; Identity
+U <- matrix(0, nrow = 2, ncol = 1)  ## 2x1; both elements = 0
+#Q <- matrix(list(0), 1, 1)
+Q <- matrix(list(0), 2, 2)  ## 2x2; all 0 for now
+diag(Q) <- c("q.alpha", "q.beta")
+
+Z<-matrix(1, nrow = 1, ncol = 2)
+A <- matrix(0)  ## 1x1; scalar = 0
+R <- matrix("r")  ## 1x1; scalar = r
+
+## only need starting values for regr parameters
+inits_list <- list(x0 = matrix(c(0, 0), nrow = 2))
+
+## list of model matrices & vectors
+mod_list <- list(B = B, U = U, Q = Q, Z = Z, A = A, R = R)
+
+#DLM without covariates
+dlm_2 <- MARSS(dat.z, inits = inits_list, model = mod_list, silent = TRUE)
+autoplot(dlm_2)
+#AICc: 126.0491
+```
+
+DLM with no covariates
+```{r}
+#model 
+###### time-varying alpha; static beta ####
+B <- diag(2)  ## 2x2; Identity
+U <- matrix(0, nrow = 2, ncol = 1)  ## 2x1; both elements = 0
+
+Q <- matrix(list(0), 2, 2)  ## 2x2; all 0 for now
+diag(Q) <- list("q.alpha", 0)
+
+Z<-matrix(1, nrow = 1, ncol = 2)
+A <- matrix(0)  ## 1x1; scalar = 0
+R <- matrix("r")  ## 1x1; scalar = r
+
+## only need starting values for regr parameters
+inits_list <- list(x0 = matrix(c(0, 0), nrow = 2))
+
+## list of model matrices & vectors
+mod_list <- list(B = B, U = U, Q = Q, Z = Z, A = A, R = R)
+
+#DLM without covariates
+dlm_3 <- MARSS(dat.z, inits = inits_list, model = mod_list, silent = TRUE)
+
+#get alpha and beta
+states <- dlm_3$states
+states <- t(states)
+
+plot(states[,1])
+```
+
+# Part 3 - Fit expanded model with covariate summer PDO 
+```{r}
+B <- diag(3)  ## 3x3; Identity
+U <- matrix(0, nrow = 3, ncol = 1)  ## 3x1; elements = 0
+
+
+Z <- array(NA, c(1, 3, TT))  ## NxMxT; pdo is effecting alpha
+Z[1, 1, ] <- pdosum_z
+Z[1, 2, ] <- rep(1,TT)
+Z[1, 3, ] <- rep(1,TT)
+
+Q <- matrix(list(0), 3, 3)  ## 3x3; 
+diag(Q) <- list("q.alpha", 0, "g.alpha")
+
+A <- matrix("a")  ## 1x1; scalar = 0 # a matrix should be the intercept
+R <- matrix("r")  ## 1x1; scalar = r
+
+## only need starting values for regr parameters
+inits_list <- list(x0 = matrix(c(0, 0,0), nrow = 3))
+
+## list of model matrices & vectors
+mod_list <- list(B = B, U = U, Q = Q, Z = Z, A = A, R = R)
+
+#DLM without covariates
+dlm_4 <- MARSS(dat.z, inits = inits_list, model = mod_list, silent = TRUE)
+
+# check out alpha, beta and gamma
+dlm_4$states
+
+#autoplot(dlm_4)
+```
+
+# Part 4 - Fit expanded model with covariate winter PDO 
+```{r}
+# Model winter PDO instead of summer PDO
+
+B <- diag(3)  ## 3x3; Identity
+U <- matrix(0, nrow = 3, ncol = 1)  ## 3x1; elements = 0
+
+
+Z <- array(NA, c(1, 3, TT))  ## NxMxT; pdo is effecting alpha
+Z[1, 1, ] <- pdowin_z
+Z[1, 2, ] <- rep(1,TT)
+Z[1, 3, ] <- rep(1,TT)
+
+Q <- matrix(list(0), 3, 3)  ## 3x3; 
+diag(Q) <- list("q.alpha", 0, "g.alpha")
+
+A <- matrix("a")  ## 1x1; scalar = 0 # a matrix should be the intercept
+R <- matrix("r")  ## 1x1; scalar = r
+
+## only need starting values for regr parameters
+inits_list <- list(x0 = matrix(c(0, 0,0), nrow = 3))
+
+## list of model matrices & vectors
+mod_list <- list(B = B, U = U, Q = Q, Z = Z, A = A, R = R)
+
+#DLM without covariates
+dlm_5 <- MARSS(dat.z, inits = inits_list, model = mod_list, silent = TRUE)
+
+# check out alpha, beta and gamma
+dlm_5$states
+
+#autoplot(dlm_5)
+```
+
+# Part 5 - Evaluate models
+AICc comparison
+```{r}
+AIC1 <- dlm_1$AICc
+AIC2 <- dlm_2$AICc
+AIC3 <- dlm_3$AICc
+AIC4 <- dlm_4$AICc
+AIC5 <- dlm_5$AICc
+
+print(c(AIC1, AIC2, AIC3, AIC4, AIC5))
+```
+AICc values suggests that the first and most simple model is the best for this data. 
+
+
+```{r, echo=FALSE}
+### Model 1 parameters for forecasting
+B <- 'identity'  
+U <- matrix(0, nrow = 1, ncol = 1)  ## 2x1; both elements = 0
+Q <- matrix(list(0), 1, 1)  ## 2x2; all 0 for now
+diag(Q) <- c("q.alpha")
+
+#Miranda wants no covariates
+MirandaZ<-"identity"
+A <- matrix(0)  ## 1x1; scalar = 0
+R <- matrix("r")  ## 1x1; scalar = r
+
+## only need starting values for regr parameters
+inits_list <- list(x0 = 0)
+
+## list of model matrices & vectors
+mod_list <- list(B = B, U = U, Q = Q, Z = MirandaZ, A = A, R = R)
+
+#DLM without covariates
+dlm_1 <- MARSS(dat.z, inits = inits_list, model = mod_list, silent = TRUE)
+```
+
+Parameters for forecasting
+```{r}
+## get list of Kalman filter output
+kf_out <- MARSSkfss(dlm_1)
+
+## forecasts of regr parameters; 2xT matrix
+eta <- kf_out$xtt1
+
+#create parameters for forecasting
+Z <- array(NA, c(1, TT))
+Z[1,] <- rep(1, TT) 
+
+## ts of E(forecasts)
+fore_mean <- vector()
+for(t in 1:TT) {
+  fore_mean[t] <- Z[,t] %*% eta[, t, drop = FALSE]
+}
+
+## variance of regr parameters; 1x2xT array
+Phi <- kf_out$Vtt1
+
+## obs variance; 1x1 matrix
+R_est <- coef(dlm_1, type="matrix")$R
+
+## ts of Var(forecasts)
+fore_var <- vector()
+for(t in 1:TT) {
+  tZ <- matrix(Z[, t], 1, 1) ## transpose of Z
+  fore_var[t] <- Z[, t] %*% Phi[, , t] %*% tZ + R_est
+}
+
+```
+
+Plot forecast
+```{r}
+years = SR_56to98$brood_year
+
+par(mar = c(4, 4, 0.1, 0), oma = c(0, 0, 2, 0.5))
+ylims=c(min(fore_mean - 2*sqrt(fore_var)), max(fore_mean+2*sqrt(fore_var)))
+plot(years, t(dat), type = "p", pch = 16, ylim = ylims,
+     col = "blue", xlab = "", ylab = "Logit(s)", xaxt = "n")
+lines(years, fore_mean, type = "l", xaxt = "n", ylab = "", lwd = 3) #forecast mean estimate
+lines(years, fore_mean+2*sqrt(fore_var)) #upper bound
+lines(years, fore_mean-2*sqrt(fore_var)) #lower bound
+axis(1, at = seq(1956, 1998, 1))
+mtext("Brood year", 1, line = 3)
+```
+
+
+```{r}
+## forecast errors
+innov <- kf_out$Innov
+
+## Q-Q plot of innovations
+qqnorm(t(innov), main = "", pch = 16, col = "blue")
+## add y=x line for easier interpretation
+qqline(t(innov))
+```
+
+```{r}
+## p-value for t-test of H0: E(innov) = 0
+t.test(t(innov), mu = 0)$p.value
+```
+
+The p-value is greater than 0.05 so we cannot reject the null hypothesis. 
+
+```{r}
+## plot ACF of innovations
+acf(t(innov), lag.max = 10)
+```
+
+# Part 6 - Consider other environmental factors
+
+There appears to be a repeating autocorrelation of lag 5, which could suggest the presence of cycling in the data. Seasonality should be investigated further as a possible factor. Other potential environmental factors to consider are temperature and salinity changes of the surrounding waters. It may also be important to consider predator-prey interactions or the impact of fishing in the area. 
+
+## Contributions
+
+A preliminary meeting by all was held to discuss and begin the homework. ETS completed parts 1-2. NC completed parts 3-4. MM completed parts 5-6 and drafted report into R markdown. Report was finalized by all. 
