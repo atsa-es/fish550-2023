@@ -187,6 +187,84 @@ fit2<-MARSS(SR_data$logSR, mod_list2, inits = inits_list)
 autoplot(fit2, plot.type="fitted.ytT")
 ```
 
+## 3. Full Ricker Model with Summer PDO
+
+### Equations:
+
+$$
+\text{log}(R_t/S_t) = \alpha_t + \delta_t X_t - bS_t +  v_t
+$$
+
+$$
+\alpha_t = \alpha_{t-1} + w_t
+$$
+
+$$
+\delta_t = \delta_{t-1} + w_t
+$$
+
+### MARSS:
+
+$$
+y_t = Zx_t + v_t
+$$
+
+$$
+v_t \sim N(0, r)
+$$
+
+$$
+x_t = Bx_{t-1} + w_t
+$$
+
+$$
+w_t \sim N(0, \begin{bmatrix} q_\alpha & 0 & 0\\ 0 & q_\delta & 0 \\ 0 & 0 & 0 \end{bmatrix})
+$$
+
+where $B = \begin{bmatrix}1 & 0 & 0 \\0 & 1 & 0 \\ 0&0&1\end{bmatrix}$, $x_t = \begin{bmatrix} \alpha_t \\ \delta_t \\ b \end{bmatrix}$, $Z = \begin{bmatrix} 1 & X_t & S_t \end{bmatrix}$
+
+```{r}
+#setting up model
+Bmat <- matrix(c(1,0,0,0,1,0,0,0,1), 3, 3, byrow = TRUE)
+TT<-nrow(SR_data)
+ZZ <- array(NA, c(1, 3, TT))  
+ZZ[1,1,] <- rep(1, TT) #intercept
+ZZ[1,2,]<-(SR_data$pdo_summer_t2) #summer PDO
+ZZ[1,3,]<-(SR_data$spawners) #St
+QQ<-matrix(list(0), 3, 3)
+QQ[1,1]<-"q_alpha"
+QQ[2,2]<-"q_delta"
+mod_list3<-list(B = Bmat, Z = ZZ, U = "zero", A = "zero", Q = QQ, R = matrix("r"))
+
+inits_list <- list(x0 = matrix(c(0, 0, 0), nrow = 3))
+```
+
+```{r}
+fit3<-MARSS(SR_data$logSR, mod_list3, inits = inits_list,control = list(maxit=1000,allow.degen=F))
+```
+
+## 4. Full Ricker Model with Winter PDO
+
+The equations for #4 are identical with #3, with the exception of Winter PDO as $X_t$
+
+```{r}
+#setting up model
+Bmat <- matrix(c(1,0,0,0,1,0,0,0,1), 3, 3, byrow = TRUE)
+TT<-nrow(SR_data)
+ZZ <- array(NA, c(1, 3, TT))  
+ZZ[1,1,] <- rep(1, TT) #intercept
+ZZ[1,2,]<-(SR_data$pdo_winter_t2) #summer PDO
+ZZ[1,3,]<-(SR_data$spawners) #St
+QQ<-matrix(list(0), 3, 3)
+QQ[1,1]<-"q_alpha"
+QQ[2,2]<-"q_delta"
+mod_list3<-list(B = Bmat, Z = ZZ, U = "zero", A = "zero", Q = QQ, R = matrix("r"))
+
+inits_list <- list(x0 = matrix(c(0, 0, 0), nrow = 3))
+
+fit4<-MARSS(SR_data$logSR, mod_list3, inits = inits_list,control = list(maxit=1000,allow.degen=F))
+```
+
 # Results
 
 ## 1. Reduced Ricker Model
@@ -216,10 +294,55 @@ print(paste("Mean: ", slp_mn))
 print(paste("SE: ", slp_se))
 ```
 
+## 3. Full Ricker Model with Summer PDO
+
+```{r}
+#intercept
+int_mn<-fit3$states[1,]
+int_se<-fit3$states.se[1,]
+ggplot() + geom_ribbon(aes(x = SR_data$brood_year, ymin = int_mn-2*int_se, ymax = int_mn + 2*int_se), linetype = "dashed", fill = NA, color = "blue") + geom_line(aes(x = SR_data$brood_year, y = int_mn), color = "blue") + labs(x = "Brood Year", y = "alpha_t")
+```
+
+```{r}
+#summer pdo slope results
+slp_mn<-fit3$states[2,]
+slp_se<-fit3$states.se[2,]
+ggplot() + geom_ribbon(aes(x = SR_data$brood_year, ymin = slp_mn-2*slp_se, ymax = slp_mn + 2*slp_se), linetype = "dashed", fill = NA, color = "blue") + geom_line(aes(x = SR_data$brood_year, y = slp_mn), color = "blue") + labs(x = "Brood Year", y = "delta_t (SummerPDO)")
+
+```
+
+```{r}
+# spawner slope results
+slp_mn<-fit3$states[3,1]
+slp_se<-fit3$states.se[3,1]
+print(paste("Mean: ", slp_mn))
+print(paste("SE: ", slp_se))
+```
+
+## 4. Full Ricker Model with Winter PDO
+
+```{r}
+#intercept
+int_mn<-fit4$states[1,]
+int_se<-fit4$states.se[1,]
+ggplot() + geom_ribbon(aes(x = SR_data$brood_year, ymin = int_mn-2*int_se, ymax = int_mn + 2*int_se), linetype = "dashed", fill = NA, color = "blue") + geom_line(aes(x = SR_data$brood_year, y = int_mn), color = "blue") + labs(x = "Brood Year", y = "alpha_t")
+
+#winter pdo slope results
+slp_mn<-fit4$states[2,]
+slp_se<-fit4$states.se[2,]
+ggplot() + geom_ribbon(aes(x = SR_data$brood_year, ymin = slp_mn-2*slp_se, ymax = slp_mn + 2*slp_se), linetype = "dashed", fill = NA, color = "blue") + geom_line(aes(x = SR_data$brood_year, y = slp_mn), color = "blue") + labs(x = "Brood Year", y = "delta_t (WinterPDO)")
+
+# spawner slope results
+slp_mn<-fit4$states[3,1]
+slp_se<-fit4$states.se[3,1]
+print(paste("Mean: ", slp_mn))
+print(paste("SE: ", slp_se))
+```
+
 ## Model Comparison
 
 ```{r}
-AIC_tab<-tibble("Model" = c("Reduced Ricker", "Full Ricker"), "AICc" = c(fit1$AICc, fit2$AICc))
+AIC_tab<-tibble("Model" = c("Reduced Ricker", "Full Ricker", "Full w/ Summer PDO", "Full w/ Winter PDO"), "AICc" = c(fit1$AICc, fit2$AICc, fit3$AICc, fit4$AICc))
 AIC_tab<- AIC_tab %>% mutate(DeltaAIC = AICc-min(AICc))
 AIC_tab
 ```
