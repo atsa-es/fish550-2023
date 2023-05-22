@@ -311,6 +311,8 @@ ggplot() + geom_ribbon(aes(x = SR_data$brood_year, ymin = slp_mn-2*slp_se, ymax 
 
 ```
 
+Time-varying $\delta_t$ seems unnecessary given its constant nature and very low value.
+
 ```{r}
 # spawner slope results
 slp_mn<-fit3$states[3,1]
@@ -318,6 +320,8 @@ slp_se<-fit3$states.se[3,1]
 print(paste("Mean: ", slp_mn))
 print(paste("SE: ", slp_se))
 ```
+
+Time-varying $\delta_t$ seems unnecessary given its constant nature and very low value.
 
 ## 4. Full Ricker Model with Winter PDO
 
@@ -339,6 +343,8 @@ print(paste("Mean: ", slp_mn))
 print(paste("SE: ", slp_se))
 ```
 
+Time-varying $\delta_t$ seems unnecessary given its constant nature and very low value.
+
 ## Model Comparison
 
 ```{r}
@@ -347,9 +353,50 @@ AIC_tab<- AIC_tab %>% mutate(DeltaAIC = AICc-min(AICc))
 AIC_tab
 ```
 
-Reduced ricker is the better model, which makes sense since the esimate for the b parameter is essentially 0, so both models are basically the same except the full ricker has an extra parameter.
+Reduced ricker is the best model, which makes sense since the estimate for the b parameter is essentially 0 in the other 3 models. Additionally the covariate parameters for Summer and PDO are both very low as well. All models are basically the same except the full ricker, and full ricker w/ covariates have extra parameter(s). 
+
+## Forecasting with Reduced Ricker model
+```{r}
+## get list of Kalman filter output
+kf_out <- MARSSkfss(fit1)
+## forecasts of regr parameters; 2xT matrix
+eta <- kf_out$xtt1
+
+mod_list1<-list(B = "identity", Z = "identity", U = "zero", A = "zero", Q = matrix("q"), R = matrix("r"))
+
+Z <- array(NA, c(1, TT))
+Z[1,] <- rep(1, TT) 
+## ts of E(forecasts)
+fore_mean <- vector()
+for(t in 1:TT) {
+  fore_mean[t] <- Z[,t] %*% eta[, t, drop = FALSE]
+}
+
+## variance of regr parameters; 1x2xT array
+Phi <- kf_out$Vtt1
+
+## obs variance; 1x1 matrix
+R_est <- coef(fit1, type="matrix")$R
+
+## ts of Var(forecasts)
+fore_var <- vector()
+for(t in 1:TT) {
+  tZ <- matrix(Z[,t], 1, 1) ## transpose of Z
+  fore_var[t] <- Z[, t] %*% Phi[,,t] %*% tZ + R_est
+}
+ggplot() + geom_line(aes(x = SR_data$brood_year, y=fore_mean)) +
+geom_ribbon(aes(x = SR_data$brood_year, ymin = fore_mean-2*fore_var, ymax = fore_mean + 2*fore_var), linetype = "dashed", fill = NA, color = "black") +  geom_point(aes(x=SR_data$brood_year, y=SR_data$logSR),color="blue") + labs(x="Year",y="Log(R/S)") + theme_bw()
+
+ggplot() + geom_line(aes(x = SR_data$brood_year, y=exp(fore_mean))) +
+geom_ribbon(aes(x = SR_data$brood_year, ymin = exp(fore_mean-2*fore_var), ymax = exp(fore_mean + 2*fore_var)), linetype = "dashed", fill = NA, color = "black") +  geom_point(aes(x=SR_data$brood_year, y=exp(SR_data$logSR)),color="blue") + labs(x="Year",y="R/S") + theme_bw() + ylim(0,25)
+
+```
+
+Observed values almost all fall within the prediction intervals. This is a reasonably well fitting model, however there is an AR1 lag between prediction and observation. This AR1 lag seems to be common throughout most time series prediction models. 
 
 # Discussion
+
+Kvichak sockeye recruitment/spawner ratio can be explained well by a simple random walk process. Based on the AICc, the best performing model was the simplest model without any density-dependent or PDO information. Recruitment potential is likely dependent less on biological interactions and more on environmental influences. Environmental factors besides PDO that influence productivity can include ENSO, SST, and sea surface air pressure (Ovando et al. 2022).
 
 # Team contributions
 
