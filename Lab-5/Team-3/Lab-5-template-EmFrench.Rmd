@@ -184,7 +184,95 @@ autoplot(winter_Rick, silent = TRUE)
 ```
 Why is all the variation loaded onto the intercept again? Is this just a feature of the model? The winter effect is nonzero but still pretty small compared.
 
+
+
 5.  Based on AICc, which of the models above is the most parsimonious? Is it well behaved (i.e., are the model assumptions met)? Plot the model forecasts for the best model. Is this a good forecast model?
+
+The Ricker model is the most parsimonious based on AICc. Other more complex models do not appear to improve model fit.
+
+Forecast data
+```{r, Forecast data}
+
+# our top model from above:
+
+
+#create the model params for reduced Ricker's model
+Z <- array(NA,c(1,1,TT))
+Z[1,1,] <- c(1)
+
+modlist <- list( # All other arguaments are left as default
+  Z = Z,
+  U = "zero",
+  A = "zero",
+  B = "identity"
+)
+
+reduced_Rick <- MARSS(Yt, model = modlist)
+
+
+## get list of Kalman filter output
+kf_out <- MARSSkfss(reduced_Rick)
+
+## forecasts of regr parameters; 2xT matrix
+eta <- kf_out$xtt1
+
+## ts of E(forecasts)
+fore_mean <- vector()
+for (t in 1:TT) {
+    fore_mean[t] <- Z[, , t] %*% eta[, t, drop = FALSE]
+}
+
+plot(fore_mean)
+plot(SR_dat_short$Yt)
+
+plot(fore_mean, type = "b", frame = FALSE, pch = 19, 
+     col = "red", xlab = "x", ylab = "y")
+lines(SR_dat_short$Yt, pch = 18, col = "blue", type = "b", lty = 2)
+legend("topright", legend=c("data", "forecast"),
+       col=c("red", "blue"), lty = 1:2, cex=0.8)
+
+
+
+# compute the forecast variance:
+
+
+## variance of regr parameters; 1x2xT array
+Phi <- kf_out$Vtt1
+
+## obs variance; 1x1 matrix
+R_est <- coef(reduced_Rick, type = "matrix")$R
+
+
+############# this loop is currently broken, I copied this chunk from the lab book, 
+# and can't figure out what m is in the tZ matrix below
+
+
+## ts of Var(forecasts)
+fore_var <- vector()
+for (t in 1:TT) {
+    tZ <- matrix(Z[, , t], m, 1)  ## transpose of Z
+    fore_var[t] <- Z[, , t] %*% Phi[, , t] %*% tZ + R_est
+}
+
+
+
+## forecast errors
+innov <- kf_out$Innov
+
+
+
+
+## Q-Q plot of innovations
+qqnorm(t(innov), main = "", pch = 16, col = "blue")
+## add y=x line for easier interpretation
+qqline(t(innov))
+
+
+```
+
+
+
+
 
 6.  Consider other environmental factors that could influence the time-varying intrinsic productivity of these salmon. For example, are there other large-scale indices of ocean conditions (e.g., sea-surface temperature, El Niño Southern Oscillation)? You could also consider the possible influence of other salmon stocks such as those we examined in Lab 1.
 
