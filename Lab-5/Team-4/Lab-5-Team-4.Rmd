@@ -142,7 +142,11 @@ lines(x=SR_56to98$brood_year, y=zscore(SR_56to98$RtovSt), col='blue')
 dlm_1$AICc
 #121.0344
 
-autoplot(dlm_1)
+autoplot(dlm_1,  plot.type = "fitted.ytT")
+autoplot(dlm_1,  plot.type = "model.resids.ytT")
+autoplot(dlm_1,  plot.type = "acf.std.model.resids.ytT")
+
+
 #bit of autocorrelation at 5 and 10 years
 
 ```
@@ -168,7 +172,9 @@ mod_list <- list(B = B, U = U, Q = Q, Z = Z, A = A, R = R)
 
 #DLM without covariates
 dlm_2 <- MARSS(dat.z, inits = inits_list, model = mod_list, silent = TRUE)
-autoplot(dlm_2)
+autoplot(dlm_2,  plot.type = "fitted.ytT")
+autoplot(dlm_2,  plot.type = "model.resids.ytT")
+autoplot(dlm_2,  plot.type = "acf.std.model.resids.ytT")
 #AICc: 126.0491
 ```
 
@@ -229,7 +235,11 @@ mod_list <- list(B = B, U = U, Q = Q, Z = Z, A = A, R = R)
 dlm_4 <- MARSS(dat.z, inits = inits_list, model = mod_list, silent = TRUE)
 
 # check out alpha, beta and gamma
-dlm_4$states
+#dlm_4$states
+states <- dlm_4$states
+states <- t(states)
+
+plot(states[,1])
 
 #autoplot(dlm_4)
 ```
@@ -263,7 +273,7 @@ mod_list <- list(B = B, U = U, Q = Q, Z = Z, A = A, R = R)
 dlm_5 <- MARSS(dat.z, inits = inits_list, model = mod_list, silent = TRUE)
 
 # check out alpha, beta and gamma
-dlm_5$states
+#dlm_5$states
 
 #autoplot(dlm_5)
 ```
@@ -351,7 +361,7 @@ lines(years, fore_mean-2*sqrt(fore_var)) #lower bound
 axis(1, at = seq(1956, 1998, 1))
 mtext("Brood year", 1, line = 3)
 ```
-
+The data falls within the expected parameters of the model, and generally follows the expected mean. Overall, the forecast appears to underestimate the data, particularly when the trend is increasing. Overall, it is an acceptable fit. 
 
 ```{r}
 ## forecast errors
@@ -362,18 +372,22 @@ qqnorm(t(innov), main = "", pch = 16, col = "blue")
 ## add y=x line for easier interpretation
 qqline(t(innov))
 ```
+The fit of the Q-Q plot could be better, particularly around the middle, but the tails aren't too far off as could often be the case. This means the data may not be normally distributed, but further evaluations are required. 
 
 ```{r}
 ## p-value for t-test of H0: E(innov) = 0
 t.test(t(innov), mu = 0)$p.value
 ```
 
-The p-value is greater than 0.05 so we cannot reject the null hypothesis. 
+The p-value is greater than 0.05 so we cannot reject the null hypothesis that E(e-sub-t) = 0. 
 
 ```{r}
 ## plot ACF of innovations
 acf(t(innov), lag.max = 10)
 ```
+ACF of the innovations reflects the data with a slight lag at 5 and 10. 
+
+Overall, the simplest model appears to be the best fit for the data though not all model assumptions are met - the model could behave better. Forecasting shows that while the model is a decent fit, there are likely underlying factors that are causing it to fail some of the model evaluations like autocorrelation. There may perhaps be seasonality in the data worth investigating before applying this model to further data. 
 
 # Part 6 - Consider other environmental factors
 
