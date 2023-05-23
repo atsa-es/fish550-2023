@@ -13,76 +13,29 @@ output:
 options(dplyr.summarise.inform = FALSE)
 ```
 
-## Background {#sec-dlm-homework}
 
-For the lab this week we will use DLM's to examine some of the time-varying properties of the spawner-recruit relationship for Pacific salmon. Much work has been done on this topic, particularly by Randall Peterman and his students and post-docs at Simon Fraser University. To do so, researchers commonly use a Ricker model because of its relatively simple form, such that the number of recruits (offspring) born in year $t$ ($R_t$) from the number of spawners (parents) ($S_t$) is
-
-\begin{equation}
-R_t = a S_t e^{-b S + v_t}.
-\end{equation}
-
-
-The parameter $a$ determines the maximum reproductive rate in the absence of any density-dependent effects (the slope of the curve at the origin), $b$ is the strength of density dependence, and $v_t \sim N(0,\sigma)$. In practice, the model is typically log-transformed so as to make it linear with respect to the predictor variable $S_t$, such that
-
-\begin{align}
-\text{log}(R_t) &= \text{log}(a) + \text{log}(S_t) -b S_t + v_t \\
-\text{log}(R_t) - \text{log}(S_t) &= \text{log}(a) -b S_t + v_t \\
-\text{log}(R_t/S_t) &= \text{log}(a) - b S_t + v_t.
-\end{align}
-
-
-Substituting $y_t = \text{log}(R_t/S_t)$, $x_t = S_t$, and $\alpha = \text{log}(a)$ yields a simple linear regression model with intercept $\alpha$ and slope $b$.
-
-Unfortunately, however, residuals from this simple model typically show high-autocorrelation due to common environmental conditions that affect overlapping generations. Therefore, to correct for this and allow for an index of stock productivity that controls for any density-dependent effects, the model may be re-written as
-
-\begin{align}
-\text{log}(R_t/S_t) &= \alpha_t - b S_t + v_t, \\
-\alpha_t &= \alpha_{t-1} + w_t,
-\end{align}
-
-and $w_t \sim N(0,q)$. By treating the brood-year specific productivity as a random walk, we allow it to vary, but in an autocorrelated manner so that consecutive years are not independent from one another.
-
-More recently, interest has grown in using covariates ($e.g.$, sea-surface temperature) to explain the interannual variability in productivity. In that case, we can can write the model as
-
-\begin{equation}
-\text{log}(R_t/S_t) = \alpha + \delta_t X_t - b S_t + v_t.
-\end{equation}
-
-In this case we are estimating some base-level productivity ($\alpha$) plus the time-varying effect of some covariate $X_t$ ($\delta_t$). 
-
-
-
-### Spawner-recruit data {#sec-dlm-spawner-recruit-data}
-
-The data come from a large public database begun by Ransom Myers many years ago. If you are interested, you can find lots of time series of spawning-stock, recruitment, and harvest for a variety of fishes around the globe. The website is [here](https://www.ramlegacy.org/).
-
-For this exercise, we will use spawner-recruit data for sockeye salmon (_Oncorhynchus nerka_) from the Kvichak River in SW Alaska that span the years 1952-1989. In addition, we'll examine the potential effects of the Pacific Decadal Oscillation (PDO) during the salmon's first year in the ocean, which is widely believed to be a "bottleneck" to survival.
-
-
-Load the data.
+Load the data and look at the time series.
 ```{r}
 library(MARSS)
 library(ggplot2)
 ## get data
 data(KvichakSockeye, package="atsalibrary")
 SR_data <- KvichakSockeye
-plot.ts(x=SR_data$brood_year, SR_data$spawners)
+plot.ts(x=SR_data$brood_year, SR_data$spawners, ylab="Number of Spawners and Recruits", xlab='Time')
 lines(x=SR_data$brood_year,SR_data$recruits, col='blue')
 
-#plot.ts(SR_data$recruits)
-#plot(x=SR_data$spawners, y=SR_data$recruits)
 ```
 
-Subset 1956-1998
+Subset the data to include the time range 1956-1998 so that there is spawner and recruit data for each time point.
 ```{r }
 #look at 1956-1998
 SR_56to98<-subset(SR_data, brood_year > 1955 & brood_year < 1999)
 
-plot.ts(x=SR_56to98$brood_year, SR_56to98$spawners, ylim=c(min(SR_56to98$recruits), max(SR_56to98$recruits)))
+plot.ts(x=SR_56to98$brood_year, SR_56to98$spawners, ylim=c(min(SR_56to98$recruits), max(SR_56to98$recruits)),ylab="Number of Spawners and Recruits", xlab='Time')
 lines(x=SR_56to98$brood_year,SR_56to98$recruits, col='blue')
 ```
 
-
+Create the metric representing reproductive rate: log(Rt/St)
 ```{r}
 #alpha is intercept and beta is slope
 #log(Rt/St) = at - bSt + vt
@@ -93,7 +46,7 @@ SR_56to98$RtovSt<-log(SR_56to98$recruits/SR_56to98$spawners)
 dat <- matrix(SR_56to98$RtovSt, nrow = 1)
 dat.z<-zscore(dat)
 
-plot(x=SR_56to98$brood_year, y=SR_56to98$RtovSt, type='l')
+plot(x=SR_56to98$brood_year, y=SR_56to98$RtovSt, type='l', ylab='log(Rt/St)', xlab='Time')
 ```
 
 Create covariate variables
@@ -116,14 +69,14 @@ m <- dim(pdowin_z)[1] + 1 # same as previous m so don't need to change
 ```
 
 # Part 1: Estimate 1 regression parameter
+Estimate the alpha regression parameter (the intercept).
 ```{r}
 B <- 'identity'  
 U <- matrix(0, nrow = 1, ncol = 1)  ## 2x1; both elements = 0
 Q <- matrix(list(0), 1, 1)  ## 2x2; all 0 for now
 diag(Q) <- c("q.alpha")
 
-#Miranda wants no covariates
-MirandaZ<-"identity"
+Z<-"identity"
 A <- matrix(0)  ## 1x1; scalar = 0
 R <- matrix("r")  ## 1x1; scalar = r
 
@@ -131,7 +84,7 @@ R <- matrix("r")  ## 1x1; scalar = r
 inits_list <- list(x0 = 0)
 
 ## list of model matrices & vectors
-mod_list <- list(B = B, U = U, Q = Q, Z = MirandaZ, A = A, R = R)
+mod_list <- list(B = B, U = U, Q = Q, Z = Z, A = A, R = R)
 
 #DLM without covariates
 dlm_1 <- MARSS(dat.z, inits = inits_list, model = mod_list, silent = TRUE)
@@ -147,11 +100,11 @@ autoplot(dlm_1,  plot.type = "model.resids.ytT")
 autoplot(dlm_1,  plot.type = "acf.std.model.resids.ytT")
 
 
-#bit of autocorrelation at 5 and 10 years
-
 ```
+The autocorrelation at 10 years may indicate a PDO effect.
 
 # Part 2 - Estimate 2 regression parameters
+Estimate alpha (intercept) and beta (slope)
 ```{r}
 #### Estimate 2 regression parameters
 B <- diag(2)  ## 2x2; Identity
@@ -178,7 +131,7 @@ autoplot(dlm_2,  plot.type = "acf.std.model.resids.ytT")
 #AICc: 126.0491
 ```
 
-DLM with no covariates
+Model a time-varying alpha (intercept) and static beta (slope, or, effect of spawners). This means the process variance (q) of beta will be 0.
 ```{r}
 #model 
 ###### time-varying alpha; static beta ####
@@ -205,10 +158,16 @@ dlm_3 <- MARSS(dat.z, inits = inits_list, model = mod_list, silent = TRUE)
 states <- dlm_3$states
 states <- t(states)
 
-plot(states[,1])
+plot(states[,1],ylab='Stock productivity (alpha)', xlab='time')
+abline(h=mean(states[,1]), col='magenta')
+
+autoplot(dlm_3,  plot.type = "fitted.ytT")
+autoplot(dlm_3,  plot.type = "model.resids.ytT")
+autoplot(dlm_3,  plot.type = "acf.std.model.resids.ytT")
 ```
 
 # Part 3 - Fit expanded model with covariate summer PDO 
+The residuals show a significant lag at 10 years for each model. This suggests that we are not capturing a source of variation in our model, which is perhaps an effect of the PDO.
 ```{r}
 B <- diag(3)  ## 3x3; Identity
 U <- matrix(0, nrow = 3, ncol = 1)  ## 3x1; elements = 0
@@ -239,9 +198,11 @@ dlm_4 <- MARSS(dat.z, inits = inits_list, model = mod_list, silent = TRUE)
 states <- dlm_4$states
 states <- t(states)
 
-plot(states[,1])
+plot(states[,1], ylab='Stock productivity (alpha)', xlab='Time')
 
-#autoplot(dlm_4)
+autoplot(dlm_4,  plot.type = "fitted.ytT")
+autoplot(dlm_4,  plot.type = "model.resids.ytT")
+autoplot(dlm_4,  plot.type = "acf.std.model.resids.ytT")
 ```
 
 # Part 4 - Fit expanded model with covariate winter PDO 
@@ -273,9 +234,12 @@ mod_list <- list(B = B, U = U, Q = Q, Z = Z, A = A, R = R)
 dlm_5 <- MARSS(dat.z, inits = inits_list, model = mod_list, silent = TRUE)
 
 # check out alpha, beta and gamma
-#dlm_5$states
+plot(states[,1], ylab='Stock productivity (alpha)', xlab='Time')
+head(states)
 
-#autoplot(dlm_5)
+autoplot(dlm_5,  plot.type = "fitted.ytT")
+autoplot(dlm_5,  plot.type = "model.resids.ytT")
+autoplot(dlm_5,  plot.type = "acf.std.model.resids.ytT")
 ```
 
 # Part 5 - Evaluate models
@@ -299,8 +263,7 @@ U <- matrix(0, nrow = 1, ncol = 1)  ## 2x1; both elements = 0
 Q <- matrix(list(0), 1, 1)  ## 2x2; all 0 for now
 diag(Q) <- c("q.alpha")
 
-#Miranda wants no covariates
-MirandaZ<-"identity"
+Z<-"identity"
 A <- matrix(0)  ## 1x1; scalar = 0
 R <- matrix("r")  ## 1x1; scalar = r
 
@@ -308,7 +271,7 @@ R <- matrix("r")  ## 1x1; scalar = r
 inits_list <- list(x0 = 0)
 
 ## list of model matrices & vectors
-mod_list <- list(B = B, U = U, Q = Q, Z = MirandaZ, A = A, R = R)
+mod_list <- list(B = B, U = U, Q = Q, Z = Z, A = A, R = R)
 
 #DLM without covariates
 dlm_1 <- MARSS(dat.z, inits = inits_list, model = mod_list, silent = TRUE)
@@ -391,7 +354,7 @@ Overall, the simplest model appears to be the best fit for the data though not a
 
 # Part 6 - Consider other environmental factors
 
-There appears to be a repeating autocorrelation of lag 5, which could suggest the presence of cycling in the data. Seasonality should be investigated further as a possible factor. Other potential environmental factors to consider are temperature and salinity changes of the surrounding waters. It may also be important to consider predator-prey interactions or the impact of fishing in the area. 
+There appears to be a repeating autocorrelation of lag 5, which could suggest the presence of cycling in the data. The lag at 5 and 10 might suggest am impact of PDO on the population, but the model was not improved by the inclusion of PDO. Seasonality should be investigated further as a possible factor. It may also be important to consider predator-prey interactions or the impact of fishing in the area. The scale of the remaining residual suggests a large-scale covariate, such as ENSO. Biological impacts should also be considered since 5 years is about the age of reproductive maturity of sockeye, so the remaining autocorrelation in the estimated reproductive rate could be based in life history.  
 
 ## Contributions
 
