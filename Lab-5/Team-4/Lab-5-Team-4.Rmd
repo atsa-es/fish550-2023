@@ -89,16 +89,16 @@ mod_list <- list(B = B, U = U, Q = Q, Z = Z, A = A, R = R)
 #DLM without covariates
 dlm_1 <- MARSS(dat.z, inits = inits_list, model = mod_list, silent = TRUE)
 
-plot(x=SR_56to98$brood_year, y=dlm_1$states, type='l')
+#plot alpha(t)
+plot(x=SR_56to98$brood_year, y=dlm_1$states, type='l', main = "Time series of alpha")
 lines(x=SR_56to98$brood_year, y=zscore(SR_56to98$RtovSt), col='blue')
 
 dlm_1$AICc
 #121.0344
 
-autoplot(dlm_1,  plot.type = "fitted.ytT")
-autoplot(dlm_1,  plot.type = "model.resids.ytT")
-autoplot(dlm_1,  plot.type = "acf.std.model.resids.ytT")
-
+plot1 <- autoplot(dlm_1,  plot.type = "fitted.ytT")
+plot2 <- autoplot(dlm_1,  plot.type = "model.resids.ytT")
+plot3 <- autoplot(dlm_1,  plot.type = "acf.std.model.resids.ytT")
 
 ```
 The autocorrelation at 10 years may indicate a PDO effect.
@@ -125,11 +125,18 @@ mod_list <- list(B = B, U = U, Q = Q, Z = Z, A = A, R = R)
 
 #DLM without covariates
 dlm_2 <- MARSS(dat.z, inits = inits_list, model = mod_list, silent = TRUE)
-autoplot(dlm_2,  plot.type = "fitted.ytT")
-autoplot(dlm_2,  plot.type = "model.resids.ytT")
-autoplot(dlm_2,  plot.type = "acf.std.model.resids.ytT")
+
+# plot alpha(t)
+plot(x=SR_56to98$brood_year, y=dlm_2$states[1,], type='l', main = "Time series of alpha with 2 regression parameters")
+lines(x=SR_56to98$brood_year, y=zscore(SR_56to98$RtovSt), col='blue')
+
+plota <- autoplot(dlm_2,  plot.type = "fitted.ytT")
+plotb <- autoplot(dlm_2,  plot.type = "model.resids.ytT")
+plotc <- autoplot(dlm_2,  plot.type = "acf.std.model.resids.ytT")
 #AICc: 126.0491
 ```
+When two regression parameters are used the model produces a fit that appears to revert to the mean and appears less overfit than model 1. 
+
 
 Model a time-varying alpha (intercept) and static beta (slope, or, effect of spawners). This means the process variance (q) of beta will be 0.
 ```{r}
@@ -193,12 +200,11 @@ mod_list <- list(B = B, U = U, Q = Q, Z = Z, A = A, R = R)
 #DLM without covariates
 dlm_4 <- MARSS(dat.z, inits = inits_list, model = mod_list, silent = TRUE)
 
-# check out alpha, beta and gamma
-#dlm_4$states
-states <- dlm_4$states
-states <- t(states)
+# calculate the mean productivity
+mean_prod.4 <- mean(dlm_4$states[1,])
 
-plot(states[,1], ylab='Stock productivity (alpha)', xlab='Time')
+plot(x=SR_56to98$brood_year, y=dlm_4$states[3,], type='l', main = "Time series of delta with summer PDO")
+lines(x=SR_56to98$brood_year, y=zscore(SR_56to98$RtovSt), col='blue')
 
 autoplot(dlm_4,  plot.type = "fitted.ytT")
 autoplot(dlm_4,  plot.type = "model.resids.ytT")
@@ -233,14 +239,19 @@ mod_list <- list(B = B, U = U, Q = Q, Z = Z, A = A, R = R)
 #DLM without covariates
 dlm_5 <- MARSS(dat.z, inits = inits_list, model = mod_list, silent = TRUE)
 
-# check out alpha, beta and gamma
-plot(states[,1], ylab='Stock productivity (alpha)', xlab='Time')
-head(states)
+# calculate the mean productivity
+mean_prod.5 <- mean(dlm_5$states[1,])
+
+# plot time series of delta(t)
+plot(x=SR_56to98$brood_year, y=dlm_5$states[3,], type='l', main = "Time series of delta with winter PDO", xlab = "Year", ylab = )
+lines(x=SR_56to98$brood_year, y=zscore(SR_56to98$RtovSt), col='blue')
 
 autoplot(dlm_5,  plot.type = "fitted.ytT")
 autoplot(dlm_5,  plot.type = "model.resids.ytT")
 autoplot(dlm_5,  plot.type = "acf.std.model.resids.ytT")
 ```
+
+Models 4 and 5 seem to produce similar fits to the data, although they produce different estimates of productivity. The model with summer PDO results in a mean productivity of .04 while the model with winter PDO results in a similar but slightly higher mean productivity of .14. 
 
 # Part 5 - Evaluate models
 AICc comparison
@@ -255,27 +266,6 @@ print(c(AIC1, AIC2, AIC3, AIC4, AIC5))
 ```
 AICc values suggests that the first and most simple model is the best for this data. 
 
-
-```{r, echo=FALSE}
-### Model 1 parameters for forecasting
-B <- 'identity'  
-U <- matrix(0, nrow = 1, ncol = 1)  ## 2x1; both elements = 0
-Q <- matrix(list(0), 1, 1)  ## 2x2; all 0 for now
-diag(Q) <- c("q.alpha")
-
-Z<-"identity"
-A <- matrix(0)  ## 1x1; scalar = 0
-R <- matrix("r")  ## 1x1; scalar = r
-
-## only need starting values for regr parameters
-inits_list <- list(x0 = 0)
-
-## list of model matrices & vectors
-mod_list <- list(B = B, U = U, Q = Q, Z = Z, A = A, R = R)
-
-#DLM without covariates
-dlm_1 <- MARSS(dat.z, inits = inits_list, model = mod_list, silent = TRUE)
-```
 
 Parameters for forecasting
 ```{r}
@@ -354,7 +344,7 @@ Overall, the simplest model appears to be the best fit for the data though not a
 
 # Part 6 - Consider other environmental factors
 
-There appears to be a repeating autocorrelation of lag 5, which could suggest the presence of cycling in the data. The lag at 5 and 10 might suggest am impact of PDO on the population, but the model was not improved by the inclusion of PDO. Seasonality should be investigated further as a possible factor. It may also be important to consider predator-prey interactions or the impact of fishing in the area. The scale of the remaining residual suggests a large-scale covariate, such as ENSO. Biological impacts should also be considered since 5 years is about the age of reproductive maturity of sockeye, so the remaining autocorrelation in the estimated reproductive rate could be based in life history.  
+There appears to be a repeating autocorrelation of lag 5, which could suggest the presence of cycling in the data. The lag at 5 and 10 might suggest am impact of PDO on the population, but the model was not improved by the inclusion of PDO. Seasonality should be investigated further as a possible factor. It may also be important to consider predator-prey interactions or the impact of fishing in the area. The scale of the remaining residual suggests a large-scale covariate, possibly ENSO or NPGO. Sockeye generally mature at 3 or 4 years of age so this does not explain the 5 year lag, however there may be other biological reasons for this shorter lag.   
 
 ## Contributions
 
