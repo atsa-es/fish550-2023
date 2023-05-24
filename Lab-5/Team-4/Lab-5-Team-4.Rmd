@@ -90,7 +90,7 @@ mod_list <- list(B = B, U = U, Q = Q, Z = Z, A = A, R = R)
 dlm_1 <- MARSS(dat.z, inits = inits_list, model = mod_list, silent = TRUE)
 
 #plot alpha(t)
-plot(x=SR_56to98$brood_year, y=dlm_1$states, type='l', main = "Time series of alpha")
+plot(x=SR_56to98$brood_year, y=dlm_1$states, type='l', main = "Time series of alpha", xlab = "Year", ylab = "alpha parameter")
 lines(x=SR_56to98$brood_year, y=zscore(SR_56to98$RtovSt), col='blue')
 
 dlm_1$AICc
@@ -127,7 +127,7 @@ mod_list <- list(B = B, U = U, Q = Q, Z = Z, A = A, R = R)
 dlm_2 <- MARSS(dat.z, inits = inits_list, model = mod_list, silent = TRUE)
 
 # plot alpha(t)
-plot(x=SR_56to98$brood_year, y=dlm_2$states[1,], type='l', main = "Time series of alpha with 2 regression parameters")
+plot(x=SR_56to98$brood_year, y=dlm_2$states[1,], type='l', main = "Time series of alpha with 2 regression parameters", xlab = "Year", ylab = "alpha parameter")
 lines(x=SR_56to98$brood_year, y=zscore(SR_56to98$RtovSt), col='blue')
 
 plota <- autoplot(dlm_2,  plot.type = "fitted.ytT")
@@ -203,7 +203,7 @@ dlm_4 <- MARSS(dat.z, inits = inits_list, model = mod_list, silent = TRUE)
 # calculate the mean productivity
 mean_prod.4 <- mean(dlm_4$states[1,])
 
-plot(x=SR_56to98$brood_year, y=dlm_4$states[3,], type='l', main = "Time series of delta with summer PDO")
+plot(x=SR_56to98$brood_year, y=dlm_4$states[3,], type='l', main = "Time series of delta with summer PDO",xlab = "Year", ylab = "delta parameter")
 lines(x=SR_56to98$brood_year, y=zscore(SR_56to98$RtovSt), col='blue')
 
 autoplot(dlm_4,  plot.type = "fitted.ytT")
@@ -243,7 +243,7 @@ dlm_5 <- MARSS(dat.z, inits = inits_list, model = mod_list, silent = TRUE)
 mean_prod.5 <- mean(dlm_5$states[1,])
 
 # plot time series of delta(t)
-plot(x=SR_56to98$brood_year, y=dlm_5$states[3,], type='l', main = "Time series of delta with winter PDO", xlab = "Year", ylab = )
+plot(x=SR_56to98$brood_year, y=dlm_5$states[3,], type='l', main = "Time series of delta with winter PDO", xlab = "Year", ylab = "delta parameter")
 lines(x=SR_56to98$brood_year, y=zscore(SR_56to98$RtovSt), col='blue')
 
 autoplot(dlm_5,  plot.type = "fitted.ytT")
