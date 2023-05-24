@@ -2,7 +2,7 @@
 title: "Lab 5 - Time-varying productivity of salmon"
 subtitle: "Dynamic Linear Models (DLMs)"
 author: "Eric French, Madison Heller-Shipley, Karl Veggerby"
-date: May 11, 2023
+date: May 23, 2023
 output: 
   html_document:
     code-folding: true
@@ -16,17 +16,18 @@ library(MARSS)
 library(marssTMB)
 library(dplyr)
 library(ggplot2)
+library(kableExtra)
 ```
 
 ------------------------------------------------------------------------
 
 # Data
 
-Describe the salmon data and any environmental covariates you decide to examine.
+The data explored for this lab is spawner and recruit Kvichak Sockeye data, which is a river system in Bristol Bay, Alaska. This data set includes data from 1952-2005. There is missing spawner data from 1952-1995, and missing recruit data from 1999-2005, with a valid window from 1966-1998. 
 
 ## Load the data
 
-```{r dlm-load-atsa, eval=FALSE}
+```{r, eval=TRUE}
 ## library(devtools)
 ## Windows users will likely need to set this
 ## Sys.setenv("R_REMOTES_NO_ERRORS_FROM_WARNINGS" = "true")
@@ -35,25 +36,23 @@ Describe the salmon data and any environmental covariates you decide to examine.
 ## get data
 data(KvichakSockeye, package="atsalibrary")
 SR_data <- KvichakSockeye
+head(SR_data)
 ```
 
 The data are a dataframe with columns for brood year (`brood_year`), number of spawners (`spawners`), number of recruits (`recruits`) and PDO at year $t-2$ in summer (`pdo_summer_t2`) and in winter (`pdo_winter_t2`).
 
-*NOTE* There is missing spawner data from 1952-1955. There is missing recruit data from 1999-2005. The valid window is 1956-1998
-
 
 ### Plot Biological Data
-```{r dlm-data-head}
+```{r dlm-data-head-bio}
 
-par(mfrow=c(3,1))
+par(mfrow=c(2,2))
 plot(SR_data$brood_year, SR_data$spawners, type= "l", xlab = "Year", ylab = "Spawners")
 plot(SR_data$brood_year, SR_data$recruits, type= "l", xlab = "Year", ylab = "Recruits")
+plot(SR_data$brood_year, log(SR_data$recruits/SR_data$spawners) , xlab = "Year", ylab = "log(R/S)", type= "l")
 plot(SR_data$spawners, SR_data$recruits, xlab = "Spawners", ylab = "Recruits", pch = 16)
 ```
 ### Plot Environmental Data 
-
-### Plot Biological Data
-```{r dlm-data-head}
+```{r dlm-data-head-environment}
 par(mfrow=c(2,1))
 plot(SR_data$brood_year, SR_data$pdo_summer_t2, type= "l", xlab = "Year", ylab = "Summer PDO")
 abline(h=0, lty = 2)
@@ -68,7 +67,7 @@ abline(h=0, lty= 2)
 SR_dat_short <- SR_data[SR_data[,"brood_year"] >= 1956 & SR_data[,"brood_year"] <= 1998, ]
 
 #Create a column for the response variable
-SR_dat_short$Yt <- log(SR_dat_short$recruits/SR_dat_short$spawners)
+SR_dat_short$Yt <- log(SR_dat_short$recruits/SR_dat_short$spawners) #Yt represents log of recruits over spawners. 
 
 #Create the observation matrix
 Yt <- t(SR_dat_short$Yt)
@@ -80,6 +79,8 @@ TT <- nrow(SR_dat_short)
 # General tasks
 
 Use the information and data in the previous section to answer the following questions. Note that if any model is not converging, then you will need to increase the `maxit` parameter in the `control` argument/list that gets passed to `MARSS()`. For example, you might try `control=list(maxit=2000)`.
+
+# Methods
 
 ## Reduced Ricker's Model
 1.  Begin by fitting a reduced form of Ricker's model that includes only a time-varying level ($\alpha_t$) and observation error ($v_t$). That is,
@@ -119,7 +120,15 @@ The state residuals have no time trend, and the model smoothation results seem t
 The ACF plot has significant autocorrelation at lags of 5 and 10 years
 
 ## Full Ricker's Model with Static Spawner Effect
-2.  Fit the full Ricker model with a time-varying intercept and a static effect of spawners. For this model, obtain the time series of $\alpha_t$, which is an estimate of the stock productivity in the absence of density-dependent effects. How do these estimates of productivity compare to those from the previous question? Plot the ts of $\alpha_t$ and note the AICc for this model. Also plot appropriate model diagnostics. ($Hint$: If you don't want a parameter to vary with time, what does that say about its process variance?)
+2.  Fit the full Ricker model with a time-varying intercept and a static effect of spawners. For this model, obtain the time series of $\alpha_t$, which is an estimate of the stock productivity in the absence of density-dependent effects. How do these estimates of productivity compare to those from the previous question? Plot the ts of $\alpha_t$ and note the AICc for this model. Also plot appropriate model diagnostics. 
+
+```{=tex}
+\begin{align*}
+\text{log}(R_t/S_t) = \alpha_t - bS_t +  v_t \\
+\alpha_t = \alpha_{t-1} + w_t
+\end{align*}
+```
+
 
 ```{r}
 #create the model params for the full Ricker's model
@@ -137,15 +146,25 @@ modlist <- list( # All other arguments are left as default
 
 full_Rick <- MARSS(Yt, model = modlist, inits = list(x0 = matrix(c(0),2,1))) # added inits list due to marss error
 ```
-Result: AICC is 112.67, higher than the previous model after multiple attempts at different x0 values. each one resulted in the same model. The increase in AICc is likely driven by an increase in parameters by allowing time variation. 
+Result: AICC is 112.67, higher than the previous model after multiple attempts at different x0 values. each one resulted in the same model. The increase in AICc is likely driven by an increase in parameters by allowing density dependency and time variation in the intercepts. 
 
 ```{r}
 autoplot.marssMLE(full_Rick, silent = TRUE)
 ```
-Results: Model fit, residuals, and ACF all look the same as the previous model because all the variation was loaded onto the intercept term. I may need a second set of eyes on this one
+Results: Model fit, residuals, and ACF all look the same as the previous model because all the variation was loaded onto the intercept term. 
 
 ## Full Ricker's Model with Static Spawner Effect and Summer PDO covariate
 3.  Fit the expanded model that includes the summer PDO index as the covariate (`pdo_summer_t2`). What is the mean level of productivity? Plot the ts of $\delta_t$ and note the AICc for this model. Also plot appropriate model diagnostics.
+
+
+```{=tex}
+\begin{align*}
+\text{log}(R_t/S_t) = \alpha_t + \delta_t X_t - bS_t +  v_t \\
+\alpha_t = \alpha_{t-1} + w_t \\
+\delta_t = \delta_{t-1} + w_t
+\end{align*}
+```
+
 ```{r}
 #create the model params for the full Ricker's model
 Z <- array(NA,c(1,3,TT)) # the array has 3 elements now
@@ -173,6 +192,15 @@ autoplot(summer_Rick, silent = TRUE)
 
 ## Full Ricker's Model with Static Spawner Effect and Winter PDO covariate
 4.  Fit the expanded model that includes the winter PDO index as the covariate (`pdo_winter_t2`). What is the mean level of productivity? Plot the ts of $\delta_t$ and note the AICc for this model. Also plot appropriate model diagnostics.
+
+```{=tex}
+\begin{align*}
+\text{log}(R_t/S_t) = \alpha_t + \delta_t X_t - bS_t +  v_t \\
+\alpha_t = \alpha_{t-1} + w_t \\
+\delta_t = \delta_{t-1} + w_t
+\end{align*}
+```
+
 ```{r}
 #create the model params for the full Ricker's model
 Z <- array(NA,c(1,3,TT)) # the array has 3 elements now
@@ -199,25 +227,65 @@ autoplot(winter_Rick, silent = TRUE)
 ```
 Why is all the variation loaded onto the intercept again? Is this just a feature of the model? The winter effect is nonzero but still pretty small compared.
 
-# Model Fits and Selection 
+# Results  
 5.  Based on AICc, which of the models above is the most parsimonious? Is it well behaved (i.e., are the model assumptions met)? Plot the model forecasts for the best model. Is this a good forecast model?
 
-The Ricker model is the most parsimonious based on AICc. Other more complex models do not appear to improve model fit.
+```{r}
+#Summary Table 
+
+#Someone want to check I pulled the correct things for meanprod and SE? 
+
+mods <- c("Reduced Ricker","Full Ricker","Summer PDO","Winter PDO")
+NLL <- c(reduced_Rick$logLik, full_Rick$logLik, summer_Rick$logLik, winter_Rick$logLik)
+meanProd<-c(reduced_Rick$states[1,1] ,full_Rick$states[2,1],summer_Rick$states[3,1],winter_Rick$states[3,1])
+SEs<-c(reduced_Rick$states.se[1,1] ,full_Rick$states.se[2,1],summer_Rick$states.se[3,1],winter_Rick$states.se[3,1])
+tab <- cbind.data.frame(mods, NLL, meanProd, SEs)
+kable(tab, col.names = c("Models", "Likelihood", "Means", "SE"))
+
+```
 
 ```{r}
 #AICc Table 
 
-
+mods <- c("Reduced Ricker","TimeVar Intercept","Summer PDO","Winter PDO")
+aic <- c(reduced_Rick$AICc, full_Rick$AICc, summer_Rick$AICc, winter_Rick$AICc)
+daic <- aic-min(aic)
+tab <- cbind.data.frame(mods, aic, daic)
+kable(tab, col.names = c("Models", "AICc", "delta AICc"))
 
 
 ```
 
-# Forecast data
+According to AICc, the most parsimonious model was the Reduced Ricker, which was essentially a random walk model. While adding complexity with the other models did decrease the negative log likelihoods, the improved fits to data were quite small, and adding parameters didn't improve fit enough to justify using more complex models.
+
+## Forecast data
+
+We used the best fitting model to do the forecast, which was the Reduced Ricker. 
+
+Forecasting from a DLM involves two steps:
+
+1. Get an estimate of the regression parameters at time $t$ from data up to time $t-1$. These are also called the one-step ahead forecast (or prediction) of the regression parameters.
+
+2. Make a prediction of $y$ at time $t$ based on the predictor variables at time $t$ and the estimate of the regression parameters at time $t$ (step 1). This is also called the one-step ahead forecast (or prediction) of the observation.
+
 ```{r, Forecast data}
 
-# our top model from above:
+## shrink the window of years so the response variable will have a full set of values
+SR_dat_short2 <- SR_data[SR_data[,"brood_year"] >= 1956 & SR_data[,"brood_year"] <= 2005, ]
 
-#create the model params for reduced Ricker's model
+#Create a column for the response variable
+SR_dat_short2$Yt <- log(SR_dat_short2$recruits/SR_dat_short2$spawners) #Yt represents log of recruits over spawners. 
+
+#Create the observation matrix
+Yt <- t(SR_dat_short2$Yt)
+
+#determines number of elements
+TT <- nrow(SR_dat_short2)
+
+
+# our top model from above: Reduced Ricker
+
+#create the model params 
 Z <- array(NA,c(1,1,TT))
 Z[1,1,] <- c(1)
 
@@ -228,8 +296,8 @@ modlist <- list( # All other arguaments are left as default
   B = "identity"
 )
 
+#Run again for good measure 
 reduced_Rick <- MARSS(Yt, model = modlist)
-
 
 ## get list of Kalman filter output
 kf_out <- MARSSkfss(reduced_Rick)
@@ -244,16 +312,16 @@ for (t in 1:TT) {
 }
 
 plot(fore_mean)
-plot(SR_dat_short$Yt)
+plot(SR_dat_short2$Yt)
 
-plot(fore_mean, type = "b", frame = FALSE, pch = 19, 
-     col = "red", xlab = "x", ylab = "y")
-lines(SR_dat_short$Yt, pch = 18, col = "blue", type = "b", lty = 2)
+plot(x=SR_dat_short2$brood_year , y= fore_mean, type = "b", pch = 19, 
+     col = "red", xlab = "Year", ylab = "log(R/S)", ylim = c(-2, 3), xlim = c(1956, 1998))
+lines(SR_dat_short2$brood_year, SR_dat_short2$Yt, pch = 18, col = "blue", type = "b", lty = 2)
 legend("topright", legend=c("data", "forecast"),
        col=c("red", "blue"), lty = 1:2, cex=0.8)
 
 ```
-
+The one step ahead forcast follows the trend of the data, but is lagged behind the data by one year. 
 ##
 ```{r}
 # compute the forecast variance:
@@ -265,51 +333,45 @@ Phi <- kf_out$Vtt1
 R_est <- coef(reduced_Rick, type = "matrix")$R
 
 
-############# this loop is currently broken, I copied this chunk from the lab book, 
-# and can't figure out what m is in the tZ matrix below
-
-
 ## ts of Var(forecasts)
 fore_var <- vector()
 m<-1 #number of regression pars
 for (t in 1:TT) {
     tZ <- matrix(Z[, , t], m, 1)  ## transpose of Z
-    fore_var[t] <- Z[, , t] %*% Phi[, , t] %*% tZ + R_est
+    fore_var[t] <- Z[, ,t] %*% Phi[, , t] %*% tZ + R_est
 }
 
 
 
+plot(x = SR_dat_short2$brood_year, y=fore_mean, type = "l", lwd = 2, xlab = "Year", ylab = "Log(R/S)", ylim = c(-3,3))
+lines(x = SR_dat_short2$brood_year, y = fore_mean-2*fore_var, lty = 2)
+lines(x = SR_dat_short2$brood_year, y = fore_mean + 2*fore_var, lty=2) 
+points(x =SR_dat_short2$brood_year, y = SR_dat_short2$Yt)  
+```
+This model fit the data reasonably well, with the model following the trend of the data, though with a one year lag, and observations fall within the margin of error. The prediction flattens out at the end of the time series, which makes sense given this is a random walk model that is informed by the last year of data. 
+```{r}
+
 ## forecast errors
 innov <- kf_out$Innov
-
-
-
 
 ## Q-Q plot of innovations
 qqnorm(t(innov), main = "", pch = 16, col = "blue")
 ## add y=x line for easier interpretation
 qqline(t(innov))
 
-
 ```
+There are some odd trends in this QQ plot and to be honest, I'm not sure the best way to interpret it. 
 
 
 6.  Consider other environmental factors that could influence the time-varying intrinsic productivity of these salmon. For example, are there other large-scale indices of ocean conditions (e.g., sea-surface temperature, El Niño Southern Oscillation)? You could also consider the possible influence of other salmon stocks such as those we examined in Lab 1.
 
-# Methods
-
-Please address the following in your methods:
-
--   What environmental or dummy variables did you include and why?
-
--   What forms of models did you fit (ie, write them out in matrix form)?
-
--   What sort of model diagnostics did you use to examine model assumptions?
-
-# Results
+The Kvichak River system flows into Bristol Bay Alaska, and some other possible environmental factors that could influence time-varying productivity could include sea ice dynamics, driving the underlying primary productivity and food availability of plankton for salmon that have migrated to the Bering Sea, which could have an impact on fecundity and survival. Sea ice extent is correlated with certain species of copepods, with varying lipid content, and some species may be better food for salmon. Sea Ice would likely be correlated with sea surface temperatures, but SST could be another covariate to explore as the Bering Sea has shown evidence of warming in recent decades. 
 
 # Discussion
 
+Ultimately this lab was a good lesson in covariates not improving model fits enough to justify more complex models. While we can speculate and make inference on environmental impacts on factors, such as cycles such as PDO on spawner recruit relationships, sometimes the most simple models explain enough of the relationship where additional complexity isn't necessary. In this lab, the model with the lowest AICc was essentially a random walk process, and while considering density dependency and environmental processes such as summer and winter PDO did ever so slightly improve the negative log likelihoods, the fit gained from the additional parameters wasn't worth it.  
+
+
 # Team contributions
 
-Example: "All team members helped decide on the goal and ran the analyses for the individual regions. Team members 2 & 3 wrote most of the code for the analysis. Team member 1 worked on the plotting section of the report using and adapting code that team member 3 wrote. All team members helped edit the report and wrote the discussion together."
+Eric completed the data cleaning and set up the primary four models. Madi added plots and created the NLL and AICc tables and both Karl and Madi tackled the forecast portion of the lab. Discussion and notes in the document were added by Madi and Eric and Karl proofread and edited where appropriate. 
