@@ -13,6 +13,11 @@ You will need to install and load TMB
 install.packages("TMB")
 ```
 
+Make sure to set the Lab-6 folder as you working directory. You can use the blue cog in the upper right panel in RStudio or
+```
+setwd("<put your prefix here>/fish550-2023/Lab-6")
+```
+
 ```{r}
 library(TMB)
 ```
