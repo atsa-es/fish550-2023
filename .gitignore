@@ -12,3 +12,7 @@ Lab-2/Lab2-MARSS.html
 
 /.quarto/
 _freeze
+*.o
+*.so
+Lab-6/univariate_example.html
+Lab-6/univariate_example.r
