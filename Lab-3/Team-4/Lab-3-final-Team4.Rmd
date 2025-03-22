@@ -311,7 +311,7 @@ for (i in 1:N.ts) {
   lo <- mod_fit$lo[i, ]
   plot(w_ts, mn,
        xlab = "", ylab = ylbl[i], xaxt = "n", type = "n", cex.lab = 1.2,
-       ylim = c(min(lo), max(up))
+       ylim = c(min(lo, na.rm=TRUE), max(up, na.rm=TRUE))
   )
   axis(1, 12 * (0:dim(plank.t)[2]) + 1, 1980 + 0:dim(plank.t)[2])
   points(w_ts, plank.t[i, ], pch = 16, col = clr[i])
@@ -405,7 +405,7 @@ for (i in 1:m10) {
 ```{r}
 mm<-3
 for(i in 1:mm) {
-  ylm <- c(-1, 1) * max(abs(trends.rot.10[i,]))
+  ylm <- c(-1, 1) * max(abs(trends.rot.10[i,]), na.rm=TRUE)
   ## set up plot area
   plot(w_ts_10,trends.rot.10[i,], type = "n", bty = "L",
        ylim = ylm, xlab = "", ylab = "", xaxt = "n")

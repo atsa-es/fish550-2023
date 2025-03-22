@@ -1,0 +1,1942 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.39">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Dylan Hubl, Eric French, Zoe Rand">
+<meta name="dcterms.date" content="2023-05-09">
+
+<title>18&nbsp; Team 1 - Lab 4 – Fish 550 Spring 2023</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../Lab-4/Final_Write_ups/Lab-4-team-2_final.html" rel="next">
+<link href="../../Lab-4/Lab-4-HMM.html" rel="prev">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-626149efe8f5d16e1d391ba177679bf0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../Lab-4/Lab-4-HMM.html">Hidden Markov Models</a></li><li class="breadcrumb-item"><a href="../../Lab-4/Final_Write_ups/Lab-4-team-1_final.html"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Team 1 - Lab 4</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../../">Fish 550 Spring 2023</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/atsa-es/fish550-2023" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Labs</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Forecasting with ARIMA models</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lab-1/Lab1-ARIMA.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Lab Intro</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lab-1/Final_Write_ups/Lab-1-team-1_final.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Team 1 - Lab 1</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lab-1/Final_Write_ups/Lab-1-team-2_final.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Team 2 - Lab 1</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lab-1/Final_Write_ups/Lab-1-team-3_final.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Team 3 - Lab 1</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lab-1/Final_Write_ups/Lab-1-team-4_final.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Team 4 - Lab 1</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Analyzing multivariate salmon data with MARSS</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lab-2/Lab2-MARSS.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Lab Intro</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lab-2/Final_Write_ups/Lab-2-team-1_final.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Team 1 - Lab 2</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lab-2/Final_Write_ups/Lab-2-team-2_final.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Team 2 - Lab 2</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lab-2/Final_Write_ups/Lab-2-team-3_final.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Team 3 - Lab 2</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lab-2/Final_Write_ups/Lab-2-team-4_final.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Team 4 - Lab 2</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Dynamic Factor Analysis</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lab-3/Lab-3-DFA.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Lab Intro</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lab-3/Final_Write_ups/Lab-3-team-1_final.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Team 1 - Lab 3</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lab-3/Final_Write_ups/Lab-3-team-2_final.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Team 2 - Lab 3</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lab-3/Final_Write_ups/Lab-3-team-3_final.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Team 3 - Lab 3</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lab-3/Final_Write_ups/Lab-3-team-4_final.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Team 4 - Lab 3</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Hidden Markov Models</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lab-4/Lab-4-HMM.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Lab Intro</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lab-4/Final_Write_ups/Lab-4-team-1_final.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Team 1 - Lab 4</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lab-4/Final_Write_ups/Lab-4-team-2_final.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Team 2 - Lab 4</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lab-4/Final_Write_ups/Lab-4-team-3_final.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Team 3 - Lab 4</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Lab-4/Final_Write_ups/Lab-4-team-4_final.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Team 4 - Lab 4</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#data" id="toc-data" class="nav-link active" data-scroll-target="#data">Data</a>
+  <ul class="collapse">
+  <li><a href="#load-the-data" id="toc-load-the-data" class="nav-link" data-scroll-target="#load-the-data">Load the data</a></li>
+  <li><a href="#wrangle-the-data" id="toc-wrangle-the-data" class="nav-link" data-scroll-target="#wrangle-the-data">Wrangle the data</a></li>
+  <li><a href="#state-hmm" id="toc-state-hmm" class="nav-link" data-scroll-target="#state-hmm">2-State HMM</a></li>
+  <li><a href="#state-hmm-1" id="toc-state-hmm-1" class="nav-link" data-scroll-target="#state-hmm-1">3-State HMM</a></li>
+  </ul></li>
+  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results</a></li>
+  <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion">Discussion</a></li>
+  <li><a href="#team-contributions" id="toc-team-contributions" class="nav-link" data-scroll-target="#team-contributions">Team contributions</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/atsa-es/fish550-2023/edit/main/Lab-4/Final_Write_ups/Lab-4-team-1_final.Rmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/atsa-es/fish550-2023/blob/main/Lab-4/Final_Write_ups/Lab-4-team-1_final.Rmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/atsa-es/fish550-2023/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../Lab-4/Lab-4-HMM.html">Hidden Markov Models</a></li><li class="breadcrumb-item"><a href="../../Lab-4/Final_Write_ups/Lab-4-team-1_final.html"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Team 1 - Lab 4</span></a></li></ol></nav>
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Team 1 - Lab 4</span></h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+<p class="subtitle lead">Hidden Markov Models</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Dylan Hubl, Eric French, Zoe Rand </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">May 9, 2023</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<ul>
+<li>Team 1: Dylan Hubl, Eric French, Zoe Rand</li>
+<li>Team 2: Maria Kuruvilla, Miranda Mudge</li>
+<li>Team 3: Nick Chambers, Madison Shipley, Karl Veggerby</li>
+<li>Team 4: Liz Elmstrom, Terrance Wang, Emma Timmins-Schiffman</li>
+</ul>
+<p>Make sure to label your final write-up with “final” in the title so we know which one is the final one.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.3     ✔ readr     2.1.4
+✔ forcats   1.0.0     ✔ stringr   1.5.0
+✔ ggplot2   3.4.2     ✔ tibble    3.2.1
+✔ lubridate 1.9.2     ✔ tidyr     1.3.0
+✔ purrr     1.0.1     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ purrr::%||%()   masks base::%||%()
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(depmixS4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: nnet
+Loading required package: MASS
+
+Attaching package: 'MASS'
+
+The following object is masked from 'package:dplyr':
+
+    select
+
+Loading required package: Rsolnp
+Loading required package: nlme
+
+Attaching package: 'nlme'
+
+The following object is masked from 'package:dplyr':
+
+    collapse</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<section id="data" class="level1">
+<h1>Data</h1>
+<p>As part of the California Current Integrated Ecosystem Report, NOAA scientists do annual updates of <a href="https://www.fisheries.noaa.gov/west-coast/science-data/ocean-conditions-indicators-trends">stoplight charts for ecosystem indicators</a>.</p>
+<p>We have included the <code>stoplight.csv</code> dataset for this week. One of the columns divides indicators into groups (e.g.&nbsp;Local Physical, Local Biological, etc). Please pick a type of indicators, and develop a 2- or 3-state multivariate HMM. A few tips:</p>
+<p>Describe what plankton groups and covariates you used and indicate any temporal subsetting you chose. Also describe any standardization, centering or scaling that was used.</p>
+<section id="load-the-data" class="level2">
+<h2 class="anchored" data-anchor-id="load-the-data">Load the data</h2>
+<p>One of the columns divides indicators into groups (e.g.&nbsp;Local Physical, Local Biological, etc).</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>stoplight <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"Lab-4"</span>, <span class="st">"stoplight.csv"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="wrangle-the-data" class="level2">
+<h2 class="anchored" data-anchor-id="wrangle-the-data">Wrangle the data</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="do">## add some code here</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># we will look at Copepod_richness, N_copepod, S_copepod</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">rbind.data.frame</span>(stoplight[stoplight<span class="sc">$</span>Ecosystem.Indicators <span class="sc">==</span> <span class="st">"Copepod_richness"</span>,],stoplight[stoplight<span class="sc">$</span>Ecosystem.Indicators <span class="sc">==</span> <span class="st">"N_copepod"</span>,],stoplight[stoplight<span class="sc">$</span>Ecosystem.Indicators <span class="sc">==</span> <span class="st">"S_copepod"</span>,])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>newdf<span class="ot">&lt;-</span>df<span class="sc">%&gt;%</span><span class="fu">pivot_longer</span>(<span class="sc">-</span><span class="fu">c</span>(Ecosystem.Indicators, Type), <span class="at">names_to =</span> <span class="st">"Year"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Year =</span> <span class="fu">as.numeric</span>(<span class="fu">gsub</span>(<span class="st">"X"</span>,<span class="st">""</span>,Year)))</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(newdf) <span class="sc">+</span> </span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> Year, <span class="at">y =</span> value, <span class="at">color =</span> Ecosystem.Indicators)) <span class="sc">+</span> </span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Lab-4-team-1_final_files/figure-html/plot_data-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We see that Copepod Richness and the Southern Copepod biomass measures are in phase with one another across the plot.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">#arranging data for model fits</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>df2<span class="ot">&lt;-</span>df <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span>Type) <span class="sc">%&gt;%</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gather</span>(Year, value, <span class="sc">-</span>Ecosystem.Indicators) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">spread</span>(Ecosystem.Indicators, value) </span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>df2<span class="sc">$</span>Year<span class="ot">&lt;-</span><span class="fu">as.numeric</span>(<span class="fu">gsub</span>(<span class="st">"X"</span>,<span class="st">""</span>,df2<span class="sc">$</span>Year))</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Year Copepod_richness N_copepod S_copepod
+1 1998             4.54     -0.76      0.60
+2 1999            -2.58      0.04     -0.23
+3 2000            -3.41      0.15     -0.21
+4 2001            -1.03      0.15     -0.22
+5 2002            -1.12      0.29     -0.23
+6 2003             1.99     -0.13      0.09</code></pre>
+</div>
+</div>
+</section>
+<section id="state-hmm" class="level2">
+<h2 class="anchored" data-anchor-id="state-hmm">2-State HMM</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co">#set up 2-state model</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>mod<span class="ot">&lt;-</span><span class="fu">depmix</span>(<span class="fu">list</span>(Copepod_richness <span class="sc">~</span><span class="dv">1</span>, N_copepod <span class="sc">~</span><span class="dv">1</span>, S_copepod <span class="sc">~</span><span class="dv">1</span>), </span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">nstates =</span> <span class="dv">2</span>, </span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>           <span class="co">#assume gaussian errors for all</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>           <span class="at">family =</span> <span class="fu">list</span>(<span class="fu">gaussian</span>(), <span class="fu">gaussian</span>(), <span class="fu">gaussian</span>()), </span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>           <span class="at">data =</span> df2)</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="co">#fit the model</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>fitmod<span class="ot">&lt;-</span><span class="fu">fit</span>(mod)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>converged at iteration 6 with logLik: -36.64126 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">#model results</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fitmod)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Initial state probabilities model 
+pr1 pr2 
+  0   1 
+
+Transition matrix 
+        toS1  toS2
+fromS1 0.783 0.217
+fromS2 0.445 0.555
+
+Response parameters 
+Resp 1 : gaussian 
+Resp 2 : gaussian 
+Resp 3 : gaussian 
+    Re1.(Intercept) Re1.sd Re2.(Intercept) Re2.sd Re3.(Intercept) Re3.sd
+St1          -1.333  1.066           0.281  0.142          -0.146  0.102
+St2           4.037  2.223          -0.368  0.393           0.325  0.187</code></pre>
+</div>
+</div>
+<p>The model results change slightly depending on the seed, so making sure it found the best model:</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>iter <span class="ot">&lt;-</span><span class="dv">100</span> <span class="co">#number of times to run the model</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>seeds<span class="ot">&lt;-</span><span class="fu">sample</span>(<span class="dv">100</span><span class="sc">:</span><span class="dv">1000</span>, <span class="at">size =</span> iter, <span class="at">replace =</span> F) <span class="co">#get 100 seed values</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>best <span class="ot">&lt;-</span> <span class="fl">1e10</span> <span class="co">#this is large so first AIC is definitely smaller</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>best_model <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>iter){</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">#set the seed from the ones we picked (makes sure its new each time)</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(seeds[i]) </span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">#fit the model</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  fitmod <span class="ot">&lt;-</span> <span class="fu">fit</span>(mod)</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  <span class="co">#is this model better than the last?</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">AIC</span>(fitmod)<span class="sc">&lt;</span> best){</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>    best_model <span class="ot">&lt;-</span> fitmod</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>    best <span class="ot">&lt;-</span> <span class="fu">AIC</span>(fitmod)</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>converged at iteration 7 with logLik: -36.64126 
+converged at iteration 8 with logLik: -36.64126 
+converged at iteration 8 with logLik: -36.64126 
+converged at iteration 5 with logLik: -36.64126 
+converged at iteration 6 with logLik: -36.64126 
+converged at iteration 6 with logLik: -36.64126 
+converged at iteration 6 with logLik: -36.64126 
+converged at iteration 7 with logLik: -36.64126 
+converged at iteration 5 with logLik: -36.64126 
+converged at iteration 6 with logLik: -36.64126 
+converged at iteration 8 with logLik: -36.64126 
+converged at iteration 8 with logLik: -36.64126 
+converged at iteration 8 with logLik: -36.64126 
+converged at iteration 7 with logLik: -36.64126 
+converged at iteration 9 with logLik: -36.64126 
+converged at iteration 7 with logLik: -36.64126 
+converged at iteration 9 with logLik: -36.64126 
+converged at iteration 7 with logLik: -36.64126 
+converged at iteration 7 with logLik: -36.64126 
+converged at iteration 6 with logLik: -36.64126 
+converged at iteration 6 with logLik: -36.64126 
+converged at iteration 7 with logLik: -36.64126 
+converged at iteration 6 with logLik: -36.64126 
+converged at iteration 7 with logLik: -36.64126 
+converged at iteration 6 with logLik: -36.64126 
+converged at iteration 7 with logLik: -36.64126 
+converged at iteration 6 with logLik: -36.64126 
+converged at iteration 7 with logLik: -36.64126 
+converged at iteration 8 with logLik: -36.64126 
+converged at iteration 11 with logLik: -36.64126 
+converged at iteration 7 with logLik: -36.64126 
+converged at iteration 8 with logLik: -36.64126 
+converged at iteration 7 with logLik: -36.64126 
+converged at iteration 7 with logLik: -36.64126 
+converged at iteration 7 with logLik: -36.64126 
+converged at iteration 7 with logLik: -36.64126 
+converged at iteration 6 with logLik: -36.64126 
+converged at iteration 6 with logLik: -36.64126 
+converged at iteration 7 with logLik: -36.64126 
+converged at iteration 7 with logLik: -36.64126 
+converged at iteration 6 with logLik: -36.64126 
+converged at iteration 4 with logLik: -36.64126 
+converged at iteration 6 with logLik: -36.64126 
+converged at iteration 7 with logLik: -36.64126 
+converged at iteration 11 with logLik: -36.64126 
+converged at iteration 9 with logLik: -36.64126 
+converged at iteration 6 with logLik: -36.64126 
+converged at iteration 8 with logLik: -36.64126 
+converged at iteration 7 with logLik: -36.64126 
+converged at iteration 7 with logLik: -36.64126 
+converged at iteration 8 with logLik: -36.64126 
+converged at iteration 8 with logLik: -36.64126 
+converged at iteration 8 with logLik: -36.64126 
+converged at iteration 7 with logLik: -36.64126 
+converged at iteration 6 with logLik: -36.64126 
+converged at iteration 7 with logLik: -36.64126 
+converged at iteration 7 with logLik: -36.64126 
+converged at iteration 5 with logLik: -36.64126 
+converged at iteration 6 with logLik: -36.64126 
+converged at iteration 6 with logLik: -36.64126 
+converged at iteration 5 with logLik: -36.64126 
+converged at iteration 8 with logLik: -36.64126 
+converged at iteration 6 with logLik: -36.64126 
+converged at iteration 7 with logLik: -36.64126 
+converged at iteration 7 with logLik: -36.64126 
+converged at iteration 8 with logLik: -36.64126 
+converged at iteration 9 with logLik: -36.64126 
+converged at iteration 5 with logLik: -36.64126 
+converged at iteration 6 with logLik: -36.64126 
+converged at iteration 7 with logLik: -36.64126 
+converged at iteration 8 with logLik: -36.64126 
+converged at iteration 6 with logLik: -36.64126 
+converged at iteration 6 with logLik: -36.64126 
+converged at iteration 6 with logLik: -36.64126 
+converged at iteration 7 with logLik: -36.64126 
+converged at iteration 7 with logLik: -36.64126 
+converged at iteration 6 with logLik: -36.64126 
+converged at iteration 6 with logLik: -36.64126 
+converged at iteration 9 with logLik: -36.64126 
+converged at iteration 7 with logLik: -36.64126 
+converged at iteration 7 with logLik: -36.64126 
+converged at iteration 8 with logLik: -36.64126 
+converged at iteration 8 with logLik: -36.64126 
+converged at iteration 6 with logLik: -36.64126 
+converged at iteration 7 with logLik: -36.64126 
+converged at iteration 4 with logLik: -36.64126 
+converged at iteration 5 with logLik: -36.64126 
+converged at iteration 7 with logLik: -36.64126 
+converged at iteration 7 with logLik: -36.64126 
+converged at iteration 5 with logLik: -36.64126 
+converged at iteration 5 with logLik: -36.64126 
+converged at iteration 6 with logLik: -36.64126 
+converged at iteration 6 with logLik: -36.64126 
+converged at iteration 8 with logLik: -36.64126 
+converged at iteration 7 with logLik: -36.64126 
+converged at iteration 7 with logLik: -36.64126 
+converged at iteration 6 with logLik: -36.64126 
+converged at iteration 7 with logLik: -36.64126 
+converged at iteration 6 with logLik: -36.64126 
+converged at iteration 7 with logLik: -36.64126 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(best_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Initial state probabilities model 
+pr1 pr2 
+  1   0 
+
+Transition matrix 
+        toS1  toS2
+fromS1 0.555 0.445
+fromS2 0.217 0.783
+
+Response parameters 
+Resp 1 : gaussian 
+Resp 2 : gaussian 
+Resp 3 : gaussian 
+    Re1.(Intercept) Re1.sd Re2.(Intercept) Re2.sd Re3.(Intercept) Re3.sd
+St1           4.037  2.223          -0.368  0.393           0.325  0.187
+St2          -1.333  1.066           0.281  0.142          -0.146  0.102</code></pre>
+</div>
+</div>
+<p>The transition probabilities for the best model are in the table below:</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>FromS1 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.555</span>, <span class="fl">0.445</span>)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>FromS2 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.217</span>, <span class="fl">0.783</span>)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>tab <span class="ot">&lt;-</span> <span class="fu">rbind.data.frame</span>(FromS1,FromS2)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(tab) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"To S1"</span>, <span class="st">"To S2"</span>)</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="fu">row.names</span>(tab) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"From S1"</span>, <span class="st">"From S2"</span>)</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>tab</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>        To S1 To S2
+From S1 0.555 0.445
+From S2 0.217 0.783</code></pre>
+</div>
+</div>
+<p>Plot of states and data from the 2-State HMM</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>prstates<span class="ot">&lt;-</span><span class="fu">apply</span>(<span class="fu">posterior</span>(fitmod)[,<span class="fu">c</span>(<span class="st">"S1"</span>, <span class="st">"S2"</span>)],<span class="dv">1</span>, which.max)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in .local(object, ...): Argument 'type' not specified and will default
+to 'viterbi'. This default may change in future releases of depmixS4. Please
+see ?posterior for alternative options.</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>mu<span class="ot">&lt;-</span><span class="fu">summary</span>(best_model)[,<span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Initial state probabilities model 
+pr1 pr2 
+  1   0 
+
+Transition matrix 
+        toS1  toS2
+fromS1 0.555 0.445
+fromS2 0.217 0.783
+
+Response parameters 
+Resp 1 : gaussian 
+Resp 2 : gaussian 
+Resp 3 : gaussian 
+    Re1.(Intercept) Re1.sd Re2.(Intercept) Re2.sd Re3.(Intercept) Re3.sd
+St1           4.037  2.223          -0.368  0.393           0.325  0.187
+St2          -1.333  1.066           0.281  0.142          -0.146  0.102</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>mu2<span class="ot">&lt;-</span><span class="fu">summary</span>(best_model)[,<span class="dv">3</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Initial state probabilities model 
+pr1 pr2 
+  1   0 
+
+Transition matrix 
+        toS1  toS2
+fromS1 0.555 0.445
+fromS2 0.217 0.783
+
+Response parameters 
+Resp 1 : gaussian 
+Resp 2 : gaussian 
+Resp 3 : gaussian 
+    Re1.(Intercept) Re1.sd Re2.(Intercept) Re2.sd Re3.(Intercept) Re3.sd
+St1           4.037  2.223          -0.368  0.393           0.325  0.187
+St2          -1.333  1.066           0.281  0.142          -0.146  0.102</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>mu3<span class="ot">&lt;-</span><span class="fu">summary</span>(best_model)[,<span class="dv">5</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Initial state probabilities model 
+pr1 pr2 
+  1   0 
+
+Transition matrix 
+        toS1  toS2
+fromS1 0.555 0.445
+fromS2 0.217 0.783
+
+Response parameters 
+Resp 1 : gaussian 
+Resp 2 : gaussian 
+Resp 3 : gaussian 
+    Re1.(Intercept) Re1.sd Re2.(Intercept) Re2.sd Re3.(Intercept) Re3.sd
+St1           4.037  2.223          -0.368  0.393           0.325  0.187
+St2          -1.333  1.066           0.281  0.142          -0.146  0.102</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>pred <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="st">"Year"</span> <span class="ot">=</span> df2<span class="sc">$</span>Year, <span class="st">"Copepod_richness"</span> <span class="ot">=</span> mu[prstates], <span class="st">"N_copepod"</span> <span class="ot">=</span> mu2[prstates], <span class="st">"S_copepod"</span> <span class="ot">=</span> mu3[prstates])</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>pred2<span class="ot">&lt;-</span>pred <span class="sc">%&gt;%</span> <span class="fu">pivot_longer</span>(<span class="sc">-</span>Year, <span class="at">names_to =</span> <span class="st">"Ecosystem.Indicators"</span>, <span class="at">values_to =</span> <span class="st">"Fit"</span>)</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="at">data =</span> newdf, <span class="fu">aes</span>(<span class="at">x =</span> Year, <span class="at">y =</span> value, <span class="at">color =</span> Ecosystem.Indicators)) <span class="sc">+</span> </span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> pred2, <span class="fu">aes</span>(<span class="at">x =</span> Year, <span class="at">y =</span> Fit, <span class="at">group =</span> Ecosystem.Indicators, <span class="at">color =</span> Ecosystem.Indicators)) <span class="sc">+</span> <span class="fu">theme_classic</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Lab-4-team-1_final_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Our best model does converge for the two state model.</p>
+<p>We see that the predicted fit lines follow the general trend of the data. Southern Copepod Biomass is in phase with the Copepod Richness measure. The observations for Northern and Southern Copepod Biomass have much less variance than the Copepod Richness measurement and thus the fitted lines are much closer to the observed points.</p>
+</section>
+<section id="state-hmm-1" class="level2">
+<h2 class="anchored" data-anchor-id="state-hmm-1">3-State HMM</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="co">#set up 3-state model</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>mod3<span class="ot">&lt;-</span><span class="fu">depmix</span>(<span class="fu">list</span>(Copepod_richness <span class="sc">~</span><span class="dv">1</span>, N_copepod <span class="sc">~</span><span class="dv">1</span>, S_copepod <span class="sc">~</span><span class="dv">1</span>), </span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">nstates =</span> <span class="dv">3</span>, </span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>           <span class="co">#assume gaussian errors for all</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>           <span class="at">family =</span> <span class="fu">list</span>(<span class="fu">gaussian</span>(), <span class="fu">gaussian</span>(), <span class="fu">gaussian</span>()), </span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>           <span class="at">data =</span> df2)</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a><span class="co">#fit the model</span></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>fitmod3<span class="ot">&lt;-</span><span class="fu">fit</span>(mod3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>converged at iteration 13 with logLik: -14.21542 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co">#model results</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fitmod3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Initial state probabilities model 
+pr1 pr2 pr3 
+  0   1   0 
+
+Transition matrix 
+        toS1 toS2  toS3
+fromS1 0.700 0.00 0.300
+fromS2 0.200 0.40 0.400
+fromS3 0.375 0.25 0.375
+
+Response parameters 
+Resp 1 : gaussian 
+Resp 2 : gaussian 
+Resp 3 : gaussian 
+    Re1.(Intercept) Re1.sd Re2.(Intercept) Re2.sd Re3.(Intercept) Re3.sd
+St1          -1.785  0.850           0.290  0.155          -0.201  0.030
+St2           5.458  2.010          -0.682  0.220           0.474  0.103
+St3           1.112  1.302           0.136  0.155           0.075  0.095</code></pre>
+</div>
+</div>
+<p>Again, the model results change slightly depending on the seed, so making sure it found the best model:</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>iter <span class="ot">&lt;-</span><span class="dv">100</span> <span class="co">#number of times to run the model</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>seeds<span class="ot">&lt;-</span><span class="fu">sample</span>(<span class="dv">100</span><span class="sc">:</span><span class="dv">1000</span>, <span class="at">size =</span> iter, <span class="at">replace =</span> F) <span class="co">#get 100 seed values</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>best <span class="ot">&lt;-</span> <span class="fl">1e10</span> <span class="co">#this is large so first AIC is definitely smaller</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>best_model <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>iter){</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">#set the seed from the ones we picked (makes sure its new each time)</span></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(seeds[i]) </span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">#fit the model</span></span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>  fitmod3 <span class="ot">&lt;-</span> <span class="fu">fit</span>(mod3)</span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>  <span class="co">#is this model better than the last?</span></span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">AIC</span>(fitmod3)<span class="sc">&lt;</span> best){</span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a>    best_model <span class="ot">&lt;-</span> fitmod3</span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a>    best <span class="ot">&lt;-</span> <span class="fu">AIC</span>(fitmod3)</span>
+<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>converged at iteration 10 with logLik: -14.21542 
+converged at iteration 12 with logLik: -14.21542 
+converged at iteration 11 with logLik: -14.21542 
+converged at iteration 10 with logLik: -14.21542 
+converged at iteration 8 with logLik: -14.21542 
+converged at iteration 10 with logLik: -14.21542 
+converged at iteration 9 with logLik: -21.02429 
+converged at iteration 9 with logLik: -14.21542 
+converged at iteration 9 with logLik: -14.21542 
+converged at iteration 8 with logLik: -21.02429 
+converged at iteration 7 with logLik: -14.21542 
+converged at iteration 15 with logLik: -29.00928 
+converged at iteration 8 with logLik: -14.21542 
+converged at iteration 11 with logLik: -14.21542 
+converged at iteration 11 with logLik: -14.21542 
+converged at iteration 10 with logLik: -14.21542 
+converged at iteration 11 with logLik: -14.21542 
+converged at iteration 12 with logLik: -14.21542 
+converged at iteration 6 with logLik: -14.21542 
+converged at iteration 10 with logLik: -14.21542 
+converged at iteration 8 with logLik: -14.21542 
+converged at iteration 9 with logLik: -22.47665 
+converged at iteration 10 with logLik: -22.47665 
+converged at iteration 13 with logLik: -14.21542 
+converged at iteration 12 with logLik: -14.21542 
+converged at iteration 8 with logLik: -14.21542 
+converged at iteration 9 with logLik: -14.21542 
+converged at iteration 6 with logLik: -14.21542 
+converged at iteration 13 with logLik: -14.21542 
+converged at iteration 11 with logLik: -14.21542 
+converged at iteration 14 with logLik: -21.02429 
+converged at iteration 10 with logLik: -14.21542 
+converged at iteration 8 with logLik: -14.21542 
+converged at iteration 9 with logLik: -14.21542 
+converged at iteration 10 with logLik: -14.21542 
+converged at iteration 9 with logLik: -14.21542 
+converged at iteration 11 with logLik: -14.21542 
+converged at iteration 9 with logLik: -21.02429 
+converged at iteration 11 with logLik: -14.21542 
+converged at iteration 8 with logLik: -21.02429 
+converged at iteration 10 with logLik: -21.02429 
+converged at iteration 14 with logLik: -28.13896 
+converged at iteration 11 with logLik: -14.21542 
+converged at iteration 9 with logLik: -14.21542 
+converged at iteration 15 with logLik: -14.21542 
+converged at iteration 8 with logLik: -14.21542 
+converged at iteration 11 with logLik: -14.21542 
+converged at iteration 10 with logLik: -14.21542 
+converged at iteration 10 with logLik: -14.21542 
+converged at iteration 11 with logLik: -14.21542 
+converged at iteration 12 with logLik: -14.21542 
+converged at iteration 10 with logLik: -14.21542 
+converged at iteration 5 with logLik: -14.21542 
+converged at iteration 11 with logLik: -14.21542 
+converged at iteration 7 with logLik: -21.02429 
+converged at iteration 10 with logLik: -14.21542 
+converged at iteration 10 with logLik: -14.21542 
+converged at iteration 9 with logLik: -14.21542 
+converged at iteration 10 with logLik: -14.21542 
+converged at iteration 12 with logLik: -14.21542 
+converged at iteration 12 with logLik: -14.21542 
+converged at iteration 9 with logLik: -14.21542 
+converged at iteration 11 with logLik: -14.21542 
+converged at iteration 13 with logLik: -14.21542 
+converged at iteration 9 with logLik: -21.02429 
+converged at iteration 11 with logLik: -14.21542 
+converged at iteration 13 with logLik: -14.21542 
+converged at iteration 10 with logLik: -14.21542 
+converged at iteration 9 with logLik: -21.02429 
+converged at iteration 11 with logLik: -14.21542 
+converged at iteration 9 with logLik: -21.02429 
+converged at iteration 9 with logLik: -14.21542 
+converged at iteration 13 with logLik: -14.21542 
+converged at iteration 9 with logLik: -14.21542 
+converged at iteration 11 with logLik: -14.21542 
+converged at iteration 8 with logLik: -21.02429 
+converged at iteration 8 with logLik: -14.21542 
+converged at iteration 8 with logLik: -21.02429 
+converged at iteration 8 with logLik: -14.21542 
+converged at iteration 12 with logLik: -14.21542 
+converged at iteration 12 with logLik: -14.21542 
+converged at iteration 10 with logLik: -14.21542 
+converged at iteration 10 with logLik: -21.02429 
+converged at iteration 8 with logLik: -14.21542 
+converged at iteration 32 with logLik: -32.28304 
+converged at iteration 15 with logLik: -14.21542 
+converged at iteration 8 with logLik: -14.21542 
+converged at iteration 15 with logLik: -24.71321 
+converged at iteration 10 with logLik: -14.21542 
+converged at iteration 9 with logLik: -14.21542 
+converged at iteration 10 with logLik: -14.21542 
+converged at iteration 11 with logLik: -14.21542 
+converged at iteration 11 with logLik: -14.21542 
+converged at iteration 9 with logLik: -14.21542 
+converged at iteration 8 with logLik: -14.21542 
+converged at iteration 10 with logLik: -14.21542 
+converged at iteration 12 with logLik: -14.21542 
+converged at iteration 10 with logLik: -14.21542 
+converged at iteration 8 with logLik: -14.21542 
+converged at iteration 11 with logLik: -22.47665 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(best_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Initial state probabilities model 
+pr1 pr2 pr3 
+  1   0   0 
+
+Transition matrix 
+       toS1  toS2  toS3
+fromS1 0.40 0.200 0.400
+fromS2 0.00 0.700 0.300
+fromS3 0.25 0.375 0.375
+
+Response parameters 
+Resp 1 : gaussian 
+Resp 2 : gaussian 
+Resp 3 : gaussian 
+    Re1.(Intercept) Re1.sd Re2.(Intercept) Re2.sd Re3.(Intercept) Re3.sd
+St1           5.458  2.010          -0.682  0.220           0.474  0.103
+St2          -1.785  0.850           0.290  0.155          -0.201  0.030
+St3           1.112  1.302           0.136  0.155           0.075  0.095</code></pre>
+</div>
+</div>
+<p>The transition probabilities for the 3-State model are in the table below</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>FromS1 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.400</span>, <span class="fl">0.200</span>, <span class="fl">0.400</span>)</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>FromS2 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.000</span>, <span class="fl">0.700</span>, <span class="fl">0.300</span>)</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>FromS3 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.250</span>, <span class="fl">0.375</span>, <span class="fl">0.375</span>)</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>tab2 <span class="ot">&lt;-</span> <span class="fu">rbind.data.frame</span>(FromS1,FromS2,FromS3)</span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(tab2) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"To S1"</span>, <span class="st">"To S2"</span>, <span class="st">"To S3"</span>)</span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a><span class="fu">row.names</span>(tab2) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"From S1"</span>, <span class="st">"From S2"</span>, <span class="st">"From S3"</span>)</span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>tab2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>        To S1 To S2 To S3
+From S1  0.40 0.200 0.400
+From S2  0.00 0.700 0.300
+From S3  0.25 0.375 0.375</code></pre>
+</div>
+</div>
+<p>Plot of states and data from the 3-State HMM</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>prstates<span class="ot">&lt;-</span><span class="fu">apply</span>(<span class="fu">posterior</span>(fitmod3)[,<span class="fu">c</span>(<span class="st">"S1"</span>, <span class="st">"S2"</span>,<span class="st">"S3"</span>)],<span class="dv">1</span>, which.max)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in .local(object, ...): Argument 'type' not specified and will default
+to 'viterbi'. This default may change in future releases of depmixS4. Please
+see ?posterior for alternative options.</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>mu<span class="ot">&lt;-</span><span class="fu">summary</span>(best_model)[,<span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Initial state probabilities model 
+pr1 pr2 pr3 
+  1   0   0 
+
+Transition matrix 
+       toS1  toS2  toS3
+fromS1 0.40 0.200 0.400
+fromS2 0.00 0.700 0.300
+fromS3 0.25 0.375 0.375
+
+Response parameters 
+Resp 1 : gaussian 
+Resp 2 : gaussian 
+Resp 3 : gaussian 
+    Re1.(Intercept) Re1.sd Re2.(Intercept) Re2.sd Re3.(Intercept) Re3.sd
+St1           5.458  2.010          -0.682  0.220           0.474  0.103
+St2          -1.785  0.850           0.290  0.155          -0.201  0.030
+St3           1.112  1.302           0.136  0.155           0.075  0.095</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>mu2<span class="ot">&lt;-</span><span class="fu">summary</span>(best_model)[,<span class="dv">3</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Initial state probabilities model 
+pr1 pr2 pr3 
+  1   0   0 
+
+Transition matrix 
+       toS1  toS2  toS3
+fromS1 0.40 0.200 0.400
+fromS2 0.00 0.700 0.300
+fromS3 0.25 0.375 0.375
+
+Response parameters 
+Resp 1 : gaussian 
+Resp 2 : gaussian 
+Resp 3 : gaussian 
+    Re1.(Intercept) Re1.sd Re2.(Intercept) Re2.sd Re3.(Intercept) Re3.sd
+St1           5.458  2.010          -0.682  0.220           0.474  0.103
+St2          -1.785  0.850           0.290  0.155          -0.201  0.030
+St3           1.112  1.302           0.136  0.155           0.075  0.095</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>mu3<span class="ot">&lt;-</span><span class="fu">summary</span>(best_model)[,<span class="dv">5</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Initial state probabilities model 
+pr1 pr2 pr3 
+  1   0   0 
+
+Transition matrix 
+       toS1  toS2  toS3
+fromS1 0.40 0.200 0.400
+fromS2 0.00 0.700 0.300
+fromS3 0.25 0.375 0.375
+
+Response parameters 
+Resp 1 : gaussian 
+Resp 2 : gaussian 
+Resp 3 : gaussian 
+    Re1.(Intercept) Re1.sd Re2.(Intercept) Re2.sd Re3.(Intercept) Re3.sd
+St1           5.458  2.010          -0.682  0.220           0.474  0.103
+St2          -1.785  0.850           0.290  0.155          -0.201  0.030
+St3           1.112  1.302           0.136  0.155           0.075  0.095</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>pred <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="st">"Year"</span> <span class="ot">=</span> df2<span class="sc">$</span>Year, <span class="st">"Copepod_richness"</span> <span class="ot">=</span> mu[prstates], <span class="st">"N_copepod"</span> <span class="ot">=</span> mu2[prstates], <span class="st">"S_copepod"</span> <span class="ot">=</span> mu3[prstates])</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>pred2<span class="ot">&lt;-</span>pred <span class="sc">%&gt;%</span> <span class="fu">pivot_longer</span>(<span class="sc">-</span>Year, <span class="at">names_to =</span> <span class="st">"Ecosystem.Indicators"</span>, <span class="at">values_to =</span> <span class="st">"Fit"</span>)</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="at">data =</span> newdf, <span class="fu">aes</span>(<span class="at">x =</span> Year, <span class="at">y =</span> value, <span class="at">color =</span> Ecosystem.Indicators)) <span class="sc">+</span> </span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> pred2, <span class="fu">aes</span>(<span class="at">x =</span> Year, <span class="at">y =</span> Fit, <span class="at">group =</span> Ecosystem.Indicators, <span class="at">color =</span> Ecosystem.Indicators)) <span class="sc">+</span> <span class="fu">theme_classic</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Lab-4-team-1_final_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The 3-State HMM seems to fit the data worse than the 2-State HMM</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The best model does converge for the 3 state model.</p>
+<p>The predicted values do not appear to fit the data well in the three state model. The Northern and Southern Copepod predicted values seem to switch states away from their respective observations in a few places. And the Copepod Richness predicted values do not drop down to the lowest state in a few sections where it seems like it would be appropriate to do so.</p>
+<p>One thing to note is that the transition probabilities state that there is a 0.00 chance of switching from state 2 to state 1. State 2 being the lowest level for each of the fitted lines and State 1 being the highest. We do see that the fitted values do make this transition so this is apparently just a very small number that is left at 0.00 due to rounding in the table.</p>
+</section>
+</section>
+<section id="results" class="level1">
+<h1>Results</h1>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="st">`</span><span class="at">3-State</span><span class="st">`</span> <span class="ot">&lt;-</span> <span class="fu">AIC</span>(fitmod3)</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="st">`</span><span class="at">2-State</span><span class="st">`</span> <span class="ot">&lt;-</span> <span class="fu">AIC</span>(fitmod)</span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">`</span><span class="at">3-State</span><span class="st">`</span>,<span class="st">`</span><span class="at">2-State</span><span class="st">`</span>)<span class="sc">-</span><span class="fu">min</span>(<span class="st">`</span><span class="at">3-State</span><span class="st">`</span>,<span class="st">`</span><span class="at">2-State</span><span class="st">`</span>)</span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>e <span class="ot">&lt;-</span> <span class="fu">cbind.data.frame</span>(<span class="fu">rbind</span>(<span class="st">`</span><span class="at">3-State</span><span class="st">`</span>,<span class="st">`</span><span class="at">2-State</span><span class="st">`</span>),d)</span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(e) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"AIC"</span>,<span class="st">"delta AIC"</span>)</span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a><span class="fu">row.names</span>(e) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"3-State"</span>,<span class="st">"2-State"</span>)</span>
+<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a>e</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>             AIC delta AIC
+3-State  96.9533  0.000000
+2-State 103.2825  6.329209</code></pre>
+</div>
+</div>
+<p>The three state model has the lower AIC value despite appearing to not fit the data as well.</p>
+</section>
+<section id="discussion" class="level1">
+<h1>Discussion</h1>
+<p>When looking at the three Copepod measurements, both of our models converge. We did not use any covariates in order to keep our models simple. The AIC score indicates that the 3-state model is better supported than the 2-state. However, visually it appears that the two state model fits the data better. Additionally, when thinking of a biological reason for selecting a 2 vs 3 state model, it seems to make more sense to go with a two state model as we see on the NOAA website that copepods richness gradually increases as the summer starts and then decreases at the end of the summer. There is a very brief plateau in May but the 3 state model doesn’t seem to follow that general pattern, instead it seems to make large random jumps. At one point Copepod Richness drops to the lowest state but there is no observed data there. In contrast, the 2 state model seems to follow the general pattern of the observed data quite well.</p>
+<p>We see that Southern Copepod Biomass is in phase with the Copepod Richness measurement in both models. This is because there are more species representing the Southern Copepod group than the Northern so when the Southern Copepod biomass is high the total richness is higher as well due to the increased number of species present. It also makes sense that the Northern and Southern groups are out of phase as two different water currents which are opposed to one another carry the copepods from each group.</p>
+<p>All three sets of observations are tied to the same transition probabilities and therefore the model must balance each set of observation data to estimate the probabilities. At each data point the model gives decides based on the probabilities whether the fitted line should change states. Sometimes the model makes a switch that does not seem appropriate based on those probabilities. This is why we see that some of the transition switches in the 3 state model don’t seem to make sense.</p>
+</section>
+<section id="team-contributions" class="level1">
+<h1>Team contributions</h1>
+<p>Dylan and Zoe did the data wrangling. Zoe coded the 2 state model. Eric adapted this code for the 3 state model. Dylan created tables, results, and led discussion section for group. Entire group contributed thoughts and comments to the discussion section.</p>
+
+
+<!-- -->
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/atsa-es\.github\.io\/fish550-2023\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<script src="https://giscus.app/client.js" data-repo="atsa-es/fish550-2023" data-repo-id="R_kgDOJGNymQ" data-category="General" data-category-id="DIC_kwDOJGNymc4CUsbe" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
+</script>
+<input type="hidden" id="giscus-base-theme" value="light">
+<input type="hidden" id="giscus-alt-theme" value="dark">
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../Lab-4/Lab-4-HMM.html" class="pagination-link" aria-label="Lab Intro">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Lab Intro</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../../Lab-4/Final_Write_ups/Lab-4-team-2_final.html" class="pagination-link" aria-label="Team 2 - Lab 4">
+        <span class="nav-page-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Team 2 - Lab 4</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb52" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Team 1 - Lab 4"</span></span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "Hidden Markov Models"</span></span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Dylan Hubl, Eric French, Zoe Rand"</span></span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> May 9, 2023</span></span>
+<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a><span class="an">output:</span><span class="co"> </span></span>
+<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a><span class="co">  html_document:</span></span>
+<span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a><span class="co">    code-folding: true</span></span>
+<span id="cb52-9"><a href="#cb52-9" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb52-10"><a href="#cb52-10" aria-hidden="true" tabindex="-1"></a><span class="co">    toc_float: true</span></span>
+<span id="cb52-11"><a href="#cb52-11" aria-hidden="true" tabindex="-1"></a><span class="an">editor_options:</span><span class="co"> </span></span>
+<span id="cb52-12"><a href="#cb52-12" aria-hidden="true" tabindex="-1"></a><span class="co">  markdown: </span></span>
+<span id="cb52-13"><a href="#cb52-13" aria-hidden="true" tabindex="-1"></a><span class="co">    wrap: 72</span></span>
+<span id="cb52-14"><a href="#cb52-14" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb52-15"><a href="#cb52-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-16"><a href="#cb52-16" aria-hidden="true" tabindex="-1"></a><span class="in">```{r setup, include = FALSE}</span></span>
+<span id="cb52-17"><a href="#cb52-17" aria-hidden="true" tabindex="-1"></a><span class="in">options(dplyr.summarise.inform = FALSE)</span></span>
+<span id="cb52-18"><a href="#cb52-18" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-19"><a href="#cb52-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-20"><a href="#cb52-20" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Team 1: Dylan Hubl, Eric French, Zoe Rand</span>
+<span id="cb52-21"><a href="#cb52-21" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Team 2: Maria Kuruvilla, Miranda Mudge</span>
+<span id="cb52-22"><a href="#cb52-22" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Team 3: Nick Chambers, Madison Shipley, Karl Veggerby</span>
+<span id="cb52-23"><a href="#cb52-23" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Team 4: Liz Elmstrom, Terrance Wang, Emma Timmins-Schiffman</span>
+<span id="cb52-24"><a href="#cb52-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-25"><a href="#cb52-25" aria-hidden="true" tabindex="-1"></a>Make sure to label your final write-up with "final" in the title so we</span>
+<span id="cb52-26"><a href="#cb52-26" aria-hidden="true" tabindex="-1"></a>know which one is the final one.</span>
+<span id="cb52-27"><a href="#cb52-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-30"><a href="#cb52-30" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-31"><a href="#cb52-31" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb52-32"><a href="#cb52-32" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(depmixS4)</span>
+<span id="cb52-33"><a href="#cb52-33" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb52-34"><a href="#cb52-34" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-35"><a href="#cb52-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-36"><a href="#cb52-36" aria-hidden="true" tabindex="-1"></a><span class="fu"># Data</span></span>
+<span id="cb52-37"><a href="#cb52-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-38"><a href="#cb52-38" aria-hidden="true" tabindex="-1"></a>As part of the California Current Integrated Ecosystem Report, NOAA</span>
+<span id="cb52-39"><a href="#cb52-39" aria-hidden="true" tabindex="-1"></a>scientists do annual updates of [stoplight charts for ecosystem</span>
+<span id="cb52-40"><a href="#cb52-40" aria-hidden="true" tabindex="-1"></a>indicators](https://www.fisheries.noaa.gov/west-coast/science-data/ocean-conditions-indicators-trends).</span>
+<span id="cb52-41"><a href="#cb52-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-42"><a href="#cb52-42" aria-hidden="true" tabindex="-1"></a>We have included the <span class="in">`stoplight.csv`</span> dataset for this week. One of the</span>
+<span id="cb52-43"><a href="#cb52-43" aria-hidden="true" tabindex="-1"></a>columns divides indicators into groups (e.g. Local Physical, Local</span>
+<span id="cb52-44"><a href="#cb52-44" aria-hidden="true" tabindex="-1"></a>Biological, etc). Please pick a type of indicators, and develop a 2- or</span>
+<span id="cb52-45"><a href="#cb52-45" aria-hidden="true" tabindex="-1"></a>3-state multivariate HMM. A few tips:</span>
+<span id="cb52-46"><a href="#cb52-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-47"><a href="#cb52-47" aria-hidden="true" tabindex="-1"></a>Describe what plankton groups and covariates you used and indicate any</span>
+<span id="cb52-48"><a href="#cb52-48" aria-hidden="true" tabindex="-1"></a>temporal subsetting you chose. Also describe any standardization,</span>
+<span id="cb52-49"><a href="#cb52-49" aria-hidden="true" tabindex="-1"></a>centering or scaling that was used.</span>
+<span id="cb52-50"><a href="#cb52-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-51"><a href="#cb52-51" aria-hidden="true" tabindex="-1"></a><span class="fu">## Load the data</span></span>
+<span id="cb52-52"><a href="#cb52-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-53"><a href="#cb52-53" aria-hidden="true" tabindex="-1"></a>One of the columns divides indicators into groups (e.g. Local Physical,</span>
+<span id="cb52-54"><a href="#cb52-54" aria-hidden="true" tabindex="-1"></a>Local Biological, etc).</span>
+<span id="cb52-55"><a href="#cb52-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-56"><a href="#cb52-56" aria-hidden="true" tabindex="-1"></a><span class="in">```{r load_data}</span></span>
+<span id="cb52-57"><a href="#cb52-57" aria-hidden="true" tabindex="-1"></a><span class="in">stoplight &lt;- read.csv(here::here("Lab-4", "stoplight.csv"))</span></span>
+<span id="cb52-58"><a href="#cb52-58" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-59"><a href="#cb52-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-60"><a href="#cb52-60" aria-hidden="true" tabindex="-1"></a><span class="fu">## Wrangle the data</span></span>
+<span id="cb52-61"><a href="#cb52-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-62"><a href="#cb52-62" aria-hidden="true" tabindex="-1"></a><span class="in">```{r wrangle_data}</span></span>
+<span id="cb52-63"><a href="#cb52-63" aria-hidden="true" tabindex="-1"></a><span class="in">## add some code here</span></span>
+<span id="cb52-64"><a href="#cb52-64" aria-hidden="true" tabindex="-1"></a><span class="in"># we will look at Copepod_richness, N_copepod, S_copepod</span></span>
+<span id="cb52-65"><a href="#cb52-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-66"><a href="#cb52-66" aria-hidden="true" tabindex="-1"></a><span class="in">df &lt;- rbind.data.frame(stoplight[stoplight$Ecosystem.Indicators == "Copepod_richness",],stoplight[stoplight$Ecosystem.Indicators == "N_copepod",],stoplight[stoplight$Ecosystem.Indicators == "S_copepod",])</span></span>
+<span id="cb52-67"><a href="#cb52-67" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-68"><a href="#cb52-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-69"><a href="#cb52-69" aria-hidden="true" tabindex="-1"></a><span class="in">```{r plot_data}</span></span>
+<span id="cb52-70"><a href="#cb52-70" aria-hidden="true" tabindex="-1"></a><span class="in">newdf&lt;-df%&gt;%pivot_longer(-c(Ecosystem.Indicators, Type), names_to = "Year") %&gt;%</span></span>
+<span id="cb52-71"><a href="#cb52-71" aria-hidden="true" tabindex="-1"></a><span class="in">  mutate(Year = as.numeric(gsub("X","",Year)))</span></span>
+<span id="cb52-72"><a href="#cb52-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-73"><a href="#cb52-73" aria-hidden="true" tabindex="-1"></a><span class="in">ggplot(newdf) + </span></span>
+<span id="cb52-74"><a href="#cb52-74" aria-hidden="true" tabindex="-1"></a><span class="in">  geom_line(aes(x = Year, y = value, color = Ecosystem.Indicators)) + </span></span>
+<span id="cb52-75"><a href="#cb52-75" aria-hidden="true" tabindex="-1"></a><span class="in">  theme_classic()</span></span>
+<span id="cb52-76"><a href="#cb52-76" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-77"><a href="#cb52-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-78"><a href="#cb52-78" aria-hidden="true" tabindex="-1"></a>We see that Copepod Richness and the Southern Copepod biomass measures</span>
+<span id="cb52-79"><a href="#cb52-79" aria-hidden="true" tabindex="-1"></a>are in phase with one another across the plot.</span>
+<span id="cb52-80"><a href="#cb52-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-81"><a href="#cb52-81" aria-hidden="true" tabindex="-1"></a><span class="in">```{r wrangle_data_mods}</span></span>
+<span id="cb52-82"><a href="#cb52-82" aria-hidden="true" tabindex="-1"></a><span class="in">#arranging data for model fits</span></span>
+<span id="cb52-83"><a href="#cb52-83" aria-hidden="true" tabindex="-1"></a><span class="in">df2&lt;-df %&gt;% dplyr::select(-Type) %&gt;%</span></span>
+<span id="cb52-84"><a href="#cb52-84" aria-hidden="true" tabindex="-1"></a><span class="in">  gather(Year, value, -Ecosystem.Indicators) %&gt;% </span></span>
+<span id="cb52-85"><a href="#cb52-85" aria-hidden="true" tabindex="-1"></a><span class="in">  spread(Ecosystem.Indicators, value) </span></span>
+<span id="cb52-86"><a href="#cb52-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-87"><a href="#cb52-87" aria-hidden="true" tabindex="-1"></a><span class="in">df2$Year&lt;-as.numeric(gsub("X","",df2$Year))</span></span>
+<span id="cb52-88"><a href="#cb52-88" aria-hidden="true" tabindex="-1"></a><span class="in">head(df2)</span></span>
+<span id="cb52-89"><a href="#cb52-89" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-90"><a href="#cb52-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-91"><a href="#cb52-91" aria-hidden="true" tabindex="-1"></a><span class="fu">## 2-State HMM</span></span>
+<span id="cb52-92"><a href="#cb52-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-93"><a href="#cb52-93" aria-hidden="true" tabindex="-1"></a><span class="in">```{r 2_state_HMM}</span></span>
+<span id="cb52-94"><a href="#cb52-94" aria-hidden="true" tabindex="-1"></a><span class="in">set.seed(123)</span></span>
+<span id="cb52-95"><a href="#cb52-95" aria-hidden="true" tabindex="-1"></a><span class="in">#set up 2-state model</span></span>
+<span id="cb52-96"><a href="#cb52-96" aria-hidden="true" tabindex="-1"></a><span class="in">mod&lt;-depmix(list(Copepod_richness ~1, N_copepod ~1, S_copepod ~1), </span></span>
+<span id="cb52-97"><a href="#cb52-97" aria-hidden="true" tabindex="-1"></a><span class="in">           nstates = 2, </span></span>
+<span id="cb52-98"><a href="#cb52-98" aria-hidden="true" tabindex="-1"></a><span class="in">           #assume gaussian errors for all</span></span>
+<span id="cb52-99"><a href="#cb52-99" aria-hidden="true" tabindex="-1"></a><span class="in">           family = list(gaussian(), gaussian(), gaussian()), </span></span>
+<span id="cb52-100"><a href="#cb52-100" aria-hidden="true" tabindex="-1"></a><span class="in">           data = df2)</span></span>
+<span id="cb52-101"><a href="#cb52-101" aria-hidden="true" tabindex="-1"></a><span class="in">#fit the model</span></span>
+<span id="cb52-102"><a href="#cb52-102" aria-hidden="true" tabindex="-1"></a><span class="in">fitmod&lt;-fit(mod)</span></span>
+<span id="cb52-103"><a href="#cb52-103" aria-hidden="true" tabindex="-1"></a><span class="in">#model results</span></span>
+<span id="cb52-104"><a href="#cb52-104" aria-hidden="true" tabindex="-1"></a><span class="in">summary(fitmod)</span></span>
+<span id="cb52-105"><a href="#cb52-105" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-106"><a href="#cb52-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-107"><a href="#cb52-107" aria-hidden="true" tabindex="-1"></a>The model results change slightly depending on the seed, so making sure</span>
+<span id="cb52-108"><a href="#cb52-108" aria-hidden="true" tabindex="-1"></a>it found the best model:</span>
+<span id="cb52-109"><a href="#cb52-109" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-112"><a href="#cb52-112" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-113"><a href="#cb52-113" aria-hidden="true" tabindex="-1"></a>iter <span class="ot">&lt;-</span><span class="dv">100</span> <span class="co">#number of times to run the model</span></span>
+<span id="cb52-114"><a href="#cb52-114" aria-hidden="true" tabindex="-1"></a>seeds<span class="ot">&lt;-</span><span class="fu">sample</span>(<span class="dv">100</span><span class="sc">:</span><span class="dv">1000</span>, <span class="at">size =</span> iter, <span class="at">replace =</span> F) <span class="co">#get 100 seed values</span></span>
+<span id="cb52-115"><a href="#cb52-115" aria-hidden="true" tabindex="-1"></a>best <span class="ot">&lt;-</span> <span class="fl">1e10</span> <span class="co">#this is large so first AIC is definitely smaller</span></span>
+<span id="cb52-116"><a href="#cb52-116" aria-hidden="true" tabindex="-1"></a>best_model <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb52-117"><a href="#cb52-117" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>iter){</span>
+<span id="cb52-118"><a href="#cb52-118" aria-hidden="true" tabindex="-1"></a>  <span class="co">#set the seed from the ones we picked (makes sure its new each time)</span></span>
+<span id="cb52-119"><a href="#cb52-119" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(seeds[i]) </span>
+<span id="cb52-120"><a href="#cb52-120" aria-hidden="true" tabindex="-1"></a>  <span class="co">#fit the model</span></span>
+<span id="cb52-121"><a href="#cb52-121" aria-hidden="true" tabindex="-1"></a>  fitmod <span class="ot">&lt;-</span> <span class="fu">fit</span>(mod)</span>
+<span id="cb52-122"><a href="#cb52-122" aria-hidden="true" tabindex="-1"></a>  <span class="co">#is this model better than the last?</span></span>
+<span id="cb52-123"><a href="#cb52-123" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">AIC</span>(fitmod)<span class="sc">&lt;</span> best){</span>
+<span id="cb52-124"><a href="#cb52-124" aria-hidden="true" tabindex="-1"></a>    best_model <span class="ot">&lt;-</span> fitmod</span>
+<span id="cb52-125"><a href="#cb52-125" aria-hidden="true" tabindex="-1"></a>    best <span class="ot">&lt;-</span> <span class="fu">AIC</span>(fitmod)</span>
+<span id="cb52-126"><a href="#cb52-126" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb52-127"><a href="#cb52-127" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb52-128"><a href="#cb52-128" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-129"><a href="#cb52-129" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(best_model)</span>
+<span id="cb52-130"><a href="#cb52-130" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-131"><a href="#cb52-131" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-132"><a href="#cb52-132" aria-hidden="true" tabindex="-1"></a>The transition probabilities for the best model are in the table below:</span>
+<span id="cb52-133"><a href="#cb52-133" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-136"><a href="#cb52-136" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-137"><a href="#cb52-137" aria-hidden="true" tabindex="-1"></a>FromS1 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.555</span>, <span class="fl">0.445</span>)</span>
+<span id="cb52-138"><a href="#cb52-138" aria-hidden="true" tabindex="-1"></a>FromS2 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.217</span>, <span class="fl">0.783</span>)</span>
+<span id="cb52-139"><a href="#cb52-139" aria-hidden="true" tabindex="-1"></a>tab <span class="ot">&lt;-</span> <span class="fu">rbind.data.frame</span>(FromS1,FromS2)</span>
+<span id="cb52-140"><a href="#cb52-140" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(tab) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"To S1"</span>, <span class="st">"To S2"</span>)</span>
+<span id="cb52-141"><a href="#cb52-141" aria-hidden="true" tabindex="-1"></a><span class="fu">row.names</span>(tab) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"From S1"</span>, <span class="st">"From S2"</span>)</span>
+<span id="cb52-142"><a href="#cb52-142" aria-hidden="true" tabindex="-1"></a>tab</span>
+<span id="cb52-143"><a href="#cb52-143" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-144"><a href="#cb52-144" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-145"><a href="#cb52-145" aria-hidden="true" tabindex="-1"></a>Plot of states and data from the 2-State HMM</span>
+<span id="cb52-146"><a href="#cb52-146" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-149"><a href="#cb52-149" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-150"><a href="#cb52-150" aria-hidden="true" tabindex="-1"></a>prstates<span class="ot">&lt;-</span><span class="fu">apply</span>(<span class="fu">posterior</span>(fitmod)[,<span class="fu">c</span>(<span class="st">"S1"</span>, <span class="st">"S2"</span>)],<span class="dv">1</span>, which.max)</span>
+<span id="cb52-151"><a href="#cb52-151" aria-hidden="true" tabindex="-1"></a>mu<span class="ot">&lt;-</span><span class="fu">summary</span>(best_model)[,<span class="dv">1</span>]</span>
+<span id="cb52-152"><a href="#cb52-152" aria-hidden="true" tabindex="-1"></a>mu2<span class="ot">&lt;-</span><span class="fu">summary</span>(best_model)[,<span class="dv">3</span>]</span>
+<span id="cb52-153"><a href="#cb52-153" aria-hidden="true" tabindex="-1"></a>mu3<span class="ot">&lt;-</span><span class="fu">summary</span>(best_model)[,<span class="dv">5</span>]</span>
+<span id="cb52-154"><a href="#cb52-154" aria-hidden="true" tabindex="-1"></a>pred <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="st">"Year"</span> <span class="ot">=</span> df2<span class="sc">$</span>Year, <span class="st">"Copepod_richness"</span> <span class="ot">=</span> mu[prstates], <span class="st">"N_copepod"</span> <span class="ot">=</span> mu2[prstates], <span class="st">"S_copepod"</span> <span class="ot">=</span> mu3[prstates])</span>
+<span id="cb52-155"><a href="#cb52-155" aria-hidden="true" tabindex="-1"></a>pred2<span class="ot">&lt;-</span>pred <span class="sc">%&gt;%</span> <span class="fu">pivot_longer</span>(<span class="sc">-</span>Year, <span class="at">names_to =</span> <span class="st">"Ecosystem.Indicators"</span>, <span class="at">values_to =</span> <span class="st">"Fit"</span>)</span>
+<span id="cb52-156"><a href="#cb52-156" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="at">data =</span> newdf, <span class="fu">aes</span>(<span class="at">x =</span> Year, <span class="at">y =</span> value, <span class="at">color =</span> Ecosystem.Indicators)) <span class="sc">+</span> </span>
+<span id="cb52-157"><a href="#cb52-157" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> pred2, <span class="fu">aes</span>(<span class="at">x =</span> Year, <span class="at">y =</span> Fit, <span class="at">group =</span> Ecosystem.Indicators, <span class="at">color =</span> Ecosystem.Indicators)) <span class="sc">+</span> <span class="fu">theme_classic</span>()</span>
+<span id="cb52-158"><a href="#cb52-158" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-159"><a href="#cb52-159" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-160"><a href="#cb52-160" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-161"><a href="#cb52-161" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-162"><a href="#cb52-162" aria-hidden="true" tabindex="-1"></a>Our best model does converge for the two state model.</span>
+<span id="cb52-163"><a href="#cb52-163" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-164"><a href="#cb52-164" aria-hidden="true" tabindex="-1"></a>We see that the predicted fit lines follow the general trend of the</span>
+<span id="cb52-165"><a href="#cb52-165" aria-hidden="true" tabindex="-1"></a>data. Southern Copepod Biomass is in phase with the Copepod Richness</span>
+<span id="cb52-166"><a href="#cb52-166" aria-hidden="true" tabindex="-1"></a>measure. The observations for Northern and Southern Copepod Biomass have</span>
+<span id="cb52-167"><a href="#cb52-167" aria-hidden="true" tabindex="-1"></a>much less variance than the Copepod Richness measurement and thus the</span>
+<span id="cb52-168"><a href="#cb52-168" aria-hidden="true" tabindex="-1"></a>fitted lines are much closer to the observed points.</span>
+<span id="cb52-169"><a href="#cb52-169" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-170"><a href="#cb52-170" aria-hidden="true" tabindex="-1"></a><span class="fu">## 3-State HMM</span></span>
+<span id="cb52-171"><a href="#cb52-171" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-172"><a href="#cb52-172" aria-hidden="true" tabindex="-1"></a><span class="in">```{r 3_state_HMM}</span></span>
+<span id="cb52-173"><a href="#cb52-173" aria-hidden="true" tabindex="-1"></a><span class="in">set.seed(123)</span></span>
+<span id="cb52-174"><a href="#cb52-174" aria-hidden="true" tabindex="-1"></a><span class="in">#set up 3-state model</span></span>
+<span id="cb52-175"><a href="#cb52-175" aria-hidden="true" tabindex="-1"></a><span class="in">mod3&lt;-depmix(list(Copepod_richness ~1, N_copepod ~1, S_copepod ~1), </span></span>
+<span id="cb52-176"><a href="#cb52-176" aria-hidden="true" tabindex="-1"></a><span class="in">           nstates = 3, </span></span>
+<span id="cb52-177"><a href="#cb52-177" aria-hidden="true" tabindex="-1"></a><span class="in">           #assume gaussian errors for all</span></span>
+<span id="cb52-178"><a href="#cb52-178" aria-hidden="true" tabindex="-1"></a><span class="in">           family = list(gaussian(), gaussian(), gaussian()), </span></span>
+<span id="cb52-179"><a href="#cb52-179" aria-hidden="true" tabindex="-1"></a><span class="in">           data = df2)</span></span>
+<span id="cb52-180"><a href="#cb52-180" aria-hidden="true" tabindex="-1"></a><span class="in">#fit the model</span></span>
+<span id="cb52-181"><a href="#cb52-181" aria-hidden="true" tabindex="-1"></a><span class="in">fitmod3&lt;-fit(mod3)</span></span>
+<span id="cb52-182"><a href="#cb52-182" aria-hidden="true" tabindex="-1"></a><span class="in">#model results</span></span>
+<span id="cb52-183"><a href="#cb52-183" aria-hidden="true" tabindex="-1"></a><span class="in">summary(fitmod3)</span></span>
+<span id="cb52-184"><a href="#cb52-184" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-185"><a href="#cb52-185" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-186"><a href="#cb52-186" aria-hidden="true" tabindex="-1"></a>Again, the model results change slightly depending on the seed, so</span>
+<span id="cb52-187"><a href="#cb52-187" aria-hidden="true" tabindex="-1"></a>making sure it found the best model:</span>
+<span id="cb52-188"><a href="#cb52-188" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-191"><a href="#cb52-191" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-192"><a href="#cb52-192" aria-hidden="true" tabindex="-1"></a>iter <span class="ot">&lt;-</span><span class="dv">100</span> <span class="co">#number of times to run the model</span></span>
+<span id="cb52-193"><a href="#cb52-193" aria-hidden="true" tabindex="-1"></a>seeds<span class="ot">&lt;-</span><span class="fu">sample</span>(<span class="dv">100</span><span class="sc">:</span><span class="dv">1000</span>, <span class="at">size =</span> iter, <span class="at">replace =</span> F) <span class="co">#get 100 seed values</span></span>
+<span id="cb52-194"><a href="#cb52-194" aria-hidden="true" tabindex="-1"></a>best <span class="ot">&lt;-</span> <span class="fl">1e10</span> <span class="co">#this is large so first AIC is definitely smaller</span></span>
+<span id="cb52-195"><a href="#cb52-195" aria-hidden="true" tabindex="-1"></a>best_model <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb52-196"><a href="#cb52-196" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>iter){</span>
+<span id="cb52-197"><a href="#cb52-197" aria-hidden="true" tabindex="-1"></a>  <span class="co">#set the seed from the ones we picked (makes sure its new each time)</span></span>
+<span id="cb52-198"><a href="#cb52-198" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(seeds[i]) </span>
+<span id="cb52-199"><a href="#cb52-199" aria-hidden="true" tabindex="-1"></a>  <span class="co">#fit the model</span></span>
+<span id="cb52-200"><a href="#cb52-200" aria-hidden="true" tabindex="-1"></a>  fitmod3 <span class="ot">&lt;-</span> <span class="fu">fit</span>(mod3)</span>
+<span id="cb52-201"><a href="#cb52-201" aria-hidden="true" tabindex="-1"></a>  <span class="co">#is this model better than the last?</span></span>
+<span id="cb52-202"><a href="#cb52-202" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">AIC</span>(fitmod3)<span class="sc">&lt;</span> best){</span>
+<span id="cb52-203"><a href="#cb52-203" aria-hidden="true" tabindex="-1"></a>    best_model <span class="ot">&lt;-</span> fitmod3</span>
+<span id="cb52-204"><a href="#cb52-204" aria-hidden="true" tabindex="-1"></a>    best <span class="ot">&lt;-</span> <span class="fu">AIC</span>(fitmod3)</span>
+<span id="cb52-205"><a href="#cb52-205" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb52-206"><a href="#cb52-206" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb52-207"><a href="#cb52-207" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-208"><a href="#cb52-208" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(best_model)</span>
+<span id="cb52-209"><a href="#cb52-209" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-210"><a href="#cb52-210" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-211"><a href="#cb52-211" aria-hidden="true" tabindex="-1"></a>The transition probabilities for the 3-State model are in the table</span>
+<span id="cb52-212"><a href="#cb52-212" aria-hidden="true" tabindex="-1"></a>below</span>
+<span id="cb52-213"><a href="#cb52-213" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-216"><a href="#cb52-216" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-217"><a href="#cb52-217" aria-hidden="true" tabindex="-1"></a>FromS1 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.400</span>, <span class="fl">0.200</span>, <span class="fl">0.400</span>)</span>
+<span id="cb52-218"><a href="#cb52-218" aria-hidden="true" tabindex="-1"></a>FromS2 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.000</span>, <span class="fl">0.700</span>, <span class="fl">0.300</span>)</span>
+<span id="cb52-219"><a href="#cb52-219" aria-hidden="true" tabindex="-1"></a>FromS3 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.250</span>, <span class="fl">0.375</span>, <span class="fl">0.375</span>)</span>
+<span id="cb52-220"><a href="#cb52-220" aria-hidden="true" tabindex="-1"></a>tab2 <span class="ot">&lt;-</span> <span class="fu">rbind.data.frame</span>(FromS1,FromS2,FromS3)</span>
+<span id="cb52-221"><a href="#cb52-221" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(tab2) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"To S1"</span>, <span class="st">"To S2"</span>, <span class="st">"To S3"</span>)</span>
+<span id="cb52-222"><a href="#cb52-222" aria-hidden="true" tabindex="-1"></a><span class="fu">row.names</span>(tab2) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"From S1"</span>, <span class="st">"From S2"</span>, <span class="st">"From S3"</span>)</span>
+<span id="cb52-223"><a href="#cb52-223" aria-hidden="true" tabindex="-1"></a>tab2</span>
+<span id="cb52-224"><a href="#cb52-224" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-225"><a href="#cb52-225" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-226"><a href="#cb52-226" aria-hidden="true" tabindex="-1"></a>Plot of states and data from the 3-State HMM</span>
+<span id="cb52-227"><a href="#cb52-227" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-230"><a href="#cb52-230" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-231"><a href="#cb52-231" aria-hidden="true" tabindex="-1"></a>prstates<span class="ot">&lt;-</span><span class="fu">apply</span>(<span class="fu">posterior</span>(fitmod3)[,<span class="fu">c</span>(<span class="st">"S1"</span>, <span class="st">"S2"</span>,<span class="st">"S3"</span>)],<span class="dv">1</span>, which.max)</span>
+<span id="cb52-232"><a href="#cb52-232" aria-hidden="true" tabindex="-1"></a>mu<span class="ot">&lt;-</span><span class="fu">summary</span>(best_model)[,<span class="dv">1</span>]</span>
+<span id="cb52-233"><a href="#cb52-233" aria-hidden="true" tabindex="-1"></a>mu2<span class="ot">&lt;-</span><span class="fu">summary</span>(best_model)[,<span class="dv">3</span>]</span>
+<span id="cb52-234"><a href="#cb52-234" aria-hidden="true" tabindex="-1"></a>mu3<span class="ot">&lt;-</span><span class="fu">summary</span>(best_model)[,<span class="dv">5</span>]</span>
+<span id="cb52-235"><a href="#cb52-235" aria-hidden="true" tabindex="-1"></a>pred <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="st">"Year"</span> <span class="ot">=</span> df2<span class="sc">$</span>Year, <span class="st">"Copepod_richness"</span> <span class="ot">=</span> mu[prstates], <span class="st">"N_copepod"</span> <span class="ot">=</span> mu2[prstates], <span class="st">"S_copepod"</span> <span class="ot">=</span> mu3[prstates])</span>
+<span id="cb52-236"><a href="#cb52-236" aria-hidden="true" tabindex="-1"></a>pred2<span class="ot">&lt;-</span>pred <span class="sc">%&gt;%</span> <span class="fu">pivot_longer</span>(<span class="sc">-</span>Year, <span class="at">names_to =</span> <span class="st">"Ecosystem.Indicators"</span>, <span class="at">values_to =</span> <span class="st">"Fit"</span>)</span>
+<span id="cb52-237"><a href="#cb52-237" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="at">data =</span> newdf, <span class="fu">aes</span>(<span class="at">x =</span> Year, <span class="at">y =</span> value, <span class="at">color =</span> Ecosystem.Indicators)) <span class="sc">+</span> </span>
+<span id="cb52-238"><a href="#cb52-238" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> pred2, <span class="fu">aes</span>(<span class="at">x =</span> Year, <span class="at">y =</span> Fit, <span class="at">group =</span> Ecosystem.Indicators, <span class="at">color =</span> Ecosystem.Indicators)) <span class="sc">+</span> <span class="fu">theme_classic</span>()</span>
+<span id="cb52-239"><a href="#cb52-239" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-240"><a href="#cb52-240" aria-hidden="true" tabindex="-1"></a><span class="co"># The 3-State HMM seems to fit the data worse than the 2-State HMM</span></span>
+<span id="cb52-241"><a href="#cb52-241" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-242"><a href="#cb52-242" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-243"><a href="#cb52-243" aria-hidden="true" tabindex="-1"></a>The best model does converge for the 3 state model.</span>
+<span id="cb52-244"><a href="#cb52-244" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-245"><a href="#cb52-245" aria-hidden="true" tabindex="-1"></a>The predicted values do not appear to fit the data well in the three</span>
+<span id="cb52-246"><a href="#cb52-246" aria-hidden="true" tabindex="-1"></a>state model. The Northern and Southern Copepod predicted values seem to</span>
+<span id="cb52-247"><a href="#cb52-247" aria-hidden="true" tabindex="-1"></a>switch states away from their respective observations in a few places.</span>
+<span id="cb52-248"><a href="#cb52-248" aria-hidden="true" tabindex="-1"></a>And the Copepod Richness predicted values do not drop down to the lowest</span>
+<span id="cb52-249"><a href="#cb52-249" aria-hidden="true" tabindex="-1"></a>state in a few sections where it seems like it would be appropriate to</span>
+<span id="cb52-250"><a href="#cb52-250" aria-hidden="true" tabindex="-1"></a>do so.</span>
+<span id="cb52-251"><a href="#cb52-251" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-252"><a href="#cb52-252" aria-hidden="true" tabindex="-1"></a>One thing to note is that the transition probabilities state that there</span>
+<span id="cb52-253"><a href="#cb52-253" aria-hidden="true" tabindex="-1"></a>is a 0.00 chance of switching from state 2 to state 1. State 2 being the</span>
+<span id="cb52-254"><a href="#cb52-254" aria-hidden="true" tabindex="-1"></a>lowest level for each of the fitted lines and State 1 being the highest.</span>
+<span id="cb52-255"><a href="#cb52-255" aria-hidden="true" tabindex="-1"></a>We do see that the fitted values do make this transition so this is</span>
+<span id="cb52-256"><a href="#cb52-256" aria-hidden="true" tabindex="-1"></a>apparently just a very small number that is left at 0.00 due to rounding</span>
+<span id="cb52-257"><a href="#cb52-257" aria-hidden="true" tabindex="-1"></a>in the table.</span>
+<span id="cb52-258"><a href="#cb52-258" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-259"><a href="#cb52-259" aria-hidden="true" tabindex="-1"></a><span class="fu"># Results</span></span>
+<span id="cb52-260"><a href="#cb52-260" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-263"><a href="#cb52-263" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-264"><a href="#cb52-264" aria-hidden="true" tabindex="-1"></a><span class="st">`</span><span class="at">3-State</span><span class="st">`</span> <span class="ot">&lt;-</span> <span class="fu">AIC</span>(fitmod3)</span>
+<span id="cb52-265"><a href="#cb52-265" aria-hidden="true" tabindex="-1"></a><span class="st">`</span><span class="at">2-State</span><span class="st">`</span> <span class="ot">&lt;-</span> <span class="fu">AIC</span>(fitmod)</span>
+<span id="cb52-266"><a href="#cb52-266" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">`</span><span class="at">3-State</span><span class="st">`</span>,<span class="st">`</span><span class="at">2-State</span><span class="st">`</span>)<span class="sc">-</span><span class="fu">min</span>(<span class="st">`</span><span class="at">3-State</span><span class="st">`</span>,<span class="st">`</span><span class="at">2-State</span><span class="st">`</span>)</span>
+<span id="cb52-267"><a href="#cb52-267" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-268"><a href="#cb52-268" aria-hidden="true" tabindex="-1"></a>e <span class="ot">&lt;-</span> <span class="fu">cbind.data.frame</span>(<span class="fu">rbind</span>(<span class="st">`</span><span class="at">3-State</span><span class="st">`</span>,<span class="st">`</span><span class="at">2-State</span><span class="st">`</span>),d)</span>
+<span id="cb52-269"><a href="#cb52-269" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(e) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"AIC"</span>,<span class="st">"delta AIC"</span>)</span>
+<span id="cb52-270"><a href="#cb52-270" aria-hidden="true" tabindex="-1"></a><span class="fu">row.names</span>(e) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"3-State"</span>,<span class="st">"2-State"</span>)</span>
+<span id="cb52-271"><a href="#cb52-271" aria-hidden="true" tabindex="-1"></a>e</span>
+<span id="cb52-272"><a href="#cb52-272" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-273"><a href="#cb52-273" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-274"><a href="#cb52-274" aria-hidden="true" tabindex="-1"></a>The three state model has the lower AIC value despite appearing to not</span>
+<span id="cb52-275"><a href="#cb52-275" aria-hidden="true" tabindex="-1"></a>fit the data as well.</span>
+<span id="cb52-276"><a href="#cb52-276" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-277"><a href="#cb52-277" aria-hidden="true" tabindex="-1"></a><span class="fu"># Discussion</span></span>
+<span id="cb52-278"><a href="#cb52-278" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-279"><a href="#cb52-279" aria-hidden="true" tabindex="-1"></a>When looking at the three Copepod measurements, both of our models</span>
+<span id="cb52-280"><a href="#cb52-280" aria-hidden="true" tabindex="-1"></a>converge. We did not use any covariates in order to keep our models</span>
+<span id="cb52-281"><a href="#cb52-281" aria-hidden="true" tabindex="-1"></a>simple. The AIC score indicates that the 3-state model is better</span>
+<span id="cb52-282"><a href="#cb52-282" aria-hidden="true" tabindex="-1"></a>supported than the 2-state. However, visually it appears that the two</span>
+<span id="cb52-283"><a href="#cb52-283" aria-hidden="true" tabindex="-1"></a>state model fits the data better. Additionally, when thinking of a</span>
+<span id="cb52-284"><a href="#cb52-284" aria-hidden="true" tabindex="-1"></a>biological reason for selecting a 2 vs 3 state model, it seems to make</span>
+<span id="cb52-285"><a href="#cb52-285" aria-hidden="true" tabindex="-1"></a>more sense to go with a two state model as we see on the NOAA website</span>
+<span id="cb52-286"><a href="#cb52-286" aria-hidden="true" tabindex="-1"></a>that copepods richness gradually increases as the summer starts and then</span>
+<span id="cb52-287"><a href="#cb52-287" aria-hidden="true" tabindex="-1"></a>decreases at the end of the summer. There is a very brief plateau in May</span>
+<span id="cb52-288"><a href="#cb52-288" aria-hidden="true" tabindex="-1"></a>but the 3 state model doesn't seem to follow that general pattern,</span>
+<span id="cb52-289"><a href="#cb52-289" aria-hidden="true" tabindex="-1"></a>instead it seems to make large random jumps. At one point Copepod</span>
+<span id="cb52-290"><a href="#cb52-290" aria-hidden="true" tabindex="-1"></a>Richness drops to the lowest state but there is no observed data there.</span>
+<span id="cb52-291"><a href="#cb52-291" aria-hidden="true" tabindex="-1"></a>In contrast, the 2 state model seems to follow the general pattern of</span>
+<span id="cb52-292"><a href="#cb52-292" aria-hidden="true" tabindex="-1"></a>the observed data quite well.</span>
+<span id="cb52-293"><a href="#cb52-293" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-294"><a href="#cb52-294" aria-hidden="true" tabindex="-1"></a>We see that Southern Copepod Biomass is in phase with the Copepod</span>
+<span id="cb52-295"><a href="#cb52-295" aria-hidden="true" tabindex="-1"></a>Richness measurement in both models. This is because there are more</span>
+<span id="cb52-296"><a href="#cb52-296" aria-hidden="true" tabindex="-1"></a>species representing the Southern Copepod group than the Northern so</span>
+<span id="cb52-297"><a href="#cb52-297" aria-hidden="true" tabindex="-1"></a>when the Southern Copepod biomass is high the total richness is higher</span>
+<span id="cb52-298"><a href="#cb52-298" aria-hidden="true" tabindex="-1"></a>as well due to the increased number of species present. It also makes</span>
+<span id="cb52-299"><a href="#cb52-299" aria-hidden="true" tabindex="-1"></a>sense that the Northern and Southern groups are out of phase as two</span>
+<span id="cb52-300"><a href="#cb52-300" aria-hidden="true" tabindex="-1"></a>different water currents which are opposed to one another carry the</span>
+<span id="cb52-301"><a href="#cb52-301" aria-hidden="true" tabindex="-1"></a>copepods from each group.</span>
+<span id="cb52-302"><a href="#cb52-302" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-303"><a href="#cb52-303" aria-hidden="true" tabindex="-1"></a>All three sets of observations are tied to the same transition</span>
+<span id="cb52-304"><a href="#cb52-304" aria-hidden="true" tabindex="-1"></a>probabilities and therefore the model must balance each set of</span>
+<span id="cb52-305"><a href="#cb52-305" aria-hidden="true" tabindex="-1"></a>observation data to estimate the probabilities. At each data point the</span>
+<span id="cb52-306"><a href="#cb52-306" aria-hidden="true" tabindex="-1"></a>model gives decides based on the probabilities whether the fitted line</span>
+<span id="cb52-307"><a href="#cb52-307" aria-hidden="true" tabindex="-1"></a>should change states. Sometimes the model makes a switch that does not</span>
+<span id="cb52-308"><a href="#cb52-308" aria-hidden="true" tabindex="-1"></a>seem appropriate based on those probabilities. This is why we see that</span>
+<span id="cb52-309"><a href="#cb52-309" aria-hidden="true" tabindex="-1"></a>some of the transition switches in the 3 state model don't seem to make</span>
+<span id="cb52-310"><a href="#cb52-310" aria-hidden="true" tabindex="-1"></a>sense.</span>
+<span id="cb52-311"><a href="#cb52-311" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-312"><a href="#cb52-312" aria-hidden="true" tabindex="-1"></a><span class="fu"># Team contributions</span></span>
+<span id="cb52-313"><a href="#cb52-313" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-314"><a href="#cb52-314" aria-hidden="true" tabindex="-1"></a>Dylan and Zoe did the data wrangling. Zoe coded the 2 state model. Eric</span>
+<span id="cb52-315"><a href="#cb52-315" aria-hidden="true" tabindex="-1"></a>adapted this code for the 3 state model. Dylan created tables, results,</span>
+<span id="cb52-316"><a href="#cb52-316" aria-hidden="true" tabindex="-1"></a>and led discussion section for group. Entire group contributed thoughts</span>
+<span id="cb52-317"><a href="#cb52-317" aria-hidden="true" tabindex="-1"></a>and comments to the discussion section.</span>
+</code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/atsa-es/fish550-2023/edit/main/Lab-4/Final_Write_ups/Lab-4-team-1_final.Rmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/atsa-es/fish550-2023/blob/main/Lab-4/Final_Write_ups/Lab-4-team-1_final.Rmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/atsa-es/fish550-2023/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>

@@ -226,7 +226,7 @@ for(i in 1:N.ts) {
   plot(w_ts, mn, type = "n",
        xlab = "", ylab = ylbl[i],
        xaxt = "n", cex.lab = 1.2,
-       ylim = c(min(lo), max(up)))
+       ylim = c(min(lo, na.rm=TRUE), max(up, na.rm=TRUE)))
   axis(1, 12 * (0:dim(plank.t)[2]) + 1, yr_frst + 0:dim(plank.t)[2])
   points(w_ts, plank.t[i,], pch = 16, col = clr[i])
   lines(w_ts, up, col = "darkgray")
@@ -311,7 +311,7 @@ for (i in 1:N.ts) {
   lo <- mod_fit$lo[i, ]
   plot(w_ts, mn,
        xlab = "", ylab = ylbl[i], xaxt = "n", type = "n", cex.lab = 1.2,
-       ylim = c(min(lo), max(up))
+       ylim = c(min(lo, na.rm=TRUE), max(up, na.rm=TRUE))
   )
   axis(1, 12 * (0:dim(plank.t)[2]) + 1, 1980 + 0:dim(plank.t)[2])
   points(w_ts, plank.t[i, ], pch = 16, col = clr[i])
@@ -383,7 +383,7 @@ Z.rot.10 = Z_est.10 %*% H_inv.10
 trends.rot.10 = solve(H_inv.10) %*% dfa_TPseas.10$states
 
 m10 <- dim(trends.rot.10)[1]
-ylims <- c(-1.1 * max(abs(Z.rot.10)), 1.1 * max(abs(Z.rot.10)))
+ylims <- c(-1.1 * max(abs(Z.rot.10), na.rm=TRUE), 1.1 * max(abs(Z.rot.10), na.rm=TRUE))
 par(mfrow = c(ceiling(m10 / 2), 2), mar = c(3, 4, 1.5, 0.5), oma = c(0.4, 1, 1, 1))
 for (i in 1:m10) {
   plot(c(1:N.ts)[abs(Z.rot.10[, i]) > minZ], as.vector(Z.rot.10[abs(Z.rot.10[, i]) > minZ, i]),
@@ -405,7 +405,7 @@ for (i in 1:m10) {
 ```{r}
 mm<-3
 for(i in 1:mm) {
-  ylm <- c(-1, 1) * max(abs(trends.rot.10[i,]))
+  ylm <- c(-1, 1) * max(abs(trends.rot.10[i,]), na.rm=TRUE)
   ## set up plot area
   plot(w_ts_10,trends.rot.10[i,], type = "n", bty = "L",
        ylim = ylm, xlab = "", ylab = "", xaxt = "n")
