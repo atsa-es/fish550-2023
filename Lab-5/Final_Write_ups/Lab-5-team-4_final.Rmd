@@ -1,0 +1,352 @@
+---
+title: "Team 3 - Lab 5"
+subtitle: "Dynamic Linear Models (DLMs) - Time-varying productivity of salmon"
+author: "Nick Chambers, Emma Timmins-Schiffman, Miranda Mudge"
+date: "May 11, 2023"
+output: 
+ html_document:
+  code-folding: true
+  toc: true
+  toc_float: true
+---
+
+```{r setup, echo = FALSE, message = FALSE}
+options(dplyr.summarise.inform = FALSE)
+```
+
+
+Load the data and look at the time series.
+```{r}
+library(MARSS)
+library(ggplot2)
+## get data
+data(KvichakSockeye, package="atsalibrary")
+SR_data <- KvichakSockeye
+plot.ts(x=SR_data$brood_year, SR_data$spawners, ylab="Number of Spawners and Recruits", xlab='Time')
+lines(x=SR_data$brood_year,SR_data$recruits, col='blue')
+
+```
+
+Subset the data to include the time range 1956-1998 so that there is spawner and recruit data for each time point.
+```{r }
+#look at 1956-1998
+SR_56to98<-subset(SR_data, brood_year > 1955 & brood_year < 1999)
+
+plot.ts(x=SR_56to98$brood_year, SR_56to98$spawners, ylim=c(min(SR_56to98$recruits), max(SR_56to98$recruits)),ylab="Number of Spawners and Recruits", xlab='Time')
+lines(x=SR_56to98$brood_year,SR_56to98$recruits, col='blue')
+```
+
+Create the metric representing reproductive rate: log(Rt/St)
+```{r}
+#alpha is intercept and beta is slope
+#log(Rt/St) = at - bSt + vt
+#where at is a RW
+#need to estimate a and b (as hidden states)
+TT<-length(SR_56to98$brood_year)
+SR_56to98$RtovSt<-log(SR_56to98$recruits/SR_56to98$spawners)
+dat <- matrix(SR_56to98$RtovSt, nrow = 1)
+dat.z<-zscore(dat)
+
+plot(x=SR_56to98$brood_year, y=SR_56to98$RtovSt, type='l', ylab='log(Rt/St)', xlab='Time')
+```
+
+Create covariate variables
+```{r}
+#covariate/predictor variable
+#start with pdo summer
+pdosum <- SR_56to98$pdo_summer_t2
+## z-score the CUI
+pdosum_z <- matrix(zscore(pdosum), nrow = 1)
+## number of regr params (slope + intercept)
+m <- dim(pdosum_z)[1] + 1
+
+# Now do winter
+pdowin <- SR_56to98$pdo_winter_t2
+## z-score the CUI
+pdowin_z <- matrix(zscore(pdowin), nrow = 1)
+## number of regr params (slope + intercept)
+m <- dim(pdowin_z)[1] + 1 # same as previous m so don't need to change
+
+```
+
+# Part 1: Estimate 1 regression parameter
+Estimate the alpha regression parameter (the intercept).
+```{r}
+B <- 'identity'  
+U <- matrix(0, nrow = 1, ncol = 1)  ## 2x1; both elements = 0
+Q <- matrix(list(0), 1, 1)  ## 2x2; all 0 for now
+diag(Q) <- c("q.alpha")
+
+Z<-"identity"
+A <- matrix(0)  ## 1x1; scalar = 0
+R <- matrix("r")  ## 1x1; scalar = r
+
+## only need starting values for regr parameters
+inits_list <- list(x0 = 0)
+
+## list of model matrices & vectors
+mod_list <- list(B = B, U = U, Q = Q, Z = Z, A = A, R = R)
+
+#DLM without covariates
+dlm_1 <- MARSS(dat.z, inits = inits_list, model = mod_list, silent = TRUE)
+
+#plot alpha(t)
+plot(x=SR_56to98$brood_year, y=dlm_1$states, type='l', main = "Time series of alpha", xlab = "Year", ylab = "alpha parameter")
+lines(x=SR_56to98$brood_year, y=zscore(SR_56to98$RtovSt), col='blue')
+
+dlm_1$AICc
+#121.0344
+
+plot1 <- autoplot(dlm_1,  plot.type = "fitted.ytT")
+plot2 <- autoplot(dlm_1,  plot.type = "model.resids.ytT")
+plot3 <- autoplot(dlm_1,  plot.type = "acf.std.model.resids.ytT")
+
+```
+The autocorrelation at 10 years may indicate a PDO effect.
+
+# Part 2 - Estimate 2 regression parameters
+Estimate alpha (intercept) and beta (slope)
+```{r}
+#### Estimate 2 regression parameters
+B <- diag(2)  ## 2x2; Identity
+U <- matrix(0, nrow = 2, ncol = 1)  ## 2x1; both elements = 0
+#Q <- matrix(list(0), 1, 1)
+Q <- matrix(list(0), 2, 2)  ## 2x2; all 0 for now
+diag(Q) <- c("q.alpha", "q.beta")
+
+Z<-matrix(1, nrow = 1, ncol = 2)
+A <- matrix(0)  ## 1x1; scalar = 0
+R <- matrix("r")  ## 1x1; scalar = r
+
+## only need starting values for regr parameters
+inits_list <- list(x0 = matrix(c(0, 0), nrow = 2))
+
+## list of model matrices & vectors
+mod_list <- list(B = B, U = U, Q = Q, Z = Z, A = A, R = R)
+
+#DLM without covariates
+dlm_2 <- MARSS(dat.z, inits = inits_list, model = mod_list, silent = TRUE)
+
+# plot alpha(t)
+plot(x=SR_56to98$brood_year, y=dlm_2$states[1,], type='l', main = "Time series of alpha with 2 regression parameters", xlab = "Year", ylab = "alpha parameter")
+lines(x=SR_56to98$brood_year, y=zscore(SR_56to98$RtovSt), col='blue')
+
+plota <- autoplot(dlm_2,  plot.type = "fitted.ytT")
+plotb <- autoplot(dlm_2,  plot.type = "model.resids.ytT")
+plotc <- autoplot(dlm_2,  plot.type = "acf.std.model.resids.ytT")
+#AICc: 126.0491
+```
+When two regression parameters are used the model produces a fit that appears to revert to the mean and appears less overfit than model 1. 
+
+
+Model a time-varying alpha (intercept) and static beta (slope, or, effect of spawners). This means the process variance (q) of beta will be 0.
+```{r}
+#model 
+###### time-varying alpha; static beta ####
+B <- diag(2)  ## 2x2; Identity
+U <- matrix(0, nrow = 2, ncol = 1)  ## 2x1; both elements = 0
+
+Q <- matrix(list(0), 2, 2)  ## 2x2; all 0 for now
+diag(Q) <- list("q.alpha", 0)
+
+Z<-matrix(1, nrow = 1, ncol = 2)
+A <- matrix(0)  ## 1x1; scalar = 0
+R <- matrix("r")  ## 1x1; scalar = r
+
+## only need starting values for regr parameters
+inits_list <- list(x0 = matrix(c(0, 0), nrow = 2))
+
+## list of model matrices & vectors
+mod_list <- list(B = B, U = U, Q = Q, Z = Z, A = A, R = R)
+
+#DLM without covariates
+dlm_3 <- MARSS(dat.z, inits = inits_list, model = mod_list, silent = TRUE)
+
+#get alpha and beta
+states <- dlm_3$states
+states <- t(states)
+
+plot(states[,1],ylab='Stock productivity (alpha)', xlab='time')
+abline(h=mean(states[,1]), col='magenta')
+
+autoplot(dlm_3,  plot.type = "fitted.ytT")
+autoplot(dlm_3,  plot.type = "model.resids.ytT")
+autoplot(dlm_3,  plot.type = "acf.std.model.resids.ytT")
+```
+
+# Part 3 - Fit expanded model with covariate summer PDO 
+The residuals show a significant lag at 10 years for each model. This suggests that we are not capturing a source of variation in our model, which is perhaps an effect of the PDO.
+```{r}
+B <- diag(3)  ## 3x3; Identity
+U <- matrix(0, nrow = 3, ncol = 1)  ## 3x1; elements = 0
+
+
+Z <- array(NA, c(1, 3, TT))  ## NxMxT; pdo is effecting alpha
+Z[1, 1, ] <- pdosum_z
+Z[1, 2, ] <- rep(1,TT)
+Z[1, 3, ] <- rep(1,TT)
+
+Q <- matrix(list(0), 3, 3)  ## 3x3; 
+diag(Q) <- list("q.alpha", 0, "g.alpha")
+
+A <- matrix("a")  ## 1x1; scalar = 0 # a matrix should be the intercept
+R <- matrix("r")  ## 1x1; scalar = r
+
+## only need starting values for regr parameters
+inits_list <- list(x0 = matrix(c(0, 0,0), nrow = 3))
+
+## list of model matrices & vectors
+mod_list <- list(B = B, U = U, Q = Q, Z = Z, A = A, R = R)
+
+#DLM without covariates
+dlm_4 <- MARSS(dat.z, inits = inits_list, model = mod_list, silent = TRUE)
+
+# calculate the mean productivity
+mean_prod.4 <- mean(dlm_4$states[1,])
+
+plot(x=SR_56to98$brood_year, y=dlm_4$states[3,], type='l', main = "Time series of delta with summer PDO",xlab = "Year", ylab = "delta parameter")
+lines(x=SR_56to98$brood_year, y=zscore(SR_56to98$RtovSt), col='blue')
+
+autoplot(dlm_4,  plot.type = "fitted.ytT")
+autoplot(dlm_4,  plot.type = "model.resids.ytT")
+autoplot(dlm_4,  plot.type = "acf.std.model.resids.ytT")
+```
+
+# Part 4 - Fit expanded model with covariate winter PDO 
+```{r}
+# Model winter PDO instead of summer PDO
+
+B <- diag(3)  ## 3x3; Identity
+U <- matrix(0, nrow = 3, ncol = 1)  ## 3x1; elements = 0
+
+
+Z <- array(NA, c(1, 3, TT))  ## NxMxT; pdo is effecting alpha
+Z[1, 1, ] <- pdowin_z
+Z[1, 2, ] <- rep(1,TT)
+Z[1, 3, ] <- rep(1,TT)
+
+Q <- matrix(list(0), 3, 3)  ## 3x3; 
+diag(Q) <- list("q.alpha", 0, "g.alpha")
+
+A <- matrix("a")  ## 1x1; scalar = 0 # a matrix should be the intercept
+R <- matrix("r")  ## 1x1; scalar = r
+
+## only need starting values for regr parameters
+inits_list <- list(x0 = matrix(c(0, 0,0), nrow = 3))
+
+## list of model matrices & vectors
+mod_list <- list(B = B, U = U, Q = Q, Z = Z, A = A, R = R)
+
+#DLM without covariates
+dlm_5 <- MARSS(dat.z, inits = inits_list, model = mod_list, silent = TRUE)
+
+# calculate the mean productivity
+mean_prod.5 <- mean(dlm_5$states[1,])
+
+# plot time series of delta(t)
+plot(x=SR_56to98$brood_year, y=dlm_5$states[3,], type='l', main = "Time series of delta with winter PDO", xlab = "Year", ylab = "delta parameter")
+lines(x=SR_56to98$brood_year, y=zscore(SR_56to98$RtovSt), col='blue')
+
+autoplot(dlm_5,  plot.type = "fitted.ytT")
+autoplot(dlm_5,  plot.type = "model.resids.ytT")
+autoplot(dlm_5,  plot.type = "acf.std.model.resids.ytT")
+```
+
+Models 4 and 5 seem to produce similar fits to the data, although they produce different estimates of productivity. The model with summer PDO results in a mean productivity of .04 while the model with winter PDO results in a similar but slightly higher mean productivity of .14. 
+
+# Part 5 - Evaluate models
+AICc comparison
+```{r}
+AIC1 <- dlm_1$AICc
+AIC2 <- dlm_2$AICc
+AIC3 <- dlm_3$AICc
+AIC4 <- dlm_4$AICc
+AIC5 <- dlm_5$AICc
+
+print(c(AIC1, AIC2, AIC3, AIC4, AIC5))
+```
+AICc values suggests that the first and most simple model is the best for this data. 
+
+
+Parameters for forecasting
+```{r}
+## get list of Kalman filter output
+kf_out <- MARSSkfss(dlm_1)
+
+## forecasts of regr parameters; 2xT matrix
+eta <- kf_out$xtt1
+
+#create parameters for forecasting
+Z <- array(NA, c(1, TT))
+Z[1,] <- rep(1, TT) 
+
+## ts of E(forecasts)
+fore_mean <- vector()
+for(t in 1:TT) {
+  fore_mean[t] <- Z[,t] %*% eta[, t, drop = FALSE]
+}
+
+## variance of regr parameters; 1x2xT array
+Phi <- kf_out$Vtt1
+
+## obs variance; 1x1 matrix
+R_est <- coef(dlm_1, type="matrix")$R
+
+## ts of Var(forecasts)
+fore_var <- vector()
+for(t in 1:TT) {
+  tZ <- matrix(Z[, t], 1, 1) ## transpose of Z
+  fore_var[t] <- Z[, t] %*% Phi[, , t] %*% tZ + R_est
+}
+
+```
+
+Plot forecast
+```{r}
+years = SR_56to98$brood_year
+
+par(mar = c(4, 4, 0.1, 0), oma = c(0, 0, 2, 0.5))
+ylims=c(min(fore_mean - 2*sqrt(fore_var)), max(fore_mean+2*sqrt(fore_var)))
+plot(years, t(dat), type = "p", pch = 16, ylim = ylims,
+     col = "blue", xlab = "", ylab = "Logit(s)", xaxt = "n")
+lines(years, fore_mean, type = "l", xaxt = "n", ylab = "", lwd = 3) #forecast mean estimate
+lines(years, fore_mean+2*sqrt(fore_var)) #upper bound
+lines(years, fore_mean-2*sqrt(fore_var)) #lower bound
+axis(1, at = seq(1956, 1998, 1))
+mtext("Brood year", 1, line = 3)
+```
+The data falls within the expected parameters of the model, and generally follows the expected mean. Overall, the forecast appears to underestimate the data, particularly when the trend is increasing. Overall, it is an acceptable fit. 
+
+```{r}
+## forecast errors
+innov <- kf_out$Innov
+
+## Q-Q plot of innovations
+qqnorm(t(innov), main = "", pch = 16, col = "blue")
+## add y=x line for easier interpretation
+qqline(t(innov))
+```
+The fit of the Q-Q plot could be better, particularly around the middle, but the tails aren't too far off as could often be the case. This means the data may not be normally distributed, but further evaluations are required. 
+
+```{r}
+## p-value for t-test of H0: E(innov) = 0
+t.test(t(innov), mu = 0)$p.value
+```
+
+The p-value is greater than 0.05 so we cannot reject the null hypothesis that E(e-sub-t) = 0. 
+
+```{r}
+## plot ACF of innovations
+acf(t(innov), lag.max = 10)
+```
+ACF of the innovations reflects the data with a slight lag at 5 and 10. 
+
+Overall, the simplest model appears to be the best fit for the data though not all model assumptions are met - the model could behave better. Forecasting shows that while the model is a decent fit, there are likely underlying factors that are causing it to fail some of the model evaluations like autocorrelation. There may perhaps be seasonality in the data worth investigating before applying this model to further data. 
+
+# Part 6 - Consider other environmental factors
+
+There appears to be a repeating autocorrelation of lag 5, which could suggest the presence of cycling in the data. The lag at 5 and 10 might suggest am impact of PDO on the population, but the model was not improved by the inclusion of PDO. Seasonality should be investigated further as a possible factor. It may also be important to consider predator-prey interactions or the impact of fishing in the area. The scale of the remaining residual suggests a large-scale covariate, possibly ENSO or NPGO. Sockeye generally mature at 3 or 4 years of age so this does not explain the 5 year lag, however there may be other biological reasons for this shorter lag.   
+
+## Contributions
+
+A preliminary meeting by all was held to discuss and begin the homework. ETS completed parts 1-2. NC completed parts 3-4. MM completed parts 5-6 and drafted report into R markdown. Report was finalized by all. 

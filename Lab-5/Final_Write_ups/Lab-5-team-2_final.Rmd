@@ -1,0 +1,404 @@
+---
+title: "Team 2 - Lab 5"
+subtitle: "Dynamic Linear Models (DLMs) - Time-varying productivity of salmon"
+author: "Zoe Rand, Terrance Wang"
+date: May 11, 2023
+output: 
+  html_document:
+    code-folding: true
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include = FALSE}
+options(dplyr.summarise.inform = FALSE)
+```
+
+------------------------------------------------------------------------
+
+# Data
+
+Describe the salmon data and any environmental covariates you decide to examine.
+
+## Load the data
+
+```{r dlm-load-atsa, eval=TRUE}
+## library(devtools)
+## Windows users will likely need to set this
+## Sys.setenv("R_REMOTES_NO_ERRORS_FROM_WARNINGS" = "true")
+#devtools::install_github("nwfsc-timeseries/atsalibrary")
+
+## get data
+data(KvichakSockeye, package="atsalibrary")
+SR_data <- KvichakSockeye
+```
+
+The data are a dataframe with columns for brood year (`brood_year`), number of spawners (`spawners`), number of recruits (`recruits`) and PDO at year $t-2$ in summer (`pdo_summer_t2`) and in winter (`pdo_winter_t2`).
+
+```{r dlm-data-head}
+## head of data file
+head(SR_data)
+```
+
+## Wrangle the data
+
+```{r, message = FALSE, warning = FALSE}
+library(tidyverse)
+```
+
+```{r wrangle_data}
+#removing years with no spawner data
+#creating log (recruits/spawners)
+SR_data<-SR_data %>% filter(!is.na(spawners)) %>%mutate(logSR = log(recruits/spawners))
+head(SR_data)
+ggplot(SR_data) + geom_line(aes(x = brood_year, y = logSR))
+```
+
+# General tasks
+
+Use the information and data in the previous section to answer the following questions. Note that if any model is not converging, then you will need to increase the `maxit` parameter in the `control` argument/list that gets passed to `MARSS()`. For example, you might try `control=list(maxit=2000)`.
+
+1.  Begin by fitting a reduced form of Ricker's model that includes only a time-varying level ($\alpha_t$) and observation error ($v_t$). That is,
+
+```{=tex}
+\begin{align*}
+\text{log}(R_t) &= \alpha_t + \text{log}(S_t) + v_t \\
+\text{log}(R_t/S_t) &= \alpha_t + v_t
+\end{align*}
+```
+This model assumes no density-dependent survival in that the number of recruits is an ascending function of spawners. Plot the ts of $\alpha_t$ and note the AICc for this model. Also plot appropriate model diagnostics.
+
+2.  Fit the full Ricker model with a time-varying intercept and a static effect of spawners. For this model, obtain the time series of $\alpha_t$, which is an estimate of the stock productivity in the absence of density-dependent effects. How do these estimates of productivity compare to those from the previous question? Plot the ts of $\alpha_t$ and note the AICc for this model. Also plot appropriate model diagnostics. ($Hint$: If you don't want a parameter to vary with time, what does that say about its process variance?)
+
+3.  Fit the expanded model that includes the summer PDO index as the covariate (`pdo_summer_t2`). What is the mean level of productivity? Plot the ts of $\delta_t$ and note the AICc for this model. Also plot appropriate model diagnostics.
+
+4.  Fit the expanded model that includes the winter PDO index as the covariate (`pdo_winter_t2`). What is the mean level of productivity? Plot the ts of $\delta_t$ and note the AICc for this model. Also plot appropriate model diagnostics.
+
+5.  Based on AICc, which of the models above is the most parsimonious? Is it well behaved (i.e., are the model assumptions met)? Plot the model forecasts for the best model. Is this a good forecast model?
+
+6.  Consider other environmental factors that could influence the time-varying intrinsic productivity of these salmon. For example, are there other large-scale indices of ocean conditions (e.g., sea-surface temperature, El Niño Southern Oscillation)? You could also consider the possible influence of other salmon stocks such as those we examined in Lab 1.
+
+# Methods
+
+Please address the following in your methods:
+
+-   What environmental or dummy variables did you include and why?
+
+-   What forms of models did you fit (ie, write them out in matrix form)?
+
+-   What sort of model diagnostics did you use to examine model assumptions?
+
+## 1. Reduced Ricker Model:
+
+### Equations:
+
+$$
+\text{log}(R_t/S_t) = \alpha_t + v_t
+$$
+
+$$
+\alpha_t = \alpha_{t-1} + w_t
+$$
+
+This is a MARSS model where $Z = 1$, a random walk with observation error:
+
+Set $y_t = log(R_t/S_t)$
+
+$$
+y_t = Zx_t + v_t
+$$
+
+$$
+x_t = x_{t-1} + w_t
+$$
+
+### MARSS:
+
+```{r, message = FALSE, warning = FALSE}
+library(MARSS)
+```
+
+```{r}
+mod_list1<-list(B = "identity", Z = "identity", U = "zero", A = "zero", Q = matrix("q"), R = matrix("r"))
+```
+
+```{r}
+#fit model with MARSS:
+fit1<-MARSS(SR_data$logSR, mod_list1)
+```
+
+```{r}
+#model diagnostics
+autoplot(fit1, plot.type="fitted.ytT")
+```
+
+## 2. Full Ricker Model:
+
+### Equations:
+
+$$
+\text{log}(R_t/S_t) = \alpha_t - bS_t +  v_t
+$$
+
+$$
+\alpha_t = \alpha_{t-1} + w_t
+$$
+
+### MARSS:
+
+$$
+y_t = Zx_t + v_t
+$$
+
+$$
+v_t \sim N(0, r)
+$$
+
+$$
+x_t = Bx_{t-1} + w_t
+$$
+
+$$
+w_t \sim N(0, \begin{bmatrix} q & 0 \\ 0 & 0 \end{bmatrix})
+$$
+
+where $B = \begin{bmatrix}1 & 0\\0 & 1\end{bmatrix}$, $x_t = \begin{bmatrix} \alpha_t \\ b \end{bmatrix}$, $Z = \begin{bmatrix} 1 & S_t \end{bmatrix}$
+
+```{r}
+#setting up model
+Bmat <- matrix(c(1,0,0,1), 2, 2, byrow = TRUE)
+TT<-nrow(SR_data)
+ZZ <- array(NA, c(1, 2, TT))  
+ZZ[1,1,] <- rep(1, TT) #intercept
+ZZ[1,2,]<-SR_data$spawners #St
+QQ<-matrix(list(0), 2, 2)
+QQ[1,1]<-"q"
+mod_list2<-list(B = Bmat, Z = ZZ, U = "zero", A = "zero", Q = QQ, R = matrix("r"))
+
+inits_list <- list(x0 = matrix(c(0, 0), nrow = 2))
+```
+
+```{r}
+fit2<-MARSS(SR_data$logSR, mod_list2, inits = inits_list)
+```
+
+```{r}
+#model diagnostics
+autoplot(fit2, plot.type="fitted.ytT")
+```
+
+## 3. Full Ricker Model with Summer PDO
+
+### Equations:
+
+$$
+\text{log}(R_t/S_t) = \alpha_t + \delta_t X_t - bS_t +  v_t
+$$
+
+$$
+\alpha_t = \alpha_{t-1} + w_t
+$$
+
+$$
+\delta_t = \delta_{t-1} + w_t
+$$
+
+### MARSS:
+
+$$
+y_t = Zx_t + v_t
+$$
+
+$$
+v_t \sim N(0, r)
+$$
+
+$$
+x_t = Bx_{t-1} + w_t
+$$
+
+$$
+w_t \sim N(0, \begin{bmatrix} q_\alpha & 0 & 0\\ 0 & q_\delta & 0 \\ 0 & 0 & 0 \end{bmatrix})
+$$
+
+where $B = \begin{bmatrix}1 & 0 & 0 \\0 & 1 & 0 \\ 0&0&1\end{bmatrix}$, $x_t = \begin{bmatrix} \alpha_t \\ \delta_t \\ b \end{bmatrix}$, $Z = \begin{bmatrix} 1 & X_t & S_t \end{bmatrix}$
+
+```{r}
+#setting up model
+Bmat <- matrix(c(1,0,0,0,1,0,0,0,1), 3, 3, byrow = TRUE)
+TT<-nrow(SR_data)
+ZZ <- array(NA, c(1, 3, TT))  
+ZZ[1,1,] <- rep(1, TT) #intercept
+ZZ[1,2,]<-(SR_data$pdo_summer_t2) #summer PDO
+ZZ[1,3,]<-(SR_data$spawners) #St
+QQ<-matrix(list(0), 3, 3)
+QQ[1,1]<-"q_alpha"
+QQ[2,2]<-"q_delta"
+mod_list3<-list(B = Bmat, Z = ZZ, U = "zero", A = "zero", Q = QQ, R = matrix("r"))
+
+inits_list <- list(x0 = matrix(c(0, 0, 0), nrow = 3))
+```
+
+```{r}
+fit3<-MARSS(SR_data$logSR, mod_list3, inits = inits_list,control = list(maxit=1000,allow.degen=F))
+```
+
+## 4. Full Ricker Model with Winter PDO
+
+The equations for #4 are identical with #3, with the exception of Winter PDO as $X_t$
+
+```{r}
+#setting up model
+Bmat <- matrix(c(1,0,0,0,1,0,0,0,1), 3, 3, byrow = TRUE)
+TT<-nrow(SR_data)
+ZZ <- array(NA, c(1, 3, TT))  
+ZZ[1,1,] <- rep(1, TT) #intercept
+ZZ[1,2,]<-(SR_data$pdo_winter_t2) #summer PDO
+ZZ[1,3,]<-(SR_data$spawners) #St
+QQ<-matrix(list(0), 3, 3)
+QQ[1,1]<-"q_alpha"
+QQ[2,2]<-"q_delta"
+mod_list3<-list(B = Bmat, Z = ZZ, U = "zero", A = "zero", Q = QQ, R = matrix("r"))
+
+inits_list <- list(x0 = matrix(c(0, 0, 0), nrow = 3))
+
+fit4<-MARSS(SR_data$logSR, mod_list3, inits = inits_list,control = list(maxit=1000,allow.degen=F))
+```
+
+# Results
+
+## 1. Reduced Ricker Model
+
+Plot of model fit (time series of $\alpha_t$)
+
+```{r}
+ggplot(data = SR_data) + geom_line(aes(x = brood_year, y = logSR), color = "black") + geom_ribbon(aes(x = brood_year, ymin = t(fit1$states - 2*fit1$states.se), ymax = t(fit1$states + 2*fit1$states.se)), linetype = "dashed", color = "blue", fill = NA) + geom_line(aes(x = brood_year, y = t(fit1$states)), color = 'blue') + theme_classic()
+```
+
+## 2. Full Ricker Model
+
+Time series of regression parameters
+
+```{r}
+#intercept
+int_mn<-fit2$states[1,]
+int_se<-fit2$states.se[1,]
+ggplot() + geom_ribbon(aes(x = SR_data$brood_year, ymin = int_mn-2*int_se, ymax = int_mn + 2*int_se), linetype = "dashed", fill = NA, color = "blue") + geom_line(aes(x = SR_data$brood_year, y = int_mn), color = "blue") + labs(x = "Brood Year", y = "alpha_t")
+```
+
+```{r}
+#slope results
+slp_mn<-fit2$states[2,1]
+slp_se<-fit2$states.se[2,1]
+print(paste("Mean: ", slp_mn))
+print(paste("SE: ", slp_se))
+```
+
+## 3. Full Ricker Model with Summer PDO
+
+```{r}
+#intercept
+int_mn<-fit3$states[1,]
+int_se<-fit3$states.se[1,]
+ggplot() + geom_ribbon(aes(x = SR_data$brood_year, ymin = int_mn-2*int_se, ymax = int_mn + 2*int_se), linetype = "dashed", fill = NA, color = "blue") + geom_line(aes(x = SR_data$brood_year, y = int_mn), color = "blue") + labs(x = "Brood Year", y = "alpha_t")
+```
+
+```{r}
+#summer pdo slope results
+slp_mn<-fit3$states[2,]
+slp_se<-fit3$states.se[2,]
+ggplot() + geom_ribbon(aes(x = SR_data$brood_year, ymin = slp_mn-2*slp_se, ymax = slp_mn + 2*slp_se), linetype = "dashed", fill = NA, color = "blue") + geom_line(aes(x = SR_data$brood_year, y = slp_mn), color = "blue") + labs(x = "Brood Year", y = "delta_t (SummerPDO)")
+
+```
+
+Time-varying $\delta_t$ seems unnecessary given its constant nature and very low value.
+
+```{r}
+# spawner slope results
+slp_mn<-fit3$states[3,1]
+slp_se<-fit3$states.se[3,1]
+print(paste("Mean: ", slp_mn))
+print(paste("SE: ", slp_se))
+```
+
+Time-varying $\delta_t$ seems unnecessary given its constant nature and very low value.
+
+## 4. Full Ricker Model with Winter PDO
+
+```{r}
+#intercept
+int_mn<-fit4$states[1,]
+int_se<-fit4$states.se[1,]
+ggplot() + geom_ribbon(aes(x = SR_data$brood_year, ymin = int_mn-2*int_se, ymax = int_mn + 2*int_se), linetype = "dashed", fill = NA, color = "blue") + geom_line(aes(x = SR_data$brood_year, y = int_mn), color = "blue") + labs(x = "Brood Year", y = "alpha_t")
+
+#winter pdo slope results
+slp_mn<-fit4$states[2,]
+slp_se<-fit4$states.se[2,]
+ggplot() + geom_ribbon(aes(x = SR_data$brood_year, ymin = slp_mn-2*slp_se, ymax = slp_mn + 2*slp_se), linetype = "dashed", fill = NA, color = "blue") + geom_line(aes(x = SR_data$brood_year, y = slp_mn), color = "blue") + labs(x = "Brood Year", y = "delta_t (WinterPDO)")
+
+# spawner slope results
+slp_mn<-fit4$states[3,1]
+slp_se<-fit4$states.se[3,1]
+print(paste("Mean: ", slp_mn))
+print(paste("SE: ", slp_se))
+```
+
+Time-varying $\delta_t$ seems unnecessary given its constant nature and very low value.
+
+## Model Comparison
+
+```{r}
+AIC_tab<-tibble("Model" = c("Reduced Ricker", "Full Ricker", "Full w/ Summer PDO", "Full w/ Winter PDO"), "AICc" = c(fit1$AICc, fit2$AICc, fit3$AICc, fit4$AICc))
+AIC_tab<- AIC_tab %>% mutate(DeltaAIC = AICc-min(AICc))
+AIC_tab
+```
+
+Reduced ricker is the best model, which makes sense since the estimate for the b parameter is essentially 0 in the other 3 models. Additionally the covariate parameters for Summer and PDO are both very low as well. All models are basically the same except the full ricker, and full ricker w/ covariates have extra parameter(s).
+
+## Forecasting with Reduced Ricker model
+
+```{r}
+## get list of Kalman filter output
+kf_out <- MARSSkfss(fit1)
+## forecasts of regr parameters; 2xT matrix
+eta <- kf_out$xtt1
+
+mod_list1<-list(B = "identity", Z = "identity", U = "zero", A = "zero", Q = matrix("q"), R = matrix("r"))
+
+Z <- array(NA, c(1, TT))
+Z[1,] <- rep(1, TT) 
+## ts of E(forecasts)
+fore_mean <- vector()
+for(t in 1:TT) {
+  fore_mean[t] <- Z[,t] %*% eta[, t, drop = FALSE]
+}
+
+## variance of regr parameters; 1x2xT array
+Phi <- kf_out$Vtt1
+
+## obs variance; 1x1 matrix
+R_est <- coef(fit1, type="matrix")$R
+
+## ts of Var(forecasts)
+fore_var <- vector()
+for(t in 1:TT) {
+  tZ <- matrix(Z[,t], 1, 1) ## transpose of Z
+  fore_var[t] <- Z[, t] %*% Phi[,,t] %*% tZ + R_est
+}
+ggplot() + geom_line(aes(x = SR_data$brood_year, y=fore_mean)) +
+geom_ribbon(aes(x = SR_data$brood_year, ymin = fore_mean-2*fore_var, ymax = fore_mean + 2*fore_var), linetype = "dashed", fill = NA, color = "black") +  geom_point(aes(x=SR_data$brood_year, y=SR_data$logSR),color="blue") + labs(x="Year",y="Log(R/S)") + theme_bw()
+
+ggplot() + geom_line(aes(x = SR_data$brood_year, y=exp(fore_mean))) +
+geom_ribbon(aes(x = SR_data$brood_year, ymin = exp(fore_mean-2*fore_var), ymax = exp(fore_mean + 2*fore_var)), linetype = "dashed", fill = NA, color = "black") +  geom_point(aes(x=SR_data$brood_year, y=exp(SR_data$logSR)),color="blue") + labs(x="Year",y="R/S") + theme_bw() + ylim(0,25)
+
+```
+
+Observed values almost all fall within the prediction intervals. This is a reasonably well fitting model, however there is an AR1 lag between prediction and observation. This AR1 lag seems to be common throughout most time series prediction models.
+
+# Discussion
+
+We found that Kvichak sockeye recruitment/spawner ratio can be explained well by the simplest Ricker spawner-recruit model with only a time-varying level and observation error, essentially a simple random walk process. Based on the AICc, the best performing model was the simplest model without any density-dependent or PDO information. This is somewhat surprising, as we expected density dependence or conditions in the environment to have an effect. There may be environmental factors besides PDO that we did not account for this model that might influence productivity, including ENSO, SST, and sea surface air pressure (Ovando et al. 2022).
+
+# Team contributions
+
+ZR did the data wrangling and wrote the methods, code, and results for the first two models (reduced and full Ricker). TW wrote the methods, code, and results for the models with covariates and the forecasting. Both team members contributed to the discussion.

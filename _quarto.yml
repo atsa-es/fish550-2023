@@ -43,7 +43,13 @@ book:
         - Lab-4/Final_Write_ups/Lab-4-team-2_final.Rmd
         - Lab-4/Final_Write_ups/Lab-4-team-3_final.Rmd
         - Lab-4/Final_Write_ups/Lab-4-team-4_final.Rmd
-
+    - part: Dynamic Linear Models
+      chapters: 
+        - Lab-5/Lab-5-DLM.Rmd
+        - Lab-5/Final_Write_ups/Lab-5-team-1_final.Rmd
+        - Lab-5/Final_Write_ups/Lab-5-team-2_final.Rmd
+        - Lab-5/Final_Write_ups/Lab-5-team-3_final.Rmd
+        - Lab-5/Final_Write_ups/Lab-5-team-4_final.Rmd
   site-url: https://atsa-es.github.io/fish550-2023/
   repo-url: https://github.com/atsa-es/fish550-2023
   repo-actions: [edit, source, issue]

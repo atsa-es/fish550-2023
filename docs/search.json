@@ -4,7 +4,7 @@
     "href": "index.html",
     "title": "Fish 550 Spring 2023",
     "section": "",
-    "text": "Labs\n\nLab 1: Forecasting with ARIMA models\nLab 2: Interpolating with MARSS models\nLab 3: Dynamic Factor Analysis (DFA)\nLab 4: Hidden Markov Models",
+    "text": "Labs\n\nLab 1: Forecasting with ARIMA models\nLab 2: Interpolating with MARSS models\nLab 3: Dynamic Factor Analysis (DFA)\nLab 4: Hidden Markov Models\nLab 5: Dynamic Linear Models",
     "crumbs": [
       "<span class='chapter-number'>1</span>  <span class='chapter-title'>Labs</span>"
     ]
@@ -1536,6 +1536,435 @@
     "crumbs": [
       "Hidden Markov Models",
       "<span class='chapter-number'>21</span>  <span class='chapter-title'>Team 4 - Lab 4</span>"
+    ]
+  },
+  {
+    "objectID": "Lab-5/Lab-5-DLM.html",
+    "href": "Lab-5/Lab-5-DLM.html",
+    "title": "22  Lab 5 - Dynamic Linear Models",
+    "section": "",
+    "text": "Teams",
+    "crumbs": [
+      "Dynamic Linear Models",
+      "<span class='chapter-number'>22</span>  <span class='chapter-title'>Lab 5 - Dynamic Linear Models</span>"
+    ]
+  },
+  {
+    "objectID": "Lab-5/Lab-5-DLM.html#teams",
+    "href": "Lab-5/Lab-5-DLM.html#teams",
+    "title": "22  Lab 5 - Dynamic Linear Models",
+    "section": "",
+    "text": "Liz Elmstrom (SAFS), Dylan Hubl (SEFS), Maria Kuruvilla (QERM)\nTerrance Wang (SAFS), Zoe Rand (QERM)\nEric French (CEE), Madison Shipley (SAFS), Karl Veggerby (SAFS)\nNick Chambers (SAFS), Emma Timmins-Schiffman (Genome Sci), Miranda Mudge (Molecular & Cellular)",
+    "crumbs": [
+      "Dynamic Linear Models",
+      "<span class='chapter-number'>22</span>  <span class='chapter-title'>Lab 5 - Dynamic Linear Models</span>"
+    ]
+  },
+  {
+    "objectID": "Lab-5/Lab-5-DLM.html#sec-dlm-homework",
+    "href": "Lab-5/Lab-5-DLM.html#sec-dlm-homework",
+    "title": "22  Lab 5 - Dynamic Linear Models",
+    "section": "Background",
+    "text": "Background\nFor the lab this week we will use DLM’s to examine some of the time-varying properties of the spawner-recruit relationship for Pacific salmon. Much work has been done on this topic, particularly by Randall Peterman and his students and post-docs at Simon Fraser University. To do so, researchers commonly use a Ricker model because of its relatively simple form, such that the number of recruits (offspring) born in year \\(t\\) (\\(R_t\\)) from the number of spawners (parents) (\\(S_t\\)) is\n\\[\\begin{equation}\nR_t = a S_t e^{-b S + v_t}.\n\\end{equation}\\]\nThe parameter \\(a\\) determines the maximum reproductive rate in the absence of any density-dependent effects (the slope of the curve at the origin), \\(b\\) is the strength of density dependence, and \\(v_t \\sim N(0,\\sigma)\\). In practice, the model is typically log-transformed so as to make it linear with respect to the predictor variable \\(S_t\\), such that\n\\[\\begin{align}\n\\text{log}(R_t) &= \\text{log}(a) + \\text{log}(S_t) -b S_t + v_t \\\\\n\\text{log}(R_t) - \\text{log}(S_t) &= \\text{log}(a) -b S_t + v_t \\\\\n\\text{log}(R_t/S_t) &= \\text{log}(a) - b S_t + v_t.\n\\end{align}\\]\nSubstituting \\(y_t = \\text{log}(R_t/S_t)\\), \\(x_t = S_t\\), and \\(\\alpha = \\text{log}(a)\\) yields a simple linear regression model with intercept \\(\\alpha\\) and slope \\(b\\).\nUnfortunately, however, residuals from this simple model typically show high-autocorrelation due to common environmental conditions that affect overlapping generations. Therefore, to correct for this and allow for an index of stock productivity that controls for any density-dependent effects, the model may be re-written as\n\\[\\begin{align}\n\\text{log}(R_t/S_t) &= \\alpha_t - b S_t + v_t, \\\\\n\\alpha_t &= \\alpha_{t-1} + w_t,\n\\end{align}\\]\nand \\(w_t \\sim N(0,q)\\). By treating the brood-year specific productivity as a random walk, we allow it to vary, but in an autocorrelated manner so that consecutive years are not independent from one another.\nMore recently, interest has grown in using covariates (\\(e.g.\\), sea-surface temperature) to explain the interannual variability in productivity. In that case, we can can write the model as\n\\[\\begin{equation}\n\\text{log}(R_t/S_t) = \\alpha + \\delta_t X_t - b S_t + v_t.\n\\end{equation}\\]\nIn this case we are estimating some base-level productivity (\\(\\alpha\\)) plus the time-varying effect of some covariate \\(X_t\\) (\\(\\delta_t\\)).\n\nSpawner-recruit data\nThe data come from a large public database begun by Ransom Myers many years ago. If you are interested, you can find lots of time series of spawning-stock, recruitment, and harvest for a variety of fishes around the globe. The website is here.\nFor this exercise, we will use spawner-recruit data for sockeye salmon (Oncorhynchus nerka) from the Kvichak River in SW Alaska that span the years 1952-1989. In addition, we’ll examine the potential effects of the Pacific Decadal Oscillation (PDO) during the salmon’s first year in the ocean, which is widely believed to be a “bottleneck” to survival.\n\n\n\n\n\n\n\n\n\nThese data are in the atsalibrary package on GitHub. If needed, install using the devtools package.\n\n\nCode\n## library(devtools)\n## Windows users will likely need to set this\n## Sys.setenv(\"R_REMOTES_NO_ERRORS_FROM_WARNINGS\" = \"true\")\ndevtools::install_github(\"nwfsc-timeseries/atsalibrary\")\n\n\nLoad the data.\n\n\nCode\ndata(KvichakSockeye, package=\"atsalibrary\")\nSR_data &lt;- KvichakSockeye\n\n\nThe data are a dataframe with columns for brood year (brood_year), number of spawners (spawners), number of recruits (recruits) and PDO at year \\(t-2\\) in summer (pdo_summer_t2) and in winter (pdo_winter_t2).\n\n\nCode\n## head of data file\nhead(SR_data)\n\n\n  brood_year spawners recruits pdo_summer_t2 pdo_winter_t2\n1       1952       NA    20200         -2.79         -1.68\n2       1953       NA      593         -1.20         -1.05\n3       1954       NA      799         -1.85         -1.25\n4       1955       NA     1500         -0.60         -0.68\n5       1956     9440    39000         -0.50         -0.31\n6       1957     2840     4090         -2.36         -1.78",
+    "crumbs": [
+      "Dynamic Linear Models",
+      "<span class='chapter-number'>22</span>  <span class='chapter-title'>Lab 5 - Dynamic Linear Models</span>"
+    ]
+  },
+  {
+    "objectID": "Lab-5/Lab-5-DLM.html#resources",
+    "href": "Lab-5/Lab-5-DLM.html#resources",
+    "title": "22  Lab 5 - Dynamic Linear Models",
+    "section": "Resources",
+    "text": "Resources\nLab materials from April 20 [online here]\nChapter 10 Dynamic Factor Analysis. ATSA Lab Book. [online here]",
+    "crumbs": [
+      "Dynamic Linear Models",
+      "<span class='chapter-number'>22</span>  <span class='chapter-title'>Lab 5 - Dynamic Linear Models</span>"
+    ]
+  },
+  {
+    "objectID": "Lab-5/Final_Write_ups/Lab-5-team-1_final.html",
+    "href": "Lab-5/Final_Write_ups/Lab-5-team-1_final.html",
+    "title": "23  Team 1 - Lab 5",
+    "section": "",
+    "text": "Methods",
+    "crumbs": [
+      "Dynamic Linear Models",
+      "<span class='chapter-number'>23</span>  <span class='chapter-title'>Team 1 - Lab 5</span>"
+    ]
+  },
+  {
+    "objectID": "Lab-5/Final_Write_ups/Lab-5-team-1_final.html#data",
+    "href": "Lab-5/Final_Write_ups/Lab-5-team-1_final.html#data",
+    "title": "23  Team 1 - Lab 5",
+    "section": "Data",
+    "text": "Data\nIn this lab, we applied Dynamic Linear Models to examine some of the time-varying properties of the spawner-recruit relationship for Pacific salmon. We downloaded sockeye data from the Kvichak river system in Bristol Bay Alaska using the MARSS package. This included spawner and recruit data spanning from 1956 to 2005.",
+    "crumbs": [
+      "Dynamic Linear Models",
+      "<span class='chapter-number'>23</span>  <span class='chapter-title'>Team 1 - Lab 5</span>"
+    ]
+  },
+  {
+    "objectID": "Lab-5/Final_Write_ups/Lab-5-team-1_final.html#environmental-covariates",
+    "href": "Lab-5/Final_Write_ups/Lab-5-team-1_final.html#environmental-covariates",
+    "title": "23  Team 1 - Lab 5",
+    "section": "Environmental covariates",
+    "text": "Environmental covariates\nWe tested the data support for the inclusion of annual summer and winter PDO values in our models. We also tested the support for sea surface temperature (SST). These data were also downloaded from the MARSS package in R.",
+    "crumbs": [
+      "Dynamic Linear Models",
+      "<span class='chapter-number'>23</span>  <span class='chapter-title'>Team 1 - Lab 5</span>"
+    ]
+  },
+  {
+    "objectID": "Lab-5/Final_Write_ups/Lab-5-team-1_final.html#models-in-matrix-form",
+    "href": "Lab-5/Final_Write_ups/Lab-5-team-1_final.html#models-in-matrix-form",
+    "title": "23  Team 1 - Lab 5",
+    "section": "Models in matrix form",
+    "text": "Models in matrix form\nWe fit the following four models:\nModel 1: Reduced Ricker model \\[\n\\begin{equation}\ny_t = \\begin{bmatrix}1\\end{bmatrix}\\begin{bmatrix}\n    \\alpha \\\\\n  \\end{bmatrix}_t + v_t \\\\\n\\begin{bmatrix}\n    \\alpha \\\\\n  \\end{bmatrix}_t \\ =\n  \\begin{bmatrix}\n    \\alpha \\\\\n  \\end{bmatrix}_{t-1} + \\begin{bmatrix}\n    w_{\\alpha} \\\\\n  \\end{bmatrix}_t\n\\end{equation}\n\\] \\[\nw_t \\sim N(0, \\begin{bmatrix} q_\\alpha  \\end{bmatrix})\n\\]\nModel 2: Full Ricker model\n\\[\n\\begin{equation}\ny_t = \\begin{bmatrix}\n    1 &\n    S_t\n  \\end{bmatrix}\\begin{bmatrix}\n    \\alpha \\\\\n    \\beta\n  \\end{bmatrix}_t + v_t \\\\\n\\begin{bmatrix}\n    \\alpha \\\\\n    \\beta\n  \\end{bmatrix}_t =\n  \\begin{bmatrix}\n    \\alpha \\\\\n    \\beta\n  \\end{bmatrix}_{t-1} +\n  \\begin{bmatrix}\n    w_{\\alpha} \\\\\n    w_{\\beta}\n  \\end{bmatrix}_t\n\\end{equation}\n\\] \\[\nw_t \\sim N(0, \\begin{bmatrix} q_\\alpha & 0 \\\\ 0 & 0   \\end{bmatrix})\n\\]\nModel 3: Full Ricker model w/ summer pdo as a covariate\n\\[\n\\begin{equation}\ny_t = \\begin{bmatrix}\n    1 &\n    S_t &\n    PDOsummer_t\n  \\end{bmatrix}\\begin{bmatrix}\n    \\alpha \\\\\n    \\beta \\\\\n    \\delta\\\\\n  \\end{bmatrix}_t + v_t \\\\\n\\begin{bmatrix}\n    \\alpha \\\\\n    \\beta \\\\\n    \\delta \\\\\n  \\end{bmatrix}_t =\n  \\begin{bmatrix}\n    \\alpha \\\\\n    \\beta \\\\\n    \\delta \\\\\n  \\end{bmatrix}_{t-1} +\n  \\begin{bmatrix}\n    w_{\\alpha} \\\\\n    w_{\\beta} \\\\\n    w_{\\delta} \\\\\n  \\end{bmatrix}_t\n\\end{equation}\n\\] \\[\nw_t \\sim N(0, \\begin{bmatrix} q_\\alpha & 0 & 0\\\\ 0 & 0 & 0 \\\\ 0 & 0 & q_\\delta \\end{bmatrix})\n\\]\nModel 4: Full Ricker model w/ winter pdo as a covariate\n\\[\n\\begin{equation}\ny_t = \\begin{bmatrix}\n    1 &\n    S_t &\n    PDOwinter_t\n  \\end{bmatrix}\\begin{bmatrix}\n    \\alpha \\\\\n    \\beta \\\\\n    \\delta\\\\\n  \\end{bmatrix}_t + v_t \\\\\n\\begin{bmatrix}\n    \\alpha \\\\\n    \\beta \\\\\n    \\delta \\\\\n  \\end{bmatrix}_t =\n  \\begin{bmatrix}\n    \\alpha \\\\\n    \\beta \\\\\n    \\delta \\\\\n  \\end{bmatrix}_{t-1} +\n  \\begin{bmatrix}\n    w_{\\alpha} \\\\\n    w_{\\beta} \\\\\n    w_{\\delta} \\\\\n  \\end{bmatrix}_t\n\\end{equation}\n\\]\n\\[\nw_t \\sim N(0, \\begin{bmatrix} q_\\alpha & 0 & 0\\\\ 0 & 0 & 0 \\\\ 0 & 0 & q_\\delta \\end{bmatrix})\n\\] ## Model diagnositics\nTo examine our model assumptions, we inspected acf plots of our model residuals.",
+    "crumbs": [
+      "Dynamic Linear Models",
+      "<span class='chapter-number'>23</span>  <span class='chapter-title'>Team 1 - Lab 5</span>"
+    ]
+  },
+  {
+    "objectID": "Lab-5/Final_Write_ups/Lab-5-team-1_final.html#load-the-data",
+    "href": "Lab-5/Final_Write_ups/Lab-5-team-1_final.html#load-the-data",
+    "title": "23  Team 1 - Lab 5",
+    "section": "Load the data",
+    "text": "Load the data\n\n\nCode\n## library(devtools)\n## Windows users will likely need to set this\n#Sys.setenv(\"R_REMOTES_NO_ERRORS_FROM_WARNINGS\" = \"true\")\n#devtools::install_github(\"nwfsc-timeseries/atsalibrary\")\n\nlibrary(tidyverse)\n\n\n── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ dplyr     1.1.3     ✔ readr     2.1.4\n✔ forcats   1.0.0     ✔ stringr   1.5.0\n✔ ggplot2   3.4.2     ✔ tibble    3.2.1\n✔ lubridate 1.9.2     ✔ tidyr     1.3.0\n✔ purrr     1.0.1     \n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ purrr::%||%()   masks base::%||%()\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\nℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors\n\n\nCode\nlibrary(MARSS)\n## get data\ndata(KvichakSockeye, package=\"atsalibrary\")\nSR_data &lt;- KvichakSockeye\nhead(SR_data)\n\n\n# A tibble: 6 × 5\n# Groups:   brood_year [6]\n  brood_year spawners recruits pdo_summer_t2 pdo_winter_t2\n       &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;         &lt;dbl&gt;         &lt;dbl&gt;\n1       1952       NA    20200         -2.79         -1.68\n2       1953       NA      593         -1.2          -1.05\n3       1954       NA      799         -1.85         -1.25\n4       1955       NA     1500         -0.6          -0.68\n5       1956     9440    39000         -0.5          -0.31\n6       1957     2840     4090         -2.36         -1.78",
+    "crumbs": [
+      "Dynamic Linear Models",
+      "<span class='chapter-number'>23</span>  <span class='chapter-title'>Team 1 - Lab 5</span>"
+    ]
+  },
+  {
+    "objectID": "Lab-5/Final_Write_ups/Lab-5-team-1_final.html#wrangle-the-data",
+    "href": "Lab-5/Final_Write_ups/Lab-5-team-1_final.html#wrangle-the-data",
+    "title": "23  Team 1 - Lab 5",
+    "section": "Wrangle the data",
+    "text": "Wrangle the data\n\n\nCode\n#create log ratio for yt\nSR_data$y &lt;- log(SR_data$recruits/SR_data$spawners)\n\n#date to columns\ndat &lt;- t(SR_data)\ncolnames(dat) &lt;- SR_data$brood_year\ndat &lt;- dat[-1,]\ndat &lt;- dat[c(5,1,3,4,2),]\n\n## plot response variable\ndat.ts &lt;- ts(log(SR_data$recruits/SR_data$spawners), start = 1952, end = 2005, frequency =1)\nplot.ts(dat.ts)",
+    "crumbs": [
+      "Dynamic Linear Models",
+      "<span class='chapter-number'>23</span>  <span class='chapter-title'>Team 1 - Lab 5</span>"
+    ]
+  },
+  {
+    "objectID": "Lab-5/Final_Write_ups/Lab-5-team-1_final.html#task-1-reduced-ricker",
+    "href": "Lab-5/Final_Write_ups/Lab-5-team-1_final.html#task-1-reduced-ricker",
+    "title": "23  Team 1 - Lab 5",
+    "section": "Task 1: Reduced Ricker",
+    "text": "Task 1: Reduced Ricker\n\nWe first fit a reduced form of Ricker’s model that includes only a time-varying level (\\(\\alpha_t\\)) and observation error (\\(v_t\\)). That is,\n\n\\[\n\\begin{align*}\n\\text{log}(R_t) &= \\alpha_t + \\text{log}(S_t) + v_t \\\\\n\\text{log}(R_t/S_t) &= \\alpha_t + v_t\n\\end{align*}\n\\]\nThis model assumes no density-dependent survival in that the number of recruits is an ascending function of spawners.\n\n\nCode\n# NO density dependence / stochastic level \n\nmod1 &lt;- list(\n  Z = \"identity\",\n  U=\"zero\",\n  R=matrix(\"r\",nrow=1),\n  B=\"identity\",\n  A=\"zero\",\n  Q=matrix(\"q\",nrow=1)\n)\n\nm1 &lt;- MARSS(dat[1,],model = mod1)\n\n\nSuccess! abstol and log-log tests passed at 29 iterations.\nAlert: conv.test.slope.tol is 0.5.\nTest with smaller values (&lt;0.1) to ensure convergence.\n\nMARSS fit is\nEstimation method: kem \nConvergence test: conv.test.slope.tol = 0.5, abstol = 0.001\nEstimation converged in 29 iterations. \nLog-likelihood: -52.53672 \nAIC: 111.0734   AICc: 111.6888   \n \n      Estimate\nR.r      0.228\nQ.q      0.281\nx0.x0    0.952\nInitial states (x0) defined at t=0\n\nStandard errors have not been calculated. \nUse MARSSparamCIs to compute CIs and bias estimates.\n\n\n\n\\(\\alpha_t\\) plot and the AICc.\n\n\nCode\n#plot alpha values\nalpha1 &lt;- as.numeric(m1$states)\nalpha.se1 &lt;- as.numeric(m1$states.se)\nplot(alpha1~SR_data$brood_year,type='l', ylim=c(-3,3))\nlines(alpha1+2*alpha.se1~SR_data$brood_year, lty=\"dashed\")\nlines(alpha1-2*alpha.se1~SR_data$brood_year, lty=\"dashed\")\n\n\n\n\n\n\n\n\n\nCode\n#AICc value\nm1$AICc\n\n\n[1] 111.6888\n\n\nThe AICc of our first model is 111.688.\n\n\nModel diagnostics\n\n\nCode\n#plot model residuals diagnostics. \nres &lt;- residuals(m1)[,7]\ntmp &lt;- which(!is.na(res))\nres &lt;- res[tmp]\nacf(res)\n\n\n\n\n\n\n\n\n\nCode\n#or \n#autoplot.marssMLE(m1)\n\nplot(m1, plot.type = \"qqplot.std.model.resids.ytt1\")\n\n\n\n\n\n\n\n\n\nplot type = qqplot.std.model.resids.ytt1\n\n\nCode\nplot(m1, plot.type = \"acf.std.model.resids.ytt1\")\n\n\n\n\n\n\n\n\n\nplot type = acf.std.model.resids.ytt1\n\n\nThis simplified model show some signs of autocorrelation in residuals.",
+    "crumbs": [
+      "Dynamic Linear Models",
+      "<span class='chapter-number'>23</span>  <span class='chapter-title'>Team 1 - Lab 5</span>"
+    ]
+  },
+  {
+    "objectID": "Lab-5/Final_Write_ups/Lab-5-team-1_final.html#task-2-full-ricker-model",
+    "href": "Lab-5/Final_Write_ups/Lab-5-team-1_final.html#task-2-full-ricker-model",
+    "title": "23  Team 1 - Lab 5",
+    "section": "Task 2: Full Ricker Model",
+    "text": "Task 2: Full Ricker Model\nWe then fit the full Ricker model with a time-varying intercept and a static effect of spawners.\n\n\nCode\n#we model the underlying states of alpha (brood-year productivity) and beta\n#beta is prevented from changing.\n\nspawn &lt;- matrix(dat[2,-c(1:4)],nrow=1)    #not sure if we should scale this or not\nratio &lt;- SR_data$y[-c(1:4)]               #remove responses that corresponded to Spawner = NA\n\nm &lt;- 2                     #number of parameters in process \nTT &lt;- length(spawn)      #number of data points\n\nB &lt;-  diag(m)                         #\"identity\"\nU &lt;-  matrix(0, nrow = m, ncol = 1)   #\"zero\"\nQ &lt;- matrix(list(\"q.alpha\", 0, 0, 0), nrow = 2)  # Setting the effect of spawners to static\nZ &lt;- array(NA, c(1, m, TT))  ## NxMxT; empty for now\nZ[1,1,] &lt;- rep(1, TT)        ## Nx1; 1's for intercept\nZ[1,2,] &lt;- spawn            ## Nx1; predictor variable \nA = matrix(0)            #\"zero\"\nR &lt;-  matrix(\"r\")\n\ninits_list &lt;- list(x0 = matrix(c(0, 0), nrow = m))     \nmod_list &lt;- list(B = B, U = U, Q = Q, Z = Z, A = A, R = R)\n\n## fit the model with MARSS\nm2 &lt;- MARSS(ratio, mod_list, inits = inits_list)\n\n\nSuccess! abstol and log-log tests passed at 29 iterations.\nAlert: conv.test.slope.tol is 0.5.\nTest with smaller values (&lt;0.1) to ensure convergence.\n\nMARSS fit is\nEstimation method: kem \nConvergence test: conv.test.slope.tol = 0.5, abstol = 0.001\nEstimation converged in 29 iterations. \nLog-likelihood: -51.81022 \nAIC: 111.6204   AICc: 112.6731   \n \n          Estimate\nR.r       2.19e-01\nQ.q.alpha 2.92e-01\nx0.X1     9.35e-01\nx0.X2     7.02e-06\nInitial states (x0) defined at t=0\n\nStandard errors have not been calculated. \nUse MARSSparamCIs to compute CIs and bias estimates.\n\n\n\n\\(\\alpha_t\\) plot and the AICc.\nThe time series of \\(\\alpha_t\\) for this model is an estimate of the stock productivity in the absence of density-dependent effects. Here we plot the ts of \\(\\alpha_t\\) and note the AICc for this model.\n\n\nCode\nalpha &lt;- as.numeric(m2$states[1,])\nbeta &lt;- as.numeric(m2$states[2,]) # Here, beta does not time vary (this is the static effect of spawners)\nalpha.se &lt;- as.numeric(m2$states.se[1,])\nbeta.se &lt;- as.numeric(m2$states.se[2,])\n\n#from first model\nplot(alpha1~SR_data$brood_year,type='l', ylim=c(-3,3), xlim= c(1950, 2005))\nlines(alpha1+2*alpha.se1~SR_data$brood_year, lty=\"dashed\")\nlines(alpha1-2*alpha.se1~SR_data$brood_year, lty=\"dashed\")\n#second model\nlines(alpha~SR_data$brood_year[-c(1:4)],type='l',col=\"red\")\nlines(alpha+2*alpha.se~SR_data$brood_year[-c(1:4)], lty=\"dashed\", col=\"red\")\nlines(alpha-2*alpha.se~SR_data$brood_year[-c(1:4)], lty=\"dashed\", col=\"red\")\n\n\n\n\n\n\n\n\n\nCode\n#AIC value\nm1$AICc\n\n\n[1] 111.6888\n\n\nCode\nm2$AICc  #AICc is within a single point.\n\n\n[1] 112.6731\n\n\nHow do these estimates of productivity compare to those from the previous question?\nWe were expecting the alphas (productivity) from model 2 to be smaller than model 1, however the estimated values of alpha are very similar in each model.\nThe model AICcs are also very similar and only vary by a single point.\n\n\nModel diagnostics\n\n\nCode\n#plot model diagnostics. \n#autoplot.marssMLE(m2)\n\nplot(m2, plot.type = \"qqplot.std.model.resids.ytt1\")\n\n\n\n\n\n\n\n\n\nplot type = qqplot.std.model.resids.ytt1\n\n\nCode\nplot(m2, plot.type = \"acf.std.model.resids.ytt1\")\n\n\n\n\n\n\n\n\n\nplot type = acf.std.model.resids.ytt1\n\n\nSimilar to our first model, the ACF plot still shows a lag at 5 and 10.",
+    "crumbs": [
+      "Dynamic Linear Models",
+      "<span class='chapter-number'>23</span>  <span class='chapter-title'>Team 1 - Lab 5</span>"
+    ]
+  },
+  {
+    "objectID": "Lab-5/Final_Write_ups/Lab-5-team-1_final.html#task-3-expanded-ricker-with-summer-pdo",
+    "href": "Lab-5/Final_Write_ups/Lab-5-team-1_final.html#task-3-expanded-ricker-with-summer-pdo",
+    "title": "23  Team 1 - Lab 5",
+    "section": "Task 3: Expanded Ricker with summer PDO",
+    "text": "Task 3: Expanded Ricker with summer PDO\nNext we fit the expanded Ricker model including the summer PDO index as the covariate (pdo_summer_t2).\n\n\nCode\n#first model we assume there is no density dependence\n#we model the underlying states of alpha (brood-year productivity) and beta\n#beta is prevented from changing.\n\npdo_s &lt;- matrix(dat[3,-c(1:4)], nrow=1)\n            \nm &lt;- 3                     #number of parameters in process \nTT &lt;- length(spawn)      #number of data points\n\nB &lt;-  diag(m)                         #\"identity\"\nU &lt;-  matrix(0, nrow = m, ncol = 1)   #\"zero\"\nQ &lt;- matrix(list(\"q.alpha\", 0,0,              #we no longer want alpha to vary\n                 0, 0,0,  #Do we want beta to vary now?\n                 0,0,\"q.pdo_s\"), nrow = 3, byrow = TRUE)  # to have characters and numbers in same matrix use a list\nZ &lt;- array(NA, c(1, m, TT))  ## NxMxT; empty for now\nZ[1,1,] &lt;- rep(1, TT)        ## Nx1; 1's for intercept\nZ[1,2,] &lt;- spawn           ## Nx1; predictor variable spawners\nZ[1,3,] &lt;-  pdo_s            ## Nx1; predictor PDO summer\nA = matrix(0)                #\"zero\"\nR &lt;-  matrix(\"r\")\n\ninits_list2 &lt;- list(x0 = matrix(c(0,0,0), nrow = m))     \nmod_list2 &lt;- list(B = B, U = U, Q = Q, Z = Z, A = A, R = R)\ncont_list &lt;- list(maxit=10000)\n# run model\nm3 &lt;- MARSS(ratio, mod_list2, inits = inits_list2, method = \"BFGS\")\n\n\nSuccess! Converged in 21 iterations.\nFunction MARSSkfas used for likelihood calculation.\n\nMARSS fit is\nEstimation method: BFGS \nEstimation converged in 21 iterations. \nLog-likelihood: -51.78324 \nAIC: 115.5665   AICc: 117.8998   \n \n          Estimate\nR.r       2.00e-01\nQ.q.alpha 3.17e-01\nQ.q.pdo_s 1.73e-14\nx0.X1     1.01e+00\nx0.X2     5.49e-06\nx0.X3     2.85e-02\nInitial states (x0) defined at t=0\n\nStandard errors have not been calculated. \nUse MARSSparamCIs to compute CIs and bias estimates.\n\n\n\n\\(\\alpha_t\\), \\(\\delta_t\\) plots and the AICc.\nWhat is the mean level of productivity?\nThe mean level of productivity is 0.26.\n\n\nCode\nalpha3 &lt;- as.numeric(m3$states[1,])  #static number\nbeta3 &lt;- as.numeric(m3$states[2,])\npdo_s &lt;- as.numeric(m3$states[3,])\n\nalpha.se3 &lt;- as.numeric(m3$states.se[1,])\nbeta.se3 &lt;- as.numeric(m3$states.se[2,])\npdo_s.se3 &lt;- as.numeric(m3$states.se[3,])\n\nmean_produc_m3 &lt;- mean(alpha3)\n\n\n#from first model\nplot(alpha1~SR_data$brood_year,type='l', ylim=c(-3,3), xlim= c(1950, 2005))\nlines(alpha1+2*alpha.se1~SR_data$brood_year, lty=\"dashed\")\nlines(alpha1-2*alpha.se1~SR_data$brood_year, lty=\"dashed\")\n#second model\nlines(alpha~SR_data$brood_year[-c(1:4)],type='l',col=\"red\")\nlines(alpha+2*alpha.se~SR_data$brood_year[-c(1:4)], lty=\"dashed\", col=\"red\")\nlines(alpha-2*alpha.se~SR_data$brood_year[-c(1:4)], lty=\"dashed\", col=\"red\")\n#third model\nlines(alpha3~SR_data$brood_year[-c(1:4)],type='l', col=\"blue\")\nlines(alpha3+2*alpha.se3~SR_data$brood_year[-c(1:4)], lty=\"dashed\", col=\"blue\")\nlines(alpha3-2*alpha.se3~SR_data$brood_year[-c(1:4)], lty=\"dashed\", col=\"blue\")\n\n\n\n\n\n\n\n\n\nCode\nm1$states[-c(1:4)] #alpha from model 1 trimmed to same length as model 2 for comparison\n\n\n [1]  0.96768907  0.41504542 -0.07559988  0.09957993  0.66572593  0.41102136\n [7]  0.73469887  1.06271995  1.22760763  0.69548408  0.26109217 -0.47323645\n[13] -0.87371945 -0.43990780  0.01784553  0.33968848  0.87191889  1.67428170\n[19]  1.60321781  1.31753061  1.33987068  0.93953843  0.60900628  0.76058590\n[25]  0.21761436  0.30919509  0.53966053  0.95001634  0.90106740  0.94894580\n[31]  1.08056320  0.87788167  0.91717373  0.98016867  0.83743070  0.14769941\n[37] -0.51871543 -0.34144531 -0.20468399 -0.11832377 -0.20219898 -0.67191046\n[43] -0.80922950 -0.80922950 -0.80922950 -0.80922950 -0.80922950 -0.80922950\n[49] -0.80922950 -0.80922950\n\n\nCode\nm2$states[1,]      #alpha from model 2\n\n\n [1]  0.93687677  0.38492602 -0.11351090  0.06306778  0.62042657  0.36572052\n [7]  0.71126813  1.05442108  1.21313214  0.60717372  0.21671558 -0.52213866\n[13] -0.93477393 -0.50198037 -0.04751330  0.30283846  0.85410371  1.68340757\n[19]  1.58176529  1.26071722  1.31990147  0.91346965  0.56035308  0.70295245\n[25]  0.12188586  0.26371715  0.51157963  0.92734338  0.84922110  0.90504670\n[31]  1.06045139  0.83829287  0.88203397  0.94266491  0.80852443  0.10911945\n[37] -0.57699793 -0.38350912 -0.25223166 -0.16083111 -0.21672970 -0.69599440\n[43] -0.83361454 -0.83361454 -0.83361454 -0.83361454 -0.83361454 -0.83361454\n[49] -0.83361454 -0.83361454\n\n\nCode\nm3$states[1,]     #alpha from model 3\n\n\n [1]  1.01456328  0.43277203 -0.12293425  0.04161336  0.64985647  0.35020908\n [7]  0.72137765  1.09991480  1.29733813  0.65635620  0.26681983 -0.53165805\n[13] -0.97250801 -0.48592658 -0.02317135  0.31549460  0.87999216  1.77563537\n[19]  1.64858090  1.29918781  1.36825308  0.94561830  0.56281262  0.74843782\n[25]  0.10640414  0.24853099  0.50294685  0.94388001  0.85522517  0.89233555\n[31]  1.07259089  0.83162221  0.87814013  0.95487870  0.85044945  0.11469933\n[37] -0.61207571 -0.37226049 -0.25357439 -0.16095392 -0.19724355 -0.72628320\n[43] -0.86654476 -0.86654476 -0.86654476 -0.86654476 -0.86654476 -0.86654476\n[49] -0.86654476 -0.86654476\n\n\nCode\nm2$states[2,]     # beta from model 2\n\n\n [1] 7.0198e-06 7.0198e-06 7.0198e-06 7.0198e-06 7.0198e-06 7.0198e-06\n [7] 7.0198e-06 7.0198e-06 7.0198e-06 7.0198e-06 7.0198e-06 7.0198e-06\n[13] 7.0198e-06 7.0198e-06 7.0198e-06 7.0198e-06 7.0198e-06 7.0198e-06\n[19] 7.0198e-06 7.0198e-06 7.0198e-06 7.0198e-06 7.0198e-06 7.0198e-06\n[25] 7.0198e-06 7.0198e-06 7.0198e-06 7.0198e-06 7.0198e-06 7.0198e-06\n[31] 7.0198e-06 7.0198e-06 7.0198e-06 7.0198e-06 7.0198e-06 7.0198e-06\n[37] 7.0198e-06 7.0198e-06 7.0198e-06 7.0198e-06 7.0198e-06 7.0198e-06\n[43] 7.0198e-06 7.0198e-06 7.0198e-06 7.0198e-06 7.0198e-06 7.0198e-06\n[49] 7.0198e-06 7.0198e-06\n\n\nCode\nm3$states[2,]     #beta from model 3\n\n\n [1] 5.486033e-06 5.486033e-06 5.486033e-06 5.486033e-06 5.486033e-06\n [6] 5.486033e-06 5.486033e-06 5.486033e-06 5.486033e-06 5.486033e-06\n[11] 5.486033e-06 5.486033e-06 5.486033e-06 5.486033e-06 5.486033e-06\n[16] 5.486033e-06 5.486033e-06 5.486033e-06 5.486033e-06 5.486033e-06\n[21] 5.486033e-06 5.486033e-06 5.486033e-06 5.486033e-06 5.486033e-06\n[26] 5.486033e-06 5.486033e-06 5.486033e-06 5.486033e-06 5.486033e-06\n[31] 5.486033e-06 5.486033e-06 5.486033e-06 5.486033e-06 5.486033e-06\n[36] 5.486033e-06 5.486033e-06 5.486033e-06 5.486033e-06 5.486033e-06\n[41] 5.486033e-06 5.486033e-06 5.486033e-06 5.486033e-06 5.486033e-06\n[46] 5.486033e-06 5.486033e-06 5.486033e-06 5.486033e-06 5.486033e-06\n\n\nCode\nm3$states[3,]    #estimate of pdo_s coeficient was allowed to vary in Q but was estimated as static\n\n\n [1] 0.02846597 0.02846597 0.02846597 0.02846597 0.02846597 0.02846597\n [7] 0.02846597 0.02846597 0.02846597 0.02846597 0.02846597 0.02846597\n[13] 0.02846597 0.02846597 0.02846597 0.02846597 0.02846597 0.02846597\n[19] 0.02846597 0.02846597 0.02846597 0.02846597 0.02846597 0.02846597\n[25] 0.02846597 0.02846597 0.02846597 0.02846597 0.02846597 0.02846597\n[31] 0.02846597 0.02846597 0.02846597 0.02846597 0.02846597 0.02846597\n[37] 0.02846597 0.02846597 0.02846597 0.02846597 0.02846597 0.02846597\n[43] 0.02846597 0.02846597 0.02846597 0.02846597 0.02846597 0.02846597\n[49] 0.02846597 0.02846597\n\n\nCode\n#AIC value\nm1$AICc\n\n\n[1] 111.6888\n\n\nCode\nm2$AICc  #AICc is within a single point.\n\n\n[1] 112.6731\n\n\nCode\nm3$AICc  # getting worse\n\n\n[1] 117.8998\n\n\nCode\nprint(mean_produc_m3)\n\n\n[1] 0.2587118\n\n\nPlot the ts of \\(\\delta_t\\) and note the AICc for this model.\nThe plot for state = X3 is the time series of \\(delta_t\\). The model estimates X3 to be 0.03 and static.\n\n\nCode\nautoplot(m3, plot.type = \"xtT\")\n\n\n\n\n\n\n\n\n\n\n\nModel diagnostics\n\n\nCode\nplot(m3)\n\n\n\n\n\n\n\n\n\nplot type =  fitted.ytT  Observations with fitted values\nHit &lt;Return&gt; to see next plot (q to exit): \n\n\n\n\n\n\n\n\n\nplot type = xtT Estimated states\nHit &lt;Return&gt; to see next plot (q to exit): \n\n\n\n\n\n\n\n\n\nplot type = model.resids.ytt1\nHit &lt;Return&gt; to see next plot (q to exit): \n\n\n\n\n\n\n\n\n\nplot type = std.model.resids.ytT\nHit &lt;Return&gt; to see next plot (q to exit): \n\n\n\n\n\n\n\n\n\nplot type = std.state.resids.xtT\nHit &lt;Return&gt; to see next plot (q to exit): \n\n\n\n\n\n\n\n\n\nplot type = qqplot.std.model.resids.ytt1\nHit &lt;Return&gt; to see next plot (q to exit): \n\n\n\n\n\n\n\n\n\nplot type = qqplot.std.state.resids.xtT\nHit &lt;Return&gt; to see next plot (q to exit): \n\n\n\n\n\n\n\n\n\nplot type = acf.std.model.resids.ytt1",
+    "crumbs": [
+      "Dynamic Linear Models",
+      "<span class='chapter-number'>23</span>  <span class='chapter-title'>Team 1 - Lab 5</span>"
+    ]
+  },
+  {
+    "objectID": "Lab-5/Final_Write_ups/Lab-5-team-1_final.html#task-4-expanded-ricker-with-winter-pdo",
+    "href": "Lab-5/Final_Write_ups/Lab-5-team-1_final.html#task-4-expanded-ricker-with-winter-pdo",
+    "title": "23  Team 1 - Lab 5",
+    "section": "Task 4: Expanded Ricker with winter PDO",
+    "text": "Task 4: Expanded Ricker with winter PDO\nFinally, we fit the expanded model including the winter PDO index as the covariate (pdo_winter_t2).\n\n\nCode\npdo_w &lt;- matrix(dat[4,-c(1:4)], nrow=1)\n\nm &lt;- 3                   #number of parameters in process \nTT &lt;- length(spawn)      #number of data points\n\nB &lt;-  diag(m)                         #\"identity\"\nU &lt;-  matrix(0, nrow = m, ncol = 1)   #\"zero\"\nQ &lt;- matrix(list(\"q.alpha\", 0,0,              #we no longer want alpha to vary\n                 0, 0,0,  #Do we want beta to vary now?\n                 0,0,\"q.pdo_w\"), nrow = 3, byrow = TRUE) # to have characters and numbers in same matrix use a list\nZ &lt;- array(NA, c(1, m, TT))  ## NxMxT; empty for now\nZ[1,1,] &lt;- rep(1, TT)        ## Nx1; 1's for intercept\nZ[1,2,] &lt;- spawn           ## Nx1; predictor variable spawners\nZ[1,3,] &lt;-  pdo_w           ## Nx1; predictor PDO summer\n#Z[1,4,] &lt;-  pdo_w            ## Nx1; predictor PDO winter\nA = matrix(0)                #\"zero\"\nR &lt;-  matrix(\"r\")\n\ninits_list4 &lt;- list(x0 = matrix(c(0,0,0), nrow = m))     \nmod_list4 &lt;- list(B = B, U = U, Q = Q, Z = Z, A = A, R = R)\ncont_list &lt;- list(maxit=10000)\n# run model\nm4 &lt;- MARSS(ratio, mod_list4, inits = inits_list4, control = cont_list, method = \"BFGS\")\n\n\nSuccess! Converged in 18 iterations.\nFunction MARSSkfas used for likelihood calculation.\n\nMARSS fit is\nEstimation method: BFGS \nEstimation converged in 18 iterations. \nLog-likelihood: -51.38573 \nAIC: 114.7715   AICc: 117.1048   \n \n          Estimate\nR.r       1.96e-01\nQ.q.alpha 3.11e-01\nQ.q.pdo_w 4.17e-12\nx0.X1     1.13e+00\nx0.X2     1.32e-06\nx0.X3     1.54e-01\nInitial states (x0) defined at t=0\n\nStandard errors have not been calculated. \nUse MARSSparamCIs to compute CIs and bias estimates.\n\n\n\n\\(\\alpha_t\\), \\(\\delta_t\\) plots and the AICc.\nWhat is the mean level of productivity? Plot the ts of \\(\\delta_t\\) and note the AICc for this model. The mean productivity level is 0.28.\n\n\nCode\nalpha4 &lt;- as.numeric(m4$states[1,])  #static number\nbeta4 &lt;- as.numeric(m4$states[2,])\npdo_w4 &lt;- as.numeric(m4$states[3,])\n\nalpha.se4 &lt;- as.numeric(m4$states.se[1,])\nbeta.se4 &lt;- as.numeric(m4$states.se[2,])\npdo_s.se4 &lt;- as.numeric(m4$states.se[3,])\n\nmean_produc_m4 &lt;- mean(alpha4)\nprint(mean_produc_m4)\n\n\n[1] 0.2839821\n\n\nCode\n#from first model\nplot(alpha1~SR_data$brood_year,type='l', ylim=c(-3,3), xlim= c(1950, 2005))\nlines(alpha1+2*alpha.se1~SR_data$brood_year, lty=\"dashed\")\nlines(alpha1-2*alpha.se1~SR_data$brood_year, lty=\"dashed\")\n#second model\nlines(alpha~SR_data$brood_year[-c(1:4)],type='l',col=\"red\")\nlines(alpha+2*alpha.se~SR_data$brood_year[-c(1:4)], lty=\"dashed\", col=\"red\")\nlines(alpha-2*alpha.se~SR_data$brood_year[-c(1:4)], lty=\"dashed\", col=\"red\")\n#third model\nlines(alpha3~SR_data$brood_year[-c(1:4)],type='l', col=\"blue\")\nlines(alpha3+2*alpha.se3~SR_data$brood_year[-c(1:4)], lty=\"dashed\", col=\"blue\")\nlines(alpha3-2*alpha.se3~SR_data$brood_year[-c(1:4)], lty=\"dashed\", col=\"blue\")\n#fourth model\nlines(alpha4~SR_data$brood_year[-c(1:4)],type='l', col=\"green\")\nlines(alpha4+2*alpha.se4~SR_data$brood_year[-c(1:4)], lty=\"dashed\", col=\"green\")\nlines(alpha4-2*alpha.se4~SR_data$brood_year[-c(1:4)], lty=\"dashed\", col=\"green\")\n\n\n\n\n\n\n\n\n\n\n\nCode\nautoplot(m4, plot.type = \"xtT\")\n\n\n\n\n\n\n\n\n\n\n\nModel Diagnostics\nAlso plot appropriate model diagnostics.\n\n\nCode\nplot(m4)\n\n\n\n\n\n\n\n\n\nplot type =  fitted.ytT  Observations with fitted values\nHit &lt;Return&gt; to see next plot (q to exit): \n\n\n\n\n\n\n\n\n\nplot type = xtT Estimated states\nHit &lt;Return&gt; to see next plot (q to exit): \n\n\n\n\n\n\n\n\n\nplot type = model.resids.ytt1\nHit &lt;Return&gt; to see next plot (q to exit): \n\n\n\n\n\n\n\n\n\nplot type = std.model.resids.ytT\nHit &lt;Return&gt; to see next plot (q to exit): \n\n\n\n\n\n\n\n\n\nplot type = std.state.resids.xtT\nHit &lt;Return&gt; to see next plot (q to exit): \n\n\n\n\n\n\n\n\n\nplot type = qqplot.std.model.resids.ytt1\nHit &lt;Return&gt; to see next plot (q to exit): \n\n\n\n\n\n\n\n\n\nplot type = qqplot.std.state.resids.xtT\nHit &lt;Return&gt; to see next plot (q to exit): \n\n\n\n\n\n\n\n\n\nplot type = acf.std.model.resids.ytt1",
+    "crumbs": [
+      "Dynamic Linear Models",
+      "<span class='chapter-number'>23</span>  <span class='chapter-title'>Team 1 - Lab 5</span>"
+    ]
+  },
+  {
+    "objectID": "Lab-5/Final_Write_ups/Lab-5-team-1_final.html#model-comparison",
+    "href": "Lab-5/Final_Write_ups/Lab-5-team-1_final.html#model-comparison",
+    "title": "23  Team 1 - Lab 5",
+    "section": "Model comparison",
+    "text": "Model comparison\n\n\nCode\n#AIC value\nm1$AICc\n\n\n[1] 111.6888\n\n\nCode\nm2$AICc  #AICc is within a single point.\n\n\n[1] 112.6731\n\n\nCode\nm3$AICc  # getting worse\n\n\n[1] 117.8998\n\n\nCode\nm4$AICc\n\n\n[1] 117.1048\n\n\n\nBased on AICc, which of the models above is the most parsimonious? Is it well behaved (i.e., are the model assumptions met)? Plot the model forecasts for the best model. Is this a good forecast model?\n\nThe best model is our first model with just a time varying intercept. However, the model with a static effect of spawners had almost equal support. The model is well behaved and all model assumptions are met.",
+    "crumbs": [
+      "Dynamic Linear Models",
+      "<span class='chapter-number'>23</span>  <span class='chapter-title'>Team 1 - Lab 5</span>"
+    ]
+  },
+  {
+    "objectID": "Lab-5/Final_Write_ups/Lab-5-team-1_final.html#model-forecasts",
+    "href": "Lab-5/Final_Write_ups/Lab-5-team-1_final.html#model-forecasts",
+    "title": "23  Team 1 - Lab 5",
+    "section": "Model forecasts",
+    "text": "Model forecasts\n\n\nCode\nfr1 &lt;- predict(m1, type=\"ytT\", n.ahead=1)\nplot(fr1)",
+    "crumbs": [
+      "Dynamic Linear Models",
+      "<span class='chapter-number'>23</span>  <span class='chapter-title'>Team 1 - Lab 5</span>"
+    ]
+  },
+  {
+    "objectID": "Lab-5/Final_Write_ups/Lab-5-team-2_final.html",
+    "href": "Lab-5/Final_Write_ups/Lab-5-team-2_final.html",
+    "title": "24  Team 2 - Lab 5",
+    "section": "",
+    "text": "Data\nDescribe the salmon data and any environmental covariates you decide to examine.",
+    "crumbs": [
+      "Dynamic Linear Models",
+      "<span class='chapter-number'>24</span>  <span class='chapter-title'>Team 2 - Lab 5</span>"
+    ]
+  },
+  {
+    "objectID": "Lab-5/Final_Write_ups/Lab-5-team-2_final.html#load-the-data",
+    "href": "Lab-5/Final_Write_ups/Lab-5-team-2_final.html#load-the-data",
+    "title": "24  Team 2 - Lab 5",
+    "section": "Load the data",
+    "text": "Load the data\n\n\nCode\n## library(devtools)\n## Windows users will likely need to set this\n## Sys.setenv(\"R_REMOTES_NO_ERRORS_FROM_WARNINGS\" = \"true\")\n#devtools::install_github(\"nwfsc-timeseries/atsalibrary\")\n\n## get data\ndata(KvichakSockeye, package=\"atsalibrary\")\nSR_data &lt;- KvichakSockeye\n\n\nThe data are a dataframe with columns for brood year (brood_year), number of spawners (spawners), number of recruits (recruits) and PDO at year \\(t-2\\) in summer (pdo_summer_t2) and in winter (pdo_winter_t2).\n\n\nCode\n## head of data file\nhead(SR_data)\n\n\n  brood_year spawners recruits pdo_summer_t2 pdo_winter_t2\n1       1952       NA    20200         -2.79         -1.68\n2       1953       NA      593         -1.20         -1.05\n3       1954       NA      799         -1.85         -1.25\n4       1955       NA     1500         -0.60         -0.68\n5       1956     9440    39000         -0.50         -0.31\n6       1957     2840     4090         -2.36         -1.78",
+    "crumbs": [
+      "Dynamic Linear Models",
+      "<span class='chapter-number'>24</span>  <span class='chapter-title'>Team 2 - Lab 5</span>"
+    ]
+  },
+  {
+    "objectID": "Lab-5/Final_Write_ups/Lab-5-team-2_final.html#wrangle-the-data",
+    "href": "Lab-5/Final_Write_ups/Lab-5-team-2_final.html#wrangle-the-data",
+    "title": "24  Team 2 - Lab 5",
+    "section": "Wrangle the data",
+    "text": "Wrangle the data\n\n\nCode\nlibrary(tidyverse)\n\n\n\n\nCode\n#removing years with no spawner data\n#creating log (recruits/spawners)\nSR_data&lt;-SR_data %&gt;% filter(!is.na(spawners)) %&gt;%mutate(logSR = log(recruits/spawners))\nhead(SR_data)\n\n\n# A tibble: 6 × 6\n# Groups:   brood_year [6]\n  brood_year spawners recruits pdo_summer_t2 pdo_winter_t2   logSR\n       &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;         &lt;dbl&gt;         &lt;dbl&gt;   &lt;dbl&gt;\n1       1956     9440    39000         -0.5          -0.31  1.42  \n2       1957     2840     4090         -2.36         -1.78  0.365 \n3       1958      535      289         -1.48         -2.14 -0.616 \n4       1959      680      547          0.58          0    -0.218 \n5       1960    14600    55300          1.05          0.68  1.33  \n6       1961     3710     3500         -0.22          0.77 -0.0583\n\n\nCode\nggplot(SR_data) + geom_line(aes(x = brood_year, y = logSR))\n\n\nWarning: Removed 7 rows containing missing values (`geom_line()`).",
+    "crumbs": [
+      "Dynamic Linear Models",
+      "<span class='chapter-number'>24</span>  <span class='chapter-title'>Team 2 - Lab 5</span>"
+    ]
+  },
+  {
+    "objectID": "Lab-5/Final_Write_ups/Lab-5-team-2_final.html#reduced-ricker-model",
+    "href": "Lab-5/Final_Write_ups/Lab-5-team-2_final.html#reduced-ricker-model",
+    "title": "24  Team 2 - Lab 5",
+    "section": "1. Reduced Ricker Model:",
+    "text": "1. Reduced Ricker Model:\n\nEquations:\n\\[\n\\text{log}(R_t/S_t) = \\alpha_t + v_t\n\\]\n\\[\n\\alpha_t = \\alpha_{t-1} + w_t\n\\]\nThis is a MARSS model where \\(Z = 1\\), a random walk with observation error:\nSet \\(y_t = log(R_t/S_t)\\)\n\\[\ny_t = Zx_t + v_t\n\\]\n\\[\nx_t = x_{t-1} + w_t\n\\]\n\n\nMARSS:\n\n\nCode\nlibrary(MARSS)\n\n\n\n\nCode\nmod_list1&lt;-list(B = \"identity\", Z = \"identity\", U = \"zero\", A = \"zero\", Q = matrix(\"q\"), R = matrix(\"r\"))\n\n\n\n\nCode\n#fit model with MARSS:\nfit1&lt;-MARSS(SR_data$logSR, mod_list1)\n\n\nSuccess! abstol and log-log tests passed at 26 iterations.\nAlert: conv.test.slope.tol is 0.5.\nTest with smaller values (&lt;0.1) to ensure convergence.\n\nMARSS fit is\nEstimation method: kem \nConvergence test: conv.test.slope.tol = 0.5, abstol = 0.001\nEstimation converged in 26 iterations. \nLog-likelihood: -51.87353 \nAIC: 109.7471   AICc: 110.3625   \n \n      Estimate\nR.r      0.213\nQ.q      0.301\nx0.x0    0.998\nInitial states (x0) defined at t=0\n\nStandard errors have not been calculated. \nUse MARSSparamCIs to compute CIs and bias estimates.\n\n\n\n\nCode\n#model diagnostics\nautoplot(fit1, plot.type=\"fitted.ytT\")",
+    "crumbs": [
+      "Dynamic Linear Models",
+      "<span class='chapter-number'>24</span>  <span class='chapter-title'>Team 2 - Lab 5</span>"
+    ]
+  },
+  {
+    "objectID": "Lab-5/Final_Write_ups/Lab-5-team-2_final.html#full-ricker-model",
+    "href": "Lab-5/Final_Write_ups/Lab-5-team-2_final.html#full-ricker-model",
+    "title": "24  Team 2 - Lab 5",
+    "section": "2. Full Ricker Model:",
+    "text": "2. Full Ricker Model:\n\nEquations:\n\\[\n\\text{log}(R_t/S_t) = \\alpha_t - bS_t +  v_t\n\\]\n\\[\n\\alpha_t = \\alpha_{t-1} + w_t\n\\]\n\n\nMARSS:\n\\[\ny_t = Zx_t + v_t\n\\]\n\\[\nv_t \\sim N(0, r)\n\\]\n\\[\nx_t = Bx_{t-1} + w_t\n\\]\n\\[\nw_t \\sim N(0, \\begin{bmatrix} q & 0 \\\\ 0 & 0 \\end{bmatrix})\n\\]\nwhere \\(B = \\begin{bmatrix}1 & 0\\\\0 & 1\\end{bmatrix}\\), \\(x_t = \\begin{bmatrix} \\alpha_t \\\\ b \\end{bmatrix}\\), \\(Z = \\begin{bmatrix} 1 & S_t \\end{bmatrix}\\)\n\n\nCode\n#setting up model\nBmat &lt;- matrix(c(1,0,0,1), 2, 2, byrow = TRUE)\nTT&lt;-nrow(SR_data)\nZZ &lt;- array(NA, c(1, 2, TT))  \nZZ[1,1,] &lt;- rep(1, TT) #intercept\nZZ[1,2,]&lt;-SR_data$spawners #St\nQQ&lt;-matrix(list(0), 2, 2)\nQQ[1,1]&lt;-\"q\"\nmod_list2&lt;-list(B = Bmat, Z = ZZ, U = \"zero\", A = \"zero\", Q = QQ, R = matrix(\"r\"))\n\ninits_list &lt;- list(x0 = matrix(c(0, 0), nrow = 2))\n\n\n\n\nCode\nfit2&lt;-MARSS(SR_data$logSR, mod_list2, inits = inits_list)\n\n\nSuccess! abstol and log-log tests passed at 29 iterations.\nAlert: conv.test.slope.tol is 0.5.\nTest with smaller values (&lt;0.1) to ensure convergence.\n\nMARSS fit is\nEstimation method: kem \nConvergence test: conv.test.slope.tol = 0.5, abstol = 0.001\nEstimation converged in 29 iterations. \nLog-likelihood: -51.81022 \nAIC: 111.6204   AICc: 112.6731   \n \n      Estimate\nR.r   2.19e-01\nQ.q   2.92e-01\nx0.X1 9.35e-01\nx0.X2 7.02e-06\nInitial states (x0) defined at t=0\n\nStandard errors have not been calculated. \nUse MARSSparamCIs to compute CIs and bias estimates.\n\n\n\n\nCode\n#model diagnostics\nautoplot(fit2, plot.type=\"fitted.ytT\")",
+    "crumbs": [
+      "Dynamic Linear Models",
+      "<span class='chapter-number'>24</span>  <span class='chapter-title'>Team 2 - Lab 5</span>"
+    ]
+  },
+  {
+    "objectID": "Lab-5/Final_Write_ups/Lab-5-team-2_final.html#full-ricker-model-with-summer-pdo",
+    "href": "Lab-5/Final_Write_ups/Lab-5-team-2_final.html#full-ricker-model-with-summer-pdo",
+    "title": "24  Team 2 - Lab 5",
+    "section": "3. Full Ricker Model with Summer PDO",
+    "text": "3. Full Ricker Model with Summer PDO\n\nEquations:\n\\[\n\\text{log}(R_t/S_t) = \\alpha_t + \\delta_t X_t - bS_t +  v_t\n\\]\n\\[\n\\alpha_t = \\alpha_{t-1} + w_t\n\\]\n\\[\n\\delta_t = \\delta_{t-1} + w_t\n\\]\n\n\nMARSS:\n\\[\ny_t = Zx_t + v_t\n\\]\n\\[\nv_t \\sim N(0, r)\n\\]\n\\[\nx_t = Bx_{t-1} + w_t\n\\]\n\\[\nw_t \\sim N(0, \\begin{bmatrix} q_\\alpha & 0 & 0\\\\ 0 & q_\\delta & 0 \\\\ 0 & 0 & 0 \\end{bmatrix})\n\\]\nwhere \\(B = \\begin{bmatrix}1 & 0 & 0 \\\\0 & 1 & 0 \\\\ 0&0&1\\end{bmatrix}\\), \\(x_t = \\begin{bmatrix} \\alpha_t \\\\ \\delta_t \\\\ b \\end{bmatrix}\\), \\(Z = \\begin{bmatrix} 1 & X_t & S_t \\end{bmatrix}\\)\n\n\nCode\n#setting up model\nBmat &lt;- matrix(c(1,0,0,0,1,0,0,0,1), 3, 3, byrow = TRUE)\nTT&lt;-nrow(SR_data)\nZZ &lt;- array(NA, c(1, 3, TT))  \nZZ[1,1,] &lt;- rep(1, TT) #intercept\nZZ[1,2,]&lt;-(SR_data$pdo_summer_t2) #summer PDO\nZZ[1,3,]&lt;-(SR_data$spawners) #St\nQQ&lt;-matrix(list(0), 3, 3)\nQQ[1,1]&lt;-\"q_alpha\"\nQQ[2,2]&lt;-\"q_delta\"\nmod_list3&lt;-list(B = Bmat, Z = ZZ, U = \"zero\", A = \"zero\", Q = QQ, R = matrix(\"r\"))\n\ninits_list &lt;- list(x0 = matrix(c(0, 0, 0), nrow = 3))\n\n\n\n\nCode\nfit3&lt;-MARSS(SR_data$logSR, mod_list3, inits = inits_list,control = list(maxit=1000,allow.degen=F))\n\n\nWarning! Abstol convergence only. Maxit (=1000) reached before log-log convergence.\n\nMARSS fit is\nEstimation method: kem \nConvergence test: conv.test.slope.tol = 0.5, abstol = 0.001\nWARNING: Abstol convergence only no log-log convergence.\n maxit (=1000) reached before log-log convergence.\n The likelihood and params might not be at the ML values.\n Try setting control$maxit higher.\nLog-likelihood: -51.81633 \nAIC: 115.6327   AICc: 117.966   \n \n          Estimate\nR.r       2.00e-01\nQ.q_alpha 3.16e-01\nQ.q_delta 7.04e-05\nx0.X1     1.02e+00\nx0.X2     3.03e-02\nx0.X3     5.48e-06\nInitial states (x0) defined at t=0\n\nStandard errors have not been calculated. \nUse MARSSparamCIs to compute CIs and bias estimates.\n\nConvergence warnings\n Warning: the  Q.q_delta  parameter value has not converged.\n Type MARSSinfo(\"convergence\") for more info on this warning.",
+    "crumbs": [
+      "Dynamic Linear Models",
+      "<span class='chapter-number'>24</span>  <span class='chapter-title'>Team 2 - Lab 5</span>"
+    ]
+  },
+  {
+    "objectID": "Lab-5/Final_Write_ups/Lab-5-team-2_final.html#full-ricker-model-with-winter-pdo",
+    "href": "Lab-5/Final_Write_ups/Lab-5-team-2_final.html#full-ricker-model-with-winter-pdo",
+    "title": "24  Team 2 - Lab 5",
+    "section": "4. Full Ricker Model with Winter PDO",
+    "text": "4. Full Ricker Model with Winter PDO\nThe equations for #4 are identical with #3, with the exception of Winter PDO as \\(X_t\\)\n\n\nCode\n#setting up model\nBmat &lt;- matrix(c(1,0,0,0,1,0,0,0,1), 3, 3, byrow = TRUE)\nTT&lt;-nrow(SR_data)\nZZ &lt;- array(NA, c(1, 3, TT))  \nZZ[1,1,] &lt;- rep(1, TT) #intercept\nZZ[1,2,]&lt;-(SR_data$pdo_winter_t2) #summer PDO\nZZ[1,3,]&lt;-(SR_data$spawners) #St\nQQ&lt;-matrix(list(0), 3, 3)\nQQ[1,1]&lt;-\"q_alpha\"\nQQ[2,2]&lt;-\"q_delta\"\nmod_list3&lt;-list(B = Bmat, Z = ZZ, U = \"zero\", A = \"zero\", Q = QQ, R = matrix(\"r\"))\n\ninits_list &lt;- list(x0 = matrix(c(0, 0, 0), nrow = 3))\n\nfit4&lt;-MARSS(SR_data$logSR, mod_list3, inits = inits_list,control = list(maxit=1000,allow.degen=F))\n\n\nWarning! Abstol convergence only. Maxit (=1000) reached before log-log convergence.\n\nMARSS fit is\nEstimation method: kem \nConvergence test: conv.test.slope.tol = 0.5, abstol = 0.001\nWARNING: Abstol convergence only no log-log convergence.\n maxit (=1000) reached before log-log convergence.\n The likelihood and params might not be at the ML values.\n Try setting control$maxit higher.\nLog-likelihood: -51.44443 \nAIC: 114.8889   AICc: 117.2222   \n \n          Estimate\nR.r       1.97e-01\nQ.q_alpha 3.11e-01\nQ.q_delta 2.27e-04\nx0.X1     1.13e+00\nx0.X2     1.54e-01\nx0.X3     1.38e-06\nInitial states (x0) defined at t=0\n\nStandard errors have not been calculated. \nUse MARSSparamCIs to compute CIs and bias estimates.\n\nConvergence warnings\n Warning: the  Q.q_delta  parameter value has not converged.\n Type MARSSinfo(\"convergence\") for more info on this warning.",
+    "crumbs": [
+      "Dynamic Linear Models",
+      "<span class='chapter-number'>24</span>  <span class='chapter-title'>Team 2 - Lab 5</span>"
+    ]
+  },
+  {
+    "objectID": "Lab-5/Final_Write_ups/Lab-5-team-2_final.html#reduced-ricker-model-1",
+    "href": "Lab-5/Final_Write_ups/Lab-5-team-2_final.html#reduced-ricker-model-1",
+    "title": "24  Team 2 - Lab 5",
+    "section": "1. Reduced Ricker Model",
+    "text": "1. Reduced Ricker Model\nPlot of model fit (time series of \\(\\alpha_t\\))\n\n\nCode\nggplot(data = SR_data) + geom_line(aes(x = brood_year, y = logSR), color = \"black\") + geom_ribbon(aes(x = brood_year, ymin = t(fit1$states - 2*fit1$states.se), ymax = t(fit1$states + 2*fit1$states.se)), linetype = \"dashed\", color = \"blue\", fill = NA) + geom_line(aes(x = brood_year, y = t(fit1$states)), color = 'blue') + theme_classic()\n\n\nWarning: Removed 7 rows containing missing values (`geom_line()`).",
+    "crumbs": [
+      "Dynamic Linear Models",
+      "<span class='chapter-number'>24</span>  <span class='chapter-title'>Team 2 - Lab 5</span>"
+    ]
+  },
+  {
+    "objectID": "Lab-5/Final_Write_ups/Lab-5-team-2_final.html#full-ricker-model-1",
+    "href": "Lab-5/Final_Write_ups/Lab-5-team-2_final.html#full-ricker-model-1",
+    "title": "24  Team 2 - Lab 5",
+    "section": "2. Full Ricker Model",
+    "text": "2. Full Ricker Model\nTime series of regression parameters\n\n\nCode\n#intercept\nint_mn&lt;-fit2$states[1,]\nint_se&lt;-fit2$states.se[1,]\nggplot() + geom_ribbon(aes(x = SR_data$brood_year, ymin = int_mn-2*int_se, ymax = int_mn + 2*int_se), linetype = \"dashed\", fill = NA, color = \"blue\") + geom_line(aes(x = SR_data$brood_year, y = int_mn), color = \"blue\") + labs(x = \"Brood Year\", y = \"alpha_t\")\n\n\n\n\n\n\n\n\n\n\n\nCode\n#slope results\nslp_mn&lt;-fit2$states[2,1]\nslp_se&lt;-fit2$states.se[2,1]\nprint(paste(\"Mean: \", slp_mn))\n\n\n[1] \"Mean:  7.01979994813666e-06\"\n\n\nCode\nprint(paste(\"SE: \", slp_se))\n\n\n[1] \"SE:  0\"",
+    "crumbs": [
+      "Dynamic Linear Models",
+      "<span class='chapter-number'>24</span>  <span class='chapter-title'>Team 2 - Lab 5</span>"
+    ]
+  },
+  {
+    "objectID": "Lab-5/Final_Write_ups/Lab-5-team-2_final.html#full-ricker-model-with-summer-pdo-1",
+    "href": "Lab-5/Final_Write_ups/Lab-5-team-2_final.html#full-ricker-model-with-summer-pdo-1",
+    "title": "24  Team 2 - Lab 5",
+    "section": "3. Full Ricker Model with Summer PDO",
+    "text": "3. Full Ricker Model with Summer PDO\n\n\nCode\n#intercept\nint_mn&lt;-fit3$states[1,]\nint_se&lt;-fit3$states.se[1,]\nggplot() + geom_ribbon(aes(x = SR_data$brood_year, ymin = int_mn-2*int_se, ymax = int_mn + 2*int_se), linetype = \"dashed\", fill = NA, color = \"blue\") + geom_line(aes(x = SR_data$brood_year, y = int_mn), color = \"blue\") + labs(x = \"Brood Year\", y = \"alpha_t\")\n\n\n\n\n\n\n\n\n\n\n\nCode\n#summer pdo slope results\nslp_mn&lt;-fit3$states[2,]\nslp_se&lt;-fit3$states.se[2,]\nggplot() + geom_ribbon(aes(x = SR_data$brood_year, ymin = slp_mn-2*slp_se, ymax = slp_mn + 2*slp_se), linetype = \"dashed\", fill = NA, color = \"blue\") + geom_line(aes(x = SR_data$brood_year, y = slp_mn), color = \"blue\") + labs(x = \"Brood Year\", y = \"delta_t (SummerPDO)\")\n\n\n\n\n\n\n\n\n\nTime-varying \\(\\delta_t\\) seems unnecessary given its constant nature and very low value.\n\n\nCode\n# spawner slope results\nslp_mn&lt;-fit3$states[3,1]\nslp_se&lt;-fit3$states.se[3,1]\nprint(paste(\"Mean: \", slp_mn))\n\n\n[1] \"Mean:  5.47724897779201e-06\"\n\n\nCode\nprint(paste(\"SE: \", slp_se))\n\n\n[1] \"SE:  0\"\n\n\nTime-varying \\(\\delta_t\\) seems unnecessary given its constant nature and very low value.",
+    "crumbs": [
+      "Dynamic Linear Models",
+      "<span class='chapter-number'>24</span>  <span class='chapter-title'>Team 2 - Lab 5</span>"
+    ]
+  },
+  {
+    "objectID": "Lab-5/Final_Write_ups/Lab-5-team-2_final.html#full-ricker-model-with-winter-pdo-1",
+    "href": "Lab-5/Final_Write_ups/Lab-5-team-2_final.html#full-ricker-model-with-winter-pdo-1",
+    "title": "24  Team 2 - Lab 5",
+    "section": "4. Full Ricker Model with Winter PDO",
+    "text": "4. Full Ricker Model with Winter PDO\n\n\nCode\n#intercept\nint_mn&lt;-fit4$states[1,]\nint_se&lt;-fit4$states.se[1,]\nggplot() + geom_ribbon(aes(x = SR_data$brood_year, ymin = int_mn-2*int_se, ymax = int_mn + 2*int_se), linetype = \"dashed\", fill = NA, color = \"blue\") + geom_line(aes(x = SR_data$brood_year, y = int_mn), color = \"blue\") + labs(x = \"Brood Year\", y = \"alpha_t\")\n\n\n\n\n\n\n\n\n\nCode\n#winter pdo slope results\nslp_mn&lt;-fit4$states[2,]\nslp_se&lt;-fit4$states.se[2,]\nggplot() + geom_ribbon(aes(x = SR_data$brood_year, ymin = slp_mn-2*slp_se, ymax = slp_mn + 2*slp_se), linetype = \"dashed\", fill = NA, color = \"blue\") + geom_line(aes(x = SR_data$brood_year, y = slp_mn), color = \"blue\") + labs(x = \"Brood Year\", y = \"delta_t (WinterPDO)\")\n\n\n\n\n\n\n\n\n\nCode\n# spawner slope results\nslp_mn&lt;-fit4$states[3,1]\nslp_se&lt;-fit4$states.se[3,1]\nprint(paste(\"Mean: \", slp_mn))\n\n\n[1] \"Mean:  1.38299313195267e-06\"\n\n\nCode\nprint(paste(\"SE: \", slp_se))\n\n\n[1] \"SE:  0\"\n\n\nTime-varying \\(\\delta_t\\) seems unnecessary given its constant nature and very low value.",
+    "crumbs": [
+      "Dynamic Linear Models",
+      "<span class='chapter-number'>24</span>  <span class='chapter-title'>Team 2 - Lab 5</span>"
+    ]
+  },
+  {
+    "objectID": "Lab-5/Final_Write_ups/Lab-5-team-2_final.html#model-comparison",
+    "href": "Lab-5/Final_Write_ups/Lab-5-team-2_final.html#model-comparison",
+    "title": "24  Team 2 - Lab 5",
+    "section": "Model Comparison",
+    "text": "Model Comparison\n\n\nCode\nAIC_tab&lt;-tibble(\"Model\" = c(\"Reduced Ricker\", \"Full Ricker\", \"Full w/ Summer PDO\", \"Full w/ Winter PDO\"), \"AICc\" = c(fit1$AICc, fit2$AICc, fit3$AICc, fit4$AICc))\nAIC_tab&lt;- AIC_tab %&gt;% mutate(DeltaAIC = AICc-min(AICc))\nAIC_tab\n\n\n# A tibble: 4 × 3\n  Model               AICc DeltaAIC\n  &lt;chr&gt;              &lt;dbl&gt;    &lt;dbl&gt;\n1 Reduced Ricker      110.     0   \n2 Full Ricker         113.     2.31\n3 Full w/ Summer PDO  118.     7.60\n4 Full w/ Winter PDO  117.     6.86\n\n\nReduced ricker is the best model, which makes sense since the estimate for the b parameter is essentially 0 in the other 3 models. Additionally the covariate parameters for Summer and PDO are both very low as well. All models are basically the same except the full ricker, and full ricker w/ covariates have extra parameter(s).",
+    "crumbs": [
+      "Dynamic Linear Models",
+      "<span class='chapter-number'>24</span>  <span class='chapter-title'>Team 2 - Lab 5</span>"
+    ]
+  },
+  {
+    "objectID": "Lab-5/Final_Write_ups/Lab-5-team-2_final.html#forecasting-with-reduced-ricker-model",
+    "href": "Lab-5/Final_Write_ups/Lab-5-team-2_final.html#forecasting-with-reduced-ricker-model",
+    "title": "24  Team 2 - Lab 5",
+    "section": "Forecasting with Reduced Ricker model",
+    "text": "Forecasting with Reduced Ricker model\n\n\nCode\n## get list of Kalman filter output\nkf_out &lt;- MARSSkfss(fit1)\n## forecasts of regr parameters; 2xT matrix\neta &lt;- kf_out$xtt1\n\nmod_list1&lt;-list(B = \"identity\", Z = \"identity\", U = \"zero\", A = \"zero\", Q = matrix(\"q\"), R = matrix(\"r\"))\n\nZ &lt;- array(NA, c(1, TT))\nZ[1,] &lt;- rep(1, TT) \n## ts of E(forecasts)\nfore_mean &lt;- vector()\nfor(t in 1:TT) {\n  fore_mean[t] &lt;- Z[,t] %*% eta[, t, drop = FALSE]\n}\n\n## variance of regr parameters; 1x2xT array\nPhi &lt;- kf_out$Vtt1\n\n## obs variance; 1x1 matrix\nR_est &lt;- coef(fit1, type=\"matrix\")$R\n\n## ts of Var(forecasts)\nfore_var &lt;- vector()\nfor(t in 1:TT) {\n  tZ &lt;- matrix(Z[,t], 1, 1) ## transpose of Z\n  fore_var[t] &lt;- Z[, t] %*% Phi[,,t] %*% tZ + R_est\n}\nggplot() + geom_line(aes(x = SR_data$brood_year, y=fore_mean)) +\ngeom_ribbon(aes(x = SR_data$brood_year, ymin = fore_mean-2*fore_var, ymax = fore_mean + 2*fore_var), linetype = \"dashed\", fill = NA, color = \"black\") +  geom_point(aes(x=SR_data$brood_year, y=SR_data$logSR),color=\"blue\") + labs(x=\"Year\",y=\"Log(R/S)\") + theme_bw()\n\n\nWarning: Removed 7 rows containing missing values (`geom_point()`).\n\n\n\n\n\n\n\n\n\nCode\nggplot() + geom_line(aes(x = SR_data$brood_year, y=exp(fore_mean))) +\ngeom_ribbon(aes(x = SR_data$brood_year, ymin = exp(fore_mean-2*fore_var), ymax = exp(fore_mean + 2*fore_var)), linetype = \"dashed\", fill = NA, color = \"black\") +  geom_point(aes(x=SR_data$brood_year, y=exp(SR_data$logSR)),color=\"blue\") + labs(x=\"Year\",y=\"R/S\") + theme_bw() + ylim(0,25)\n\n\nWarning: Removed 7 rows containing missing values (`geom_point()`).\n\n\n\n\n\n\n\n\n\nObserved values almost all fall within the prediction intervals. This is a reasonably well fitting model, however there is an AR1 lag between prediction and observation. This AR1 lag seems to be common throughout most time series prediction models.",
+    "crumbs": [
+      "Dynamic Linear Models",
+      "<span class='chapter-number'>24</span>  <span class='chapter-title'>Team 2 - Lab 5</span>"
+    ]
+  },
+  {
+    "objectID": "Lab-5/Final_Write_ups/Lab-5-team-3_final.html",
+    "href": "Lab-5/Final_Write_ups/Lab-5-team-3_final.html",
+    "title": "25  Team 3 - Lab 5",
+    "section": "",
+    "text": "Data\nThe data explored for this lab is spawner and recruit Kvichak Sockeye data, which is a river system in Bristol Bay, Alaska. This data set includes data from 1952-2005. There is missing spawner data from 1952-1995, and missing recruit data from 1999-2005, with a valid window from 1966-1998.",
+    "crumbs": [
+      "Dynamic Linear Models",
+      "<span class='chapter-number'>25</span>  <span class='chapter-title'>Team 3 - Lab 5</span>"
+    ]
+  },
+  {
+    "objectID": "Lab-5/Final_Write_ups/Lab-5-team-3_final.html#load-the-data",
+    "href": "Lab-5/Final_Write_ups/Lab-5-team-3_final.html#load-the-data",
+    "title": "25  Team 3 - Lab 5",
+    "section": "Load the data",
+    "text": "Load the data\n\n\nCode\n## library(devtools)\n## Windows users will likely need to set this\n## Sys.setenv(\"R_REMOTES_NO_ERRORS_FROM_WARNINGS\" = \"true\")\n#devtools::install_github(\"nwfsc-timeseries/atsalibrary\") already installed\n\n## get data\ndata(KvichakSockeye, package=\"atsalibrary\")\nSR_data &lt;- KvichakSockeye\nhead(SR_data)\n\n\n# A tibble: 6 × 5\n# Groups:   brood_year [6]\n  brood_year spawners recruits pdo_summer_t2 pdo_winter_t2\n       &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;         &lt;dbl&gt;         &lt;dbl&gt;\n1       1952       NA    20200         -2.79         -1.68\n2       1953       NA      593         -1.2          -1.05\n3       1954       NA      799         -1.85         -1.25\n4       1955       NA     1500         -0.6          -0.68\n5       1956     9440    39000         -0.5          -0.31\n6       1957     2840     4090         -2.36         -1.78\n\n\nThe data are a dataframe with columns for brood year (brood_year), number of spawners (spawners), number of recruits (recruits) and PDO at year \\(t-2\\) in summer (pdo_summer_t2) and in winter (pdo_winter_t2).\n\nPlot Biological Data\n\n\nCode\npar(mfrow=c(2,2))\nplot(SR_data$brood_year, SR_data$spawners, type= \"l\", xlab = \"Year\", ylab = \"Spawners\")\nplot(SR_data$brood_year, SR_data$recruits, type= \"l\", xlab = \"Year\", ylab = \"Recruits\")\nplot(SR_data$brood_year, log(SR_data$recruits/SR_data$spawners) , xlab = \"Year\", ylab = \"log(R/S)\", type= \"l\")\nplot(SR_data$spawners, SR_data$recruits, xlab = \"Spawners\", ylab = \"Recruits\", pch = 16)\n\n\n\n\n\n\n\n\n\n\n\nPlot Environmental Data\n\n\nCode\npar(mfrow=c(2,1))\nplot(SR_data$brood_year, SR_data$pdo_summer_t2, type= \"l\", xlab = \"Year\", ylab = \"Summer PDO\")\nabline(h=0, lty = 2)\nplot(SR_data$brood_year, SR_data$pdo_winter_t2, type= \"l\", xlab = \"Year\", ylab = \"Winter PDO\")\nabline(h=0, lty= 2)",
+    "crumbs": [
+      "Dynamic Linear Models",
+      "<span class='chapter-number'>25</span>  <span class='chapter-title'>Team 3 - Lab 5</span>"
+    ]
+  },
+  {
+    "objectID": "Lab-5/Final_Write_ups/Lab-5-team-3_final.html#wrangle-the-data",
+    "href": "Lab-5/Final_Write_ups/Lab-5-team-3_final.html#wrangle-the-data",
+    "title": "25  Team 3 - Lab 5",
+    "section": "Wrangle the data",
+    "text": "Wrangle the data\n\n\nCode\n## shrink the window of years so the response variable will have a full set of values\nSR_dat_short &lt;- SR_data[SR_data[,\"brood_year\"] &gt;= 1956 & SR_data[,\"brood_year\"] &lt;= 1998, ]\n\n#Create a column for the response variable\nSR_dat_short$Yt &lt;- log(SR_dat_short$recruits/SR_dat_short$spawners) #Yt represents log of recruits over spawners. \n\n#Create the observation matrix\nYt &lt;- t(SR_dat_short$Yt)\n\n#determines number of elements\nTT &lt;- nrow(SR_dat_short)",
+    "crumbs": [
+      "Dynamic Linear Models",
+      "<span class='chapter-number'>25</span>  <span class='chapter-title'>Team 3 - Lab 5</span>"
+    ]
+  },
+  {
+    "objectID": "Lab-5/Final_Write_ups/Lab-5-team-3_final.html#reduced-rickers-model",
+    "href": "Lab-5/Final_Write_ups/Lab-5-team-3_final.html#reduced-rickers-model",
+    "title": "25  Team 3 - Lab 5",
+    "section": "Reduced Ricker’s Model",
+    "text": "Reduced Ricker’s Model\n\nBegin by fitting a reduced form of Ricker’s model that includes only a time-varying level (\\(\\alpha_t\\)) and observation error (\\(v_t\\)). That is,\n\n\\[\\begin{align*}\n\\text{log}(R_t) &= \\alpha_t + \\text{log}(S_t) + v_t \\\\\n\\text{log}(R_t/S_t) &= \\alpha_t + v_t\n\\end{align*}\\]\nThis model assumes no density-dependent survival in that the number of recruits is an ascending function of spawners. Plot the ts of \\(\\alpha_t\\) and note the AICc for this model. Also plot appropriate model diagnostics.\n\n\nCode\n#create the model params for reduced Ricker's model\nZ &lt;- array(NA,c(1,1,TT))\nZ[1,1,] &lt;- c(1)\n\nmodlist &lt;- list( # All other arguaments are left as default\n  Z = Z,\n  U = \"zero\",\n  A = \"zero\",\n  B = \"identity\"\n)\n\nreduced_Rick &lt;- MARSS(Yt, model = modlist)\n\n\nSuccess! abstol and log-log tests passed at 24 iterations.\nAlert: conv.test.slope.tol is 0.5.\nTest with smaller values (&lt;0.1) to ensure convergence.\n\nMARSS fit is\nEstimation method: kem \nConvergence test: conv.test.slope.tol = 0.5, abstol = 0.001\nEstimation converged in 24 iterations. \nLog-likelihood: -51.87179 \nAIC: 109.7436   AICc: 110.359   \n \n      Estimate\nR.R      0.211\nQ.Q      0.303\nx0.x0    1.002\nInitial states (x0) defined at t=0\n\nStandard errors have not been calculated. \nUse MARSSparamCIs to compute CIs and bias estimates.\n\n\nResults: The AICc of this model is 110.36, state plots and residuals are below\n\nModel and State Plots\n\n\nCode\nautoplot(reduced_Rick, silent = TRUE)\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNotes: The observations and level follow each other exactly. This makes sense considering this is the only variable in the model. The model residuals don’t seem to follow a trend, but they are absolutely not normally distributed. The state residuals have no time trend, and the model smoothation results seem to be normally distributed. The ACF plot has significant autocorrelation at lags of 5 and 10 years",
+    "crumbs": [
+      "Dynamic Linear Models",
+      "<span class='chapter-number'>25</span>  <span class='chapter-title'>Team 3 - Lab 5</span>"
+    ]
+  },
+  {
+    "objectID": "Lab-5/Final_Write_ups/Lab-5-team-3_final.html#full-rickers-model-with-static-spawner-effect",
+    "href": "Lab-5/Final_Write_ups/Lab-5-team-3_final.html#full-rickers-model-with-static-spawner-effect",
+    "title": "25  Team 3 - Lab 5",
+    "section": "Full Ricker’s Model with Static Spawner Effect",
+    "text": "Full Ricker’s Model with Static Spawner Effect\n\nFit the full Ricker model with a time-varying intercept and a static effect of spawners. For this model, obtain the time series of \\(\\alpha_t\\), which is an estimate of the stock productivity in the absence of density-dependent effects. How do these estimates of productivity compare to those from the previous question? Plot the ts of \\(\\alpha_t\\) and note the AICc for this model. Also plot appropriate model diagnostics.\n\n\\[\\begin{align*}\n\\text{log}(R_t/S_t) = \\alpha_t - bS_t +  v_t \\\\\n\\alpha_t = \\alpha_{t-1} + w_t\n\\end{align*}\\]\n\n\nCode\n#create the model params for the full Ricker's model\nZ &lt;- array(NA,c(1,2,TT)) # the array has 2 elements now\nZ[1,1,] &lt;- c(1)\nZ[1,2,] &lt;- SR_dat_short$spawners\n\nmodlist &lt;- list( # All other arguments are left as default\n  Z = Z,\n  U = \"zero\",\n  A = \"zero\",\n  B = \"identity\",\n  Q = ldiag(list(\"q1\",0)) # creates a custom Q matrix with zero variance for the spawner effect... I think\n)\n\nfull_Rick &lt;- MARSS(Yt, model = modlist, inits = list(x0 = matrix(c(0),2,1))) # added inits list due to marss error\n\n\nSuccess! abstol and log-log tests passed at 26 iterations.\nAlert: conv.test.slope.tol is 0.5.\nTest with smaller values (&lt;0.1) to ensure convergence.\n\nMARSS fit is\nEstimation method: kem \nConvergence test: conv.test.slope.tol = 0.5, abstol = 0.001\nEstimation converged in 26 iterations. \nLog-likelihood: -51.80921 \nAIC: 111.6184   AICc: 112.6711   \n \n      Estimate\nR.R   0.217557\nQ.q1  0.293165\nx0.X1 0.936822\nx0.X2 0.000007\nInitial states (x0) defined at t=0\n\nStandard errors have not been calculated. \nUse MARSSparamCIs to compute CIs and bias estimates.\n\n\nResult: AICC is 112.67, higher than the previous model after multiple attempts at different x0 values. each one resulted in the same model. The increase in AICc is likely driven by an increase in parameters by allowing density dependency and time variation in the intercepts.\n\n\nCode\nautoplot.marssMLE(full_Rick, silent = TRUE)\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nResults: Model fit, residuals, and ACF all look the same as the previous model because all the variation was loaded onto the intercept term.",
+    "crumbs": [
+      "Dynamic Linear Models",
+      "<span class='chapter-number'>25</span>  <span class='chapter-title'>Team 3 - Lab 5</span>"
+    ]
+  },
+  {
+    "objectID": "Lab-5/Final_Write_ups/Lab-5-team-3_final.html#full-rickers-model-with-static-spawner-effect-and-summer-pdo-covariate",
+    "href": "Lab-5/Final_Write_ups/Lab-5-team-3_final.html#full-rickers-model-with-static-spawner-effect-and-summer-pdo-covariate",
+    "title": "25  Team 3 - Lab 5",
+    "section": "Full Ricker’s Model with Static Spawner Effect and Summer PDO covariate",
+    "text": "Full Ricker’s Model with Static Spawner Effect and Summer PDO covariate\n\nFit the expanded model that includes the summer PDO index as the covariate (pdo_summer_t2). What is the mean level of productivity? Plot the ts of \\(\\delta_t\\) and note the AICc for this model. Also plot appropriate model diagnostics.\n\n\\[\\begin{align*}\n\\text{log}(R_t/S_t) = \\alpha_t + \\delta_t X_t - bS_t +  v_t \\\\\n\\alpha_t = \\alpha_{t-1} + w_t \\\\\n\\delta_t = \\delta_{t-1} + w_t\n\\end{align*}\\]\n\n\nCode\n#create the model params for the full Ricker's model\nZ &lt;- array(NA,c(1,3,TT)) # the array has 3 elements now\nZ[1,1,] &lt;- c(1)\nZ[1,2,] &lt;- SR_dat_short$spawners\nZ[1,3,] &lt;- SR_dat_short$pdo_summer_t2 # Covariate data is added to the Z matrix\n# The model states are the covariate effects in a DLM\n\nmodlist &lt;- list( # All other arguments are left as default\n  Z = Z,\n  U = \"zero\",\n  A = \"zero\",\n  B = \"identity\",\n  Q = ldiag(list(\"q1\",0,\"q3\")) # creates a custom Q matrix with zero variance for the spawner effect... I think? Additionally, the intercept variance may need to be contrained further\n)\n\nsummer_Rick &lt;- MARSS(Yt, model = modlist, control = list(maxit=1000), inits = list(x0 = matrix(c(1,1,1),3,1))) # added inits list due to marss error\n\n\nSuccess! abstol and log-log tests passed at 742 iterations.\nAlert: conv.test.slope.tol is 0.5.\nTest with smaller values (&lt;0.1) to ensure convergence.\n\nMARSS fit is\nEstimation method: kem \nConvergence test: conv.test.slope.tol = 0.5, abstol = 0.001\nEstimation converged in 742 iterations. \nLog-likelihood: -51.78324 \nAIC: 115.5665   AICc: 117.8998   \n \n      Estimate\nR.R   2.00e-01\nQ.q1  3.16e-01\nQ.q3  0.00e+00\nx0.X1 1.01e+00\nx0.X2 5.49e-06\nx0.X3 2.85e-02\nInitial states (x0) defined at t=0\n\nStandard errors have not been calculated. \nUse MARSSparamCIs to compute CIs and bias estimates.\n\n\nResult: AICC is 117.89, higher than the previous models and all the variance is loaded onto the intercept again. I have tried to limit the variation of the intercept but I get a MARSS error every time. I have also tried to change the initial values bu the resulting model was the same.\n\n\nCode\nautoplot(summer_Rick, silent = TRUE)",
+    "crumbs": [
+      "Dynamic Linear Models",
+      "<span class='chapter-number'>25</span>  <span class='chapter-title'>Team 3 - Lab 5</span>"
+    ]
+  },
+  {
+    "objectID": "Lab-5/Final_Write_ups/Lab-5-team-3_final.html#full-rickers-model-with-static-spawner-effect-and-winter-pdo-covariate",
+    "href": "Lab-5/Final_Write_ups/Lab-5-team-3_final.html#full-rickers-model-with-static-spawner-effect-and-winter-pdo-covariate",
+    "title": "25  Team 3 - Lab 5",
+    "section": "Full Ricker’s Model with Static Spawner Effect and Winter PDO covariate",
+    "text": "Full Ricker’s Model with Static Spawner Effect and Winter PDO covariate\n\nFit the expanded model that includes the winter PDO index as the covariate (pdo_winter_t2). What is the mean level of productivity? Plot the ts of \\(\\delta_t\\) and note the AICc for this model. Also plot appropriate model diagnostics.\n\n\\[\\begin{align*}\n\\text{log}(R_t/S_t) = \\alpha_t + \\delta_t X_t - bS_t +  v_t \\\\\n\\alpha_t = \\alpha_{t-1} + w_t \\\\\n\\delta_t = \\delta_{t-1} + w_t\n\\end{align*}\\]\n\n\nCode\n#create the model params for the full Ricker's model\nZ &lt;- array(NA,c(1,3,TT)) # the array has 3 elements now\nZ[1,1,] &lt;- c(1)\nZ[1,2,] &lt;- SR_dat_short$spawners\nZ[1,3,] &lt;- SR_dat_short$pdo_winter_t2 # Covariate data is added to the Z matrix\n# The model states are the covariate effects in a DLM\n\nmodlist &lt;- list( # All other arguments are left as default\n  Z = Z,\n  U = \"zero\",\n  A = \"zero\",\n  B = \"identity\",\n  Q = ldiag(list(\"q1\",0,\"q3\")) # creates a custom Q matrix with zero variance for the spawner effect... I think? Additionally, the intercept variance may need to be contrained further\n)\n\nwinter_Rick &lt;- MARSS(Yt, model = modlist, control = list(maxit=3000), inits = list(x0 = matrix(c(1,0,0),3,1))) # added inits list due to marss error\n\n\nSuccess! abstol and log-log tests passed at 1358 iterations.\nAlert: conv.test.slope.tol is 0.5.\nTest with smaller values (&lt;0.1) to ensure convergence.\n\nMARSS fit is\nEstimation method: kem \nConvergence test: conv.test.slope.tol = 0.5, abstol = 0.001\nEstimation converged in 1358 iterations. \nLog-likelihood: -51.38573 \nAIC: 114.7715   AICc: 117.1048   \n \n      Estimate\nR.R   1.96e-01\nQ.q1  3.11e-01\nQ.q3  0.00e+00\nx0.X1 1.13e+00\nx0.X2 1.32e-06\nx0.X3 1.54e-01\nInitial states (x0) defined at t=0\n\nStandard errors have not been calculated. \nUse MARSSparamCIs to compute CIs and bias estimates.\n\n\nResult: AICC is 117.1, higher than the previous models and all the variance is loaded onto the intercept again. I have tried to limit the variation of the intercept but I get a MARSS error every time. I have also tried to change the initial values bu the resulting model was the same.\n\n\nCode\nautoplot(winter_Rick, silent = TRUE)\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nWhy is all the variation loaded onto the intercept again? Is this just a feature of the model? The winter effect is nonzero but still pretty small compared.",
+    "crumbs": [
+      "Dynamic Linear Models",
+      "<span class='chapter-number'>25</span>  <span class='chapter-title'>Team 3 - Lab 5</span>"
+    ]
+  },
+  {
+    "objectID": "Lab-5/Final_Write_ups/Lab-5-team-3_final.html#forecast-data",
+    "href": "Lab-5/Final_Write_ups/Lab-5-team-3_final.html#forecast-data",
+    "title": "25  Team 3 - Lab 5",
+    "section": "Forecast data",
+    "text": "Forecast data\nWe used the best fitting model to do the forecast, which was the Reduced Ricker.\nForecasting from a DLM involves two steps:\n\nGet an estimate of the regression parameters at time \\(t\\) from data up to time \\(t-1\\). These are also called the one-step ahead forecast (or prediction) of the regression parameters.\nMake a prediction of \\(y\\) at time \\(t\\) based on the predictor variables at time \\(t\\) and the estimate of the regression parameters at time \\(t\\) (step 1). This is also called the one-step ahead forecast (or prediction) of the observation.\n\n\n\nCode\n## shrink the window of years so the response variable will have a full set of values\nSR_dat_short2 &lt;- SR_data[SR_data[,\"brood_year\"] &gt;= 1956 & SR_data[,\"brood_year\"] &lt;= 2005, ]\n\n#Create a column for the response variable\nSR_dat_short2$Yt &lt;- log(SR_dat_short2$recruits/SR_dat_short2$spawners) #Yt represents log of recruits over spawners. \n\n#Create the observation matrix\nYt &lt;- t(SR_dat_short2$Yt)\n\n#determines number of elements\nTT &lt;- nrow(SR_dat_short2)\n\n\n# our top model from above: Reduced Ricker\n\n#create the model params \nZ &lt;- array(NA,c(1,1,TT))\nZ[1,1,] &lt;- c(1)\n\nmodlist &lt;- list( # All other arguaments are left as default\n  Z = Z,\n  U = \"zero\",\n  A = \"zero\",\n  B = \"identity\"\n)\n\n#Run again for good measure \nreduced_Rick &lt;- MARSS(Yt, model = modlist)\n\n\nSuccess! abstol and log-log tests passed at 26 iterations.\nAlert: conv.test.slope.tol is 0.5.\nTest with smaller values (&lt;0.1) to ensure convergence.\n\nMARSS fit is\nEstimation method: kem \nConvergence test: conv.test.slope.tol = 0.5, abstol = 0.001\nEstimation converged in 26 iterations. \nLog-likelihood: -51.87353 \nAIC: 109.7471   AICc: 110.3625   \n \n      Estimate\nR.R      0.213\nQ.Q      0.301\nx0.x0    0.998\nInitial states (x0) defined at t=0\n\nStandard errors have not been calculated. \nUse MARSSparamCIs to compute CIs and bias estimates.\n\n\nCode\n## get list of Kalman filter output\nkf_out &lt;- MARSSkfss(reduced_Rick)\n\n## forecasts of regr parameters; 2xT matrix\neta &lt;- kf_out$xtt1\n\n## ts of E(forecasts)\nfore_mean &lt;- vector()\nfor (t in 1:TT) {\n    fore_mean[t] &lt;- Z[, , t] %*% eta[, t, drop = FALSE]\n}\n\nplot(fore_mean)\n\n\n\n\n\n\n\n\n\nCode\nplot(SR_dat_short2$Yt)\n\n\n\n\n\n\n\n\n\nCode\nplot(x=SR_dat_short2$brood_year , y= fore_mean, type = \"b\", pch = 19, \n     col = \"red\", xlab = \"Year\", ylab = \"log(R/S)\", ylim = c(-2, 3), xlim = c(1956, 1998))\nlines(SR_dat_short2$brood_year, SR_dat_short2$Yt, pch = 18, col = \"blue\", type = \"b\", lty = 2)\nlegend(\"topright\", legend=c(\"data\", \"forecast\"),\n       col=c(\"red\", \"blue\"), lty = 1:2, cex=0.8)\n\n\n\n\n\n\n\n\n\nThe one step ahead forcast follows the trend of the data, but is lagged behind the data by one year. ##\n\n\nCode\n# compute the forecast variance:\n\n## variance of regr parameters; 1x2xT array\nPhi &lt;- kf_out$Vtt1\n\n## obs variance; 1x1 matrix\nR_est &lt;- coef(reduced_Rick, type = \"matrix\")$R\n\n\n## ts of Var(forecasts)\nfore_var &lt;- vector()\nm&lt;-1 #number of regression pars\nfor (t in 1:TT) {\n    tZ &lt;- matrix(Z[, , t], m, 1)  ## transpose of Z\n    fore_var[t] &lt;- Z[, ,t] %*% Phi[, , t] %*% tZ + R_est\n}\n\n\n\nplot(x = SR_dat_short2$brood_year, y=fore_mean, type = \"l\", lwd = 2, xlab = \"Year\", ylab = \"Log(R/S)\", ylim = c(-3,3))\nlines(x = SR_dat_short2$brood_year, y = fore_mean-2*fore_var, lty = 2)\nlines(x = SR_dat_short2$brood_year, y = fore_mean + 2*fore_var, lty=2) \npoints(x =SR_dat_short2$brood_year, y = SR_dat_short2$Yt)  \n\n\n\n\n\n\n\n\n\nThis model fit the data reasonably well, with the model following the trend of the data, though with a one year lag, and observations fall within the margin of error. The prediction flattens out at the end of the time series, which makes sense given this is a random walk model that is informed by the last year of data.\n\n\nCode\n## forecast errors\ninnov &lt;- kf_out$Innov\n\n## Q-Q plot of innovations\nqqnorm(t(innov), main = \"\", pch = 16, col = \"blue\")\n## add y=x line for easier interpretation\nqqline(t(innov))\n\n\n\n\n\n\n\n\n\nThere are some odd trends in this QQ plot and to be honest, I’m not sure the best way to interpret it.\n\nConsider other environmental factors that could influence the time-varying intrinsic productivity of these salmon. For example, are there other large-scale indices of ocean conditions (e.g., sea-surface temperature, El Niño Southern Oscillation)? You could also consider the possible influence of other salmon stocks such as those we examined in Lab 1.\n\nThe Kvichak River system flows into Bristol Bay Alaska, and some other possible environmental factors that could influence time-varying productivity could include sea ice dynamics, driving the underlying primary productivity and food availability of plankton for salmon that have migrated to the Bering Sea, which could have an impact on fecundity and survival. Sea ice extent is correlated with certain species of copepods, with varying lipid content, and some species may be better food for salmon. Sea Ice would likely be correlated with sea surface temperatures, but SST could be another covariate to explore as the Bering Sea has shown evidence of warming in recent decades.",
+    "crumbs": [
+      "Dynamic Linear Models",
+      "<span class='chapter-number'>25</span>  <span class='chapter-title'>Team 3 - Lab 5</span>"
+    ]
+  },
+  {
+    "objectID": "Lab-5/Final_Write_ups/Lab-5-team-4_final.html",
+    "href": "Lab-5/Final_Write_ups/Lab-5-team-4_final.html",
+    "title": "26  Team 3 - Lab 5",
+    "section": "",
+    "text": "Part 1: Estimate 1 regression parameter\nLoad the data and look at the time series.\nSubset the data to include the time range 1956-1998 so that there is spawner and recruit data for each time point.\nCreate the metric representing reproductive rate: log(Rt/St)\nCreate covariate variables\nEstimate the alpha regression parameter (the intercept).\nCode\nB &lt;- 'identity'  \nU &lt;- matrix(0, nrow = 1, ncol = 1)  ## 2x1; both elements = 0\nQ &lt;- matrix(list(0), 1, 1)  ## 2x2; all 0 for now\ndiag(Q) &lt;- c(\"q.alpha\")\n\nZ&lt;-\"identity\"\nA &lt;- matrix(0)  ## 1x1; scalar = 0\nR &lt;- matrix(\"r\")  ## 1x1; scalar = r\n\n## only need starting values for regr parameters\ninits_list &lt;- list(x0 = 0)\n\n## list of model matrices & vectors\nmod_list &lt;- list(B = B, U = U, Q = Q, Z = Z, A = A, R = R)\n\n#DLM without covariates\ndlm_1 &lt;- MARSS(dat.z, inits = inits_list, model = mod_list, silent = TRUE)\n\n#plot alpha(t)\nplot(x=SR_56to98$brood_year, y=dlm_1$states, type='l', main = \"Time series of alpha\", xlab = \"Year\", ylab = \"alpha parameter\")\nlines(x=SR_56to98$brood_year, y=zscore(SR_56to98$RtovSt), col='blue')\n\n\n\n\n\n\n\n\n\nCode\ndlm_1$AICc\n\n\n[1] 121.0344\n\n\nCode\n#121.0344\n\nplot1 &lt;- autoplot(dlm_1,  plot.type = \"fitted.ytT\")\nplot2 &lt;- autoplot(dlm_1,  plot.type = \"model.resids.ytT\")\nplot3 &lt;- autoplot(dlm_1,  plot.type = \"acf.std.model.resids.ytT\")\nThe autocorrelation at 10 years may indicate a PDO effect.",
+    "crumbs": [
+      "Dynamic Linear Models",
+      "<span class='chapter-number'>26</span>  <span class='chapter-title'>Team 3 - Lab 5</span>"
+    ]
+  },
+  {
+    "objectID": "Lab-5/Final_Write_ups/Lab-5-team-4_final.html#contributions",
+    "href": "Lab-5/Final_Write_ups/Lab-5-team-4_final.html#contributions",
+    "title": "26  Team 3 - Lab 5",
+    "section": "Contributions",
+    "text": "Contributions\nA preliminary meeting by all was held to discuss and begin the homework. ETS completed parts 1-2. NC completed parts 3-4. MM completed parts 5-6 and drafted report into R markdown. Report was finalized by all.",
+    "crumbs": [
+      "Dynamic Linear Models",
+      "<span class='chapter-number'>26</span>  <span class='chapter-title'>Team 3 - Lab 5</span>"
     ]
   }
 ]
