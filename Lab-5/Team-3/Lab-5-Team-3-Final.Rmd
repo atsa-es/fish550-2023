@@ -51,7 +51,6 @@ plot(SR_data$brood_year, SR_data$recruits, type= "l", xlab = "Year", ylab = "Rec
 plot(SR_data$brood_year, log(SR_data$recruits/SR_data$spawners) , xlab = "Year", ylab = "log(R/S)", type= "l")
 plot(SR_data$spawners, SR_data$recruits, xlab = "Spawners", ylab = "Recruits", pch = 16)
 ```
-
 ### Plot Environmental Data 
 ```{r dlm-data-head-environment}
 par(mfrow=c(2,1))
@@ -114,7 +113,6 @@ Results: The AICc of this model is 110.36, state plots and residuals are below
 ```{r}
 autoplot(reduced_Rick, silent = TRUE)
 ```
-
 Notes: 
 The observations and level follow each other exactly. This makes sense considering this is the only variable in the model. 
 The model residuals don't seem to follow a trend, but they are absolutely not normally distributed.
@@ -153,7 +151,6 @@ Result: AICC is 112.67, higher than the previous model after multiple attempts a
 ```{r}
 autoplot.marssMLE(full_Rick, silent = TRUE)
 ```
-
 Results: Model fit, residuals, and ACF all look the same as the previous model because all the variation was loaded onto the intercept term. 
 
 ## Full Ricker's Model with Static Spawner Effect and Summer PDO covariate
@@ -187,7 +184,7 @@ modlist <- list( # All other arguments are left as default
 summer_Rick <- MARSS(Yt, model = modlist, control = list(maxit=1000), inits = list(x0 = matrix(c(1,1,1),3,1))) # added inits list due to marss error
 ```
 Result: AICC is 117.89, higher than the previous models and all the variance is loaded onto the intercept again.
-I have tried to limit the variation of the intercept but I get a MARSS error every time. I have also tried to change the initial values but the resulting model was the same.
+I have tried to limit the variation of the intercept but I get a MARSS error every time. I have also tried to change the initial values bu the resulting model was the same.
 
 ```{r}
 autoplot(summer_Rick, silent = TRUE)
@@ -228,7 +225,6 @@ I have tried to limit the variation of the intercept but I get a MARSS error eve
 ```{r}
 autoplot(winter_Rick, silent = TRUE)
 ```
-
 Why is all the variation loaded onto the intercept again? Is this just a feature of the model? The winter effect is nonzero but still pretty small compared.
 
 # Results  
@@ -243,12 +239,8 @@ mods <- c("Reduced Ricker","Full Ricker","Summer PDO","Winter PDO")
 NLL <- c(reduced_Rick$logLik, full_Rick$logLik, summer_Rick$logLik, winter_Rick$logLik)
 meanProd<-c(reduced_Rick$states[1,1] ,full_Rick$states[2,1],summer_Rick$states[3,1],winter_Rick$states[3,1])
 SEs<-c(reduced_Rick$states.se[1,1] ,full_Rick$states.se[2,1],summer_Rick$states.se[3,1],winter_Rick$states.se[3,1])
-
 tab <- cbind.data.frame(mods, NLL, meanProd, SEs)
-is.num <- sapply(tab, is.numeric)
-tab[is.num] <- lapply(tab[is.num], round, 3)
-
-kable(tab, col.names = c("Models", "Likelihood    ", "  Means  ", "-  SE "))
+kable(tab, col.names = c("Models", "Likelihood", "Means", "SE"))
 
 ```
 

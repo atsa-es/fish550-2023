@@ -1,0 +1,604 @@
+---
+title: "Lab 5 - Time-varying productivity of salmon"
+subtitle: "Dynamic Linear Models (DLMs)"
+author: "Person 1, Person 2, Person 3"
+date: May 11, 2023
+output: 
+  html_document:
+    code-folding: true
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include = FALSE}
+options(dplyr.summarise.inform = FALSE)
+```
+
+***
+
+# Methods
+
+## Data
+
+In this lab, we applied Dynamic Linear Models to examine some of the time-varying properties of the spawner-recruit relationship for Pacific salmon. We downloaded sockeye data from the Kvichak river system in Bristol Bay Alaska using the MARSS package. This included spawner and recruit data spanning from 1956 to 2005.
+
+## Environmental covariates
+
+We tested the data support for the inclusion of annual summer and winter PDO values in our models. We also tested the support for sea surface temperature (SST). These data were also downloaded from the MARSS package in R. 
+
+## Models in matrix form
+
+We fit the following four models:
+
+Model 1: Reduced Ricker model
+$$
+\begin{equation}
+y_t = \begin{bmatrix}1\end{bmatrix}\begin{bmatrix}
+    \alpha \\
+  \end{bmatrix}_t + v_t \\
+\begin{bmatrix}
+    \alpha \\
+  \end{bmatrix}_t \ =
+  \begin{bmatrix}
+    \alpha \\
+  \end{bmatrix}_{t-1} + \begin{bmatrix}
+    w_{\alpha} \\
+  \end{bmatrix}_t
+\end{equation}
+$$
+$$
+w_t \sim N(0, \begin{bmatrix} q_\alpha  \end{bmatrix})
+$$
+
+Model 2: Full Ricker model
+
+$$
+\begin{equation}
+y_t = \begin{bmatrix}
+    1 &
+    S_t
+  \end{bmatrix}\begin{bmatrix}
+    \alpha \\
+    \beta
+  \end{bmatrix}_t + v_t \\
+ \begin{bmatrix}
+    \alpha \\
+    \beta
+  \end{bmatrix}_t =
+  \begin{bmatrix}
+    \alpha \\
+    \beta
+  \end{bmatrix}_{t-1} +
+  \begin{bmatrix}
+    w_{\alpha} \\
+    w_{\beta}
+  \end{bmatrix}_t 
+\end{equation}
+$$
+$$
+w_t \sim N(0, \begin{bmatrix} q_\alpha & 0 \\ 0 & 0   \end{bmatrix})
+$$
+
+Model 3: Full Ricker model w/ summer pdo as a covariate
+
+$$
+\begin{equation}
+y_t = \begin{bmatrix}
+    1 &
+    S_t &
+    PDOsummer_t
+  \end{bmatrix}\begin{bmatrix}
+    \alpha \\
+    \beta \\
+    \delta\\
+  \end{bmatrix}_t + v_t \\
+ \begin{bmatrix}
+    \alpha \\
+    \beta \\
+    \delta \\
+  \end{bmatrix}_t =
+  \begin{bmatrix}
+    \alpha \\
+    \beta \\
+    \delta \\
+  \end{bmatrix}_{t-1} +
+  \begin{bmatrix}
+    w_{\alpha} \\
+    w_{\beta} \\
+    w_{\delta} \\
+  \end{bmatrix}_t 
+\end{equation}
+$$
+$$
+w_t \sim N(0, \begin{bmatrix} q_\alpha & 0 & 0\\ 0 & 0 & 0 \\ 0 & 0 & q_\delta \end{bmatrix})
+$$
+
+Model 4: Full Ricker model w/ winter pdo as a covariate
+
+$$
+\begin{equation}
+y_t = \begin{bmatrix}
+    1 &
+    S_t &
+    PDOwinter_t
+  \end{bmatrix}\begin{bmatrix}
+    \alpha \\
+    \beta \\
+    \delta\\
+  \end{bmatrix}_t + v_t \\
+ \begin{bmatrix}
+    \alpha \\
+    \beta \\
+    \delta \\
+  \end{bmatrix}_t =
+  \begin{bmatrix}
+    \alpha \\
+    \beta \\
+    \delta \\
+  \end{bmatrix}_{t-1} +
+  \begin{bmatrix}
+    w_{\alpha} \\
+    w_{\beta} \\
+    w_{\delta} \\
+  \end{bmatrix}_t 
+\end{equation}
+$$
+
+$$
+w_t \sim N(0, \begin{bmatrix} q_\alpha & 0 & 0\\ 0 & 0 & 0 \\ 0 & 0 & q_\delta \end{bmatrix})
+$$
+## Model diagnositics
+
+To examine our model assumptions, we inspected acf plots of our model residuals. 
+
+# Data
+
+The data are a dataframe with columns for brood year (`brood_year`), number of spawners (`spawners`), number of recruits (`recruits`) and PDO at year $t-2$ in summer (`pdo_summer_t2`) and in winter (`pdo_winter_t2`).
+
+## Load the data
+
+```{r dlm-load-atsa, eval=FALSE}
+## library(devtools)
+## Windows users will likely need to set this
+#Sys.setenv("R_REMOTES_NO_ERRORS_FROM_WARNINGS" = "true")
+#devtools::install_github("nwfsc-timeseries/atsalibrary")
+
+library(tidyverse)
+library(MARSS)
+## get data
+data(KvichakSockeye, package="atsalibrary")
+SR_data <- KvichakSockeye
+head(SR_data)
+
+```
+
+
+## Wrangle the data
+
+```{r wrangle_data}
+
+#create log ratio for yt
+SR_data$y <- log(SR_data$recruits/SR_data$spawners)
+
+#date to columns
+dat <- t(SR_data)
+colnames(dat) <- SR_data$brood_year
+dat <- dat[-1,]
+dat <- dat[c(5,1,3,4,2),]
+
+## plot response variable
+dat.ts <- ts(log(SR_data$recruits/SR_data$spawners), start = 1952, end = 2005, frequency =1)
+plot.ts(dat.ts)
+
+```
+
+# Results
+
+## Task 1: Reduced Ricker
+
+1. We first fit a reduced form of Ricker's model that includes only a time-varying level ($\alpha_t$) and observation error ($v_t$). That is,
+
+$$
+\begin{align*}
+\text{log}(R_t) &= \alpha_t + \text{log}(S_t) + v_t \\
+\text{log}(R_t/S_t) &= \alpha_t + v_t
+\end{align*}
+$$
+
+This model assumes no density-dependent survival in that the number of recruits is an ascending function of spawners. 
+
+```{r reduced Ricker}
+
+# NO density dependence / stochastic level 
+
+mod1 <- list(
+  Z = "identity",
+  U="zero",
+  R=matrix("r",nrow=1),
+  B="identity",
+  A="zero",
+  Q=matrix("q",nrow=1)
+)
+
+m1 <- MARSS(dat[1,],model = mod1)
+
+```
+
+###  $\alpha_t$ plot and the AICc. 
+
+```{r alpha values}
+#plot alpha values
+alpha1 <- as.numeric(m1$states)
+alpha.se1 <- as.numeric(m1$states.se)
+plot(alpha1~SR_data$brood_year,type='l', ylim=c(-3,3))
+lines(alpha1+2*alpha.se1~SR_data$brood_year, lty="dashed")
+lines(alpha1-2*alpha.se1~SR_data$brood_year, lty="dashed")
+
+#AICc value
+m1$AICc
+```
+
+The AICc of our first model is 111.688. 
+
+### Model diagnostics
+
+```{r}
+#plot model residuals diagnostics. 
+res <- residuals(m1)[,7]
+tmp <- which(!is.na(res))
+res <- res[tmp]
+acf(res)
+#or 
+#autoplot.marssMLE(m1)
+
+plot(m1, plot.type = "qqplot.std.model.resids.ytt1")
+plot(m1, plot.type = "acf.std.model.resids.ytt1")
+
+
+```
+
+This simplified model show some signs of autocorrelation in residuals.
+
+
+## Task 2: Full Ricker Model
+
+We then fit the full Ricker model with a time-varying intercept and a static effect of spawners. 
+
+```{r }
+
+#we model the underlying states of alpha (brood-year productivity) and beta
+#beta is prevented from changing.
+
+spawn <- matrix(dat[2,-c(1:4)],nrow=1)    #not sure if we should scale this or not
+ratio <- SR_data$y[-c(1:4)]               #remove responses that corresponded to Spawner = NA
+
+m <- 2                     #number of parameters in process 
+TT <- length(spawn)      #number of data points
+
+B <-  diag(m)                         #"identity"
+U <-  matrix(0, nrow = m, ncol = 1)   #"zero"
+Q <- matrix(list("q.alpha", 0, 0, 0), nrow = 2)  # Setting the effect of spawners to static
+Z <- array(NA, c(1, m, TT))  ## NxMxT; empty for now
+Z[1,1,] <- rep(1, TT)        ## Nx1; 1's for intercept
+Z[1,2,] <- spawn            ## Nx1; predictor variable 
+A = matrix(0)            #"zero"
+R <-  matrix("r")
+
+inits_list <- list(x0 = matrix(c(0, 0), nrow = m))     
+mod_list <- list(B = B, U = U, Q = Q, Z = Z, A = A, R = R)
+
+## fit the model with MARSS
+m2 <- MARSS(ratio, mod_list, inits = inits_list)
+
+
+```
+
+###  $\alpha_t$ plot and the AICc. 
+
+The time series of $\alpha_t$ for this model is an estimate of the stock productivity in the absence of density-dependent effects. Here we plot the ts of $\alpha_t$ and note the AICc for this model. 
+
+```{r}
+
+alpha <- as.numeric(m2$states[1,])
+beta <- as.numeric(m2$states[2,]) # Here, beta does not time vary (this is the static effect of spawners)
+alpha.se <- as.numeric(m2$states.se[1,])
+beta.se <- as.numeric(m2$states.se[2,])
+
+#from first model
+plot(alpha1~SR_data$brood_year,type='l', ylim=c(-3,3), xlim= c(1950, 2005))
+lines(alpha1+2*alpha.se1~SR_data$brood_year, lty="dashed")
+lines(alpha1-2*alpha.se1~SR_data$brood_year, lty="dashed")
+#second model
+lines(alpha~SR_data$brood_year[-c(1:4)],type='l',col="red")
+lines(alpha+2*alpha.se~SR_data$brood_year[-c(1:4)], lty="dashed", col="red")
+lines(alpha-2*alpha.se~SR_data$brood_year[-c(1:4)], lty="dashed", col="red")
+
+#AIC value
+m1$AICc
+m2$AICc  #AICc is within a single point.
+
+```
+
+
+How do these estimates of productivity compare to those from the previous question? 
+
+We were expecting the alphas (productivity) from model 2 to be smaller than model 1, however the estimated values of alpha are very similar in each model. 
+
+The model AICcs are also very similar and only vary by a single point.
+
+### Model diagnostics 
+
+```{r}
+#plot model diagnostics. 
+#autoplot.marssMLE(m2)
+
+plot(m2, plot.type = "qqplot.std.model.resids.ytt1")
+plot(m2, plot.type = "acf.std.model.resids.ytt1")
+
+```
+
+Similar to our first model, the ACF plot still shows a lag at 5 and 10.
+
+## Task 3: Expanded Ricker with summer PDO
+
+Next we fit the expanded Ricker model including the summer PDO index as the covariate (`pdo_summer_t2`). 
+
+NOTES-- why do we change the intercept (alpha) to static, why do we change the effect of spawners to vary (beta)?
+ 
+```{r}
+#first model we assume there is no density dependence
+#we model the underlying states of alpha (brood-year productivity) and beta
+#beta is prevented from changing.
+
+pdo_s <- matrix(dat[3,-c(1:4)], nrow=1)
+            
+m <- 3                     #number of parameters in process 
+TT <- length(spawn)      #number of data points
+
+B <-  diag(m)                         #"identity"
+U <-  matrix(0, nrow = m, ncol = 1)   #"zero"
+Q <- matrix(list(0, 0,0,              #we no longer want alpha to vary
+                 0, "q.beta",0,  #Do we want beta to vary now?
+                 0,0,"q.pdo_s"), nrow = 3, byrow = TRUE)  # to have characters and numbers in same matrix use a list
+Z <- array(NA, c(1, m, TT))  ## NxMxT; empty for now
+Z[1,1,] <- rep(1, TT)        ## Nx1; 1's for intercept
+Z[1,2,] <- spawn           ## Nx1; predictor variable spawners
+Z[1,3,] <-  pdo_s            ## Nx1; predictor PDO summer
+A = matrix(0)                #"zero"
+R <-  matrix("r")
+
+inits_list2 <- list(x0 = matrix(c(0,0,0), nrow = m))     
+mod_list2 <- list(B = B, U = U, Q = Q, Z = Z, A = A, R = R)
+cont_list <- list(maxit=10000)
+# run model
+m3 <- MARSS(ratio, mod_list2, inits = inits_list2, method = "BFGS")
+
+```
+
+
+###  $\alpha_t$, $\delta_t$ plots and the AICc.
+
+What is the mean level of productivity?  
+
+```{r}
+alpha3 <- as.numeric(m3$states[1,])  #static number
+beta3 <- as.numeric(m3$states[2,])
+pdo_s <- as.numeric(m3$states[3,])
+
+beta.se3 <- as.numeric(m3$states.se[2,])
+pdo_s.se3 <- as.numeric(m3$states.se[3,])
+
+
+#from first model
+plot(alpha1~SR_data$brood_year,type='l', ylim=c(-3,3), xlim= c(1950, 2005))
+lines(alpha1+2*alpha.se1~SR_data$brood_year, lty="dashed")
+lines(alpha1-2*alpha.se1~SR_data$brood_year, lty="dashed")
+#second model
+lines(alpha~SR_data$brood_year[-c(1:4)],type='l',col="red")
+lines(alpha+2*alpha.se~SR_data$brood_year[-c(1:4)], lty="dashed", col="red")
+lines(alpha-2*alpha.se~SR_data$brood_year[-c(1:4)], lty="dashed", col="red")
+#third model
+lines(alpha3~SR_data$brood_year[-c(1:4)],type='l', col="blue")
+
+
+m1$states[-c(1:4)] #alpha from model 1 trimmed to same length as model 2 for comparison
+m2$states[1,]      #alpha from model 2
+m3$states[1,]     #alpha from model 3
+m2$states[2,]     # beta from model 2
+m3$states[2,]     #beta from model 3
+m3$states[3,]    #estimate of pdo_s coeficient was allowed to vary in Q but was estimated as static
+
+#AIC value
+m1$AICc
+m2$AICc  #AICc is within a single point.
+m3$AICc  # getting worse
+
+
+```
+
+Plot the ts of $\delta_t$ and note the AICc for this model.
+
+```{r delta t}
+
+```
+
+### Model diagnostics
+
+```{r}
+autoplot.marssMLE(m3)
+#more autocorrelations in acf plot
+```
+
+## Task 4: Expanded Ricker with winter PDO
+
+Finally, we fit the expanded model including the winter PDO index as the covariate (`pdo_winter_t2`). 
+
+```{r}
+
+pdo_w <- matrix(dat[4,-c(1:4)], nrow=1)
+
+m <- 3                   #number of parameters in process 
+TT <- length(spawn)      #number of data points
+
+B <-  diag(m)                         #"identity"
+U <-  matrix(0, nrow = m, ncol = 1)   #"zero"
+Q <- matrix(list(0, 0,0,              #we no longer want alpha to vary
+                 0, "q.beta",0,  #Do we want beta to vary now?
+                 0,0,"q.pdo_w"), nrow = 3, byrow = TRUE) # to have characters and numbers in same matrix use a list
+Z <- array(NA, c(1, m, TT))  ## NxMxT; empty for now
+Z[1,1,] <- rep(1, TT)        ## Nx1; 1's for intercept
+Z[1,2,] <- spawn           ## Nx1; predictor variable spawners
+Z[1,3,] <-  pdo_w           ## Nx1; predictor PDO summer
+#Z[1,4,] <-  pdo_w            ## Nx1; predictor PDO winter
+A = matrix(0)                #"zero"
+R <-  matrix("r")
+
+inits_list4 <- list(x0 = matrix(c(0,0,0), nrow = m))     
+mod_list4 <- list(B = B, U = U, Q = Q, Z = Z, A = A, R = R)
+cont_list <- list(maxit=10000)
+# run model
+m4 <- MARSS(ratio, mod_list4, inits = inits_list4, control = cont_list, method = "BFGS")
+```
+
+###  $\alpha_t$, $\delta_t$ plots and the AICc.
+
+What is the mean level of productivity? Plot the ts of $\delta_t$ and note the AICc for this model. 
+
+
+```{r}
+
+```
+
+### Model Diagnostics
+
+Also plot appropriate model diagnostics.
+
+```{r}
+autoplot.marssMLE(m4)
+```
+
+
+# Task 5: Best Model Forecasts
+
+## Model comparison
+
+```{r}
+
+#AIC value
+m1$AICc
+m2$AICc  #AICc is within a single point.
+m3$AICc  # getting worse
+m4$AICc
+
+```
+
+5. Based on AICc, which of the models above is the most parsimonious? Is it well behaved (i.e., are the model assumptions met)? Plot the model forecasts for the best model. Is this a good forecast model?
+
+The best model is our first model, XX. 
+
+## Model forecasts
+```{r}
+
+```
+
+
+# Task 6: Other Environmental Covariates
+
+As our final task, we considered the effect of sea surface tmeperature on the time-varying productivity of Kvichak salmon. 
+
+```{r}
+
+bb_data <- readRDS(here::here("Lab-1", "Data_Images", "bristol_bay_data_plus_covariates.rds"))
+
+sst <- bb_data %>% 
+  filter(system == "Kvichak", brood_yr <= 2005)%>%
+  select(brood_yr, env_sst)%>%
+  group_by(brood_yr)%>%
+  summarize(sst = mean(env_sst))
+  
+spawn1957 <- spawn[-1]
+ratio1957 <- ratio[-1]
+sst1957 <- t(sst$sst)
+
+m <- 3                     #number of parameters in process 
+TT <- length(spawn1957)      #number of data points
+
+B <-  diag(m)                         #"identity"
+U <-  matrix(0, nrow = m, ncol = 1)   #"zero"
+Q <- matrix(list("q.alpha", 0,0,              
+                 0, 0,0,  #Do we want beta to vary now?
+                 0,0,"q.sst"), nrow = 3, byrow = TRUE)  # to have characters and numbers in same matrix use a list
+Z <- array(NA, c(1, m, TT))  ## NxMxT; empty for now
+Z[1,1,] <- rep(1, TT)        ## Nx1; 1's for intercept
+Z[1,2,] <- spawn1957           ## Nx1; predictor variable spawners
+Z[1,3,] <-  sst1957            ## Nx1; predictor PDO summer
+A = matrix(0)                #"zero"
+R <-  matrix("r")
+
+inits_list2 <- list(x0 = matrix(c(0,0,0), nrow = m))     
+mod_list2 <- list(B = B, U = U, Q = Q, Z = Z, A = A, R = R)
+
+
+# run model
+m5 <- MARSS(ratio1957, mod_list2, inits = inits_list2)
+
+m5$AICc
+
+```
+
+
+###  $\alpha_t$, $\delta_t$ plots and the AICc.
+
+What is the mean level of productivity? Plot the ts of $\delta_t$ and note the AICc for this model. 
+
+
+```{r}
+
+alpha_m5 <- as.numeric(m5$states[1,]) 
+alpha_m5_se <- as.numeric(m5$states.se[1,])
+
+sst_m5 <- as.numeric(m5$states[3,])
+sst_m5_se <- as.numeric(m5$states.se[3,])
+
+mean_produc_m5 <- mean(alpha_m5)
+
+# Alpha plot
+plot(alpha_m5~sst$brood_yr,type='l', ylim = c(0,5),xlim= c(1950, 2005))
+lines((alpha_m5+2*alpha_m5_se)~sst$brood_yr, lty="dashed", col="red")
+lines(alpha_m5-2*alpha_m5_se~sst$brood_yr, lty="dashed", col="red")
+text(1960, 0.4, "mean producivity = 2.48")
+
+# Delta plot
+plot(sst_m5~sst$brood_yr,type='l',ylim = c(-1.1, 0.3), xlim= c(1950, 2005))
+lines((sst_m5+2*sst_m5_se)~sst$brood_yr, lty="dashed", col="red")
+lines(sst_m5-2*sst_m5_se~sst$brood_yr, lty="dashed", col="red")
+
+#AIC value
+m5$AICc
+
+
+```
+The mean level of productivity in this model was 2.48. We found that this model did not test higher than the reduced Ricker model. 
+
+### Model Diagnostics
+
+Also plot appropriate model diagnostics.
+
+```{r}
+plot(m5)
+```
+
+
+
+
+# Discussion
+
+We found that the Kvichak sockeye spawner recruit time series was best explained by XXX. 
+
+Of the three covariates we tested XXX best improved the model fits. 
+
+
+# Team contributions
+
+Dylan wrote the original code for reduced ricker and full ricker models. Maria wrote the code for the PDO models. Liz wrote the code for the SST and coded the models in matrix form. All team members contributed to writing and organization of the lab document. 
+

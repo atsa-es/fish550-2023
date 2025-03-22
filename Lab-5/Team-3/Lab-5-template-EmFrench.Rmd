@@ -1,0 +1,315 @@
+---
+title: "Lab 5 - Time-varying productivity of salmon"
+subtitle: "Dynamic Linear Models (DLMs)"
+author: "Eric French, Madison Heller-Shipley, Karl Veggerby"
+date: May 11, 2023
+output: 
+  html_document:
+    code-folding: true
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include = FALSE}
+options(dplyr.summarise.inform = FALSE)
+library(MARSS)
+library(marssTMB)
+library(dplyr)
+library(ggplot2)
+```
+
+------------------------------------------------------------------------
+
+# Data
+
+Describe the salmon data and any environmental covariates you decide to examine.
+
+## Load the data
+
+```{r dlm-load-atsa, eval=FALSE}
+## library(devtools)
+## Windows users will likely need to set this
+## Sys.setenv("R_REMOTES_NO_ERRORS_FROM_WARNINGS" = "true")
+#devtools::install_github("nwfsc-timeseries/atsalibrary") already installed
+
+## get data
+data(KvichakSockeye, package="atsalibrary")
+SR_data <- KvichakSockeye
+```
+
+The data are a dataframe with columns for brood year (`brood_year`), number of spawners (`spawners`), number of recruits (`recruits`) and PDO at year $t-2$ in summer (`pdo_summer_t2`) and in winter (`pdo_winter_t2`).
+
+*NOTE* There is missing spawner data from 1952-1955. There is missing recruit data from 1999-2005. The valid window is 1956-1998
+
+
+### Plot Biological Data
+```{r dlm-data-head}
+
+par(mfrow=c(3,1))
+plot(SR_data$brood_year, SR_data$spawners, type= "l", xlab = "Year", ylab = "Spawners")
+plot(SR_data$brood_year, SR_data$recruits, type= "l", xlab = "Year", ylab = "Recruits")
+plot(SR_data$spawners, SR_data$recruits, xlab = "Spawners", ylab = "Recruits", pch = 16)
+```
+### Plot Environmental Data 
+
+### Plot Biological Data
+```{r dlm-data-head}
+par(mfrow=c(2,1))
+plot(SR_data$brood_year, SR_data$pdo_summer_t2, type= "l", xlab = "Year", ylab = "Summer PDO")
+abline(h=0, lty = 2)
+plot(SR_data$brood_year, SR_data$pdo_winter_t2, type= "l", xlab = "Year", ylab = "Winter PDO")
+abline(h=0, lty= 2)
+```
+
+## Wrangle the data
+
+```{r wrangle_data}
+## shrink the window of years so the response variable will have a full set of values
+SR_dat_short <- SR_data[SR_data[,"brood_year"] >= 1956 & SR_data[,"brood_year"] <= 1998, ]
+
+#Create a column for the response variable
+SR_dat_short$Yt <- log(SR_dat_short$recruits/SR_dat_short$spawners)
+
+#Create the observation matrix
+Yt <- t(SR_dat_short$Yt)
+
+#determines number of elements
+TT <- nrow(SR_dat_short)
+```
+
+# General tasks
+
+Use the information and data in the previous section to answer the following questions. Note that if any model is not converging, then you will need to increase the `maxit` parameter in the `control` argument/list that gets passed to `MARSS()`. For example, you might try `control=list(maxit=2000)`.
+
+## Reduced Ricker's Model
+1.  Begin by fitting a reduced form of Ricker's model that includes only a time-varying level ($\alpha_t$) and observation error ($v_t$). That is,
+
+```{=tex}
+\begin{align*}
+\text{log}(R_t) &= \alpha_t + \text{log}(S_t) + v_t \\
+\text{log}(R_t/S_t) &= \alpha_t + v_t
+\end{align*}
+```
+This model assumes no density-dependent survival in that the number of recruits is an ascending function of spawners. Plot the ts of $\alpha_t$ and note the AICc for this model. Also plot appropriate model diagnostics.
+
+```{r}
+#create the model params for reduced Ricker's model
+Z <- array(NA,c(1,1,TT))
+Z[1,1,] <- c(1)
+
+modlist <- list( # All other arguaments are left as default
+  Z = Z,
+  U = "zero",
+  A = "zero",
+  B = "identity"
+)
+
+reduced_Rick <- MARSS(Yt, model = modlist)
+```
+Results: The AICc of this model is 110.36, state plots and residuals are below
+
+### Model and State Plots
+```{r}
+autoplot(reduced_Rick, silent = TRUE)
+```
+Notes: 
+The observations and level follow each other exactly. This makes sense considering this is the only variable in the model. 
+The model residuals don't seem to follow a trend, but they are absolutely not normally distributed.
+The state residuals have no time trend, and the model smoothation results seem to be normally distributed.
+The ACF plot has significant autocorrelation at lags of 5 and 10 years
+
+## Full Ricker's Model with Static Spawner Effect
+2.  Fit the full Ricker model with a time-varying intercept and a static effect of spawners. For this model, obtain the time series of $\alpha_t$, which is an estimate of the stock productivity in the absence of density-dependent effects. How do these estimates of productivity compare to those from the previous question? Plot the ts of $\alpha_t$ and note the AICc for this model. Also plot appropriate model diagnostics. ($Hint$: If you don't want a parameter to vary with time, what does that say about its process variance?)
+
+```{r}
+#create the model params for the full Ricker's model
+Z <- array(NA,c(1,2,TT)) # the array has 2 elements now
+Z[1,1,] <- c(1)
+Z[1,2,] <- SR_dat_short$spawners
+
+modlist <- list( # All other arguments are left as default
+  Z = Z,
+  U = "zero",
+  A = "zero",
+  B = "identity",
+  Q = ldiag(list("q1",0)) # creates a custom Q matrix with zero variance for the spawner effect... I think
+)
+
+full_Rick <- MARSS(Yt, model = modlist, inits = list(x0 = matrix(c(0),2,1))) # added inits list due to marss error
+```
+Result: AICC is 112.67, higher than the previous model after multiple attempts at different x0 values. each one resulted in the same model. The increase in AICc is likely driven by an increase in parameters by allowing time variation. 
+
+```{r}
+autoplot.marssMLE(full_Rick, silent = TRUE)
+```
+Results: Model fit, residuals, and ACF all look the same as the previous model because all the variation was loaded onto the intercept term. I may need a second set of eyes on this one
+
+## Full Ricker's Model with Static Spawner Effect and Summer PDO covariate
+3.  Fit the expanded model that includes the summer PDO index as the covariate (`pdo_summer_t2`). What is the mean level of productivity? Plot the ts of $\delta_t$ and note the AICc for this model. Also plot appropriate model diagnostics.
+```{r}
+#create the model params for the full Ricker's model
+Z <- array(NA,c(1,3,TT)) # the array has 3 elements now
+Z[1,1,] <- c(1)
+Z[1,2,] <- SR_dat_short$spawners
+Z[1,3,] <- SR_dat_short$pdo_summer_t2 # Covariate data is added to the Z matrix
+# The model states are the covariate effects in a DLM
+
+modlist <- list( # All other arguments are left as default
+  Z = Z,
+  U = "zero",
+  A = "zero",
+  B = "identity",
+  Q = ldiag(list("q1",0,"q3")) # creates a custom Q matrix with zero variance for the spawner effect... I think? Additionally, the intercept variance may need to be contrained further
+)
+
+summer_Rick <- MARSS(Yt, model = modlist, control = list(maxit=1000), inits = list(x0 = matrix(c(1,1,1),3,1))) # added inits list due to marss error
+```
+Result: AICC is 117.89, higher than the previous models and all the variance is loaded onto the intercept again.
+I have tried to limit the variation of the intercept but I get a MARSS error every time. I have also tried to change the initial values bu the resulting model was the same.
+
+```{r}
+autoplot(summer_Rick, silent = TRUE)
+```
+
+## Full Ricker's Model with Static Spawner Effect and Winter PDO covariate
+4.  Fit the expanded model that includes the winter PDO index as the covariate (`pdo_winter_t2`). What is the mean level of productivity? Plot the ts of $\delta_t$ and note the AICc for this model. Also plot appropriate model diagnostics.
+```{r}
+#create the model params for the full Ricker's model
+Z <- array(NA,c(1,3,TT)) # the array has 3 elements now
+Z[1,1,] <- c(1)
+Z[1,2,] <- SR_dat_short$spawners
+Z[1,3,] <- SR_dat_short$pdo_winter_t2 # Covariate data is added to the Z matrix
+# The model states are the covariate effects in a DLM
+
+modlist <- list( # All other arguments are left as default
+  Z = Z,
+  U = "zero",
+  A = "zero",
+  B = "identity",
+  Q = ldiag(list("q1",0,"q3")) # creates a custom Q matrix with zero variance for the spawner effect... I think? Additionally, the intercept variance may need to be contrained further
+)
+
+winter_Rick <- MARSS(Yt, model = modlist, control = list(maxit=3000), inits = list(x0 = matrix(c(1,0,0),3,1))) # added inits list due to marss error
+```
+Result: AICC is 117.1, higher than the previous models and all the variance is loaded onto the intercept again.
+I have tried to limit the variation of the intercept but I get a MARSS error every time. I have also tried to change the initial values bu the resulting model was the same.
+
+```{r}
+autoplot(winter_Rick, silent = TRUE)
+```
+Why is all the variation loaded onto the intercept again? Is this just a feature of the model? The winter effect is nonzero but still pretty small compared.
+
+# Model Fits and Selection 
+5.  Based on AICc, which of the models above is the most parsimonious? Is it well behaved (i.e., are the model assumptions met)? Plot the model forecasts for the best model. Is this a good forecast model?
+
+The Ricker model is the most parsimonious based on AICc. Other more complex models do not appear to improve model fit.
+
+```{r}
+#AICc Table 
+
+
+
+
+```
+
+# Forecast data
+```{r, Forecast data}
+
+# our top model from above:
+
+#create the model params for reduced Ricker's model
+Z <- array(NA,c(1,1,TT))
+Z[1,1,] <- c(1)
+
+modlist <- list( # All other arguaments are left as default
+  Z = Z,
+  U = "zero",
+  A = "zero",
+  B = "identity"
+)
+
+reduced_Rick <- MARSS(Yt, model = modlist)
+
+
+## get list of Kalman filter output
+kf_out <- MARSSkfss(reduced_Rick)
+
+## forecasts of regr parameters; 2xT matrix
+eta <- kf_out$xtt1
+
+## ts of E(forecasts)
+fore_mean <- vector()
+for (t in 1:TT) {
+    fore_mean[t] <- Z[, , t] %*% eta[, t, drop = FALSE]
+}
+
+plot(fore_mean)
+plot(SR_dat_short$Yt)
+
+plot(fore_mean, type = "b", frame = FALSE, pch = 19, 
+     col = "red", xlab = "x", ylab = "y")
+lines(SR_dat_short$Yt, pch = 18, col = "blue", type = "b", lty = 2)
+legend("topright", legend=c("data", "forecast"),
+       col=c("red", "blue"), lty = 1:2, cex=0.8)
+
+```
+
+##
+```{r}
+# compute the forecast variance:
+
+## variance of regr parameters; 1x2xT array
+Phi <- kf_out$Vtt1
+
+## obs variance; 1x1 matrix
+R_est <- coef(reduced_Rick, type = "matrix")$R
+
+
+############# this loop is currently broken, I copied this chunk from the lab book, 
+# and can't figure out what m is in the tZ matrix below
+
+
+## ts of Var(forecasts)
+fore_var <- vector()
+m<-1 #number of regression pars
+for (t in 1:TT) {
+    tZ <- matrix(Z[, , t], m, 1)  ## transpose of Z
+    fore_var[t] <- Z[, , t] %*% Phi[, , t] %*% tZ + R_est
+}
+
+
+
+## forecast errors
+innov <- kf_out$Innov
+
+
+
+
+## Q-Q plot of innovations
+qqnorm(t(innov), main = "", pch = 16, col = "blue")
+## add y=x line for easier interpretation
+qqline(t(innov))
+
+
+```
+
+
+6.  Consider other environmental factors that could influence the time-varying intrinsic productivity of these salmon. For example, are there other large-scale indices of ocean conditions (e.g., sea-surface temperature, El Niño Southern Oscillation)? You could also consider the possible influence of other salmon stocks such as those we examined in Lab 1.
+
+# Methods
+
+Please address the following in your methods:
+
+-   What environmental or dummy variables did you include and why?
+
+-   What forms of models did you fit (ie, write them out in matrix form)?
+
+-   What sort of model diagnostics did you use to examine model assumptions?
+
+# Results
+
+# Discussion
+
+# Team contributions
+
+Example: "All team members helped decide on the goal and ran the analyses for the individual regions. Team members 2 & 3 wrote most of the code for the analysis. Team member 1 worked on the plotting section of the report using and adapting code that team member 3 wrote. All team members helped edit the report and wrote the discussion together."
