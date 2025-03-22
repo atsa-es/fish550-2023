@@ -1,9 +1,8 @@
 library(TMB)
 library(ggplot2)
-compile("univariate.cpp")
-dyn.load(dynlib("univariate"))
+compile("Lab-6/univariate.cpp")
+dyn.load(dynlib("Lab-6/univariate"))
 
-set.seed(123)
 x = cumsum(rnorm(30))
 y = x + rnorm(length(x), 0, 0.01)
 estimate_drift = TRUE # U in MARSS
@@ -25,9 +24,9 @@ if(estimate_rho == FALSE) tmb_map <- c(tmb_map, list(logit_rho = factor(NA)))
 
 # Create TMB data
 data_list <- list(Y = y, n = length(y),
-est_drift = as.numeric(estimate_drift),
-est_rho = as.numeric(estimate_rho),
-keep = ifelse(!is.na(y),1,0))
+                  est_drift = as.numeric(estimate_drift),
+                  est_rho = as.numeric(estimate_rho),
+                  keep = ifelse(!is.na(y),1,0))
 
 # Create object for fitting
 obj <- TMB::MakeADFun(

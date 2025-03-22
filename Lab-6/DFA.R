@@ -4,8 +4,8 @@ library(TMB)
 library(Matrix)
 
 # Compile the TMB C++ code; takes awhile the first time
-TMB::compile("dfa1tmb.cpp")
-dyn.load(TMB::dynlib("dfa1tmb"))
+TMB::compile("Lab-6/dfa1tmb.cpp")
+dyn.load(TMB::dynlib("Lab-6/dfa1tmb"))
 
 #This function generates the Z matrix based on the number of times series and the number of states that are estimated. It is called from with the run_dfa function.
   ZmatGen<-function(Data,NumStates){
@@ -248,5 +248,5 @@ dyn.load(TMB::dynlib("dfa1tmb"))
   	R1<-na.omit(cbind(dat[i,],coefficients(m1.bfgs)$Z[i]*m1.bfgs$states[1,],mym1$Fits[i,]))
   	plot(R1[,2], R1[,3], pch=16,ylab=paste('Series ',i,sep=''))
   }
-  mtext(paste('MARSS = ',as.character(round(mean(R2S[1,]),2))),3,outer=T,col='blue',line=-2.5)
-  mtext(paste('TMB = ',as.character(round(mean(R2S[2,]),2))),3,outer=T,col='red',line=-3.5)
+  mtext(paste('MARSS = ',as.character(round(mean(R1[,2]),2))),3,outer=T,col='blue',line=-2.5)
+  mtext(paste('TMB = ',as.character(round(mean(R1[,3]),2))),3,outer=T,col='red',line=-3.5)
