@@ -2,13 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.340">
+<meta name="generator" content="quarto-1.6.39">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Miranda Mudge, Karl Veggerby, Nick Chambers">
 
-<title>Fish 550 Spring 2023 - 10&nbsp; Team 3 - Lab 2</title>
+<title>10&nbsp; Team 3 - Lab 2 – Fish 550 Spring 2023</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -23,7 +23,7 @@ ul.task-list li input[type="checkbox"] {
 }
 /* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -34,7 +34,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -72,17 +72,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-626149efe8f5d16e1d391ba177679bf0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
   "collapse-after": 3,
   "panel-placement": "start",
   "type": "textbox",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -91,8 +97,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit"
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
   }
 }</script>
 
@@ -105,12 +113,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav">
     <div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../Lab-2/Lab2-MARSS.html">Analyzing multivariate salmon data with MARSS</a></li><li class="breadcrumb-item"><a href="../../Lab-2/Final_Write_ups/Lab-2-team-3_final.html"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Team 3 - Lab 2</span></a></li></ol></nav>
-      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-      </a>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../Lab-2/Lab2-MARSS.html">Analyzing multivariate salmon data with MARSS</a></li><li class="breadcrumb-item"><a href="../../Lab-2/Final_Write_ups/Lab-2-team-3_final.html"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Team 3 - Lab 2</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
@@ -120,7 +128,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="../../">Fish 550 Spring 2023</a> 
@@ -144,9 +152,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
  <span class="menu-text">Forecasting with ARIMA models</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -185,9 +193,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
  <span class="menu-text">Analyzing multivariate salmon data with MARSS</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -226,9 +234,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
  <span class="menu-text">Dynamic Factor Analysis</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -267,9 +275,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
  <span class="menu-text">Hidden Markov Models</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -309,7 +317,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </ul>
     </div>
 </nav>
-<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
@@ -340,12 +348,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#contributions---add-your-contributions" id="toc-contributions---add-your-contributions" class="nav-link" data-scroll-target="#contributions---add-your-contributions">Contributions - add your contributions!</a></li>
   </ul></li>
   </ul>
-<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/atsa-es/fish550-2023/edit/main/Lab-2/Final_Write_ups/Lab-2-team-3_final.Rmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/atsa-es/fish550-2023/blob/main/Lab-2/Final_Write_ups/Lab-2-team-3_final.Rmd" class="toc-action">View source</a></p><p><a href="https://github.com/atsa-es/fish550-2023/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/atsa-es/fish550-2023/edit/main/Lab-2/Final_Write_ups/Lab-2-team-3_final.Rmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/atsa-es/fish550-2023/blob/main/Lab-2/Final_Write_ups/Lab-2-team-3_final.Rmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/atsa-es/fish550-2023/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../Lab-2/Lab2-MARSS.html">Analyzing multivariate salmon data with MARSS</a></li><li class="breadcrumb-item"><a href="../../Lab-2/Final_Write_ups/Lab-2-team-3_final.html"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Team 3 - Lab 2</span></a></li></ol></nav>
 <div class="quarto-title">
 <div class="quarto-title-block"><div><h1 class="title"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Team 3 - Lab 2</span></h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
 <p class="subtitle lead">Lab 2 MARSS models</p>
@@ -367,7 +375,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </div>
   
 
+
 </header>
+
 
 <section id="data" class="level1">
 <h1>Data</h1>
@@ -376,7 +386,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Gorge MPG Upper and Lower Gorge Tributaries</p>
 <p>Coast MPG Clatskanie, and Grays/Chinook Rivers</p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -392,7 +402,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 ✖ dplyr::lag()    masks stats::lag()
 ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MARSS)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span>
@@ -402,7 +412,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </details>
 </div>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">#plot the data</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>esu <span class="ot">&lt;-</span> <span class="fu">unique</span>(columbia.river<span class="sc">$</span>esu_dps)</span>
@@ -419,12 +429,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="fu">plotesu</span>(esu[<span class="dv">4</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Wrangle the data.</p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#format for visualization</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -445,7 +459,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>Clean up the row names</p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>tmp <span class="ot">&lt;-</span> <span class="fu">rownames</span>(dat)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>tmp <span class="ot">&lt;-</span> stringr<span class="sc">::</span><span class="fu">str_replace</span>(tmp, <span class="st">"Salmon, coho [(]Lower Columbia River ESU[)]"</span>, <span class="st">""</span>)</span>
@@ -455,7 +469,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>Select a subset of rivers to test</p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>mod_rivers <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Sandy River - early and late"</span>, </span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>           <span class="st">"Grays and Chinook Rivers - late"</span>, </span>
@@ -473,7 +487,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>We tested many models and a variety of assumptions, many of which varied by model. For all models we assumed that A was a scaling parameter.</p>
 <p>Below we made a variety of assumptions and used them to generate five models to test which set of assumptions would produce the best fit to the data.</p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Model 1: all regions are behaving independently (x) but observations were collected similarly</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="do">## each region has it's own drift where U = unequal </span></span>
@@ -536,7 +550,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>Here we fit the model.</p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MARSS)</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>fit1 <span class="ot">&lt;-</span> <span class="fu">MARSS</span>(sub_dat, <span class="at">model=</span>mod.list1, <span class="at">method=</span><span class="st">"BFGS"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -591,7 +605,7 @@ Initial states (x0) defined at t=0
 Standard errors have not been calculated. 
 Use MARSSparamCIs to compute CIs and bias estimates.</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>fit2 <span class="ot">&lt;-</span> <span class="fu">MARSS</span>(sub_dat, <span class="at">model=</span>mod.list2, <span class="at">method=</span><span class="st">"BFGS"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -640,7 +654,7 @@ Initial states (x0) defined at t=0
 Standard errors have not been calculated. 
 Use MARSSparamCIs to compute CIs and bias estimates.</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>fit3 <span class="ot">&lt;-</span> <span class="fu">MARSS</span>(sub_dat, <span class="at">model=</span>mod.list3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -676,7 +690,7 @@ Initial states (x0) defined at t=0
 Standard errors have not been calculated. 
 Use MARSSparamCIs to compute CIs and bias estimates.</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>fit4 <span class="ot">&lt;-</span> <span class="fu">MARSS</span>(sub_dat, <span class="at">model=</span>mod.list4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -717,7 +731,7 @@ Convergence warnings
  Warning: the  Q.(X.Grays and Chinook Rivers - late,X.Grays and Chinook Rivers - late)  parameter value has not converged.
  Type MARSSinfo("convergence") for more info on this warning.</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>fit5 <span class="ot">&lt;-</span> <span class="fu">MARSS</span>(sub_dat, <span class="at">model=</span>mod.list5, <span class="at">control =</span> <span class="fu">list</span>(<span class="at">maxit=</span><span class="dv">1000</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -757,7 +771,7 @@ Use MARSSparamCIs to compute CIs and bias estimates.</code></pre>
 </div>
 <p>Here we plot the fit of the models to visually check the model performance</p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>plot.mod1 <span class="ot">&lt;-</span> <span class="fu">autoplot</span>(fit1, <span class="at">plot.type=</span><span class="st">"fitted.ytT"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -765,18 +779,26 @@ Use MARSSparamCIs to compute CIs and bias estimates.</code></pre>
 <pre><code>MARSSresiduals.tT reported warnings. See msg element or attribute of returned residuals object.</code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>plot.type = fitted.ytT </code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-8-2.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-8-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Finished plots.</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>plot.mod2 <span class="ot">&lt;-</span> <span class="fu">autoplot</span>(fit2, <span class="at">plot.type=</span><span class="st">"fitted.ytT"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -784,50 +806,74 @@ Use MARSSparamCIs to compute CIs and bias estimates.</code></pre>
 <pre><code>MARSSresiduals.tT reported warnings. See msg element or attribute of returned residuals object.</code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-8-3.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-8-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>plot.type = fitted.ytT </code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-8-4.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-8-4.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Finished plots.</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>plot.mod3 <span class="ot">&lt;-</span> <span class="fu">autoplot</span>(fit3, <span class="at">plot.type=</span><span class="st">"fitted.ytT"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-8-5.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-8-5.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>plot.type = fitted.ytT </code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-8-6.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-8-6.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Finished plots.</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>plot.mod4 <span class="ot">&lt;-</span> <span class="fu">autoplot</span>(fit4, <span class="at">plot.type =</span> <span class="st">"fitted.ytT"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-8-7.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-8-7.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>plot.type = fitted.ytT </code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-8-8.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-8-8.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Finished plots.</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>plot.mod5 <span class="ot">&lt;-</span> <span class="fu">autoplot</span>(fit5, <span class="at">plot.type=</span><span class="st">"fitted.ytT"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -835,13 +881,21 @@ Use MARSSparamCIs to compute CIs and bias estimates.</code></pre>
 <pre><code>MARSSresiduals.tT reported warnings. See msg element or attribute of returned residuals object.</code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-8-9.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-8-9.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>plot.type = fitted.ytT </code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-8-10.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-8-10.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Finished plots.</code></pre>
@@ -849,7 +903,7 @@ Use MARSSparamCIs to compute CIs and bias estimates.</code></pre>
 </div>
 <p>Here we further tested the model fit by examining the corrplot to see which rivers were most closely correlated to see if that fit with our assumptions.</p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># change fit# to evaluate correlation between regions in different models </span></span>
 <span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -858,21 +912,25 @@ Use MARSSparamCIs to compute CIs and bias estimates.</code></pre>
 <div class="cell-output cell-output-stderr">
 <pre><code>corrplot 0.92 loaded</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>Q <span class="ot">&lt;-</span> <span class="fu">coef</span>(fit1, <span class="at">type=</span><span class="st">"matrix"</span>)<span class="sc">$</span>Q</span>
 <span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>corrmat <span class="ot">&lt;-</span> <span class="fu">diag</span>(<span class="dv">1</span><span class="sc">/</span><span class="fu">sqrt</span>(<span class="fu">diag</span>(Q))) <span class="sc">%*%</span> Q <span class="sc">%*%</span> <span class="fu">diag</span>(<span class="dv">1</span><span class="sc">/</span><span class="fu">sqrt</span>(<span class="fu">diag</span>(Q)))</span>
 <span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="fu">corrplot</span>(corrmat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Correlation matrix of 6 test regions shows high correlation between Tilton River and Grays and Chinook Rivers, indicating the potential of these regions behaving as 1 sub-population. This will be tested in the next section.</p>
 <p>#diagnostics</p>
 <p>Testing for model performance using AICc</p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>aic <span class="ot">&lt;-</span> <span class="fu">c</span>(fit1<span class="sc">$</span>AICc, fit2<span class="sc">$</span>AICc, fit3<span class="sc">$</span>AICc, fit4<span class="sc">$</span>AICc, fit5<span class="sc">$</span>AICc)</span>
 <span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>aic<span class="sc">-</span><span class="fu">min</span>(aic) <span class="co">#delta AICc </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -884,7 +942,7 @@ Use MARSSparamCIs to compute CIs and bias estimates.</code></pre>
 <p>A comparison of delta AICc indicates that model 3 is the best fit for the data. There are no other models within delta AICc of 2.0 or less. There are two alternative models within delta AICc of 5.0, but no compelling reason to further those over the clearly top model. Model 3 was the best out of the five models tested, so we’ll use that one to estimate historical abundances. This is not to say that model 3 is the best model possible for this data, only that it’s the best model out of the 5 that we compared.</p>
 <p>We then evaluated the fit of states by looking at plots and residuals</p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co">#model 3</span></span>
 <span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>fit3<span class="sc">$</span>states</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -903,7 +961,7 @@ X1 7.000968 6.953619 7.077913 7.307096 7.500606 7.380459 7.058554 7.335456
       [,41]    [,42]    [,43]    [,44]    [,45]    [,46]    [,47]    [,48]
 X1 8.107335 6.385602 6.807309 7.001013 5.961508 6.592824 7.454632 7.811492</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tsSmooth</span>(fit3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -958,94 +1016,150 @@ X1 8.107335 6.385602 6.807309 7.001013 5.961508 6.592824 7.454632 7.811492</code
 47        X1 47  7.454632 0.3622036
 48        X1 48  7.811492 0.3265167</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(fit3, <span class="at">plot.type=</span><span class="st">"fitted.ytT"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>plot.type = fitted.ytT </code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-11-2.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-11-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Finished plots.</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(fit3, <span class="at">plot.type=</span><span class="st">"residuals"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-11-3.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-11-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>plot.type = model.resids.ytt1 </code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-11-4.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-11-4.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Hit &lt;Return&gt; to see next plot (q to exit): </code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-11-5.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-11-5.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>plot.type = std.model.resids.ytT </code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-11-6.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-11-6.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Hit &lt;Return&gt; to see next plot (q to exit): </code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-11-7.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-11-7.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>plot.type = std.state.resids.xtT </code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-11-8.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-11-8.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Hit &lt;Return&gt; to see next plot (q to exit): </code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-11-9.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-11-9.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>plot.type = qqplot.std.model.resids.ytt1 </code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-11-10.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-11-10.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Hit &lt;Return&gt; to see next plot (q to exit): </code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-11-11.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-11-11.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>plot.type = qqplot.std.state.resids.xtT </code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-11-12.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-11-12.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Hit &lt;Return&gt; to see next plot (q to exit): </code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-11-13.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-11-13.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>plot.type = acf.std.model.resids.ytt1 </code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-11-14.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-11-14.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Finished plots.</code></pre>
@@ -1057,7 +1171,7 @@ X1 8.107335 6.385602 6.807309 7.001013 5.961508 6.592824 7.454632 7.811492</code
 <p>We also examined the potential for region to behave as sub-populations based on major population group, our initial correlation analysis, and some geographic assumptions about physical proximity and climate.</p>
 <p>Comparing 3 sub-populations: cascade, coast, and gorge based on their designated MPG</p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>mod.list6 <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="co">#B = matrix(1), # B = "identity" 3x3 matrix</span></span>
 <span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>                  <span class="co"># U = matrix("u"), #needs 3 rows U = "equal" or "unequal" # default = unequal</span></span>
@@ -1118,18 +1232,26 @@ Convergence warnings
  Warning: the  R.(Lower Gorge Tributaries - late,Lower Gorge Tributaries - late)  parameter value has not converged.
  Type MARSSinfo("convergence") for more info on this warning.</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(fit6, <span class="at">plot.type=</span><span class="st">"fitted.ytT"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>plot.type = fitted.ytT </code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-12-2.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-12-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Finished plots.</code></pre>
@@ -1138,7 +1260,7 @@ Convergence warnings
 <p>Based on the correlation plot, the grays and chinook rivers and the lower gorge tributaries are highly correlated. We want to evaluate a model with these regions as a sub-population.</p>
 <p>Comparing 2 sub-populations: grays/chinook rivers and lower gorge “GCL” and all other test regions “STCU”</p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>mod.list7 <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">Q =</span> <span class="st">"unconstrained"</span>, <span class="co"># 1 X</span></span>
 <span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">Z =</span> <span class="fu">factor</span>(<span class="fu">c</span>(<span class="st">"STCU"</span>, <span class="st">"STCU"</span>, </span>
@@ -1186,7 +1308,7 @@ Initial states (x0) defined at t=0
 Standard errors have not been calculated. 
 Use MARSSparamCIs to compute CIs and bias estimates.</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(fit7, <span class="at">plot.type=</span><span class="st">"fitted.ytT"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -1194,13 +1316,21 @@ Use MARSSparamCIs to compute CIs and bias estimates.</code></pre>
 <pre><code>MARSSresiduals.tT reported warnings. See msg element or attribute of returned residuals object.</code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>plot.type = fitted.ytT </code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-13-2.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-13-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Finished plots.</code></pre>
@@ -1209,7 +1339,7 @@ Use MARSSparamCIs to compute CIs and bias estimates.</code></pre>
 <p>While the description “cascades” only describes a couple regions in our test set, we decided to test a model separating the general cascades from the 2 coast regions (Clatskaine and Gray/Chinook) because geographically there is a large separation.</p>
 <p>Comparing 2 sub-populations: coast “coast” and all other test regions “casgor”</p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a>mod.list8 <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">Q =</span> <span class="st">"unconstrained"</span>, <span class="co"># 1 X</span></span>
 <span id="cb73-2"><a href="#cb73-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">Z =</span> <span class="fu">factor</span>(<span class="fu">c</span>(<span class="st">"casgor"</span>, <span class="st">"casgor"</span>, </span>
@@ -1262,18 +1392,26 @@ Convergence warnings
  Warning: the  R.(Grays and Chinook Rivers - late,Grays and Chinook Rivers - late)  parameter value has not converged.
  Type MARSSinfo("convergence") for more info on this warning.</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(fit8, <span class="at">plot.type=</span><span class="st">"fitted.ytT"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>plot.type = fitted.ytT </code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-14-2.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-14-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Finished plots.</code></pre>
@@ -1282,7 +1420,7 @@ Convergence warnings
 <section id="compare-the-new-models-using-aicc" class="level2">
 <h2 class="anchored" data-anchor-id="compare-the-new-models-using-aicc">compare the new models using AICc</h2>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a>aic <span class="ot">&lt;-</span> <span class="fu">c</span>(fit3<span class="sc">$</span>AICc, fit6<span class="sc">$</span>AICc, fit7<span class="sc">$</span>AICc, fit8<span class="sc">$</span>AICc )</span>
 <span id="cb78-2"><a href="#cb78-2" aria-hidden="true" tabindex="-1"></a>aic<span class="sc">-</span><span class="fu">min</span>(aic) <span class="co">#delta AICc </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1301,7 +1439,7 @@ Convergence warnings
 <section id="plot-the-acf-and-look-for-evidence-of-cycling" class="level1">
 <h1>Plot the ACF and look for evidence of cycling</h1>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb80"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>))</span>
 <span id="cb80-2"><a href="#cb80-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>){</span>
@@ -1309,12 +1447,16 @@ Convergence warnings
 <span id="cb80-4"><a href="#cb80-4" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Based on the acf plots and the pattern in the Tilton with significant autocorrelation at 5 years with a possible cyclic pattern, we decided to test for cycling with frequency 5 or 10 years.</p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb81"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a>TT <span class="ot">&lt;-</span> <span class="fu">dim</span>(sub_dat)[<span class="dv">2</span>] <span class="co">#number of time steps</span></span>
 <span id="cb81-2"><a href="#cb81-2" aria-hidden="true" tabindex="-1"></a>covariates <span class="ot">&lt;-</span> <span class="fu">rbind</span>(</span>
@@ -1327,7 +1469,7 @@ Convergence warnings
   method            from
   as.zoo.data.frame zoo </code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb83"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(TT)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -1339,7 +1481,7 @@ Convergence warnings
 <h2 class="anchored" data-anchor-id="note-renaming-model">note renaming model</h2>
 <p>Now let’s fit a model with these covariates. Let’s analyze the populations separately, so Q is diagonal.</p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb85"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a>mod.list9 <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
 <span id="cb85-2"><a href="#cb85-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">Q =</span> <span class="st">"unconstrained"</span>, <span class="co"># different varcov</span></span>
@@ -1359,7 +1501,7 @@ Convergence warnings
 </details>
 </div>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb86"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a>fit9 <span class="ot">&lt;-</span> <span class="fu">MARSS</span>(sub_dat, <span class="at">model=</span>mod.list9)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -1445,7 +1587,7 @@ Convergence warnings
  Warning: the  logLik  parameter value has not converged.
  Type MARSSinfo("convergence") for more info on this warning.</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb88"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a>fit10 <span class="ot">&lt;-</span> <span class="fu">MARSS</span>(sub_dat, <span class="at">model=</span>mod.list10)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -1512,7 +1654,7 @@ Convergence warnings
  Warning: the  logLik  parameter value has not converged.
  Type MARSSinfo("convergence") for more info on this warning.</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb90"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a>plot.mod9 <span class="ot">&lt;-</span> <span class="fu">autoplot</span>(fit9, <span class="at">plot.type=</span><span class="st">"fitted.ytT"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -1520,18 +1662,26 @@ Convergence warnings
 <pre><code>MARSSresiduals.tT reported warnings. See msg element or attribute of returned residuals object.</code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>plot.type = fitted.ytT </code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-19-2.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-19-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Finished plots.</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb94"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a>plot.mod10 <span class="ot">&lt;-</span> <span class="fu">autoplot</span>(fit10, <span class="at">plot.type=</span><span class="st">"fitted.ytT"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -1539,13 +1689,21 @@ Convergence warnings
 <pre><code>MARSSresiduals.tT reported warnings. See msg element or attribute of returned residuals object.</code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-19-3.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-19-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>plot.type = fitted.ytT </code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-19-4.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-19-4.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Finished plots.</code></pre>
@@ -1553,7 +1711,7 @@ Convergence warnings
 </div>
 <p>Here we look at Model 9.</p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb98"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb98-1"><a href="#cb98-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span>
 <span id="cb98-2"><a href="#cb98-2" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">tidy</span>(fit9) <span class="sc">%&gt;%</span> <span class="co">#confidence estimates</span></span>
@@ -1567,7 +1725,7 @@ Convergence warnings
 element returned by Hessian function.  See marssMLE object errors
 (MLEobj$errors)</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb101"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb101-1"><a href="#cb101-1" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>lag <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">rep</span>(<span class="fu">c</span>(<span class="dv">5</span>,<span class="dv">10</span>), <span class="at">each=</span><span class="dv">12</span>)) <span class="co">#label lags</span></span>
 <span id="cb101-2"><a href="#cb101-2" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>river <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">rep</span>(<span class="fu">rownames</span>(sub_dat),<span class="dv">4</span>)) <span class="co">#rownames on repeat</span></span>
@@ -1580,7 +1738,7 @@ element returned by Hessian function.  See marssMLE object errors
 <section id="plot-the-cis-and-look-for-evidence-of-cycling" class="level1">
 <h1>Plot the CI’s and look for evidence of cycling</h1>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb102"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb102-1"><a href="#cb102-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">x=</span>type, <span class="at">y=</span>estimate, <span class="at">col=</span>lag)) <span class="sc">+</span> </span>
 <span id="cb102-2"><a href="#cb102-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
@@ -1590,13 +1748,17 @@ element returned by Hessian function.  See marssMLE object errors
 <span id="cb102-6"><a href="#cb102-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"The cycle estimates for Model 9"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>The cosine estimates, particularly for the Upper Gorge Tributaries and Hood River, indicate the potential for a seasonal cycle that peaks every 10 years. We encountered a Hessian error in our code that prevented us from plotting confidence intervals for this data, likely due to many years of missing data.</p>
 <p>Here we’re looking at Model 10.</p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb103"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb103-1"><a href="#cb103-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">tidy</span>(fit10) <span class="sc">%&gt;%</span> <span class="co">#confidence estimates</span></span>
 <span id="cb103-2"><a href="#cb103-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">subset</span>(stringr<span class="sc">::</span><span class="fu">str_sub</span>(term,<span class="dv">1</span>,<span class="dv">1</span>)<span class="sc">==</span><span class="st">"D"</span>) <span class="co">#only D parameters</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1609,7 +1771,7 @@ element returned by Hessian function.  See marssMLE object errors
 element returned by Hessian function.  See marssMLE object errors
 (MLEobj$errors)</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb106"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb106-1"><a href="#cb106-1" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>lag <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">rep</span>(<span class="fu">c</span>(<span class="dv">5</span>,<span class="dv">10</span>), <span class="at">each=</span><span class="dv">12</span>)) <span class="co">#label lags</span></span>
 <span id="cb106-2"><a href="#cb106-2" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>river <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">rep</span>(<span class="fu">rownames</span>(sub_dat),<span class="dv">4</span>)) <span class="co">#rownames on repeat</span></span>
@@ -1618,7 +1780,7 @@ element returned by Hessian function.  See marssMLE object errors
 </details>
 </div>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb107"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb107-1"><a href="#cb107-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">x=</span>type, <span class="at">y=</span>estimate, <span class="at">col=</span>lag)) <span class="sc">+</span> </span>
 <span id="cb107-2"><a href="#cb107-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
@@ -1628,13 +1790,17 @@ element returned by Hessian function.  See marssMLE object errors
 <span id="cb107-6"><a href="#cb107-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"The cycle estimates for Model 10"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>The same analysis but with an equal variance covariance matrix estimated for Q still highlights the potential for a 10 year cycle, this time with the Tilton River.</p>
 <p>Evaluate AICc for seasonality against our current best model 3.</p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb108"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb108-1"><a href="#cb108-1" aria-hidden="true" tabindex="-1"></a>aic <span class="ot">&lt;-</span> <span class="fu">c</span>(fit3<span class="sc">$</span>AICc, fit9<span class="sc">$</span>AICc, fit10<span class="sc">$</span>AICc )</span>
 <span id="cb108-2"><a href="#cb108-2" aria-hidden="true" tabindex="-1"></a>aic<span class="sc">-</span><span class="fu">min</span>(aic) <span class="co">#delta AICc </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1645,7 +1811,7 @@ element returned by Hessian function.  See marssMLE object errors
 </div>
 <p>The equal variance covariance matrix for Q was better, but still not as good as our current best model. Now we’ll try building a model with just the 10 year cycle as that best explains the potential seasonality in the data, using the same code from above.</p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb110"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb110-1"><a href="#cb110-1" aria-hidden="true" tabindex="-1"></a>TT <span class="ot">&lt;-</span> <span class="fu">dim</span>(sub_dat)[<span class="dv">2</span>] <span class="co">#number of time steps</span></span>
 <span id="cb110-2"><a href="#cb110-2" aria-hidden="true" tabindex="-1"></a>covariates_10 <span class="ot">&lt;-</span> <span class="fu">rbind</span>(</span>
@@ -1656,7 +1822,7 @@ element returned by Hessian function.  See marssMLE object errors
 <div class="cell-output cell-output-stdout">
 <pre><code> int 48</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb112"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb112-1"><a href="#cb112-1" aria-hidden="true" tabindex="-1"></a>mod.list11 <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
 <span id="cb112-2"><a href="#cb112-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">Q =</span> <span class="st">"equalvarcov"</span>,</span>
@@ -1715,7 +1881,7 @@ Use MARSSparamCIs to compute CIs and bias estimates.</code></pre>
 </div>
 </div>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb114"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb114-1"><a href="#cb114-1" aria-hidden="true" tabindex="-1"></a>aic <span class="ot">&lt;-</span> <span class="fu">c</span>(fit3<span class="sc">$</span>AICc, fit11<span class="sc">$</span>AICc )</span>
 <span id="cb114-2"><a href="#cb114-2" aria-hidden="true" tabindex="-1"></a>aic<span class="sc">-</span><span class="fu">min</span>(aic) <span class="co">#delta AICc </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1734,7 +1900,7 @@ Use MARSSparamCIs to compute CIs and bias estimates.</code></pre>
 <section id="fitting-the-best-model-to-the-full-data-set" class="level2">
 <h2 class="anchored" data-anchor-id="fitting-the-best-model-to-the-full-data-set">Fitting the best model to the full data set</h2>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb116"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb116-1"><a href="#cb116-1" aria-hidden="true" tabindex="-1"></a>mod.list.full <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">B =</span> <span class="fu">matrix</span>(<span class="dv">1</span>), </span>
 <span id="cb116-2"><a href="#cb116-2" aria-hidden="true" tabindex="-1"></a>                   <span class="at">U =</span> <span class="fu">matrix</span>(<span class="st">"u"</span>), </span>
@@ -1838,18 +2004,26 @@ MARSSkem warnings. Type MARSSinfo() for help.
 </div>
 <p>#Estimate historical abundance back to 1970</p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb118"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb118-1"><a href="#cb118-1" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(fit_full, <span class="at">plot.type=</span><span class="st">"fitted.ytT"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>plot.type = fitted.ytT </code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-28-2.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-2-team-3_final_files/figure-html/unnamed-chunk-28-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Finished plots.</code></pre>
@@ -1915,18 +2089,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
     return false;
   }
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    text: function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-    }
-  });
-  clipboard.on('success', function(e) {
+  const onCopySuccess = function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -1958,7 +2121,27 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
   });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
   const viewSource = window.document.getElementById('quarto-view-source') ||
                      window.document.getElementById('quarto-code-tools-source');
   if (viewSource) {
@@ -2010,10 +2193,27 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   if (showAllCode) {
     showAllCode.addEventListener("click", toggleCodeHandler(true));
   }
-  function tippyHover(el, contentFn) {
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/atsa-es\.github\.io\/fish550-2023\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -2023,8 +2223,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -2036,7 +2245,129 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -2080,6 +2411,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -2105,6 +2437,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -2166,14 +2524,16 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <script src="https://giscus.app/client.js" data-repo="atsa-es/fish550-2023" data-repo-id="R_kgDOJGNymQ" data-category="General" data-category-id="DIC_kwDOJGNymc4CUsbe" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
 </script>
+<input type="hidden" id="giscus-base-theme" value="light">
+<input type="hidden" id="giscus-alt-theme" value="dark">
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../../Lab-2/Final_Write_ups/Lab-2-team-2_final.html" class="pagination-link">
+      <a href="../../Lab-2/Final_Write_ups/Lab-2-team-2_final.html" class="pagination-link" aria-label="Team 2 - Lab 2">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Team 2 - Lab 2</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../Lab-2/Final_Write_ups/Lab-2-team-4_final.html" class="pagination-link">
+      <a href="../../Lab-2/Final_Write_ups/Lab-2-team-4_final.html" class="pagination-link" aria-label="Team 4 - Lab 2">
         <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Team 4 - Lab 2</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
@@ -2203,29 +2563,29 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb121-23"><a href="#cb121-23" aria-hidden="true" tabindex="-1"></a>Clatskanie, and Grays/Chinook Rivers</span>
 <span id="cb121-24"><a href="#cb121-24" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb121-25"><a href="#cb121-25" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, echo=TRUE}</span></span>
-<span id="cb121-26"><a href="#cb121-26" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb121-27"><a href="#cb121-27" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MARSS)</span>
-<span id="cb121-28"><a href="#cb121-28" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span>
+<span id="cb121-26"><a href="#cb121-26" aria-hidden="true" tabindex="-1"></a><span class="in">library(tidyverse)</span></span>
+<span id="cb121-27"><a href="#cb121-27" aria-hidden="true" tabindex="-1"></a><span class="in">library(MARSS)</span></span>
+<span id="cb121-28"><a href="#cb121-28" aria-hidden="true" tabindex="-1"></a><span class="in">library(broom)</span></span>
 <span id="cb121-29"><a href="#cb121-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb121-30"><a href="#cb121-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the data</span></span>
-<span id="cb121-31"><a href="#cb121-31" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"Lab-2"</span>, <span class="st">"Data_Images"</span>, <span class="st">"columbia-river.rda"</span>))</span>
+<span id="cb121-30"><a href="#cb121-30" aria-hidden="true" tabindex="-1"></a><span class="in"># Load the data</span></span>
+<span id="cb121-31"><a href="#cb121-31" aria-hidden="true" tabindex="-1"></a><span class="in">load(here::here("Lab-2", "Data_Images", "columbia-river.rda"))</span></span>
 <span id="cb121-32"><a href="#cb121-32" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb121-33"><a href="#cb121-33" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb121-34"><a href="#cb121-34" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb121-35"><a href="#cb121-35" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, echo=TRUE}</span></span>
-<span id="cb121-36"><a href="#cb121-36" aria-hidden="true" tabindex="-1"></a><span class="co">#plot the data</span></span>
-<span id="cb121-37"><a href="#cb121-37" aria-hidden="true" tabindex="-1"></a>esu <span class="ot">&lt;-</span> <span class="fu">unique</span>(columbia.river<span class="sc">$</span>esu_dps)</span>
-<span id="cb121-38"><a href="#cb121-38" aria-hidden="true" tabindex="-1"></a>plotesu <span class="ot">&lt;-</span> <span class="cf">function</span>(esuname){</span>
-<span id="cb121-39"><a href="#cb121-39" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> columbia.river <span class="sc">%&gt;%</span> <span class="fu">subset</span>(esu_dps <span class="sc">%in%</span> esuname)</span>
-<span id="cb121-40"><a href="#cb121-40" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">x=</span>spawningyear, <span class="at">y=</span><span class="fu">log</span>(value), <span class="at">color=</span>majorpopgroup)) <span class="sc">+</span> </span>
-<span id="cb121-41"><a href="#cb121-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size=</span><span class="fl">0.2</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">+</span> </span>
-<span id="cb121-42"><a href="#cb121-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">strip.text.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">3</span>)) <span class="sc">+</span></span>
-<span id="cb121-43"><a href="#cb121-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">5</span>, <span class="at">angle =</span> <span class="dv">90</span>)) <span class="sc">+</span></span>
-<span id="cb121-44"><a href="#cb121-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>esapopname) <span class="sc">+</span></span>
-<span id="cb121-45"><a href="#cb121-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="fu">paste0</span>(esuname, <span class="at">collapse=</span><span class="st">"</span><span class="sc">\n</span><span class="st">"</span>))</span>
-<span id="cb121-46"><a href="#cb121-46" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb121-36"><a href="#cb121-36" aria-hidden="true" tabindex="-1"></a><span class="in">#plot the data</span></span>
+<span id="cb121-37"><a href="#cb121-37" aria-hidden="true" tabindex="-1"></a><span class="in">esu &lt;- unique(columbia.river$esu_dps)</span></span>
+<span id="cb121-38"><a href="#cb121-38" aria-hidden="true" tabindex="-1"></a><span class="in">plotesu &lt;- function(esuname){</span></span>
+<span id="cb121-39"><a href="#cb121-39" aria-hidden="true" tabindex="-1"></a><span class="in">  df &lt;- columbia.river %&gt;% subset(esu_dps %in% esuname)</span></span>
+<span id="cb121-40"><a href="#cb121-40" aria-hidden="true" tabindex="-1"></a><span class="in">ggplot(df, aes(x=spawningyear, y=log(value), color=majorpopgroup)) + </span></span>
+<span id="cb121-41"><a href="#cb121-41" aria-hidden="true" tabindex="-1"></a><span class="in">  geom_point(size=0.2, na.rm = TRUE) + </span></span>
+<span id="cb121-42"><a href="#cb121-42" aria-hidden="true" tabindex="-1"></a><span class="in">  theme(strip.text.x = element_text(size = 3)) +</span></span>
+<span id="cb121-43"><a href="#cb121-43" aria-hidden="true" tabindex="-1"></a><span class="in">  theme(axis.text.x = element_text(size = 5, angle = 90)) +</span></span>
+<span id="cb121-44"><a href="#cb121-44" aria-hidden="true" tabindex="-1"></a><span class="in">  facet_wrap(~esapopname) +</span></span>
+<span id="cb121-45"><a href="#cb121-45" aria-hidden="true" tabindex="-1"></a><span class="in">  ggtitle(paste0(esuname, collapse="\n"))</span></span>
+<span id="cb121-46"><a href="#cb121-46" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
 <span id="cb121-47"><a href="#cb121-47" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb121-48"><a href="#cb121-48" aria-hidden="true" tabindex="-1"></a><span class="fu">plotesu</span>(esu[<span class="dv">4</span>])</span>
+<span id="cb121-48"><a href="#cb121-48" aria-hidden="true" tabindex="-1"></a><span class="in">plotesu(esu[4])</span></span>
 <span id="cb121-49"><a href="#cb121-49" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb121-50"><a href="#cb121-50" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb121-51"><a href="#cb121-51" aria-hidden="true" tabindex="-1"></a></span>
@@ -2233,21 +2593,21 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb121-53"><a href="#cb121-53" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb121-54"><a href="#cb121-54" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, echo=TRUE}</span></span>
 <span id="cb121-55"><a href="#cb121-55" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb121-56"><a href="#cb121-56" aria-hidden="true" tabindex="-1"></a><span class="co">#format for visualization</span></span>
+<span id="cb121-56"><a href="#cb121-56" aria-hidden="true" tabindex="-1"></a><span class="in">#format for visualization</span></span>
 <span id="cb121-57"><a href="#cb121-57" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb121-58"><a href="#cb121-58" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb121-59"><a href="#cb121-59" aria-hidden="true" tabindex="-1"></a>esuname <span class="ot">&lt;-</span> esu[<span class="dv">4</span>]</span>
+<span id="cb121-58"><a href="#cb121-58" aria-hidden="true" tabindex="-1"></a><span class="in">library(dplyr)</span></span>
+<span id="cb121-59"><a href="#cb121-59" aria-hidden="true" tabindex="-1"></a><span class="in">esuname &lt;- esu[4]</span></span>
 <span id="cb121-60"><a href="#cb121-60" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb121-61"><a href="#cb121-61" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> columbia.river <span class="sc">%&gt;%</span> </span>
-<span id="cb121-62"><a href="#cb121-62" aria-hidden="true" tabindex="-1"></a>  <span class="fu">subset</span>(esu_dps <span class="sc">==</span> esuname) <span class="sc">%&gt;%</span> <span class="co"># get only this ESU</span></span>
-<span id="cb121-63"><a href="#cb121-63" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">log.spawner =</span> <span class="fu">log</span>(value)) <span class="sc">%&gt;%</span> <span class="co"># create a column called log.spawner</span></span>
-<span id="cb121-64"><a href="#cb121-64" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(esapopname, spawningyear, log.spawner) <span class="sc">%&gt;%</span> <span class="co"># get just the columns that I need</span></span>
-<span id="cb121-65"><a href="#cb121-65" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> <span class="st">"esapopname"</span>, <span class="at">values_from =</span> <span class="st">"log.spawner"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb121-66"><a href="#cb121-66" aria-hidden="true" tabindex="-1"></a>  <span class="fu">column_to_rownames</span>(<span class="at">var =</span> <span class="st">"spawningyear"</span>) <span class="sc">%&gt;%</span> <span class="co"># make the years rownames</span></span>
-<span id="cb121-67"><a href="#cb121-67" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.matrix</span>() <span class="sc">%&gt;%</span> <span class="co"># turn into a matrix with year down the rows</span></span>
-<span id="cb121-68"><a href="#cb121-68" aria-hidden="true" tabindex="-1"></a>  <span class="fu">t</span>() <span class="co"># make time across the columns</span></span>
-<span id="cb121-69"><a href="#cb121-69" aria-hidden="true" tabindex="-1"></a><span class="co"># MARSS complains if I don't do this</span></span>
-<span id="cb121-70"><a href="#cb121-70" aria-hidden="true" tabindex="-1"></a>dat[<span class="fu">is.na</span>(dat)] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb121-61"><a href="#cb121-61" aria-hidden="true" tabindex="-1"></a><span class="in">dat &lt;- columbia.river %&gt;% </span></span>
+<span id="cb121-62"><a href="#cb121-62" aria-hidden="true" tabindex="-1"></a><span class="in">  subset(esu_dps == esuname) %&gt;% # get only this ESU</span></span>
+<span id="cb121-63"><a href="#cb121-63" aria-hidden="true" tabindex="-1"></a><span class="in">  mutate(log.spawner = log(value)) %&gt;% # create a column called log.spawner</span></span>
+<span id="cb121-64"><a href="#cb121-64" aria-hidden="true" tabindex="-1"></a><span class="in">  select(esapopname, spawningyear, log.spawner) %&gt;% # get just the columns that I need</span></span>
+<span id="cb121-65"><a href="#cb121-65" aria-hidden="true" tabindex="-1"></a><span class="in">  pivot_wider(names_from = "esapopname", values_from = "log.spawner") %&gt;% </span></span>
+<span id="cb121-66"><a href="#cb121-66" aria-hidden="true" tabindex="-1"></a><span class="in">  column_to_rownames(var = "spawningyear") %&gt;% # make the years rownames</span></span>
+<span id="cb121-67"><a href="#cb121-67" aria-hidden="true" tabindex="-1"></a><span class="in">  as.matrix() %&gt;% # turn into a matrix with year down the rows</span></span>
+<span id="cb121-68"><a href="#cb121-68" aria-hidden="true" tabindex="-1"></a><span class="in">  t() # make time across the columns</span></span>
+<span id="cb121-69"><a href="#cb121-69" aria-hidden="true" tabindex="-1"></a><span class="in"># MARSS complains if I don't do this</span></span>
+<span id="cb121-70"><a href="#cb121-70" aria-hidden="true" tabindex="-1"></a><span class="in">dat[is.na(dat)] &lt;- NA</span></span>
 <span id="cb121-71"><a href="#cb121-71" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb121-72"><a href="#cb121-72" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb121-73"><a href="#cb121-73" aria-hidden="true" tabindex="-1"></a>Clean up the row names</span>
@@ -2651,10 +3011,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb121-521"><a href="#cb121-521" aria-hidden="true" tabindex="-1"></a><span class="fu">## Contributions - add your contributions! </span></span>
 <span id="cb121-522"><a href="#cb121-522" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb121-523"><a href="#cb121-523" aria-hidden="true" tabindex="-1"></a>We tackled this lab by having multiple group meetings to brainstorm strategies, test code, and plan progress. Miranda adapted code from the Lab2-MARSS document to the Coho data, acted as scribe for testing code during group meetings, contributed ideas for selecting models to test, and annotated many of the models for report generation. Nick and Karl helped with group coding and Nick pulled the group code documents into one final doc and drafted model assumptions, results and discussion sections with help from the other team members. </span>
-</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 
 
 
-</body></html>
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/atsa-es/fish550-2023/edit/main/Lab-2/Final_Write_ups/Lab-2-team-3_final.Rmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/atsa-es/fish550-2023/blob/main/Lab-2/Final_Write_ups/Lab-2-team-3_final.Rmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/atsa-es/fish550-2023/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>

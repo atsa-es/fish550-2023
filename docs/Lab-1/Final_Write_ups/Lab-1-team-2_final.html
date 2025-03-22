@@ -2,13 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.340">
+<meta name="generator" content="quarto-1.6.39">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Eric French, Dylan Hubl, Miranda Mudge">
 
-<title>Fish 550 Spring 2023 - 4&nbsp; Team 2 - Lab 1</title>
+<title>4&nbsp; Team 2 - Lab 1 – Fish 550 Spring 2023</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -23,7 +23,7 @@ ul.task-list li input[type="checkbox"] {
 }
 /* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -34,7 +34,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -72,17 +72,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-626149efe8f5d16e1d391ba177679bf0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
   "collapse-after": 3,
   "panel-placement": "start",
   "type": "textbox",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -91,8 +97,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit"
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
   }
 }</script>
 
@@ -105,12 +113,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav">
     <div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../Lab-1/Lab1-ARIMA.html">Forecasting with ARIMA models</a></li><li class="breadcrumb-item"><a href="../../Lab-1/Final_Write_ups/Lab-1-team-2_final.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Team 2 - Lab 1</span></a></li></ol></nav>
-      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-      </a>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../Lab-1/Lab1-ARIMA.html">Forecasting with ARIMA models</a></li><li class="breadcrumb-item"><a href="../../Lab-1/Final_Write_ups/Lab-1-team-2_final.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Team 2 - Lab 1</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
@@ -120,7 +128,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="../../">Fish 550 Spring 2023</a> 
@@ -144,9 +152,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
  <span class="menu-text">Forecasting with ARIMA models</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -185,9 +193,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
  <span class="menu-text">Analyzing multivariate salmon data with MARSS</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -226,9 +234,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
  <span class="menu-text">Dynamic Factor Analysis</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -267,9 +275,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
  <span class="menu-text">Hidden Markov Models</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -309,7 +317,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </ul>
     </div>
 </nav>
-<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
@@ -369,12 +377,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion">Discussion</a></li>
   <li><a href="#description-of-each-team-members-contributions" id="toc-description-of-each-team-members-contributions" class="nav-link" data-scroll-target="#description-of-each-team-members-contributions">Description of each team member’s contributions</a></li>
   </ul>
-<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/atsa-es/fish550-2023/edit/main/Lab-1/Final_Write_ups/Lab-1-team-2_final.Rmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/atsa-es/fish550-2023/blob/main/Lab-1/Final_Write_ups/Lab-1-team-2_final.Rmd" class="toc-action">View source</a></p><p><a href="https://github.com/atsa-es/fish550-2023/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/atsa-es/fish550-2023/edit/main/Lab-1/Final_Write_ups/Lab-1-team-2_final.Rmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/atsa-es/fish550-2023/blob/main/Lab-1/Final_Write_ups/Lab-1-team-2_final.Rmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/atsa-es/fish550-2023/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../Lab-1/Lab1-ARIMA.html">Forecasting with ARIMA models</a></li><li class="breadcrumb-item"><a href="../../Lab-1/Final_Write_ups/Lab-1-team-2_final.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Team 2 - Lab 1</span></a></li></ol></nav>
 <div class="quarto-title">
 <div class="quarto-title-block"><div><h1 class="title"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Team 2 - Lab 1</span></h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
 <p class="subtitle lead">Lab 1 Forecasting with ARIMA models</p>
@@ -396,13 +404,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </div>
   
 
+
 </header>
+
 
 <section id="data" class="level1">
 <h1>Data</h1>
 <p>We will be working with the Bristol Bay data set. Our focus will be on 4-year-old Sockeye in the Wood, Kvichak, and Ugashik regions.</p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -418,7 +428,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 ✖ dplyr::lag()    masks stats::lag()
 ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(forecast)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -428,7 +438,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   method            from
   as.zoo.data.frame zoo </code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(zoo)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -440,7 +450,7 @@ The following objects are masked from 'package:base':
 
     as.Date, as.Date.numeric</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>bb_data <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"Lab-1"</span>, <span class="st">"Data_Images"</span>, <span class="st">"bristol_bay_data_plus_covariates.rds"</span>))</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>bb_data<span class="sc">$</span>log_ret <span class="ot">&lt;-</span> <span class="fu">log</span>(bb_data<span class="sc">$</span>ret)</span>
@@ -477,7 +487,7 @@ The following objects are masked from 'package:base':
 <section id="ugashik-region" class="level3">
 <h3 class="anchored" data-anchor-id="ugashik-region">Ugashik Region</h3>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>age1<span class="fl">.3</span> <span class="ot">=</span> <span class="fl">1.3</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>age2<span class="fl">.2</span> <span class="ot">=</span> <span class="fl">2.2</span></span>
@@ -505,28 +515,40 @@ The following objects are masked from 'package:base':
 <span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a><span class="fu">plot.ts</span>(Ugashik_1.<span class="fl">3.</span>ts, <span class="at">ylab =</span> <span class="st">"Log abundance"</span>, <span class="at">main =</span> <span class="st">"Ugashik Sockeye: 1 yr freshwater, 3 yrs ocean"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
-<details>
+</div>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot.ts</span>(Ugashik_1.<span class="fl">3.</span>ts_out, <span class="at">ylab =</span> <span class="st">"Log abundance"</span>, <span class="at">main =</span> <span class="st">"Ugashik Sockeye: 1 yr freshwater, 3 yrs ocean</span><span class="sc">\n</span><span class="st">1980 - 2020"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-2-2.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-2-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
-<details>
+</div>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot.ts</span>(Ugashik_2.<span class="fl">2.</span>ts, <span class="at">ylab =</span> <span class="st">"Log abundance"</span>, <span class="at">main =</span> <span class="st">"Ugashik Sockeye: 2 yrs freshwater, 2 yrs ocean"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-2-3.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-2-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 </section>
 <section id="wood-region" class="level3">
 <h3 class="anchored" data-anchor-id="wood-region">Wood Region</h3>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>wood_dt <span class="ot">&lt;-</span> bb_data[(bb_data<span class="sc">$</span>system <span class="sc">==</span> rivers[<span class="dv">2</span>]) <span class="sc">&amp;</span> (bb_data<span class="sc">$</span>full_age <span class="sc">==</span> <span class="dv">4</span>),]</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co">#unique(wood_dt$o_age)</span></span>
@@ -543,22 +565,30 @@ The following objects are masked from 'package:base':
 <span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="fu">plot.ts</span>(Wood_1.<span class="fl">3.</span>ts, <span class="at">ylab =</span> <span class="st">"log Abundance"</span>, <span class="at">main =</span><span class="st">"Wood Sockeye: 1 yr freshwater, 3 yrs ocean"</span> )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
-<details>
+</div>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">#looks like there is a positive trend to the data: not stationary, or could be stationary around a trend</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot.ts</span>(Wood_2.<span class="fl">2.</span>ts, <span class="at">ylab =</span> <span class="st">"log Abundance"</span>, <span class="at">main =</span><span class="st">"Wood Sockeye: 2 yrs freshwater, 2 yrs ocean"</span> )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-3-2.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-3-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 </section>
 <section id="kvichak-region" class="level3">
 <h3 class="anchored" data-anchor-id="kvichak-region">Kvichak Region</h3>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>Kvichak_dt <span class="ot">&lt;-</span> bb_data[(bb_data<span class="sc">$</span>system <span class="sc">==</span> rivers[<span class="dv">4</span>]) <span class="sc">&amp;</span> (bb_data<span class="sc">$</span>full_age <span class="sc">==</span> <span class="dv">4</span>),]</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co">#unique(Kvichak_dt$o_age)</span></span>
@@ -574,14 +604,22 @@ The following objects are masked from 'package:base':
 <span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(Kvichak_1.<span class="fl">3.</span>ts, <span class="at">ylab =</span> <span class="st">"log Abundance"</span>, <span class="at">main =</span> <span class="st">"Kvichak Sockeye: 1 yr freshwater, 3 yrs ocean"</span> )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
-<details>
+</div>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(Kvichak_2.<span class="fl">2.</span>ts, <span class="at">ylab =</span> <span class="st">"log Abundance"</span>, <span class="at">main =</span> <span class="st">"Kvichak Sockeye: 2 yrsfreshwater, 2 yrs ocean"</span> )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-4-2.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-4-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Uvashik: Upon observing the 1.3 time series, there is a clear outlier value at 1977. To remove the negative value, we re-plotted the data starting at 1980 instead of 1967. The new time series seems to show variance around a mean of 7. The 2.2 group appears to show variance around a mean of 5. Differencing the data will likely show stationarity</p>
@@ -594,7 +632,7 @@ The following objects are masked from 'package:base':
 <section id="ugashik" class="level3">
 <h3 class="anchored" data-anchor-id="ugashik">Ugashik</h3>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Miranda's Code</span></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>tseries<span class="sc">::</span><span class="fu">adf.test</span>(Ugashik_1.<span class="fl">3.</span>ts) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -607,7 +645,7 @@ data:  Ugashik_1.3.ts
 Dickey-Fuller = -3.1174, Lag order = 3, p-value = 0.1236
 alternative hypothesis: stationary</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>tseries<span class="sc">::</span><span class="fu">kpss.test</span>(Ugashik_1.<span class="fl">3.</span>ts, <span class="at">null =</span> <span class="st">"Level"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -618,7 +656,7 @@ alternative hypothesis: stationary</code></pre>
 data:  Ugashik_1.3.ts
 KPSS Level = 0.54744, Truncation lag parameter = 3, p-value = 0.03098</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>tseries<span class="sc">::</span><span class="fu">kpss.test</span>(Ugashik_1.<span class="fl">3.</span>ts, <span class="at">null =</span> <span class="st">"Trend"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -633,7 +671,7 @@ than printed p-value</code></pre>
 data:  Ugashik_1.3.ts
 KPSS Trend = 0.075997, Truncation lag parameter = 3, p-value = 0.1</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>datts_diff_1<span class="fl">.3</span> <span class="ot">&lt;-</span> <span class="fu">diff</span>(Ugashik_1.<span class="fl">3.</span>ts, <span class="at">differences =</span> <span class="dv">1</span>)</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>tseries<span class="sc">::</span><span class="fu">adf.test</span>(Ugashik_1.<span class="fl">3.</span>ts_out) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -646,7 +684,7 @@ data:  Ugashik_1.3.ts_out
 Dickey-Fuller = -3.4337, Lag order = 3, p-value = 0.06582
 alternative hypothesis: stationary</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>tseries<span class="sc">::</span><span class="fu">kpss.test</span>(Ugashik_1.<span class="fl">3.</span>ts_out, <span class="at">null =</span> <span class="st">"Level"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -661,7 +699,7 @@ greater than printed p-value</code></pre>
 data:  Ugashik_1.3.ts_out
 KPSS Level = 0.26391, Truncation lag parameter = 3, p-value = 0.1</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>tseries<span class="sc">::</span><span class="fu">kpss.test</span>(Ugashik_1.<span class="fl">3.</span>ts_out, <span class="at">null =</span> <span class="st">"Trend"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -676,24 +714,32 @@ greater than printed p-value</code></pre>
 data:  Ugashik_1.3.ts_out
 KPSS Trend = 0.065518, Truncation lag parameter = 3, p-value = 0.1</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>datts_diff_1<span class="fl">.3</span>_out <span class="ot">&lt;-</span> <span class="fu">diff</span>(Ugashik_1.<span class="fl">3.</span>ts_out, <span class="at">differences =</span> <span class="dv">1</span>)</span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(datts_diff_1<span class="fl">.3</span>, <span class="at">ylab =</span> <span class="st">"Log abundance"</span>, <span class="at">main =</span> <span class="st">"Time series, first differenced:</span><span class="sc">\n</span><span class="st"> 1 year freshwater, 3 years ocean"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
-<details>
+</div>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(datts_diff_1<span class="fl">.3</span>_out, <span class="at">ylab =</span> <span class="st">"Log abundance"</span>, <span class="at">main =</span> <span class="st">"Time series, first differenced:</span><span class="sc">\n</span><span class="st"> 1 year freshwater, 3 years ocean, outlier removed"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-5-2.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-5-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>tseries<span class="sc">::</span><span class="fu">adf.test</span>(Ugashik_2.<span class="fl">2.</span>ts) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -705,7 +751,7 @@ data:  Ugashik_2.2.ts
 Dickey-Fuller = -2.0383, Lag order = 3, p-value = 0.5592
 alternative hypothesis: stationary</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>tseries<span class="sc">::</span><span class="fu">kpss.test</span>(Ugashik_2.<span class="fl">2.</span>ts, <span class="at">null =</span> <span class="st">"Level"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -720,7 +766,7 @@ than printed p-value</code></pre>
 data:  Ugashik_2.2.ts
 KPSS Level = 0.21297, Truncation lag parameter = 3, p-value = 0.1</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>tseries<span class="sc">::</span><span class="fu">kpss.test</span>(Ugashik_2.<span class="fl">2.</span>ts, <span class="at">null =</span> <span class="st">"Trend"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -731,13 +777,17 @@ KPSS Level = 0.21297, Truncation lag parameter = 3, p-value = 0.1</code></pre>
 data:  Ugashik_2.2.ts
 KPSS Trend = 0.184, Truncation lag parameter = 3, p-value = 0.022</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>datts_diff_2<span class="fl">.2</span> <span class="ot">&lt;-</span> <span class="fu">diff</span>(Ugashik_2.<span class="fl">2.</span>ts, <span class="at">differences =</span> <span class="dv">1</span>)</span>
 <span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(datts_diff_2<span class="fl">.2</span>, <span class="at">ylab =</span> <span class="st">"Log abundance"</span>, <span class="at">main =</span> <span class="st">"Time series, first differenced:</span><span class="sc">\n</span><span class="st"> 2 years freshwater, 2 years ocean"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Stationairity test for the full Ugashik 1.3 group were in disagreement indicating that a single difference should be taken to get them to agree on stationairity. The same is true for the 2.2 group, we again see disagreement in the tests. The truncated dataset of the 1.3 group shows full agreement on non-stationairity. Thus a first difference needs to be taken on all of them.</p>
@@ -745,7 +795,7 @@ KPSS Trend = 0.184, Truncation lag parameter = 3, p-value = 0.022</code></pre>
 <section id="wood" class="level3">
 <h3 class="anchored" data-anchor-id="wood">Wood</h3>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Dylan's Code</span></span>
 <span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="co">#Wood_1.3.ts testing</span></span>
@@ -760,7 +810,7 @@ data:  Wood_1.3.ts
 Dickey-Fuller = -3.1466, Lag order = 3, p-value = 0.1118
 alternative hypothesis: stationary</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>tseries<span class="sc">::</span><span class="fu">adf.test</span>(Wood_1.<span class="fl">3.</span>ts,<span class="at">k =</span> <span class="dv">0</span>)            <span class="co">#forced it to test AR(1) it does reject: Stationary. So conflicts with the test above</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -776,7 +826,7 @@ data:  Wood_1.3.ts
 Dickey-Fuller = -6.5462, Lag order = 0, p-value = 0.01
 alternative hypothesis: stationary</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>tseries<span class="sc">::</span><span class="fu">kpss.test</span>(Wood_1.<span class="fl">3.</span>ts, <span class="at">null =</span> <span class="st">"Level"</span>) <span class="co">#not sure this test makes sense, visually there is a trend in the data. opposite null hypothesis for kpss it rejects: Non-stationary</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -791,7 +841,7 @@ than printed p-value</code></pre>
 data:  Wood_1.3.ts
 KPSS Level = 1.1774, Truncation lag parameter = 3, p-value = 0.01</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>tseries<span class="sc">::</span><span class="fu">kpss.test</span>(Wood_1.<span class="fl">3.</span>ts, <span class="at">null =</span> <span class="st">"Trend"</span>) <span class="co">#this tested to see if data is stationary around a trend</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -802,14 +852,14 @@ KPSS Level = 1.1774, Truncation lag parameter = 3, p-value = 0.01</code></pre>
 data:  Wood_1.3.ts
 KPSS Trend = 0.14659, Truncation lag parameter = 3, p-value = 0.04951</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>forecast<span class="sc">::</span><span class="fu">ndiffs</span>(Wood_1.<span class="fl">3.</span>ts, <span class="at">test =</span> <span class="st">"kpss"</span>)    <span class="co"># 1 difference needed</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 1</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>forecast<span class="sc">::</span><span class="fu">ndiffs</span>(Wood_1.<span class="fl">3.</span>ts, <span class="at">test =</span> <span class="st">"adf"</span>)     <span class="co"># 0 differences needed, again disagreement. Likely will need a difference but we can compare to the ARIMA model that gets automatically fit</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -818,7 +868,7 @@ KPSS Trend = 0.14659, Truncation lag parameter = 3, p-value = 0.04951</code></pr
 </div>
 </div>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Wood_2.2.ts testing</span></span>
 <span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>tseries<span class="sc">::</span><span class="fu">adf.test</span>(Wood_2.<span class="fl">2.</span>ts)                  <span class="co"># Rejects: stationary</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -831,7 +881,7 @@ data:  Wood_2.2.ts
 Dickey-Fuller = -3.7358, Lag order = 3, p-value = 0.02957
 alternative hypothesis: stationary</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>tseries<span class="sc">::</span><span class="fu">adf.test</span>(Wood_2.<span class="fl">2.</span>ts,<span class="at">k =</span> <span class="dv">0</span>)            <span class="co">#forced it to test AR(1) it does reject: Stationary</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -847,7 +897,7 @@ data:  Wood_2.2.ts
 Dickey-Fuller = -7.91, Lag order = 0, p-value = 0.01
 alternative hypothesis: stationary</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>tseries<span class="sc">::</span><span class="fu">kpss.test</span>(Wood_2.<span class="fl">2.</span>ts, <span class="at">null =</span> <span class="st">"Level"</span>) <span class="co">#opposite null hypothesis for kpss it fails to reject: Stationary</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -862,7 +912,7 @@ than printed p-value</code></pre>
 data:  Wood_2.2.ts
 KPSS Level = 0.076509, Truncation lag parameter = 3, p-value = 0.1</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>tseries<span class="sc">::</span><span class="fu">kpss.test</span>(Wood_2.<span class="fl">2.</span>ts, <span class="at">null =</span> <span class="st">"Trend"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -877,14 +927,14 @@ than printed p-value</code></pre>
 data:  Wood_2.2.ts
 KPSS Trend = 0.058765, Truncation lag parameter = 3, p-value = 0.1</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>forecast<span class="sc">::</span><span class="fu">ndiffs</span>(Wood_2.<span class="fl">2.</span>ts, <span class="at">test =</span> <span class="st">"kpss"</span>)    <span class="co"># 0 needed</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>forecast<span class="sc">::</span><span class="fu">ndiffs</span>(Wood_2.<span class="fl">2.</span>ts, <span class="at">test =</span> <span class="st">"adf"</span>)     <span class="co"># 0 needed. Agrees with the unit root tests above that found stationairity of the data</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -897,7 +947,7 @@ KPSS Trend = 0.058765, Truncation lag parameter = 3, p-value = 0.1</code></pre>
 <section id="kvichak" class="level3">
 <h3 class="anchored" data-anchor-id="kvichak">Kvichak</h3>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="co">#test stationairity Kvichak_1.3</span></span>
 <span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a>tseries<span class="sc">::</span><span class="fu">adf.test</span>(Kvichak_1.<span class="fl">3.</span>ts)                  <span class="co">#  Rejects just barely: stationary</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -910,7 +960,7 @@ data:  Kvichak_1.3.ts
 Dickey-Fuller = -3.5126, Lag order = 3, p-value = 0.04835
 alternative hypothesis: stationary</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a>tseries<span class="sc">::</span><span class="fu">adf.test</span>(Kvichak_1.<span class="fl">3.</span>ts,<span class="at">k =</span> <span class="dv">0</span>)            <span class="co">#forced it to test AR(1) it does reject: Stationary.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -926,7 +976,7 @@ data:  Kvichak_1.3.ts
 Dickey-Fuller = -7.0898, Lag order = 0, p-value = 0.01
 alternative hypothesis: stationary</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>tseries<span class="sc">::</span><span class="fu">kpss.test</span>(Kvichak_1.<span class="fl">3.</span>ts, <span class="at">null =</span> <span class="st">"Level"</span>) <span class="co">#opposite null hypothesis for kpss it  rejects: non-Stationary</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -941,7 +991,7 @@ than printed p-value</code></pre>
 data:  Kvichak_1.3.ts
 KPSS Level = 0.87527, Truncation lag parameter = 3, p-value = 0.01</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a>tseries<span class="sc">::</span><span class="fu">kpss.test</span>(Kvichak_1.<span class="fl">3.</span>ts, <span class="at">null =</span> <span class="st">"Trend"</span>) <span class="co">#.it rejects:non- stationary</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -952,27 +1002,27 @@ KPSS Level = 0.87527, Truncation lag parameter = 3, p-value = 0.01</code></pre>
 data:  Kvichak_1.3.ts
 KPSS Trend = 0.16823, Truncation lag parameter = 3, p-value = 0.03147</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb79"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a>forecast<span class="sc">::</span><span class="fu">ndiffs</span>(Kvichak_1.<span class="fl">3.</span>ts, <span class="at">test =</span> <span class="st">"kpss"</span>)    <span class="co"># 1 needed</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 1</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb81"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a>forecast<span class="sc">::</span><span class="fu">ndiffs</span>(Kvichak_1.<span class="fl">3.</span>ts, <span class="at">test =</span> <span class="st">"adf"</span>)     <span class="co">#0 needed. again disagreement. likely will be differenced by auto.arima()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb83"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a><span class="co">#there is disagreement from adf and kpss, may require differencing</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb84"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a><span class="co">#test stationairity Kvichak_2.2</span></span>
 <span id="cb84-2"><a href="#cb84-2" aria-hidden="true" tabindex="-1"></a>tseries<span class="sc">::</span><span class="fu">adf.test</span>(Kvichak_2.<span class="fl">2.</span>ts) <span class="co"># fails to Reject: non-stationary</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -985,7 +1035,7 @@ data:  Kvichak_2.2.ts
 Dickey-Fuller = -3.0401, Lag order = 3, p-value = 0.1548
 alternative hypothesis: stationary</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb86"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a>tseries<span class="sc">::</span><span class="fu">adf.test</span>(Kvichak_2.<span class="fl">2.</span>ts,<span class="at">k =</span> <span class="dv">0</span>)            <span class="co">#forced it to test AR(1) it does reject: Stationary. disagreement between them</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -1001,7 +1051,7 @@ data:  Kvichak_2.2.ts
 Dickey-Fuller = -5.4257, Lag order = 0, p-value = 0.01
 alternative hypothesis: stationary</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb89"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a>tseries<span class="sc">::</span><span class="fu">kpss.test</span>(Kvichak_2.<span class="fl">2.</span>ts, <span class="at">null =</span> <span class="st">"Level"</span>) <span class="co">#opposite null hypothesis for kpss it fails to reject: Stationary</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -1016,7 +1066,7 @@ than printed p-value</code></pre>
 data:  Kvichak_2.2.ts
 KPSS Level = 0.33673, Truncation lag parameter = 3, p-value = 0.1</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb92"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a>tseries<span class="sc">::</span><span class="fu">kpss.test</span>(Kvichak_2.<span class="fl">2.</span>ts, <span class="at">null =</span> <span class="st">"Trend"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -1031,7 +1081,7 @@ than printed p-value</code></pre>
 data:  Kvichak_2.2.ts
 KPSS Trend = 0.08168, Truncation lag parameter = 3, p-value = 0.1</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb95"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb95-1"><a href="#cb95-1" aria-hidden="true" tabindex="-1"></a><span class="co">#there is disagreement from adf and kpss, may require differencing</span></span>
 <span id="cb95-2"><a href="#cb95-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -1040,7 +1090,7 @@ KPSS Trend = 0.08168, Truncation lag parameter = 3, p-value = 0.1</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb97"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb97-1"><a href="#cb97-1" aria-hidden="true" tabindex="-1"></a>forecast<span class="sc">::</span><span class="fu">ndiffs</span>(Kvichak_2.<span class="fl">2.</span>ts, <span class="at">test =</span> <span class="st">"adf"</span>)     <span class="co"># 0 needed. So I am expecting this to be an AR(1) as the full adf test was the only one to say non-stationary</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -1056,7 +1106,7 @@ KPSS Trend = 0.08168, Truncation lag parameter = 3, p-value = 0.1</code></pre>
 <section id="ugashik-1" class="level3">
 <h3 class="anchored" data-anchor-id="ugashik-1">Ugashik</h3>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb99"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb99-1"><a href="#cb99-1" aria-hidden="true" tabindex="-1"></a>layout_matrix_1 <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>),<span class="at">ncol=</span><span class="dv">2</span>)  <span class="co">#setting up how the plots will display</span></span>
 <span id="cb99-2"><a href="#cb99-2" aria-hidden="true" tabindex="-1"></a><span class="fu">layout</span>(layout_matrix_1)                   </span>
@@ -1064,29 +1114,41 @@ KPSS Trend = 0.08168, Truncation lag parameter = 3, p-value = 0.1</code></pre>
 <span id="cb99-4"><a href="#cb99-4" aria-hidden="true" tabindex="-1"></a><span class="fu">pacf</span>(<span class="fu">diff</span>(Ugashik_1.<span class="fl">3.</span>ts))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb100"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a><span class="fu">layout</span>(layout_matrix_1)                   <span class="co">#setting up how the plots will display</span></span>
 <span id="cb100-2"><a href="#cb100-2" aria-hidden="true" tabindex="-1"></a><span class="fu">acf</span>(<span class="fu">diff</span>(Ugashik_1.<span class="fl">3.</span>ts_out), <span class="at">na.action =</span> na.pass) <span class="co"># allows na value</span></span>
 <span id="cb100-3"><a href="#cb100-3" aria-hidden="true" tabindex="-1"></a><span class="fu">pacf</span>(<span class="fu">diff</span>(Ugashik_1.<span class="fl">3.</span>ts_out),<span class="at">na.action =</span> na.pass)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb101"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb101-1"><a href="#cb101-1" aria-hidden="true" tabindex="-1"></a><span class="fu">layout</span>(layout_matrix_1)                   <span class="co">#setting up how the plots will display</span></span>
 <span id="cb101-2"><a href="#cb101-2" aria-hidden="true" tabindex="-1"></a><span class="fu">acf</span>(<span class="fu">diff</span>(Ugashik_2.<span class="fl">2.</span>ts))</span>
 <span id="cb101-3"><a href="#cb101-3" aria-hidden="true" tabindex="-1"></a><span class="fu">pacf</span>(<span class="fu">diff</span>(Ugashik_2.<span class="fl">2.</span>ts))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Ugashik:</p>
@@ -1097,7 +1159,7 @@ KPSS Trend = 0.08168, Truncation lag parameter = 3, p-value = 0.1</code></pre>
 <section id="wood-1" class="level3">
 <h3 class="anchored" data-anchor-id="wood-1">Wood</h3>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb102"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb102-1"><a href="#cb102-1" aria-hidden="true" tabindex="-1"></a><span class="co">#acf and pacf for differenced Wood_1.3</span></span>
 <span id="cb102-2"><a href="#cb102-2" aria-hidden="true" tabindex="-1"></a><span class="fu">layout</span>(layout_matrix_1)                   <span class="co">#setting up how the plots will display</span></span>
@@ -1105,15 +1167,19 @@ KPSS Trend = 0.08168, Truncation lag parameter = 3, p-value = 0.1</code></pre>
 <span id="cb102-4"><a href="#cb102-4" aria-hidden="true" tabindex="-1"></a><span class="fu">pacf</span>(<span class="fu">diff</span>(Wood_1.<span class="fl">3.</span>ts))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
-<details>
+</div>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb103"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb103-1"><a href="#cb103-1" aria-hidden="true" tabindex="-1"></a><span class="co">#pacf looks like a slow decay indicating it will be and MA model. signif lags at 1, 5, 10 on ACF</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb104"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb104-1"><a href="#cb104-1" aria-hidden="true" tabindex="-1"></a><span class="co">#acf and pacf for Wood_2.2</span></span>
 <span id="cb104-2"><a href="#cb104-2" aria-hidden="true" tabindex="-1"></a><span class="co">#carries the plot display set up from the above over to these plots</span></span>
@@ -1122,9 +1188,13 @@ KPSS Trend = 0.08168, Truncation lag parameter = 3, p-value = 0.1</code></pre>
 <span id="cb104-5"><a href="#cb104-5" aria-hidden="true" tabindex="-1"></a><span class="fu">pacf</span>(Wood_2.<span class="fl">2.</span>ts)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
-<details>
+</div>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb105"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb105-1"><a href="#cb105-1" aria-hidden="true" tabindex="-1"></a><span class="co">#no significant lags in either plot. This is white noise, no autocorrelation. expecting ARIMA(0,0,0)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -1136,37 +1206,45 @@ KPSS Trend = 0.08168, Truncation lag parameter = 3, p-value = 0.1</code></pre>
 <section id="kvichak-1" class="level3">
 <h3 class="anchored" data-anchor-id="kvichak-1">Kvichak</h3>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb106"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb106-1"><a href="#cb106-1" aria-hidden="true" tabindex="-1"></a><span class="fu">layout</span>(layout_matrix_1)                   <span class="co">#setting up how the plots will display</span></span>
 <span id="cb106-2"><a href="#cb106-2" aria-hidden="true" tabindex="-1"></a><span class="fu">acf</span>(Kvichak_1.<span class="fl">3.</span>ts)</span>
 <span id="cb106-3"><a href="#cb106-3" aria-hidden="true" tabindex="-1"></a><span class="fu">pacf</span>(Kvichak_1.<span class="fl">3.</span>ts)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
-<details>
+</div>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb107"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb107-1"><a href="#cb107-1" aria-hidden="true" tabindex="-1"></a><span class="co">#both have a significant lag at 1. maybe just a differencing will help</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb108"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb108-1"><a href="#cb108-1" aria-hidden="true" tabindex="-1"></a><span class="fu">layout</span>(layout_matrix_1)                   <span class="co">#setting up how the plots will display</span></span>
 <span id="cb108-2"><a href="#cb108-2" aria-hidden="true" tabindex="-1"></a><span class="fu">acf</span>(<span class="fu">diff</span>(Kvichak_1.<span class="fl">3.</span>ts))</span>
 <span id="cb108-3"><a href="#cb108-3" aria-hidden="true" tabindex="-1"></a><span class="fu">pacf</span>(<span class="fu">diff</span>(Kvichak_1.<span class="fl">3.</span>ts))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
-<details>
+</div>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb109"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb109-1"><a href="#cb109-1" aria-hidden="true" tabindex="-1"></a><span class="co">#looks like slow decay on pacf and a significant lag at 1 on acf. expecting an ARIMA(0,1,1)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb110"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb110-1"><a href="#cb110-1" aria-hidden="true" tabindex="-1"></a><span class="co">#plot acf and pacf</span></span>
 <span id="cb110-2"><a href="#cb110-2" aria-hidden="true" tabindex="-1"></a><span class="fu">layout</span>(layout_matrix_1)</span>
@@ -1174,9 +1252,13 @@ KPSS Trend = 0.08168, Truncation lag parameter = 3, p-value = 0.1</code></pre>
 <span id="cb110-4"><a href="#cb110-4" aria-hidden="true" tabindex="-1"></a><span class="fu">pacf</span>(Kvichak_2.<span class="fl">2.</span>ts)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
-<details>
+</div>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb111"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb111-1"><a href="#cb111-1" aria-hidden="true" tabindex="-1"></a><span class="co">#neither shows any clear lag or decay signs. maybe an combined ARMA model</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -1191,7 +1273,7 @@ KPSS Trend = 0.08168, Truncation lag parameter = 3, p-value = 0.1</code></pre>
 <section id="ugashik-2" class="level3">
 <h3 class="anchored" data-anchor-id="ugashik-2">Ugashik</h3>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb112"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb112-1"><a href="#cb112-1" aria-hidden="true" tabindex="-1"></a>fit.ugashik_1<span class="fl">.3</span> <span class="ot">&lt;-</span> forecast<span class="sc">::</span><span class="fu">auto.arima</span>(<span class="fu">diff</span>(Ugashik_1.<span class="fl">3.</span>ts))</span>
 <span id="cb112-2"><a href="#cb112-2" aria-hidden="true" tabindex="-1"></a>fit.ugashik_1<span class="fl">.3</span>_out <span class="ot">&lt;-</span> forecast<span class="sc">::</span><span class="fu">auto.arima</span>(<span class="fu">diff</span>(Ugashik_1.<span class="fl">3.</span>ts_out))</span>
@@ -1199,7 +1281,11 @@ KPSS Trend = 0.08168, Truncation lag parameter = 3, p-value = 0.1</code></pre>
 <span id="cb112-4"><a href="#cb112-4" aria-hidden="true" tabindex="-1"></a>forecast<span class="sc">::</span><span class="fu">checkresiduals</span>(fit.ugashik_1<span class="fl">.3</span>)   </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -1210,12 +1296,16 @@ Q* = 4.5946, df = 9, p-value = 0.8681
 
 Model df: 1.   Total lags used: 10</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb114"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb114-1"><a href="#cb114-1" aria-hidden="true" tabindex="-1"></a>forecast<span class="sc">::</span><span class="fu">checkresiduals</span>(fit.ugashik_1<span class="fl">.3</span>_out)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-19-2.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-19-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -1226,12 +1316,16 @@ Q* = 24.804, df = 8, p-value = 0.001678
 
 Model df: 0.   Total lags used: 8</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb116"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb116-1"><a href="#cb116-1" aria-hidden="true" tabindex="-1"></a>forecast<span class="sc">::</span><span class="fu">checkresiduals</span>(fit.ugashik_2<span class="fl">.2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-19-3.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-19-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -1248,14 +1342,18 @@ Model df: 2.   Total lags used: 10</code></pre>
 <section id="wood-2" class="level3">
 <h3 class="anchored" data-anchor-id="wood-2">Wood</h3>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb118"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb118-1"><a href="#cb118-1" aria-hidden="true" tabindex="-1"></a>fit.wood_1<span class="fl">.3</span> <span class="ot">&lt;-</span> forecast<span class="sc">::</span><span class="fu">auto.arima</span>(Wood_1.<span class="fl">3.</span>ts)</span>
 <span id="cb118-2"><a href="#cb118-2" aria-hidden="true" tabindex="-1"></a>fit.wood_2<span class="fl">.2</span> <span class="ot">&lt;-</span> forecast<span class="sc">::</span><span class="fu">auto.arima</span>(Wood_2.<span class="fl">2.</span>ts)</span>
 <span id="cb118-3"><a href="#cb118-3" aria-hidden="true" tabindex="-1"></a>forecast<span class="sc">::</span><span class="fu">checkresiduals</span>(fit.wood_1<span class="fl">.3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -1266,12 +1364,16 @@ Q* = 14.665, df = 9, p-value = 0.1006
 
 Model df: 1.   Total lags used: 10</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb120"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb120-1"><a href="#cb120-1" aria-hidden="true" tabindex="-1"></a>forecast<span class="sc">::</span><span class="fu">checkresiduals</span>(fit.wood_2<span class="fl">.2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-20-2.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-20-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -1288,14 +1390,18 @@ Model df: 0.   Total lags used: 10</code></pre>
 <section id="kvichak-2" class="level3">
 <h3 class="anchored" data-anchor-id="kvichak-2">Kvichak</h3>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb122"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb122-1"><a href="#cb122-1" aria-hidden="true" tabindex="-1"></a>fit.kvi<span class="fl">.3</span> <span class="ot">&lt;-</span> forecast<span class="sc">::</span><span class="fu">auto.arima</span>(Kvichak_1.<span class="fl">3.</span>ts)</span>
 <span id="cb122-2"><a href="#cb122-2" aria-hidden="true" tabindex="-1"></a>fit.kvi<span class="fl">.2</span> <span class="ot">&lt;-</span> forecast<span class="sc">::</span><span class="fu">auto.arima</span>(Kvichak_2.<span class="fl">2.</span>ts)</span>
 <span id="cb122-3"><a href="#cb122-3" aria-hidden="true" tabindex="-1"></a>forecast<span class="sc">::</span><span class="fu">checkresiduals</span>(fit.kvi<span class="fl">.3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -1306,12 +1412,16 @@ Q* = 2.4224, df = 9, p-value = 0.9829
 
 Model df: 1.   Total lags used: 10</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb124"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb124-1"><a href="#cb124-1" aria-hidden="true" tabindex="-1"></a>forecast<span class="sc">::</span><span class="fu">checkresiduals</span>(fit.kvi<span class="fl">.2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-21-2.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-21-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -1331,7 +1441,7 @@ Model df: 1.   Total lags used: 10</code></pre>
 <section id="ugashik-3" class="level3">
 <h3 class="anchored" data-anchor-id="ugashik-3">Ugashik</h3>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb126"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb126-1"><a href="#cb126-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Make dataframes for testing models later</span></span>
 <span id="cb126-2"><a href="#cb126-2" aria-hidden="true" tabindex="-1"></a>train_Ugashik_1<span class="fl">.3</span> <span class="ot">&lt;-</span> <span class="fu">window</span>(Ugashik_1.<span class="fl">3.</span>ts, <span class="dv">1963</span>, <span class="dv">2010</span>) <span class="co"># range 1963 - 2010</span></span>
@@ -1358,7 +1468,7 @@ s.e.   0.1400
 sigma^2 = 18.34:  log likelihood = -134.93
 AIC=273.86   AICc=274.13   BIC=277.56</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb128"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb128-1"><a href="#cb128-1" aria-hidden="true" tabindex="-1"></a>model_Ugashik_1<span class="fl">.3</span>_out <span class="ot">&lt;-</span> <span class="fu">auto.arima</span>(train_Ugashik_1<span class="fl">.3</span>_out)</span>
 <span id="cb128-2"><a href="#cb128-2" aria-hidden="true" tabindex="-1"></a>model_Ugashik_1<span class="fl">.3</span>_out</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1375,7 +1485,7 @@ s.e.  0.1506   0.1451  0.0890
 sigma^2 = 0.365:  log likelihood = -27.2
 AIC=62.41   AICc=63.94   BIC=68.14</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb130"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb130-1"><a href="#cb130-1" aria-hidden="true" tabindex="-1"></a>model_Ugashik_2<span class="fl">.2</span> <span class="ot">&lt;-</span> <span class="fu">auto.arima</span>(train_Ugashik_2<span class="fl">.2</span>)</span>
 <span id="cb130-2"><a href="#cb130-2" aria-hidden="true" tabindex="-1"></a>model_Ugashik_2<span class="fl">.2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1397,7 +1507,7 @@ AIC=167.34   AICc=167.88   BIC=172.95</code></pre>
 <section id="wood-3" class="level3">
 <h3 class="anchored" data-anchor-id="wood-3">Wood</h3>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb132"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb132-1"><a href="#cb132-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Dylan's Code, need to speak on auto.arima model results</span></span>
 <span id="cb132-2"><a href="#cb132-2" aria-hidden="true" tabindex="-1"></a><span class="co">#creating the training and testing periods for models</span></span>
@@ -1418,7 +1528,7 @@ s.e.   0.0919
 sigma^2 = 0.3482:  log likelihood = -41.8
 AIC=87.59   AICc=87.87   BIC=91.29</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb134"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb134-1"><a href="#cb134-1" aria-hidden="true" tabindex="-1"></a>train.Wood_2<span class="fl">.2</span> <span class="ot">&lt;-</span> <span class="fu">window</span>(Wood_2.<span class="fl">2.</span>ts, <span class="at">start =</span> <span class="dv">1963</span>, <span class="at">end =</span> <span class="dv">2010</span>)</span>
 <span id="cb134-2"><a href="#cb134-2" aria-hidden="true" tabindex="-1"></a>test.Wood_2<span class="fl">.2</span> <span class="ot">&lt;-</span> <span class="fu">window</span>(Wood_2.<span class="fl">2.</span>ts, <span class="at">start =</span> <span class="dv">2011</span>, <span class="at">end =</span> <span class="dv">2020</span>)</span>
@@ -1442,7 +1552,7 @@ AIC=158.29   AICc=158.56   BIC=162.03</code></pre>
 <section id="kvichak-3" class="level3">
 <h3 class="anchored" data-anchor-id="kvichak-3">Kvichak</h3>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb136"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb136-1"><a href="#cb136-1" aria-hidden="true" tabindex="-1"></a><span class="co">#train and test predictions</span></span>
 <span id="cb136-2"><a href="#cb136-2" aria-hidden="true" tabindex="-1"></a>train.Kvichak_1<span class="fl">.3</span> <span class="ot">&lt;-</span> <span class="fu">window</span>(Kvichak_1.<span class="fl">3.</span>ts, <span class="at">start=</span> <span class="dv">1963</span>, <span class="at">end=</span><span class="dv">2010</span>)</span>
@@ -1462,7 +1572,7 @@ s.e.   0.1057  0.0662
 sigma^2 = 6.13:  log likelihood = -108.91
 AIC=223.82   AICc=224.38   BIC=229.37</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb138"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb138-1"><a href="#cb138-1" aria-hidden="true" tabindex="-1"></a>train.Kvichak_2<span class="fl">.2</span> <span class="ot">&lt;-</span> <span class="fu">window</span>(Kvichak_2.<span class="fl">2.</span>ts, <span class="at">start=</span> <span class="dv">1963</span>, <span class="at">end=</span><span class="dv">2010</span>)</span>
 <span id="cb138-2"><a href="#cb138-2" aria-hidden="true" tabindex="-1"></a>test.Kvichak_2<span class="fl">.2</span> <span class="ot">&lt;-</span> <span class="fu">window</span>(Kvichak_2.<span class="fl">2.</span>ts, <span class="at">start=</span> <span class="dv">2011</span>, <span class="at">end=</span> <span class="dv">2020</span>)</span>
@@ -1492,7 +1602,7 @@ AIC=193.11   AICc=193.66   BIC=198.73</code></pre>
 <section id="ugashik-1.3-starting-from-1980" class="level3">
 <h3 class="anchored" data-anchor-id="ugashik-1.3-starting-from-1980">Ugashik 1.3, Starting from 1980</h3>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb140"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb140-1"><a href="#cb140-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Miranda's Code</span></span>
 <span id="cb140-2"><a href="#cb140-2" aria-hidden="true" tabindex="-1"></a>fc_1<span class="fl">.3</span> <span class="ot">&lt;-</span> <span class="fu">forecast</span>(model_Ugashik_1<span class="fl">.3</span>_out, <span class="at">h=</span><span class="dv">10</span>)</span>
@@ -1501,23 +1611,35 @@ AIC=193.11   AICc=193.66   BIC=198.73</code></pre>
 <span id="cb140-5"><a href="#cb140-5" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="fu">fitted</span>(model_Ugashik_1<span class="fl">.3</span>_out), <span class="at">col=</span><span class="st">"blue"</span>) <span class="co">#model seems to fit well</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
-<details>
+</div>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb141"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb141-1"><a href="#cb141-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fc_1<span class="fl">.3</span>,<span class="at">ylab =</span> <span class="st">"log Abundance"</span>, <span class="at">xlab =</span> <span class="st">"Time"</span>)</span>
 <span id="cb141-2"><a href="#cb141-2" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(test_Ugashik_1<span class="fl">.3</span>_out, <span class="at">pch=</span><span class="dv">19</span>, <span class="at">col=</span><span class="st">"red"</span>)</span>
 <span id="cb141-3"><a href="#cb141-3" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="fu">fitted</span>(model_Ugashik_1<span class="fl">.3</span>_out), <span class="at">col=</span><span class="st">"blue"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-25-2.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-25-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
-<details>
+</div>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb142"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb142-1"><a href="#cb142-1" aria-hidden="true" tabindex="-1"></a>forecast<span class="sc">::</span><span class="fu">checkresiduals</span>(model_Ugashik_1<span class="fl">.3</span>_out) <span class="co"># looks better than 1.3 trained on 1960-2010</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-25-3.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-25-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -1528,7 +1650,7 @@ Q* = 3.6115, df = 4, p-value = 0.4611
 
 Model df: 2.   Total lags used: 6</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb144"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb144-1"><a href="#cb144-1" aria-hidden="true" tabindex="-1"></a><span class="fu">accuracy</span>(<span class="fu">forecast</span>(model_Ugashik_1<span class="fl">.3</span>_out, <span class="at">h=</span><span class="dv">10</span>), test_Ugashik_1<span class="fl">.3</span>_out) <span class="co">#test accuracy </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -1547,7 +1669,7 @@ Test set      0.09450154  0.877926</code></pre>
 <section id="ugashik-2.2" class="level3">
 <h3 class="anchored" data-anchor-id="ugashik-2.2">Ugashik 2.2</h3>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb146"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb146-1"><a href="#cb146-1" aria-hidden="true" tabindex="-1"></a>fc_2<span class="fl">.2</span> <span class="ot">&lt;-</span> <span class="fu">forecast</span>(model_Ugashik_2<span class="fl">.2</span>, <span class="at">h=</span><span class="dv">10</span>)</span>
 <span id="cb146-2"><a href="#cb146-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -1556,14 +1678,22 @@ Test set      0.09450154  0.877926</code></pre>
 <span id="cb146-5"><a href="#cb146-5" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="fu">fitted</span>(model_Ugashik_2<span class="fl">.2</span>), <span class="at">col=</span><span class="st">"blue"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
-<details>
+</div>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb147"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb147-1"><a href="#cb147-1" aria-hidden="true" tabindex="-1"></a>forecast<span class="sc">::</span><span class="fu">checkresiduals</span>(model_Ugashik_2<span class="fl">.2</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-26-2.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-26-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -1574,7 +1704,7 @@ Q* = 13.211, df = 9, p-value = 0.1533
 
 Model df: 1.   Total lags used: 10</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb149"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb149-1"><a href="#cb149-1" aria-hidden="true" tabindex="-1"></a><span class="fu">accuracy</span>(<span class="fu">forecast</span>(model_Ugashik_2<span class="fl">.2</span>, <span class="at">h=</span><span class="dv">10</span>), test_Ugashik_2<span class="fl">.2</span>) <span class="co">#test accuracy</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -1590,7 +1720,7 @@ Test set      0.31998321 0.9446332</code></pre>
 <p>The model fits the timeseries train data pretty well, matching the overall change in curve. The residuals show the ACF plot has 1 significant lag reflecting the ARIMA (1,0,0) model, the histogram is fairly centered as expected, and model fails to reject Ljung-Box test.</p>
 <p>Model forecast doesn’t look great. The forecast flatlines while the real data from 2011-2020 have much higher variance. This reflects the high AICc from the model. But the data are contained within the predicted confidence interval which is good. ### Wood 2.2</p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb151"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb151-1"><a href="#cb151-1" aria-hidden="true" tabindex="-1"></a>pred.Wood_2<span class="fl">.2</span> <span class="ot">&lt;-</span> <span class="fu">forecast</span>(fit.Wood_2<span class="fl">.2</span>, <span class="at">h =</span> <span class="dv">10</span>)</span>
 <span id="cb151-2"><a href="#cb151-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(pred.Wood_2<span class="fl">.2</span>,<span class="at">ylab =</span> <span class="st">"log Abundance"</span>, <span class="at">xlab =</span> <span class="st">"Time"</span>)</span>
@@ -1598,9 +1728,13 @@ Test set      0.31998321 0.9446332</code></pre>
 <span id="cb151-4"><a href="#cb151-4" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="fu">fitted</span>(fit.Wood_2<span class="fl">.2</span>), <span class="at">col=</span><span class="st">"blue"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
-<details>
+</div>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb152"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb152-1"><a href="#cb152-1" aria-hidden="true" tabindex="-1"></a><span class="co">#the actual observations do fall within the 80% prediction interval</span></span>
 <span id="cb152-2"><a href="#cb152-2" aria-hidden="true" tabindex="-1"></a><span class="co">#This data is treated as white noise with the ARIMA(0,0,0) model so </span></span>
@@ -1609,7 +1743,11 @@ Test set      0.31998321 0.9446332</code></pre>
 <span id="cb152-5"><a href="#cb152-5" aria-hidden="true" tabindex="-1"></a>forecast<span class="sc">::</span><span class="fu">checkresiduals</span>(fit.Wood_2<span class="fl">.2</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-27-2.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-27-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -1620,7 +1758,7 @@ Q* = 9.263, df = 10, p-value = 0.5073
 
 Model df: 0.   Total lags used: 10</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb154"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb154-1"><a href="#cb154-1" aria-hidden="true" tabindex="-1"></a><span class="fu">accuracy</span>(<span class="fu">forecast</span>(fit.Wood_2<span class="fl">.2</span>, <span class="at">h =</span> <span class="dv">10</span>), test.Wood_2<span class="fl">.2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -1632,7 +1770,7 @@ Test set     8.382150e-02 0.7310041 0.6710780  -0.6671193 14.53788 0.4875535
 Training set -0.06265894        NA
 Test set     -0.33015036 0.6419835</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb156"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb156-1"><a href="#cb156-1" aria-hidden="true" tabindex="-1"></a><span class="co">#the RMSE done manually matches with the RMSE value that is found by the </span></span>
 <span id="cb156-2"><a href="#cb156-2" aria-hidden="true" tabindex="-1"></a><span class="co">#model in row 2, column 2. This must be how the model does when compared to the </span></span>
@@ -1644,7 +1782,7 @@ Test set     -0.33015036 0.6419835</code></pre>
 <section id="wood-1.3" class="level3">
 <h3 class="anchored" data-anchor-id="wood-1.3">Wood 1.3</h3>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb157"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb157-1"><a href="#cb157-1" aria-hidden="true" tabindex="-1"></a>pred.Wood_1<span class="fl">.3</span> <span class="ot">&lt;-</span> <span class="fu">forecast</span>(fit.Wood_1<span class="fl">.3</span>, <span class="at">h =</span> <span class="dv">10</span>)</span>
 <span id="cb157-2"><a href="#cb157-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -1653,9 +1791,13 @@ Test set     -0.33015036 0.6419835</code></pre>
 <span id="cb157-5"><a href="#cb157-5" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="fu">fitted</span>(fit.Wood_1<span class="fl">.3</span>), <span class="at">col=</span><span class="st">"blue"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
-<details>
+</div>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb158"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb158-1"><a href="#cb158-1" aria-hidden="true" tabindex="-1"></a><span class="co">#we see that the prediction intervals widen as the forecast moves forward</span></span>
 <span id="cb158-2"><a href="#cb158-2" aria-hidden="true" tabindex="-1"></a><span class="co">#likely due to the autocorrelation of the errors, because this is an MA(1) model,</span></span>
@@ -1670,7 +1812,11 @@ Test set     -0.33015036 0.6419835</code></pre>
 <span id="cb158-11"><a href="#cb158-11" aria-hidden="true" tabindex="-1"></a>forecast<span class="sc">::</span><span class="fu">checkresiduals</span>(fit.Wood_1<span class="fl">.3</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-28-2.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-28-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -1681,7 +1827,7 @@ Q* = 12.184, df = 9, p-value = 0.2032
 
 Model df: 1.   Total lags used: 10</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb160"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb160-1"><a href="#cb160-1" aria-hidden="true" tabindex="-1"></a><span class="fu">accuracy</span>(<span class="fu">forecast</span>(fit.Wood_1<span class="fl">.3</span>, <span class="at">h =</span> <span class="dv">10</span>), test.Wood_1<span class="fl">.3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -1693,7 +1839,7 @@ Test set     -0.4034734 0.5321656 0.4363825 -5.476881 5.876250 0.7477688
 Training set -0.1061270        NA
 Test set     -0.1945305   1.02589</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb162"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb162-1"><a href="#cb162-1" aria-hidden="true" tabindex="-1"></a><span class="co">#the Root Mean Squared Error for this model is 0.532. This value is less</span></span>
 <span id="cb162-2"><a href="#cb162-2" aria-hidden="true" tabindex="-1"></a><span class="co">#than the value for the Wood_2.2 model. This is a bit surprising as they both</span></span>
@@ -1709,7 +1855,7 @@ Test set     -0.1945305   1.02589</code></pre>
 <section id="kvichak-2.2" class="level3">
 <h3 class="anchored" data-anchor-id="kvichak-2.2">Kvichak 2.2</h3>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb163"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb163-1"><a href="#cb163-1" aria-hidden="true" tabindex="-1"></a>pred.kvi2 <span class="ot">&lt;-</span> <span class="fu">forecast</span>(fit.Kvichak_2<span class="fl">.2</span>, <span class="at">h=</span><span class="dv">10</span>)</span>
 <span id="cb163-2"><a href="#cb163-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -1718,14 +1864,22 @@ Test set     -0.1945305   1.02589</code></pre>
 <span id="cb163-5"><a href="#cb163-5" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="fu">fitted</span>(fit.Kvichak_2<span class="fl">.2</span>), <span class="at">col=</span><span class="st">"blue"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
-<details>
+</div>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb164"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb164-1"><a href="#cb164-1" aria-hidden="true" tabindex="-1"></a>forecast<span class="sc">::</span><span class="fu">checkresiduals</span>(fit.Kvichak_2<span class="fl">.2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-29-2.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-29-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -1736,7 +1890,7 @@ Q* = 36.296, df = 9, p-value = 3.513e-05
 
 Model df: 1.   Total lags used: 10</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb166"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb166-1"><a href="#cb166-1" aria-hidden="true" tabindex="-1"></a><span class="fu">accuracy</span>(pred.kvi2, test.Kvichak_2<span class="fl">.2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -1748,14 +1902,14 @@ Test set     -0.649087674 2.088137 1.751880 -21.121893 33.24484 0.9938554
 Training set -0.02884552        NA
 Test set      0.65396329   1.93424</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb168"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb168-1"><a href="#cb168-1" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Here we see the cyclic nature of the data reflected in the residual’s ACF plot and the rejection of the Box test. This may have affected the model’s ability to predict. The RMSE = 2.088. The actual data points fell outside of the prediction intervals with this model. We observe the same straight line provided by the MA() model but there was more variance in this data which corresponds to the poor prediction performance ### Kvichak 1.3</p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb169"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb169-1"><a href="#cb169-1" aria-hidden="true" tabindex="-1"></a><span class="co">#chooses same exact model as the full dataset model</span></span>
 <span id="cb169-2"><a href="#cb169-2" aria-hidden="true" tabindex="-1"></a>pred.kvi3 <span class="ot">&lt;-</span> <span class="fu">forecast</span>(fit.Kvichak_1<span class="fl">.3</span>, <span class="at">h=</span><span class="dv">10</span>)</span>
@@ -1765,14 +1919,22 @@ Test set      0.65396329   1.93424</code></pre>
 <span id="cb169-6"><a href="#cb169-6" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="fu">fitted</span>(fit.Kvichak_1<span class="fl">.3</span>), <span class="at">col=</span><span class="st">"blue"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-30-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-30-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
-<details>
+</div>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb170"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb170-1"><a href="#cb170-1" aria-hidden="true" tabindex="-1"></a>forecast<span class="sc">::</span><span class="fu">checkresiduals</span>(fit.Kvichak_1<span class="fl">.3</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-30-2.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-1-team-2_final_files/figure-html/unnamed-chunk-30-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -1783,7 +1945,7 @@ Q* = 1.9103, df = 9, p-value = 0.9928
 
 Model df: 1.   Total lags used: 10</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb172"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb172-1"><a href="#cb172-1" aria-hidden="true" tabindex="-1"></a><span class="fu">accuracy</span>(pred.kvi3, test.Kvichak_1<span class="fl">.3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -1795,7 +1957,7 @@ Test set     -0.4366868 0.650266 0.553364 -5.920379  7.288404 0.3676971
 Training set -0.0007066869        NA
 Test set     -0.4030463679 0.7920795</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb174"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb174-1"><a href="#cb174-1" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -1855,18 +2017,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
     return false;
   }
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    text: function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-    }
-  });
-  clipboard.on('success', function(e) {
+  const onCopySuccess = function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -1898,7 +2049,27 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
   });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
   const viewSource = window.document.getElementById('quarto-view-source') ||
                      window.document.getElementById('quarto-code-tools-source');
   if (viewSource) {
@@ -1950,10 +2121,27 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   if (showAllCode) {
     showAllCode.addEventListener("click", toggleCodeHandler(true));
   }
-  function tippyHover(el, contentFn) {
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/atsa-es\.github\.io\/fish550-2023\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -1963,8 +2151,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -1976,7 +2173,129 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -2020,6 +2339,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -2045,6 +2365,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -2106,14 +2452,16 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <script src="https://giscus.app/client.js" data-repo="atsa-es/fish550-2023" data-repo-id="R_kgDOJGNymQ" data-category="General" data-category-id="DIC_kwDOJGNymc4CUsbe" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
 </script>
+<input type="hidden" id="giscus-base-theme" value="light">
+<input type="hidden" id="giscus-alt-theme" value="dark">
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../../Lab-1/Final_Write_ups/Lab-1-team-1_final.html" class="pagination-link">
+      <a href="../../Lab-1/Final_Write_ups/Lab-1-team-1_final.html" class="pagination-link" aria-label="Team 1 - Lab 1">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Team 1 - Lab 1</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../Lab-1/Final_Write_ups/Lab-1-team-3_final.html" class="pagination-link">
+      <a href="../../Lab-1/Final_Write_ups/Lab-1-team-3_final.html" class="pagination-link" aria-label="Team 3 - Lab 1">
         <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Team 3 - Lab 1</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
@@ -2639,10 +2987,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb175-579"><a href="#cb175-579" aria-hidden="true" tabindex="-1"></a><span class="fu"># Description of each team member's contributions</span></span>
 <span id="cb175-580"><a href="#cb175-580" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb175-581"><a href="#cb175-581" aria-hidden="true" tabindex="-1"></a>Dylan wrote the code for the Wood and Kvichak regions, Miranda wrote the code for the Ugashik region, and Eric and Dylan wrote sections of the report with input continued from Miranda.</span>
-</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 
 
 
-</body></html>
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/atsa-es/fish550-2023/edit/main/Lab-1/Final_Write_ups/Lab-1-team-2_final.Rmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/atsa-es/fish550-2023/blob/main/Lab-1/Final_Write_ups/Lab-1-team-2_final.Rmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/atsa-es/fish550-2023/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>

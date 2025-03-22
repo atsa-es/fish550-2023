@@ -2,14 +2,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.340">
+<meta name="generator" content="quarto-1.6.39">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Eric, Madison, Maria">
 <meta name="dcterms.date" content="2023-04-20">
 
-<title>Fish 550 Spring 2023 - 14&nbsp; Team 2 - Lab 3</title>
+<title>14&nbsp; Team 2 - Lab 3 – Fish 550 Spring 2023</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -24,7 +24,7 @@ ul.task-list li input[type="checkbox"] {
 }
 /* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -35,7 +35,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -73,17 +73,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-626149efe8f5d16e1d391ba177679bf0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
   "collapse-after": 3,
   "panel-placement": "start",
   "type": "textbox",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -92,13 +98,42 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit"
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
   }
 }</script>
 
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -108,12 +143,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav">
     <div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../Lab-3/Lab-3-DFA.html">Dynamic Factor Analysis</a></li><li class="breadcrumb-item"><a href="../../Lab-3/Final_Write_ups/Lab-3-team-2_final.html"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Team 2 - Lab 3</span></a></li></ol></nav>
-      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-      </a>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../Lab-3/Lab-3-DFA.html">Dynamic Factor Analysis</a></li><li class="breadcrumb-item"><a href="../../Lab-3/Final_Write_ups/Lab-3-team-2_final.html"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Team 2 - Lab 3</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
@@ -123,7 +158,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="../../">Fish 550 Spring 2023</a> 
@@ -147,9 +182,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
  <span class="menu-text">Forecasting with ARIMA models</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -188,9 +223,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
  <span class="menu-text">Analyzing multivariate salmon data with MARSS</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -229,9 +264,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
  <span class="menu-text">Dynamic Factor Analysis</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -270,9 +305,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
  <span class="menu-text">Hidden Markov Models</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -312,7 +347,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </ul>
     </div>
 </nav>
-<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
@@ -351,12 +386,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion">Discussion</a></li>
   <li><a href="#team-contributions" id="toc-team-contributions" class="nav-link" data-scroll-target="#team-contributions">Team contributions</a></li>
   </ul>
-<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/atsa-es/fish550-2023/edit/main/Lab-3/Final_Write_ups/Lab-3-team-2_final.Rmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/atsa-es/fish550-2023/blob/main/Lab-3/Final_Write_ups/Lab-3-team-2_final.Rmd" class="toc-action">View source</a></p><p><a href="https://github.com/atsa-es/fish550-2023/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/atsa-es/fish550-2023/edit/main/Lab-3/Final_Write_ups/Lab-3-team-2_final.Rmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/atsa-es/fish550-2023/blob/main/Lab-3/Final_Write_ups/Lab-3-team-2_final.Rmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/atsa-es/fish550-2023/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../Lab-3/Lab-3-DFA.html">Dynamic Factor Analysis</a></li><li class="breadcrumb-item"><a href="../../Lab-3/Final_Write_ups/Lab-3-team-2_final.html"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Team 2 - Lab 3</span></a></li></ol></nav>
 <div class="quarto-title">
 <div class="quarto-title-block"><div><h1 class="title"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Team 2 - Lab 3</span></h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
 <p class="subtitle lead">Dynamic Factor Analysis (DFA)</p>
@@ -384,7 +419,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </div>
   
 
+
 </header>
+
 
 <hr>
 <section id="introduction" class="level1">
@@ -394,7 +431,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="data" class="level1">
 <h1>Data</h1>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="do">## load MARSS for data and analyses</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
@@ -412,7 +449,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 ✖ dplyr::lag()    masks stats::lag()
 ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(forecast)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -422,7 +459,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   method            from
   as.zoo.data.frame zoo </code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MARSS)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(corrplot)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -430,7 +467,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-stderr">
 <pre><code>corrplot 0.92 loaded</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -462,7 +499,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="wrangle-the-data" class="level2">
 <h2 class="anchored" data-anchor-id="wrangle-the-data">Wrangle the data</h2>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="do">## add some code here</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -501,7 +538,7 @@ Daphnia     -0.9460105 -1.05132054 -0.3179194 0.7737740  1.0986668
 Cyclops      0.3364779 -0.05110172  0.8265634 2.0655099  1.1347830
 Epischura   -0.7829961 -0.82779368 -0.3518153 0.5790608 -0.9097123</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(covar[,<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -513,7 +550,7 @@ pH   -0.7794830 -0.9036437  0.65305114  1.933781 -0.89501851</code></pre>
 </div>
 </div>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>clr <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"brown"</span>, <span class="st">"blue"</span>, <span class="st">"darkgreen"</span>, <span class="st">"darkred"</span>, <span class="st">"purple"</span>)</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -534,9 +571,13 @@ pH   -0.7794830 -0.9036437  0.65305114  1.933781 -0.89501851</code></pre>
 <span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-3-team-2_final_files/figure-html/plot_data-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-3-team-2_final_files/figure-html/plot_data-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
-<details>
+</div>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="do">## set plot colors</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>clr <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"brown"</span>, <span class="st">"blue"</span>, <span class="st">"darkgreen"</span>,<span class="st">"purple"</span>)</span>
@@ -557,7 +598,11 @@ pH   -0.7794830 -0.9036437  0.65305114  1.933781 -0.89501851</code></pre>
 <span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-3-team-2_final_files/figure-html/plot_data-2.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-3-team-2_final_files/figure-html/plot_data-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 </section>
@@ -565,7 +610,7 @@ pH   -0.7794830 -0.9036437  0.65305114  1.933781 -0.89501851</code></pre>
 <h2 class="anchored" data-anchor-id="initial-model-set-up">Initial Model Set-up</h2>
 <p>We examined models that considered three underlying state options: two, three, and four states. We also tested three observation error matrices, diagonal and equal, diagonal and unequal, and equal variance and covariance. We originally were going to include unconstrained but omitted it due to convergence issues. We wanted to explore assumptions for observation error given our uncertainty surrounding collection and counting methods for the data set. Finally, we considered all combinations of three possible covariates, temperature (Temp), total phosphorus (TP), and pH.</p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>model.states <span class="ot">&lt;-</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">4</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(model.states) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"two_states"</span>,<span class="st">"three_states"</span>,<span class="st">"four_states"</span>)</span>
@@ -600,7 +645,7 @@ pH   -0.7794830 -0.9036437  0.65305114  1.933781 -0.89501851</code></pre>
 </div>
 <p>We then set up for model runs for 63 model runs, looking at various combination of states, covariates (d) and observation error (R).</p>
 <div class="cell" data-hash="Lab-3-team-2_final_cache/html/MARSS_models_bc6f087539f96be1fd622bb23893a025">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Added in another for loop to run through cycling options, be warned, this means there are 80 total models. It takes a long time to run</span></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>start.time <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
@@ -644,7 +689,7 @@ pH   -0.7794830 -0.9036437  0.65305114  1.933781 -0.89501851</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>Time difference of 8.496 mins</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>min.AICc <span class="ot">&lt;-</span> <span class="fu">order</span>(out.tab<span class="sc">$</span>AICc)</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>out.tab<span class="fl">.1</span> <span class="ot">&lt;-</span> out.tab[min.AICc, ]</span>
@@ -902,7 +947,7 @@ r_1 &amp; 0&amp; 0&amp; 0&amp; 0\\
 <section id="diagnostics" class="level2">
 <h2 class="anchored" data-anchor-id="diagnostics">Diagnostics</h2>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Rotating the model, plotting the states and loadings</span></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>best_fit <span class="ot">&lt;-</span> fits[[<span class="dv">19</span>]]</span>
@@ -963,116 +1008,188 @@ r_1 &amp; 0&amp; 0&amp; 0&amp; 0\\
 <span id="cb19-57"><a href="#cb19-57" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-3-team-2_final_files/figure-html/factor_loadings-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-3-team-2_final_files/figure-html/factor_loadings-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
-<details>
+</div>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="do">## plot CCF's</span></span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ccf</span>(proc_rot[<span class="dv">1</span>,],proc_rot[<span class="dv">2</span>,], <span class="at">lag.max =</span> <span class="dv">15</span>, <span class="at">main=</span><span class="st">""</span>)</span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span>(<span class="at">main =</span> <span class="st">"State 1 vs 2"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-3-team-2_final_files/figure-html/factor_loadings-2.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-3-team-2_final_files/figure-html/factor_loadings-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>This model seems to explain primary producer and grazer dynamics best in state 1, and predator dynamics best in state two. Epischura has a strong negative trend in state two, compared to other species which are all postive in both states 1 and 2.</p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(best_fit) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-3-team-2_final_files/figure-html/Continued Diagnostics-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-3-team-2_final_files/figure-html/Continued Diagnostics-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>plot.type = xtT </code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-3-team-2_final_files/figure-html/Continued Diagnostics-2.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-3-team-2_final_files/figure-html/Continued Diagnostics-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Hit &lt;Return&gt; to see next plot (q to exit): </code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-3-team-2_final_files/figure-html/Continued Diagnostics-3.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-3-team-2_final_files/figure-html/Continued Diagnostics-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>plot.type = fitted.ytT </code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-3-team-2_final_files/figure-html/Continued Diagnostics-4.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-3-team-2_final_files/figure-html/Continued Diagnostics-4.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Hit &lt;Return&gt; to see next plot (q to exit): </code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-3-team-2_final_files/figure-html/Continued Diagnostics-5.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-3-team-2_final_files/figure-html/Continued Diagnostics-5.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>plot.type = model.resids.ytt1 </code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-3-team-2_final_files/figure-html/Continued Diagnostics-6.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-3-team-2_final_files/figure-html/Continued Diagnostics-6.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Hit &lt;Return&gt; to see next plot (q to exit): </code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-3-team-2_final_files/figure-html/Continued Diagnostics-7.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-3-team-2_final_files/figure-html/Continued Diagnostics-7.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>plot.type = std.model.resids.ytT </code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-3-team-2_final_files/figure-html/Continued Diagnostics-8.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-3-team-2_final_files/figure-html/Continued Diagnostics-8.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Hit &lt;Return&gt; to see next plot (q to exit): </code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-3-team-2_final_files/figure-html/Continued Diagnostics-9.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-3-team-2_final_files/figure-html/Continued Diagnostics-9.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>plot.type = std.state.resids.xtT </code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-3-team-2_final_files/figure-html/Continued Diagnostics-10.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-3-team-2_final_files/figure-html/Continued Diagnostics-10.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Hit &lt;Return&gt; to see next plot (q to exit): </code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-3-team-2_final_files/figure-html/Continued Diagnostics-11.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-3-team-2_final_files/figure-html/Continued Diagnostics-11.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>plot.type = qqplot.std.model.resids.ytt1 </code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-3-team-2_final_files/figure-html/Continued Diagnostics-12.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-3-team-2_final_files/figure-html/Continued Diagnostics-12.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Hit &lt;Return&gt; to see next plot (q to exit): </code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-3-team-2_final_files/figure-html/Continued Diagnostics-13.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-3-team-2_final_files/figure-html/Continued Diagnostics-13.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>plot.type = qqplot.std.state.resids.xtT </code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-3-team-2_final_files/figure-html/Continued Diagnostics-14.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-3-team-2_final_files/figure-html/Continued Diagnostics-14.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Hit &lt;Return&gt; to see next plot (q to exit): </code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-3-team-2_final_files/figure-html/Continued Diagnostics-15.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-3-team-2_final_files/figure-html/Continued Diagnostics-15.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>plot.type = acf.std.model.resids.ytt1 </code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-3-team-2_final_files/figure-html/Continued Diagnostics-16.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-3-team-2_final_files/figure-html/Continued Diagnostics-16.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Finished plots.</code></pre>
@@ -1082,7 +1199,7 @@ r_1 &amp; 0&amp; 0&amp; 0&amp; 0\\
 <section id="model-fits" class="level3">
 <h3 class="anchored" data-anchor-id="model-fits">Model Fits</h3>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>get_DFA_fits <span class="ot">&lt;-</span> <span class="cf">function</span>(MLEobj, <span class="at">dd =</span> <span class="cn">NULL</span>, <span class="at">alpha =</span> <span class="fl">0.05</span>) {</span>
 <span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>    <span class="do">## empty list for results</span></span>
@@ -1147,7 +1264,11 @@ r_1 &amp; 0&amp; 0&amp; 0&amp; 0\\
 <span id="cb38-61"><a href="#cb38-61" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-3-team-2_final_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-3-team-2_final_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>These fits seem to be missing a lot of the interannual peaks and valleys for daphnia and the confidence intervals for cyclops and epischura are very tight and missing data. We may be able to find a better fitting model with seasonal considerations.</p>
@@ -1161,7 +1282,7 @@ r_1 &amp; 0&amp; 0&amp; 0&amp; 0\\
 <h2 class="anchored" data-anchor-id="seasonal-model-set-up">Seasonal Model Set-up</h2>
 <p>We decided to look at three seasonal patterns, an annual pattern (12 months), a six month pattern, and a 3 month pattern (Winter, Spring, Summer, Fall).</p>
 <div class="cell" data-hash="Lab-3-team-2_final_cache/html/Seasonal exploration_affbed691d4b5baa0643270ee8ea456d">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>TT <span class="ot">&lt;-</span> <span class="fu">dim</span>(plank_dat)[<span class="dv">2</span>]</span>
 <span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -1228,7 +1349,7 @@ r_1 &amp; 0&amp; 0&amp; 0&amp; 0\\
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "Elapsed time for period: 1.019"</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>min.AICc <span class="ot">&lt;-</span> <span class="fu">order</span>(out.tab.season<span class="sc">$</span>AICc)</span>
 <span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>out.tab<span class="fl">.2</span> <span class="ot">&lt;-</span> out.tab.season[min.AICc, ]</span>
@@ -1368,7 +1489,7 @@ r_1 &amp; 0&amp; 0&amp; 0&amp; 0\\
 <section id="plotting-the-seasonal-model" class="level2">
 <h2 class="anchored" data-anchor-id="plotting-the-seasonal-model">Plotting the Seasonal Model</h2>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Rotating the model, plotting the states and loadings</span></span>
 <span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>best_fit_s <span class="ot">&lt;-</span> fits_season[[<span class="dv">3</span>]]</span>
@@ -1429,16 +1550,24 @@ r_1 &amp; 0&amp; 0&amp; 0&amp; 0\\
 <span id="cb43-57"><a href="#cb43-57" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-3-team-2_final_files/figure-html/factor_loadings including seasonality-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-3-team-2_final_files/figure-html/factor_loadings including seasonality-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
-<details>
+</div>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="do">## plot CCF's</span></span>
 <span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ccf</span>(proc_rot_s[<span class="dv">1</span>,],proc_rot_s[<span class="dv">2</span>,], <span class="at">lag.max =</span> <span class="dv">15</span>, <span class="at">main=</span><span class="st">""</span>)</span>
 <span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span>(<span class="at">main =</span> <span class="st">"State 1 vs 2 with seasonality"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-3-team-2_final_files/figure-html/factor_loadings including seasonality-2.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-3-team-2_final_files/figure-html/factor_loadings including seasonality-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>The factor loading seen in the model that is including seasonality seems to explain the dynamics of the speices better than the model that did not include seasonality, however, the sign of factor loading for Epishura, our predator species, changed to become positive in the seasonal model.</p>
@@ -1447,102 +1576,166 @@ r_1 &amp; 0&amp; 0&amp; 0&amp; 0\\
 <section id="additional-diagnostic" class="level3">
 <h3 class="anchored" data-anchor-id="additional-diagnostic">Additional Diagnostic</h3>
 <div class="cell" data-hash="Lab-3-team-2_final_cache/html/Seasonal Diagnostics_9bb4e8c1dbb7ec22c90e420bf9aea662">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(best_fit_s)  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-3-team-2_final_files/figure-html/Seasonal Diagnostics-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-3-team-2_final_files/figure-html/Seasonal Diagnostics-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>plot.type = xtT </code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-3-team-2_final_files/figure-html/Seasonal Diagnostics-2.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-3-team-2_final_files/figure-html/Seasonal Diagnostics-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Hit &lt;Return&gt; to see next plot (q to exit): </code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-3-team-2_final_files/figure-html/Seasonal Diagnostics-3.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-3-team-2_final_files/figure-html/Seasonal Diagnostics-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>plot.type = fitted.ytT </code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-3-team-2_final_files/figure-html/Seasonal Diagnostics-4.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-3-team-2_final_files/figure-html/Seasonal Diagnostics-4.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Hit &lt;Return&gt; to see next plot (q to exit): </code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-3-team-2_final_files/figure-html/Seasonal Diagnostics-5.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-3-team-2_final_files/figure-html/Seasonal Diagnostics-5.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>plot.type = model.resids.ytt1 </code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-3-team-2_final_files/figure-html/Seasonal Diagnostics-6.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-3-team-2_final_files/figure-html/Seasonal Diagnostics-6.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Hit &lt;Return&gt; to see next plot (q to exit): </code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-3-team-2_final_files/figure-html/Seasonal Diagnostics-7.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-3-team-2_final_files/figure-html/Seasonal Diagnostics-7.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>plot.type = std.model.resids.ytT </code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-3-team-2_final_files/figure-html/Seasonal Diagnostics-8.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-3-team-2_final_files/figure-html/Seasonal Diagnostics-8.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Hit &lt;Return&gt; to see next plot (q to exit): </code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-3-team-2_final_files/figure-html/Seasonal Diagnostics-9.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-3-team-2_final_files/figure-html/Seasonal Diagnostics-9.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>plot.type = std.state.resids.xtT </code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-3-team-2_final_files/figure-html/Seasonal Diagnostics-10.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-3-team-2_final_files/figure-html/Seasonal Diagnostics-10.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Hit &lt;Return&gt; to see next plot (q to exit): </code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-3-team-2_final_files/figure-html/Seasonal Diagnostics-11.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-3-team-2_final_files/figure-html/Seasonal Diagnostics-11.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>plot.type = qqplot.std.model.resids.ytt1 </code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-3-team-2_final_files/figure-html/Seasonal Diagnostics-12.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-3-team-2_final_files/figure-html/Seasonal Diagnostics-12.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Hit &lt;Return&gt; to see next plot (q to exit): </code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-3-team-2_final_files/figure-html/Seasonal Diagnostics-13.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-3-team-2_final_files/figure-html/Seasonal Diagnostics-13.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>plot.type = qqplot.std.state.resids.xtT </code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-3-team-2_final_files/figure-html/Seasonal Diagnostics-14.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-3-team-2_final_files/figure-html/Seasonal Diagnostics-14.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Hit &lt;Return&gt; to see next plot (q to exit): </code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-3-team-2_final_files/figure-html/Seasonal Diagnostics-15.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-3-team-2_final_files/figure-html/Seasonal Diagnostics-15.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>plot.type = acf.std.model.resids.ytt1 </code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Lab-3-team-2_final_files/figure-html/Seasonal Diagnostics-16.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-3-team-2_final_files/figure-html/Seasonal Diagnostics-16.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Finished plots.</code></pre>
@@ -1554,7 +1747,7 @@ r_1 &amp; 0&amp; 0&amp; 0&amp; 0\\
 <section id="model-fits-1" class="level2">
 <h2 class="anchored" data-anchor-id="model-fits-1">Model Fits</h2>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>clr <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"brown"</span>, <span class="st">"blue"</span>, <span class="st">"darkgreen"</span>, <span class="st">"darkred"</span>, <span class="st">"purple"</span>)</span>
 <span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>N_ts <span class="ot">&lt;-</span> <span class="fu">dim</span>(plank_dat)[<span class="dv">1</span>]</span>
@@ -1579,7 +1772,11 @@ r_1 &amp; 0&amp; 0&amp; 0&amp; 0\\
 <span id="cb62-21"><a href="#cb62-21" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Lab-3-team-2_final_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="Lab-3-team-2_final_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Still not fitting other algae and daphina particularly well, but the model is trying to follow the trends and most of the data are captured within the confidence intervals. The confidence intervals are larger for cyclops and epishura compared to the non-seasonal model and more of the data are being captured.</p>
@@ -1642,18 +1839,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
     return false;
   }
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    text: function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-    }
-  });
-  clipboard.on('success', function(e) {
+  const onCopySuccess = function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -1685,7 +1871,27 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
   });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
   const viewSource = window.document.getElementById('quarto-view-source') ||
                      window.document.getElementById('quarto-code-tools-source');
   if (viewSource) {
@@ -1737,10 +1943,27 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   if (showAllCode) {
     showAllCode.addEventListener("click", toggleCodeHandler(true));
   }
-  function tippyHover(el, contentFn) {
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/atsa-es\.github\.io\/fish550-2023\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -1750,8 +1973,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -1763,7 +1995,129 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -1807,6 +2161,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -1832,6 +2187,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -1893,14 +2274,16 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <script src="https://giscus.app/client.js" data-repo="atsa-es/fish550-2023" data-repo-id="R_kgDOJGNymQ" data-category="General" data-category-id="DIC_kwDOJGNymc4CUsbe" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
 </script>
+<input type="hidden" id="giscus-base-theme" value="light">
+<input type="hidden" id="giscus-alt-theme" value="dark">
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../../Lab-3/Final_Write_ups/Lab-3-team-1_final.html" class="pagination-link">
+      <a href="../../Lab-3/Final_Write_ups/Lab-3-team-1_final.html" class="pagination-link" aria-label="Team 1 - Lab 3">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Team 1 - Lab 3</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../Lab-3/Final_Write_ups/Lab-3-team-3_final.html" class="pagination-link">
+      <a href="../../Lab-3/Final_Write_ups/Lab-3-team-3_final.html" class="pagination-link" aria-label="Team 3 - Lab 3">
         <span class="nav-page-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Team 3 - Lab 3</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
@@ -1921,7 +2304,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb63-14"><a href="#cb63-14" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
 <span id="cb63-15"><a href="#cb63-15" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb63-16"><a href="#cb63-16" aria-hidden="true" tabindex="-1"></a><span class="in">```{r setup, include = FALSE}</span></span>
-<span id="cb63-17"><a href="#cb63-17" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">dplyr.summarise.inform =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb63-17"><a href="#cb63-17" aria-hidden="true" tabindex="-1"></a><span class="in">options(dplyr.summarise.inform = FALSE)</span></span>
 <span id="cb63-18"><a href="#cb63-18" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb63-19"><a href="#cb63-19" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb63-20"><a href="#cb63-20" aria-hidden="true" tabindex="-1"></a>------------------------------------------------------------------------</span>
@@ -1934,22 +2317,22 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb63-27"><a href="#cb63-27" aria-hidden="true" tabindex="-1"></a><span class="fu"># Data</span></span>
 <span id="cb63-28"><a href="#cb63-28" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb63-29"><a href="#cb63-29" aria-hidden="true" tabindex="-1"></a><span class="in">```{r load_data}</span></span>
-<span id="cb63-30"><a href="#cb63-30" aria-hidden="true" tabindex="-1"></a><span class="do">## load MARSS for data and analyses</span></span>
-<span id="cb63-31"><a href="#cb63-31" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
-<span id="cb63-32"><a href="#cb63-32" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb63-33"><a href="#cb63-33" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb63-34"><a href="#cb63-34" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb63-35"><a href="#cb63-35" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(forecast)</span>
-<span id="cb63-36"><a href="#cb63-36" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MARSS)</span>
-<span id="cb63-37"><a href="#cb63-37" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(corrplot)</span>
-<span id="cb63-38"><a href="#cb63-38" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb63-30"><a href="#cb63-30" aria-hidden="true" tabindex="-1"></a><span class="in">## load MARSS for data and analyses</span></span>
+<span id="cb63-31"><a href="#cb63-31" aria-hidden="true" tabindex="-1"></a><span class="in">library(tidyr)</span></span>
+<span id="cb63-32"><a href="#cb63-32" aria-hidden="true" tabindex="-1"></a><span class="in">library(ggplot2)</span></span>
+<span id="cb63-33"><a href="#cb63-33" aria-hidden="true" tabindex="-1"></a><span class="in">library(tidyverse)</span></span>
+<span id="cb63-34"><a href="#cb63-34" aria-hidden="true" tabindex="-1"></a><span class="in">library(dplyr)</span></span>
+<span id="cb63-35"><a href="#cb63-35" aria-hidden="true" tabindex="-1"></a><span class="in">library(forecast)</span></span>
+<span id="cb63-36"><a href="#cb63-36" aria-hidden="true" tabindex="-1"></a><span class="in">library(MARSS)</span></span>
+<span id="cb63-37"><a href="#cb63-37" aria-hidden="true" tabindex="-1"></a><span class="in">library(corrplot)</span></span>
+<span id="cb63-38"><a href="#cb63-38" aria-hidden="true" tabindex="-1"></a><span class="in">library(knitr)</span></span>
 <span id="cb63-39"><a href="#cb63-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-40"><a href="#cb63-40" aria-hidden="true" tabindex="-1"></a><span class="do">## load the raw data (there are 3 datasets contained here)</span></span>
-<span id="cb63-41"><a href="#cb63-41" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(lakeWAplankton, <span class="at">package =</span> <span class="st">"MARSS"</span>)</span>
+<span id="cb63-40"><a href="#cb63-40" aria-hidden="true" tabindex="-1"></a><span class="in">## load the raw data (there are 3 datasets contained here)</span></span>
+<span id="cb63-41"><a href="#cb63-41" aria-hidden="true" tabindex="-1"></a><span class="in">data(lakeWAplankton, package = "MARSS")</span></span>
 <span id="cb63-42"><a href="#cb63-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-43"><a href="#cb63-43" aria-hidden="true" tabindex="-1"></a><span class="do">## we want `lakeWAplanktonTrans`, which has been transformed</span></span>
-<span id="cb63-44"><a href="#cb63-44" aria-hidden="true" tabindex="-1"></a><span class="do">## so the 0's are replaced with NA's and the data z-scored</span></span>
-<span id="cb63-45"><a href="#cb63-45" aria-hidden="true" tabindex="-1"></a>all_dat <span class="ot">&lt;-</span> lakeWAplanktonTrans</span>
+<span id="cb63-43"><a href="#cb63-43" aria-hidden="true" tabindex="-1"></a><span class="in">## we want `lakeWAplanktonTrans`, which has been transformed</span></span>
+<span id="cb63-44"><a href="#cb63-44" aria-hidden="true" tabindex="-1"></a><span class="in">## so the 0's are replaced with NA's and the data z-scored</span></span>
+<span id="cb63-45"><a href="#cb63-45" aria-hidden="true" tabindex="-1"></a><span class="in">all_dat &lt;- lakeWAplanktonTrans</span></span>
 <span id="cb63-46"><a href="#cb63-46" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb63-47"><a href="#cb63-47" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb63-48"><a href="#cb63-48" aria-hidden="true" tabindex="-1"></a><span class="fu"># Methods</span></span>
@@ -1987,36 +2370,36 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb63-80"><a href="#cb63-80" aria-hidden="true" tabindex="-1"></a><span class="fu">## Wrangle the data</span></span>
 <span id="cb63-81"><a href="#cb63-81" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb63-82"><a href="#cb63-82" aria-hidden="true" tabindex="-1"></a><span class="in">```{r wrangle_data}</span></span>
-<span id="cb63-83"><a href="#cb63-83" aria-hidden="true" tabindex="-1"></a><span class="do">## add some code here</span></span>
+<span id="cb63-83"><a href="#cb63-83" aria-hidden="true" tabindex="-1"></a><span class="in">## add some code here</span></span>
 <span id="cb63-84"><a href="#cb63-84" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-85"><a href="#cb63-85" aria-hidden="true" tabindex="-1"></a>yr_frst <span class="ot">&lt;-</span> <span class="dv">1978</span></span>
-<span id="cb63-86"><a href="#cb63-86" aria-hidden="true" tabindex="-1"></a>yr_last <span class="ot">&lt;-</span> <span class="dv">1985</span></span>
-<span id="cb63-87"><a href="#cb63-87" aria-hidden="true" tabindex="-1"></a>init_dat <span class="ot">&lt;-</span> all_dat[all_dat[, <span class="st">"Year"</span>] <span class="sc">&gt;=</span> yr_frst <span class="sc">&amp;</span> </span>
-<span id="cb63-88"><a href="#cb63-88" aria-hidden="true" tabindex="-1"></a>                      all_dat[, <span class="st">"Year"</span>] <span class="sc">&lt;=</span> yr_last,]</span>
+<span id="cb63-85"><a href="#cb63-85" aria-hidden="true" tabindex="-1"></a><span class="in">yr_frst &lt;- 1978</span></span>
+<span id="cb63-86"><a href="#cb63-86" aria-hidden="true" tabindex="-1"></a><span class="in">yr_last &lt;- 1985</span></span>
+<span id="cb63-87"><a href="#cb63-87" aria-hidden="true" tabindex="-1"></a><span class="in">init_dat &lt;- all_dat[all_dat[, "Year"] &gt;= yr_frst &amp; </span></span>
+<span id="cb63-88"><a href="#cb63-88" aria-hidden="true" tabindex="-1"></a><span class="in">                      all_dat[, "Year"] &lt;= yr_last,]</span></span>
 <span id="cb63-89"><a href="#cb63-89" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-90"><a href="#cb63-90" aria-hidden="true" tabindex="-1"></a><span class="co"># put the 5 response variables in the yt matrix, can be replace whenever</span></span>
-<span id="cb63-91"><a href="#cb63-91" aria-hidden="true" tabindex="-1"></a><span class="co"># This represents multiple trophic levels</span></span>
-<span id="cb63-92"><a href="#cb63-92" aria-hidden="true" tabindex="-1"></a><span class="co"># Primary prod: Diatoms &amp; Other Algae</span></span>
-<span id="cb63-93"><a href="#cb63-93" aria-hidden="true" tabindex="-1"></a><span class="co"># Grazers: Daphnia &amp; Cyclops</span></span>
-<span id="cb63-94"><a href="#cb63-94" aria-hidden="true" tabindex="-1"></a><span class="co"># Predators: Epischura</span></span>
-<span id="cb63-95"><a href="#cb63-95" aria-hidden="true" tabindex="-1"></a>plank_taxa <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Diatoms"</span>,<span class="st">"Other.algae"</span>,<span class="st">"Daphnia"</span>,<span class="st">"Cyclops"</span>,<span class="st">"Epischura"</span>)</span>
-<span id="cb63-96"><a href="#cb63-96" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> init_dat[,plank_taxa] <span class="sc">%&gt;%</span></span>
-<span id="cb63-97"><a href="#cb63-97" aria-hidden="true" tabindex="-1"></a>  <span class="fu">t</span>()</span>
-<span id="cb63-98"><a href="#cb63-98" aria-hidden="true" tabindex="-1"></a><span class="do">## mean of each taxon</span></span>
-<span id="cb63-99"><a href="#cb63-99" aria-hidden="true" tabindex="-1"></a>y_bar <span class="ot">&lt;-</span> <span class="fu">apply</span>(dat, <span class="dv">1</span>, mean, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb63-100"><a href="#cb63-100" aria-hidden="true" tabindex="-1"></a><span class="do">## subtract the means</span></span>
-<span id="cb63-101"><a href="#cb63-101" aria-hidden="true" tabindex="-1"></a>plank_dat <span class="ot">&lt;-</span> dat <span class="sc">-</span> y_bar</span>
-<span id="cb63-102"><a href="#cb63-102" aria-hidden="true" tabindex="-1"></a><span class="do">## assign new column names</span></span>
-<span id="cb63-103"><a href="#cb63-103" aria-hidden="true" tabindex="-1"></a>spp <span class="ot">&lt;-</span> <span class="fu">rownames</span>(plank_dat)</span>
-<span id="cb63-104"><a href="#cb63-104" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(plank_dat) <span class="ot">&lt;-</span> spp</span>
+<span id="cb63-90"><a href="#cb63-90" aria-hidden="true" tabindex="-1"></a><span class="in"># put the 5 response variables in the yt matrix, can be replace whenever</span></span>
+<span id="cb63-91"><a href="#cb63-91" aria-hidden="true" tabindex="-1"></a><span class="in"># This represents multiple trophic levels</span></span>
+<span id="cb63-92"><a href="#cb63-92" aria-hidden="true" tabindex="-1"></a><span class="in"># Primary prod: Diatoms &amp; Other Algae</span></span>
+<span id="cb63-93"><a href="#cb63-93" aria-hidden="true" tabindex="-1"></a><span class="in"># Grazers: Daphnia &amp; Cyclops</span></span>
+<span id="cb63-94"><a href="#cb63-94" aria-hidden="true" tabindex="-1"></a><span class="in"># Predators: Epischura</span></span>
+<span id="cb63-95"><a href="#cb63-95" aria-hidden="true" tabindex="-1"></a><span class="in">plank_taxa &lt;- c("Diatoms","Other.algae","Daphnia","Cyclops","Epischura")</span></span>
+<span id="cb63-96"><a href="#cb63-96" aria-hidden="true" tabindex="-1"></a><span class="in">dat &lt;- init_dat[,plank_taxa] %&gt;%</span></span>
+<span id="cb63-97"><a href="#cb63-97" aria-hidden="true" tabindex="-1"></a><span class="in">  t()</span></span>
+<span id="cb63-98"><a href="#cb63-98" aria-hidden="true" tabindex="-1"></a><span class="in">## mean of each taxon</span></span>
+<span id="cb63-99"><a href="#cb63-99" aria-hidden="true" tabindex="-1"></a><span class="in">y_bar &lt;- apply(dat, 1, mean, na.rm = TRUE)</span></span>
+<span id="cb63-100"><a href="#cb63-100" aria-hidden="true" tabindex="-1"></a><span class="in">## subtract the means</span></span>
+<span id="cb63-101"><a href="#cb63-101" aria-hidden="true" tabindex="-1"></a><span class="in">plank_dat &lt;- dat - y_bar</span></span>
+<span id="cb63-102"><a href="#cb63-102" aria-hidden="true" tabindex="-1"></a><span class="in">## assign new column names</span></span>
+<span id="cb63-103"><a href="#cb63-103" aria-hidden="true" tabindex="-1"></a><span class="in">spp &lt;- rownames(plank_dat)</span></span>
+<span id="cb63-104"><a href="#cb63-104" aria-hidden="true" tabindex="-1"></a><span class="in">rownames(plank_dat) &lt;- spp</span></span>
 <span id="cb63-105"><a href="#cb63-105" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-106"><a href="#cb63-106" aria-hidden="true" tabindex="-1"></a><span class="co"># create a covariates matrix</span></span>
-<span id="cb63-107"><a href="#cb63-107" aria-hidden="true" tabindex="-1"></a>covnames <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Temp"</span>,<span class="st">"TP"</span>,<span class="st">"pH"</span>) <span class="co">#pH has missing data points so it will only work in certain date ranges</span></span>
-<span id="cb63-108"><a href="#cb63-108" aria-hidden="true" tabindex="-1"></a>covar <span class="ot">&lt;-</span> init_dat[,covnames] <span class="sc">%&gt;%</span></span>
-<span id="cb63-109"><a href="#cb63-109" aria-hidden="true" tabindex="-1"></a>  <span class="fu">t</span>()</span>
-<span id="cb63-110"><a href="#cb63-110" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(plank_dat[,<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>])</span>
+<span id="cb63-106"><a href="#cb63-106" aria-hidden="true" tabindex="-1"></a><span class="in"># create a covariates matrix</span></span>
+<span id="cb63-107"><a href="#cb63-107" aria-hidden="true" tabindex="-1"></a><span class="in">covnames &lt;- c("Temp","TP","pH") #pH has missing data points so it will only work in certain date ranges</span></span>
+<span id="cb63-108"><a href="#cb63-108" aria-hidden="true" tabindex="-1"></a><span class="in">covar &lt;- init_dat[,covnames] %&gt;%</span></span>
+<span id="cb63-109"><a href="#cb63-109" aria-hidden="true" tabindex="-1"></a><span class="in">  t()</span></span>
+<span id="cb63-110"><a href="#cb63-110" aria-hidden="true" tabindex="-1"></a><span class="in">print(plank_dat[,1:5])</span></span>
 <span id="cb63-111"><a href="#cb63-111" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-112"><a href="#cb63-112" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(covar[,<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>])</span>
+<span id="cb63-112"><a href="#cb63-112" aria-hidden="true" tabindex="-1"></a><span class="in">print(covar[,1:5])</span></span>
 <span id="cb63-113"><a href="#cb63-113" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb63-114"><a href="#cb63-114" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb63-115"><a href="#cb63-115" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
@@ -2024,42 +2407,42 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb63-117"><a href="#cb63-117" aria-hidden="true" tabindex="-1"></a><span class="in">```{r plot_data}</span></span>
 <span id="cb63-118"><a href="#cb63-118" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb63-119"><a href="#cb63-119" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-120"><a href="#cb63-120" aria-hidden="true" tabindex="-1"></a>clr <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"brown"</span>, <span class="st">"blue"</span>, <span class="st">"darkgreen"</span>, <span class="st">"darkred"</span>, <span class="st">"purple"</span>)</span>
+<span id="cb63-120"><a href="#cb63-120" aria-hidden="true" tabindex="-1"></a><span class="in">clr &lt;- c("brown", "blue", "darkgreen", "darkred", "purple")</span></span>
 <span id="cb63-121"><a href="#cb63-121" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-122"><a href="#cb63-122" aria-hidden="true" tabindex="-1"></a><span class="do">## initialize a counter</span></span>
-<span id="cb63-123"><a href="#cb63-123" aria-hidden="true" tabindex="-1"></a>cnt <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb63-122"><a href="#cb63-122" aria-hidden="true" tabindex="-1"></a><span class="in">## initialize a counter</span></span>
+<span id="cb63-123"><a href="#cb63-123" aria-hidden="true" tabindex="-1"></a><span class="in">cnt &lt;- 1</span></span>
 <span id="cb63-124"><a href="#cb63-124" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-125"><a href="#cb63-125" aria-hidden="true" tabindex="-1"></a><span class="do">## set up plotting space &amp; make plots</span></span>
-<span id="cb63-126"><a href="#cb63-126" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="fu">nrow</span>(plank_dat), <span class="dv">1</span>), <span class="at">mai =</span> <span class="fu">c</span>(<span class="fl">0.5</span>, <span class="fl">0.7</span>, <span class="fl">0.1</span>, <span class="fl">0.1</span>), <span class="at">omi =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>))</span>
-<span id="cb63-127"><a href="#cb63-127" aria-hidden="true" tabindex="-1"></a>mm <span class="ot">=</span> <span class="fu">ncol</span>(plank_dat)</span>
+<span id="cb63-125"><a href="#cb63-125" aria-hidden="true" tabindex="-1"></a><span class="in">## set up plotting space &amp; make plots</span></span>
+<span id="cb63-126"><a href="#cb63-126" aria-hidden="true" tabindex="-1"></a><span class="in">par(mfrow = c(nrow(plank_dat), 1), mai = c(0.5, 0.7, 0.1, 0.1), omi = c(0, 0, 0, 0))</span></span>
+<span id="cb63-127"><a href="#cb63-127" aria-hidden="true" tabindex="-1"></a><span class="in">mm = ncol(plank_dat)</span></span>
 <span id="cb63-128"><a href="#cb63-128" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-129"><a href="#cb63-129" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> spp){</span>
-<span id="cb63-130"><a href="#cb63-130" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(plank_dat[i,],  <span class="at">bty =</span> <span class="st">"L"</span>, <span class="at">xaxt =</span> <span class="st">"n"</span>, <span class="at">pch =</span> <span class="dv">16</span>,</span>
-<span id="cb63-131"><a href="#cb63-131" aria-hidden="true" tabindex="-1"></a>       <span class="at">xlab =</span> <span class="st">""</span>,</span>
-<span id="cb63-132"><a href="#cb63-132" aria-hidden="true" tabindex="-1"></a>       <span class="at">ylab =</span> <span class="st">"Abundance index"</span>, <span class="at">col=</span>clr[cnt], <span class="at">type=</span><span class="st">"b"</span>)</span>
-<span id="cb63-133"><a href="#cb63-133" aria-hidden="true" tabindex="-1"></a>  <span class="fu">axis</span>(<span class="dv">1</span>, <span class="dv">12</span> <span class="sc">*</span> (<span class="dv">0</span><span class="sc">:</span>mm) <span class="sc">+</span> <span class="dv">1</span>, yr_frst <span class="sc">+</span> <span class="dv">0</span><span class="sc">:</span>mm)</span>
-<span id="cb63-134"><a href="#cb63-134" aria-hidden="true" tabindex="-1"></a>  <span class="fu">title</span>(i)</span>
-<span id="cb63-135"><a href="#cb63-135" aria-hidden="true" tabindex="-1"></a>  cnt <span class="ot">&lt;-</span> cnt <span class="sc">+</span> <span class="dv">1</span></span>
-<span id="cb63-136"><a href="#cb63-136" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb63-129"><a href="#cb63-129" aria-hidden="true" tabindex="-1"></a><span class="in">for(i in spp){</span></span>
+<span id="cb63-130"><a href="#cb63-130" aria-hidden="true" tabindex="-1"></a><span class="in">  plot(plank_dat[i,],  bty = "L", xaxt = "n", pch = 16,</span></span>
+<span id="cb63-131"><a href="#cb63-131" aria-hidden="true" tabindex="-1"></a><span class="in">       xlab = "",</span></span>
+<span id="cb63-132"><a href="#cb63-132" aria-hidden="true" tabindex="-1"></a><span class="in">       ylab = "Abundance index", col=clr[cnt], type="b")</span></span>
+<span id="cb63-133"><a href="#cb63-133" aria-hidden="true" tabindex="-1"></a><span class="in">  axis(1, 12 * (0:mm) + 1, yr_frst + 0:mm)</span></span>
+<span id="cb63-134"><a href="#cb63-134" aria-hidden="true" tabindex="-1"></a><span class="in">  title(i)</span></span>
+<span id="cb63-135"><a href="#cb63-135" aria-hidden="true" tabindex="-1"></a><span class="in">  cnt &lt;- cnt + 1</span></span>
+<span id="cb63-136"><a href="#cb63-136" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
 <span id="cb63-137"><a href="#cb63-137" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb63-138"><a href="#cb63-138" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-139"><a href="#cb63-139" aria-hidden="true" tabindex="-1"></a><span class="do">## set plot colors</span></span>
-<span id="cb63-140"><a href="#cb63-140" aria-hidden="true" tabindex="-1"></a>clr <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"brown"</span>, <span class="st">"blue"</span>, <span class="st">"darkgreen"</span>,<span class="st">"purple"</span>)</span>
+<span id="cb63-139"><a href="#cb63-139" aria-hidden="true" tabindex="-1"></a><span class="in">## set plot colors</span></span>
+<span id="cb63-140"><a href="#cb63-140" aria-hidden="true" tabindex="-1"></a><span class="in">clr &lt;- c("brown", "blue", "darkgreen","purple")</span></span>
 <span id="cb63-141"><a href="#cb63-141" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-142"><a href="#cb63-142" aria-hidden="true" tabindex="-1"></a><span class="do">## initialize a counter</span></span>
-<span id="cb63-143"><a href="#cb63-143" aria-hidden="true" tabindex="-1"></a>cnt <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb63-142"><a href="#cb63-142" aria-hidden="true" tabindex="-1"></a><span class="in">## initialize a counter</span></span>
+<span id="cb63-143"><a href="#cb63-143" aria-hidden="true" tabindex="-1"></a><span class="in">cnt &lt;- 1</span></span>
 <span id="cb63-144"><a href="#cb63-144" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-145"><a href="#cb63-145" aria-hidden="true" tabindex="-1"></a><span class="do">## set up plotting space &amp; make plots</span></span>
-<span id="cb63-146"><a href="#cb63-146" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="fu">nrow</span>(covar), <span class="dv">1</span>), <span class="at">mai =</span> <span class="fu">c</span>(<span class="fl">0.5</span>, <span class="fl">0.7</span>, <span class="fl">0.1</span>, <span class="fl">0.1</span>), <span class="at">omi =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>))</span>
+<span id="cb63-145"><a href="#cb63-145" aria-hidden="true" tabindex="-1"></a><span class="in">## set up plotting space &amp; make plots</span></span>
+<span id="cb63-146"><a href="#cb63-146" aria-hidden="true" tabindex="-1"></a><span class="in">par(mfrow = c(nrow(covar), 1), mai = c(0.5, 0.7, 0.1, 0.1), omi = c(0, 0, 0, 0))</span></span>
 <span id="cb63-147"><a href="#cb63-147" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-148"><a href="#cb63-148" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="fu">row.names</span>(covar)){</span>
-<span id="cb63-149"><a href="#cb63-149" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(covar[i,],  <span class="at">bty =</span> <span class="st">"L"</span>, <span class="at">xaxt =</span> <span class="st">"n"</span>, <span class="at">pch =</span> <span class="dv">16</span>,</span>
-<span id="cb63-150"><a href="#cb63-150" aria-hidden="true" tabindex="-1"></a>       <span class="at">xlab =</span> <span class="st">""</span>,</span>
-<span id="cb63-151"><a href="#cb63-151" aria-hidden="true" tabindex="-1"></a>       <span class="at">ylab =</span> <span class="st">"Value"</span>, <span class="at">col=</span>clr[cnt], <span class="at">type=</span><span class="st">"b"</span>)</span>
-<span id="cb63-152"><a href="#cb63-152" aria-hidden="true" tabindex="-1"></a>  <span class="fu">axis</span>(<span class="dv">1</span>, <span class="dv">12</span> <span class="sc">*</span> (<span class="dv">0</span><span class="sc">:</span>mm) <span class="sc">+</span> <span class="dv">1</span>, yr_frst <span class="sc">+</span> <span class="dv">0</span><span class="sc">:</span>mm)</span>
-<span id="cb63-153"><a href="#cb63-153" aria-hidden="true" tabindex="-1"></a>  <span class="fu">title</span>(i)</span>
-<span id="cb63-154"><a href="#cb63-154" aria-hidden="true" tabindex="-1"></a>  cnt <span class="ot">&lt;-</span> cnt <span class="sc">+</span> <span class="dv">1</span></span>
-<span id="cb63-155"><a href="#cb63-155" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb63-148"><a href="#cb63-148" aria-hidden="true" tabindex="-1"></a><span class="in">for(i in row.names(covar)){</span></span>
+<span id="cb63-149"><a href="#cb63-149" aria-hidden="true" tabindex="-1"></a><span class="in">  plot(covar[i,],  bty = "L", xaxt = "n", pch = 16,</span></span>
+<span id="cb63-150"><a href="#cb63-150" aria-hidden="true" tabindex="-1"></a><span class="in">       xlab = "",</span></span>
+<span id="cb63-151"><a href="#cb63-151" aria-hidden="true" tabindex="-1"></a><span class="in">       ylab = "Value", col=clr[cnt], type="b")</span></span>
+<span id="cb63-152"><a href="#cb63-152" aria-hidden="true" tabindex="-1"></a><span class="in">  axis(1, 12 * (0:mm) + 1, yr_frst + 0:mm)</span></span>
+<span id="cb63-153"><a href="#cb63-153" aria-hidden="true" tabindex="-1"></a><span class="in">  title(i)</span></span>
+<span id="cb63-154"><a href="#cb63-154" aria-hidden="true" tabindex="-1"></a><span class="in">  cnt &lt;- cnt + 1</span></span>
+<span id="cb63-155"><a href="#cb63-155" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
 <span id="cb63-156"><a href="#cb63-156" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb63-157"><a href="#cb63-157" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb63-158"><a href="#cb63-158" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
@@ -2077,35 +2460,35 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb63-170"><a href="#cb63-170" aria-hidden="true" tabindex="-1"></a>phosphorus (TP), and pH.</span>
 <span id="cb63-171"><a href="#cb63-171" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb63-172"><a href="#cb63-172" aria-hidden="true" tabindex="-1"></a><span class="in">```{r model_params}</span></span>
-<span id="cb63-173"><a href="#cb63-173" aria-hidden="true" tabindex="-1"></a>model.states <span class="ot">&lt;-</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">4</span></span>
-<span id="cb63-174"><a href="#cb63-174" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(model.states) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"two_states"</span>,<span class="st">"three_states"</span>,<span class="st">"four_states"</span>)</span>
+<span id="cb63-173"><a href="#cb63-173" aria-hidden="true" tabindex="-1"></a><span class="in">model.states &lt;- 2:4</span></span>
+<span id="cb63-174"><a href="#cb63-174" aria-hidden="true" tabindex="-1"></a><span class="in">names(model.states) &lt;- c("two_states","three_states","four_states")</span></span>
 <span id="cb63-175"><a href="#cb63-175" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-176"><a href="#cb63-176" aria-hidden="true" tabindex="-1"></a><span class="co"># Also testing different observation error matrices</span></span>
-<span id="cb63-177"><a href="#cb63-177" aria-hidden="true" tabindex="-1"></a>R.models <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"diagonal and unequal"</span>,<span class="st">"equalvarcov"</span>, <span class="st">"diagonal and equal"</span>)</span>
+<span id="cb63-176"><a href="#cb63-176" aria-hidden="true" tabindex="-1"></a><span class="in"># Also testing different observation error matrices</span></span>
+<span id="cb63-177"><a href="#cb63-177" aria-hidden="true" tabindex="-1"></a><span class="in">R.models &lt;- c("diagonal and unequal","equalvarcov", "diagonal and equal")</span></span>
 <span id="cb63-178"><a href="#cb63-178" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-179"><a href="#cb63-179" aria-hidden="true" tabindex="-1"></a><span class="co"># Also the covariates must be z-scored if the response variables are demeaned</span></span>
-<span id="cb63-180"><a href="#cb63-180" aria-hidden="true" tabindex="-1"></a>d.models <span class="ot">&lt;-</span> <span class="fu">list</span>( </span>
-<span id="cb63-181"><a href="#cb63-181" aria-hidden="true" tabindex="-1"></a>  <span class="co"># d1 = "zero", # No covariates</span></span>
-<span id="cb63-182"><a href="#cb63-182" aria-hidden="true" tabindex="-1"></a>  <span class="at">d2 =</span> <span class="fu">zscore</span>(<span class="fu">t</span>(init_dat[,<span class="st">"Temp"</span>])), <span class="co"># Temperature</span></span>
-<span id="cb63-183"><a href="#cb63-183" aria-hidden="true" tabindex="-1"></a>  <span class="at">d3 =</span> <span class="fu">zscore</span>(<span class="fu">t</span>(init_dat[,<span class="st">"TP"</span>])), <span class="co"># Total Phosphorus</span></span>
-<span id="cb63-184"><a href="#cb63-184" aria-hidden="true" tabindex="-1"></a>  <span class="at">d4 =</span> <span class="fu">zscore</span>(<span class="fu">t</span>(init_dat[,<span class="st">"pH"</span>])), <span class="co"># ph</span></span>
-<span id="cb63-185"><a href="#cb63-185" aria-hidden="true" tabindex="-1"></a>  <span class="at">d5 =</span> <span class="fu">zscore</span>(<span class="fu">t</span>(init_dat[,<span class="fu">c</span>(<span class="st">"Temp"</span>,<span class="st">"TP"</span>)])),</span>
-<span id="cb63-186"><a href="#cb63-186" aria-hidden="true" tabindex="-1"></a>  <span class="at">d6 =</span> <span class="fu">zscore</span>(<span class="fu">t</span>(init_dat[,<span class="fu">c</span>(<span class="st">"TP"</span>, <span class="st">"pH"</span>)])),</span>
-<span id="cb63-187"><a href="#cb63-187" aria-hidden="true" tabindex="-1"></a>  <span class="at">d7 =</span> <span class="fu">zscore</span>(<span class="fu">t</span>(init_dat[,<span class="fu">c</span>(<span class="st">"Temp"</span>, <span class="st">"pH"</span>)])),</span>
-<span id="cb63-188"><a href="#cb63-188" aria-hidden="true" tabindex="-1"></a>  <span class="at">d8 =</span> <span class="fu">zscore</span>(<span class="fu">t</span>(init_dat[,<span class="fu">c</span>(<span class="st">"Temp"</span>,<span class="st">"TP"</span>, <span class="st">"pH"</span>)])) <span class="co"># Temperature and Total Phosphorus</span></span>
-<span id="cb63-189"><a href="#cb63-189" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb63-190"><a href="#cb63-190" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(d.models) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Temp"</span>, <span class="st">"TP"</span>, <span class="st">"pH"</span>, <span class="st">"Temp and TP"</span>, <span class="st">"TP and pH"</span>, <span class="st">"Temp and pH"</span>, <span class="st">"Temp,TP, and pH"</span>)</span>
+<span id="cb63-179"><a href="#cb63-179" aria-hidden="true" tabindex="-1"></a><span class="in"># Also the covariates must be z-scored if the response variables are demeaned</span></span>
+<span id="cb63-180"><a href="#cb63-180" aria-hidden="true" tabindex="-1"></a><span class="in">d.models &lt;- list( </span></span>
+<span id="cb63-181"><a href="#cb63-181" aria-hidden="true" tabindex="-1"></a><span class="in">  # d1 = "zero", # No covariates</span></span>
+<span id="cb63-182"><a href="#cb63-182" aria-hidden="true" tabindex="-1"></a><span class="in">  d2 = zscore(t(init_dat[,"Temp"])), # Temperature</span></span>
+<span id="cb63-183"><a href="#cb63-183" aria-hidden="true" tabindex="-1"></a><span class="in">  d3 = zscore(t(init_dat[,"TP"])), # Total Phosphorus</span></span>
+<span id="cb63-184"><a href="#cb63-184" aria-hidden="true" tabindex="-1"></a><span class="in">  d4 = zscore(t(init_dat[,"pH"])), # ph</span></span>
+<span id="cb63-185"><a href="#cb63-185" aria-hidden="true" tabindex="-1"></a><span class="in">  d5 = zscore(t(init_dat[,c("Temp","TP")])),</span></span>
+<span id="cb63-186"><a href="#cb63-186" aria-hidden="true" tabindex="-1"></a><span class="in">  d6 = zscore(t(init_dat[,c("TP", "pH")])),</span></span>
+<span id="cb63-187"><a href="#cb63-187" aria-hidden="true" tabindex="-1"></a><span class="in">  d7 = zscore(t(init_dat[,c("Temp", "pH")])),</span></span>
+<span id="cb63-188"><a href="#cb63-188" aria-hidden="true" tabindex="-1"></a><span class="in">  d8 = zscore(t(init_dat[,c("Temp","TP", "pH")])) # Temperature and Total Phosphorus</span></span>
+<span id="cb63-189"><a href="#cb63-189" aria-hidden="true" tabindex="-1"></a><span class="in">)</span></span>
+<span id="cb63-190"><a href="#cb63-190" aria-hidden="true" tabindex="-1"></a><span class="in">names(d.models) &lt;- c("Temp", "TP", "pH", "Temp and TP", "TP and pH", "Temp and pH", "Temp,TP, and pH")</span></span>
 <span id="cb63-191"><a href="#cb63-191" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-192"><a href="#cb63-192" aria-hidden="true" tabindex="-1"></a><span class="co">#Define Model List </span></span>
-<span id="cb63-193"><a href="#cb63-193" aria-hidden="true" tabindex="-1"></a>mod.list <span class="ot">=</span> <span class="fu">list</span>(</span>
-<span id="cb63-194"><a href="#cb63-194" aria-hidden="true" tabindex="-1"></a>  <span class="at">A =</span> <span class="st">"zero"</span>, <span class="co"># this is set to zero because the data has been demeaned</span></span>
-<span id="cb63-195"><a href="#cb63-195" aria-hidden="true" tabindex="-1"></a>  <span class="at">Q =</span> <span class="st">"identity"</span>, <span class="co"># Q is set to the default value, this can also be "diagonal and equal" or "diagonal and unequal"</span></span>
-<span id="cb63-196"><a href="#cb63-196" aria-hidden="true" tabindex="-1"></a>  <span class="at">x0 =</span> <span class="st">"zero"</span> <span class="co"># x0 can be also be set to "unconstrained" or "unequal" it might be useful to try these later</span></span>
-<span id="cb63-197"><a href="#cb63-197" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb63-192"><a href="#cb63-192" aria-hidden="true" tabindex="-1"></a><span class="in">#Define Model List </span></span>
+<span id="cb63-193"><a href="#cb63-193" aria-hidden="true" tabindex="-1"></a><span class="in">mod.list = list(</span></span>
+<span id="cb63-194"><a href="#cb63-194" aria-hidden="true" tabindex="-1"></a><span class="in">  A = "zero", # this is set to zero because the data has been demeaned</span></span>
+<span id="cb63-195"><a href="#cb63-195" aria-hidden="true" tabindex="-1"></a><span class="in">  Q = "identity", # Q is set to the default value, this can also be "diagonal and equal" or "diagonal and unequal"</span></span>
+<span id="cb63-196"><a href="#cb63-196" aria-hidden="true" tabindex="-1"></a><span class="in">  x0 = "zero" # x0 can be also be set to "unconstrained" or "unequal" it might be useful to try these later</span></span>
+<span id="cb63-197"><a href="#cb63-197" aria-hidden="true" tabindex="-1"></a><span class="in">)</span></span>
 <span id="cb63-198"><a href="#cb63-198" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-199"><a href="#cb63-199" aria-hidden="true" tabindex="-1"></a><span class="co">#DFA form for mars model Q--reduces option to streamline run time</span></span>
+<span id="cb63-199"><a href="#cb63-199" aria-hidden="true" tabindex="-1"></a><span class="in">#DFA form for mars model Q--reduces option to streamline run time</span></span>
 <span id="cb63-200"><a href="#cb63-200" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-201"><a href="#cb63-201" aria-hidden="true" tabindex="-1"></a><span class="co"># all other params are left to their default settings</span></span>
+<span id="cb63-201"><a href="#cb63-201" aria-hidden="true" tabindex="-1"></a><span class="in"># all other params are left to their default settings</span></span>
 <span id="cb63-202"><a href="#cb63-202" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb63-203"><a href="#cb63-203" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb63-204"><a href="#cb63-204" aria-hidden="true" tabindex="-1"></a></span>
@@ -2113,47 +2496,47 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb63-206"><a href="#cb63-206" aria-hidden="true" tabindex="-1"></a>combination of states, covariates (d) and observation error (R).</span>
 <span id="cb63-207"><a href="#cb63-207" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb63-208"><a href="#cb63-208" aria-hidden="true" tabindex="-1"></a><span class="in">```{r MARSS_models, cache = TRUE}</span></span>
-<span id="cb63-209"><a href="#cb63-209" aria-hidden="true" tabindex="-1"></a><span class="co"># Added in another for loop to run through cycling options, be warned, this means there are 80 total models. It takes a long time to run</span></span>
-<span id="cb63-210"><a href="#cb63-210" aria-hidden="true" tabindex="-1"></a>start.time <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb63-209"><a href="#cb63-209" aria-hidden="true" tabindex="-1"></a><span class="in"># Added in another for loop to run through cycling options, be warned, this means there are 80 total models. It takes a long time to run</span></span>
+<span id="cb63-210"><a href="#cb63-210" aria-hidden="true" tabindex="-1"></a><span class="in">start.time &lt;- Sys.time()</span></span>
 <span id="cb63-211"><a href="#cb63-211" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb63-212"><a href="#cb63-212" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-213"><a href="#cb63-213" aria-hidden="true" tabindex="-1"></a>out.tab <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
-<span id="cb63-214"><a href="#cb63-214" aria-hidden="true" tabindex="-1"></a>fits <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
-<span id="cb63-215"><a href="#cb63-215" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> model.states){</span>
-<span id="cb63-216"><a href="#cb63-216" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(d.models)){</span>
-<span id="cb63-217"><a href="#cb63-217" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span>(R.model <span class="cf">in</span> R.models){</span>
-<span id="cb63-218"><a href="#cb63-218" aria-hidden="true" tabindex="-1"></a>      fit.model <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">list</span>(<span class="at">m=</span>i, <span class="at">R=</span>R.model), mod.list)</span>
-<span id="cb63-219"><a href="#cb63-219" aria-hidden="true" tabindex="-1"></a>      </span>
-<span id="cb63-220"><a href="#cb63-220" aria-hidden="true" tabindex="-1"></a>      <span class="co">#MARSS will throw an error if covariates are not a matrix, This will not pass the covariate arg if it does not exist</span></span>
-<span id="cb63-221"><a href="#cb63-221" aria-hidden="true" tabindex="-1"></a>      <span class="co">#      if(j==1) {</span></span>
-<span id="cb63-222"><a href="#cb63-222" aria-hidden="true" tabindex="-1"></a>      <span class="co">#      fit &lt;- MARSS(plank_dat, model=fit.model, </span></span>
-<span id="cb63-223"><a href="#cb63-223" aria-hidden="true" tabindex="-1"></a>      <span class="co">#                form = "dfa", z.score = FALSE, silent = TRUE,</span></span>
-<span id="cb63-224"><a href="#cb63-224" aria-hidden="true" tabindex="-1"></a>      <span class="co">#                control=list(maxit=2000, allow.degen=TRUE))</span></span>
-<span id="cb63-225"><a href="#cb63-225" aria-hidden="true" tabindex="-1"></a>      <span class="co">#      }</span></span>
-<span id="cb63-226"><a href="#cb63-226" aria-hidden="true" tabindex="-1"></a>      <span class="co">#      else {</span></span>
-<span id="cb63-227"><a href="#cb63-227" aria-hidden="true" tabindex="-1"></a>      fit <span class="ot">&lt;-</span> <span class="fu">MARSS</span>(plank_dat, <span class="at">model=</span>fit.model, </span>
-<span id="cb63-228"><a href="#cb63-228" aria-hidden="true" tabindex="-1"></a>                   <span class="at">form =</span> <span class="st">"dfa"</span>, <span class="at">z.score =</span> <span class="cn">FALSE</span>, <span class="at">silent =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb63-229"><a href="#cb63-229" aria-hidden="true" tabindex="-1"></a>                   <span class="at">control=</span><span class="fu">list</span>(<span class="at">maxit=</span><span class="dv">800</span>, <span class="at">allow.degen =</span> <span class="cn">TRUE</span>), </span>
-<span id="cb63-230"><a href="#cb63-230" aria-hidden="true" tabindex="-1"></a>                   <span class="at">covariates =</span> d.models[[j]])</span>
-<span id="cb63-231"><a href="#cb63-231" aria-hidden="true" tabindex="-1"></a>      <span class="co">#      }</span></span>
-<span id="cb63-232"><a href="#cb63-232" aria-hidden="true" tabindex="-1"></a>      </span>
-<span id="cb63-233"><a href="#cb63-233" aria-hidden="true" tabindex="-1"></a>      out<span class="ot">=</span><span class="fu">data.frame</span>(<span class="at">States=</span><span class="fu">names</span>(model.states)[i<span class="dv">-1</span>],<span class="at">d=</span><span class="fu">names</span>(d.models)[j],<span class="at">R=</span>R.model, <span class="co"># </span></span>
-<span id="cb63-234"><a href="#cb63-234" aria-hidden="true" tabindex="-1"></a>                     <span class="at">logLik=</span>fit<span class="sc">$</span>logLik, <span class="at">AICc=</span>fit<span class="sc">$</span>AICc, <span class="at">num.param=</span>fit<span class="sc">$</span>num.params,</span>
-<span id="cb63-235"><a href="#cb63-235" aria-hidden="true" tabindex="-1"></a>                     <span class="at">num.iter=</span>fit<span class="sc">$</span>numIter, <span class="at">converged=</span><span class="sc">!</span>fit<span class="sc">$</span>convergence,</span>
-<span id="cb63-236"><a href="#cb63-236" aria-hidden="true" tabindex="-1"></a>                     <span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb63-237"><a href="#cb63-237" aria-hidden="true" tabindex="-1"></a>      out.tab<span class="ot">=</span><span class="fu">rbind</span>(out.tab,out)</span>
-<span id="cb63-238"><a href="#cb63-238" aria-hidden="true" tabindex="-1"></a>      fits<span class="ot">=</span><span class="fu">c</span>(fits,<span class="fu">list</span>(fit))</span>
-<span id="cb63-239"><a href="#cb63-239" aria-hidden="true" tabindex="-1"></a>      </span>
-<span id="cb63-240"><a href="#cb63-240" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb63-241"><a href="#cb63-241" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb63-242"><a href="#cb63-242" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb63-243"><a href="#cb63-243" aria-hidden="true" tabindex="-1"></a>end.time <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb63-213"><a href="#cb63-213" aria-hidden="true" tabindex="-1"></a><span class="in">out.tab &lt;- NULL</span></span>
+<span id="cb63-214"><a href="#cb63-214" aria-hidden="true" tabindex="-1"></a><span class="in">fits &lt;- list()</span></span>
+<span id="cb63-215"><a href="#cb63-215" aria-hidden="true" tabindex="-1"></a><span class="in">for(i in model.states){</span></span>
+<span id="cb63-216"><a href="#cb63-216" aria-hidden="true" tabindex="-1"></a><span class="in">  for (j in 1:length(d.models)){</span></span>
+<span id="cb63-217"><a href="#cb63-217" aria-hidden="true" tabindex="-1"></a><span class="in">    for(R.model in R.models){</span></span>
+<span id="cb63-218"><a href="#cb63-218" aria-hidden="true" tabindex="-1"></a><span class="in">      fit.model = c(list(m=i, R=R.model), mod.list)</span></span>
+<span id="cb63-219"><a href="#cb63-219" aria-hidden="true" tabindex="-1"></a><span class="in">      </span></span>
+<span id="cb63-220"><a href="#cb63-220" aria-hidden="true" tabindex="-1"></a><span class="in">      #MARSS will throw an error if covariates are not a matrix, This will not pass the covariate arg if it does not exist</span></span>
+<span id="cb63-221"><a href="#cb63-221" aria-hidden="true" tabindex="-1"></a><span class="in">      #      if(j==1) {</span></span>
+<span id="cb63-222"><a href="#cb63-222" aria-hidden="true" tabindex="-1"></a><span class="in">      #      fit &lt;- MARSS(plank_dat, model=fit.model, </span></span>
+<span id="cb63-223"><a href="#cb63-223" aria-hidden="true" tabindex="-1"></a><span class="in">      #                form = "dfa", z.score = FALSE, silent = TRUE,</span></span>
+<span id="cb63-224"><a href="#cb63-224" aria-hidden="true" tabindex="-1"></a><span class="in">      #                control=list(maxit=2000, allow.degen=TRUE))</span></span>
+<span id="cb63-225"><a href="#cb63-225" aria-hidden="true" tabindex="-1"></a><span class="in">      #      }</span></span>
+<span id="cb63-226"><a href="#cb63-226" aria-hidden="true" tabindex="-1"></a><span class="in">      #      else {</span></span>
+<span id="cb63-227"><a href="#cb63-227" aria-hidden="true" tabindex="-1"></a><span class="in">      fit &lt;- MARSS(plank_dat, model=fit.model, </span></span>
+<span id="cb63-228"><a href="#cb63-228" aria-hidden="true" tabindex="-1"></a><span class="in">                   form = "dfa", z.score = FALSE, silent = TRUE,</span></span>
+<span id="cb63-229"><a href="#cb63-229" aria-hidden="true" tabindex="-1"></a><span class="in">                   control=list(maxit=800, allow.degen = TRUE), </span></span>
+<span id="cb63-230"><a href="#cb63-230" aria-hidden="true" tabindex="-1"></a><span class="in">                   covariates = d.models[[j]])</span></span>
+<span id="cb63-231"><a href="#cb63-231" aria-hidden="true" tabindex="-1"></a><span class="in">      #      }</span></span>
+<span id="cb63-232"><a href="#cb63-232" aria-hidden="true" tabindex="-1"></a><span class="in">      </span></span>
+<span id="cb63-233"><a href="#cb63-233" aria-hidden="true" tabindex="-1"></a><span class="in">      out=data.frame(States=names(model.states)[i-1],d=names(d.models)[j],R=R.model, # </span></span>
+<span id="cb63-234"><a href="#cb63-234" aria-hidden="true" tabindex="-1"></a><span class="in">                     logLik=fit$logLik, AICc=fit$AICc, num.param=fit$num.params,</span></span>
+<span id="cb63-235"><a href="#cb63-235" aria-hidden="true" tabindex="-1"></a><span class="in">                     num.iter=fit$numIter, converged=!fit$convergence,</span></span>
+<span id="cb63-236"><a href="#cb63-236" aria-hidden="true" tabindex="-1"></a><span class="in">                     stringsAsFactors = FALSE)</span></span>
+<span id="cb63-237"><a href="#cb63-237" aria-hidden="true" tabindex="-1"></a><span class="in">      out.tab=rbind(out.tab,out)</span></span>
+<span id="cb63-238"><a href="#cb63-238" aria-hidden="true" tabindex="-1"></a><span class="in">      fits=c(fits,list(fit))</span></span>
+<span id="cb63-239"><a href="#cb63-239" aria-hidden="true" tabindex="-1"></a><span class="in">      </span></span>
+<span id="cb63-240"><a href="#cb63-240" aria-hidden="true" tabindex="-1"></a><span class="in">    }</span></span>
+<span id="cb63-241"><a href="#cb63-241" aria-hidden="true" tabindex="-1"></a><span class="in">  }</span></span>
+<span id="cb63-242"><a href="#cb63-242" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
+<span id="cb63-243"><a href="#cb63-243" aria-hidden="true" tabindex="-1"></a><span class="in">end.time &lt;- Sys.time()</span></span>
 <span id="cb63-244"><a href="#cb63-244" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-245"><a href="#cb63-245" aria-hidden="true" tabindex="-1"></a>elapsed.time <span class="ot">&lt;-</span> <span class="fu">round</span>((end.time <span class="sc">-</span> start.time), <span class="dv">3</span>)</span>
-<span id="cb63-246"><a href="#cb63-246" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(elapsed.time)</span>
-<span id="cb63-247"><a href="#cb63-247" aria-hidden="true" tabindex="-1"></a>min.AICc <span class="ot">&lt;-</span> <span class="fu">order</span>(out.tab<span class="sc">$</span>AICc)</span>
-<span id="cb63-248"><a href="#cb63-248" aria-hidden="true" tabindex="-1"></a>out.tab<span class="fl">.1</span> <span class="ot">&lt;-</span> out.tab[min.AICc, ]</span>
-<span id="cb63-249"><a href="#cb63-249" aria-hidden="true" tabindex="-1"></a>out.tab<span class="fl">.1</span></span>
+<span id="cb63-245"><a href="#cb63-245" aria-hidden="true" tabindex="-1"></a><span class="in">elapsed.time &lt;- round((end.time - start.time), 3)</span></span>
+<span id="cb63-246"><a href="#cb63-246" aria-hidden="true" tabindex="-1"></a><span class="in">print(elapsed.time)</span></span>
+<span id="cb63-247"><a href="#cb63-247" aria-hidden="true" tabindex="-1"></a><span class="in">min.AICc &lt;- order(out.tab$AICc)</span></span>
+<span id="cb63-248"><a href="#cb63-248" aria-hidden="true" tabindex="-1"></a><span class="in">out.tab.1 &lt;- out.tab[min.AICc, ]</span></span>
+<span id="cb63-249"><a href="#cb63-249" aria-hidden="true" tabindex="-1"></a><span class="in">out.tab.1</span></span>
 <span id="cb63-250"><a href="#cb63-250" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb63-251"><a href="#cb63-251" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb63-252"><a href="#cb63-252" aria-hidden="true" tabindex="-1"></a><span class="fu"># Initial Results</span></span>
@@ -2291,67 +2674,67 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb63-384"><a href="#cb63-384" aria-hidden="true" tabindex="-1"></a><span class="fu">## Diagnostics</span></span>
 <span id="cb63-385"><a href="#cb63-385" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb63-386"><a href="#cb63-386" aria-hidden="true" tabindex="-1"></a><span class="in">```{r factor_loadings}</span></span>
-<span id="cb63-387"><a href="#cb63-387" aria-hidden="true" tabindex="-1"></a><span class="co"># Rotating the model, plotting the states and loadings</span></span>
-<span id="cb63-388"><a href="#cb63-388" aria-hidden="true" tabindex="-1"></a>best_fit <span class="ot">&lt;-</span> fits[[<span class="dv">19</span>]]</span>
+<span id="cb63-387"><a href="#cb63-387" aria-hidden="true" tabindex="-1"></a><span class="in"># Rotating the model, plotting the states and loadings</span></span>
+<span id="cb63-388"><a href="#cb63-388" aria-hidden="true" tabindex="-1"></a><span class="in">best_fit &lt;- fits[[19]]</span></span>
 <span id="cb63-389"><a href="#cb63-389" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-390"><a href="#cb63-390" aria-hidden="true" tabindex="-1"></a><span class="co"># Get Z Estimations and rotate the data</span></span>
-<span id="cb63-391"><a href="#cb63-391" aria-hidden="true" tabindex="-1"></a><span class="do">## get the estimated ZZ</span></span>
-<span id="cb63-392"><a href="#cb63-392" aria-hidden="true" tabindex="-1"></a>Z_est <span class="ot">&lt;-</span> <span class="fu">coef</span>(best_fit, <span class="at">type =</span> <span class="st">"matrix"</span>)<span class="sc">$</span>Z</span>
+<span id="cb63-390"><a href="#cb63-390" aria-hidden="true" tabindex="-1"></a><span class="in"># Get Z Estimations and rotate the data</span></span>
+<span id="cb63-391"><a href="#cb63-391" aria-hidden="true" tabindex="-1"></a><span class="in">## get the estimated ZZ</span></span>
+<span id="cb63-392"><a href="#cb63-392" aria-hidden="true" tabindex="-1"></a><span class="in">Z_est &lt;- coef(best_fit, type = "matrix")$Z</span></span>
 <span id="cb63-393"><a href="#cb63-393" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-394"><a href="#cb63-394" aria-hidden="true" tabindex="-1"></a><span class="do">## get the inverse of the rotation matrix</span></span>
-<span id="cb63-395"><a href="#cb63-395" aria-hidden="true" tabindex="-1"></a>H_inv <span class="ot">&lt;-</span> <span class="fu">varimax</span>(Z_est)<span class="sc">$</span>rotmat</span>
+<span id="cb63-394"><a href="#cb63-394" aria-hidden="true" tabindex="-1"></a><span class="in">## get the inverse of the rotation matrix</span></span>
+<span id="cb63-395"><a href="#cb63-395" aria-hidden="true" tabindex="-1"></a><span class="in">H_inv &lt;- varimax(Z_est)$rotmat</span></span>
 <span id="cb63-396"><a href="#cb63-396" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-397"><a href="#cb63-397" aria-hidden="true" tabindex="-1"></a><span class="do">## rotate factor loadings</span></span>
-<span id="cb63-398"><a href="#cb63-398" aria-hidden="true" tabindex="-1"></a>Z_rot <span class="ot">=</span> Z_est <span class="sc">%*%</span> H_inv   </span>
+<span id="cb63-397"><a href="#cb63-397" aria-hidden="true" tabindex="-1"></a><span class="in">## rotate factor loadings</span></span>
+<span id="cb63-398"><a href="#cb63-398" aria-hidden="true" tabindex="-1"></a><span class="in">Z_rot = Z_est %*% H_inv   </span></span>
 <span id="cb63-399"><a href="#cb63-399" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-400"><a href="#cb63-400" aria-hidden="true" tabindex="-1"></a><span class="do">## rotate processes</span></span>
-<span id="cb63-401"><a href="#cb63-401" aria-hidden="true" tabindex="-1"></a>proc_rot <span class="ot">=</span> <span class="fu">solve</span>(H_inv) <span class="sc">%*%</span> best_fit<span class="sc">$</span>states</span>
+<span id="cb63-400"><a href="#cb63-400" aria-hidden="true" tabindex="-1"></a><span class="in">## rotate processes</span></span>
+<span id="cb63-401"><a href="#cb63-401" aria-hidden="true" tabindex="-1"></a><span class="in">proc_rot = solve(H_inv) %*% best_fit$states</span></span>
 <span id="cb63-402"><a href="#cb63-402" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-403"><a href="#cb63-403" aria-hidden="true" tabindex="-1"></a>N_ts <span class="ot">&lt;-</span> <span class="fu">nrow</span>(plank_dat)</span>
-<span id="cb63-404"><a href="#cb63-404" aria-hidden="true" tabindex="-1"></a>m <span class="ot">=</span> <span class="fu">ncol</span>(Z_est)</span>
-<span id="cb63-405"><a href="#cb63-405" aria-hidden="true" tabindex="-1"></a><span class="do">## plot labels</span></span>
-<span id="cb63-406"><a href="#cb63-406" aria-hidden="true" tabindex="-1"></a>ylbl <span class="ot">&lt;-</span> plank_taxa</span>
-<span id="cb63-407"><a href="#cb63-407" aria-hidden="true" tabindex="-1"></a>w_ts <span class="ot">&lt;-</span> <span class="fu">seq</span>(mm)</span>
+<span id="cb63-403"><a href="#cb63-403" aria-hidden="true" tabindex="-1"></a><span class="in">N_ts &lt;- nrow(plank_dat)</span></span>
+<span id="cb63-404"><a href="#cb63-404" aria-hidden="true" tabindex="-1"></a><span class="in">m = ncol(Z_est)</span></span>
+<span id="cb63-405"><a href="#cb63-405" aria-hidden="true" tabindex="-1"></a><span class="in">## plot labels</span></span>
+<span id="cb63-406"><a href="#cb63-406" aria-hidden="true" tabindex="-1"></a><span class="in">ylbl &lt;- plank_taxa</span></span>
+<span id="cb63-407"><a href="#cb63-407" aria-hidden="true" tabindex="-1"></a><span class="in">w_ts &lt;- seq(mm)</span></span>
 <span id="cb63-408"><a href="#cb63-408" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-409"><a href="#cb63-409" aria-hidden="true" tabindex="-1"></a><span class="do">## set up plot area</span></span>
-<span id="cb63-410"><a href="#cb63-410" aria-hidden="true" tabindex="-1"></a><span class="fu">layout</span>(<span class="fu">matrix</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, m, <span class="dv">2</span>), <span class="at">widths =</span> <span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">2</span>))</span>
-<span id="cb63-411"><a href="#cb63-411" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mai =</span> <span class="fu">c</span>(<span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">0.1</span>), <span class="at">omi =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>))</span>
+<span id="cb63-409"><a href="#cb63-409" aria-hidden="true" tabindex="-1"></a><span class="in">## set up plot area</span></span>
+<span id="cb63-410"><a href="#cb63-410" aria-hidden="true" tabindex="-1"></a><span class="in">layout(matrix(1:4, m, 2), widths = c(3,2))</span></span>
+<span id="cb63-411"><a href="#cb63-411" aria-hidden="true" tabindex="-1"></a><span class="in">par(mai = c(0.3, 0.3, 0.3, 0.1), omi = c(0, 0, 0, 0))</span></span>
 <span id="cb63-412"><a href="#cb63-412" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-413"><a href="#cb63-413" aria-hidden="true" tabindex="-1"></a><span class="do">## plot the processes</span></span>
-<span id="cb63-414"><a href="#cb63-414" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>m) {</span>
-<span id="cb63-415"><a href="#cb63-415" aria-hidden="true" tabindex="-1"></a>  ylm <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>) <span class="sc">*</span> <span class="fu">max</span>(<span class="fu">abs</span>(proc_rot[i,]))</span>
-<span id="cb63-416"><a href="#cb63-416" aria-hidden="true" tabindex="-1"></a>  <span class="do">## set up plot area</span></span>
-<span id="cb63-417"><a href="#cb63-417" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(w_ts,proc_rot[i,], <span class="at">type =</span> <span class="st">"n"</span>, <span class="at">bty =</span> <span class="st">"L"</span>,</span>
-<span id="cb63-418"><a href="#cb63-418" aria-hidden="true" tabindex="-1"></a>       <span class="at">ylim =</span> ylm, <span class="at">xlab =</span> <span class="st">""</span>, <span class="at">ylab =</span> <span class="st">""</span>, <span class="at">xaxt =</span> <span class="st">"n"</span>)</span>
-<span id="cb63-419"><a href="#cb63-419" aria-hidden="true" tabindex="-1"></a>  <span class="do">## draw zero-line</span></span>
-<span id="cb63-420"><a href="#cb63-420" aria-hidden="true" tabindex="-1"></a>  <span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">0</span>, <span class="at">col =</span> <span class="st">"gray"</span>)</span>
-<span id="cb63-421"><a href="#cb63-421" aria-hidden="true" tabindex="-1"></a>  <span class="do">## plot trend line</span></span>
-<span id="cb63-422"><a href="#cb63-422" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lines</span>(w_ts, proc_rot[i,], <span class="at">lwd =</span> <span class="dv">2</span>)</span>
-<span id="cb63-423"><a href="#cb63-423" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lines</span>(w_ts, proc_rot[i,], <span class="at">lwd =</span> <span class="dv">2</span>)</span>
-<span id="cb63-424"><a href="#cb63-424" aria-hidden="true" tabindex="-1"></a>  <span class="do">## add panel labels</span></span>
-<span id="cb63-425"><a href="#cb63-425" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mtext</span>(<span class="fu">paste</span>(<span class="st">"State"</span>,i), <span class="at">side =</span> <span class="dv">3</span>, <span class="at">line =</span> <span class="fl">0.5</span>)</span>
-<span id="cb63-426"><a href="#cb63-426" aria-hidden="true" tabindex="-1"></a>  <span class="fu">axis</span>(<span class="dv">1</span>, <span class="dv">12</span> <span class="sc">*</span> (<span class="dv">0</span><span class="sc">:</span>mm) <span class="sc">+</span> <span class="dv">1</span>, yr_frst <span class="sc">+</span> <span class="dv">0</span><span class="sc">:</span>mm)</span>
-<span id="cb63-427"><a href="#cb63-427" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb63-428"><a href="#cb63-428" aria-hidden="true" tabindex="-1"></a><span class="do">## plot the loadings</span></span>
-<span id="cb63-429"><a href="#cb63-429" aria-hidden="true" tabindex="-1"></a>minZ <span class="ot">&lt;-</span> <span class="dv">0</span></span>
-<span id="cb63-430"><a href="#cb63-430" aria-hidden="true" tabindex="-1"></a>ylm <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>) <span class="sc">*</span> <span class="fu">max</span>(<span class="fu">abs</span>(Z_rot))</span>
-<span id="cb63-431"><a href="#cb63-431" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>m) {</span>
-<span id="cb63-432"><a href="#cb63-432" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span>N_ts)[<span class="fu">abs</span>(Z_rot[,i])<span class="sc">&gt;</span>minZ],</span>
-<span id="cb63-433"><a href="#cb63-433" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="fu">as.vector</span>(Z_rot[<span class="fu">abs</span>(Z_rot[,i])<span class="sc">&gt;</span>minZ,i]),</span>
-<span id="cb63-434"><a href="#cb63-434" aria-hidden="true" tabindex="-1"></a>       <span class="at">type =</span> <span class="st">"h"</span>,</span>
-<span id="cb63-435"><a href="#cb63-435" aria-hidden="true" tabindex="-1"></a>       <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">xlab =</span> <span class="st">""</span>, <span class="at">ylab =</span> <span class="st">""</span>, <span class="at">xaxt =</span> <span class="st">"n"</span>, <span class="at">ylim =</span> ylm,</span>
-<span id="cb63-436"><a href="#cb63-436" aria-hidden="true" tabindex="-1"></a>       <span class="at">xlim =</span> <span class="fu">c</span>(<span class="fl">0.5</span>, N_ts <span class="sc">+</span> <span class="fl">0.5</span>), <span class="at">col =</span> clr)</span>
-<span id="cb63-437"><a href="#cb63-437" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N_ts) {</span>
-<span id="cb63-438"><a href="#cb63-438" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(Z_rot[j,i] <span class="sc">&gt;</span> minZ) {<span class="fu">text</span>(j, <span class="sc">-</span><span class="fl">0.03</span>, ylbl[j], <span class="at">srt =</span> <span class="dv">90</span>, <span class="at">adj =</span> <span class="dv">1</span>, <span class="at">cex =</span> <span class="fl">1.2</span>, <span class="at">col =</span> clr[j])}</span>
-<span id="cb63-439"><a href="#cb63-439" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(Z_rot[j,i] <span class="sc">&lt;</span> <span class="sc">-</span>minZ) {<span class="fu">text</span>(j, <span class="fl">0.03</span>, ylbl[j], <span class="at">srt =</span> <span class="dv">90</span>, <span class="at">adj =</span> <span class="dv">0</span>, <span class="at">cex =</span> <span class="fl">1.2</span>, <span class="at">col =</span> clr[j])}</span>
-<span id="cb63-440"><a href="#cb63-440" aria-hidden="true" tabindex="-1"></a>    <span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">0</span>, <span class="at">lwd =</span> <span class="fl">1.5</span>, <span class="at">col =</span> <span class="st">"gray"</span>)</span>
-<span id="cb63-441"><a href="#cb63-441" aria-hidden="true" tabindex="-1"></a>  } </span>
-<span id="cb63-442"><a href="#cb63-442" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mtext</span>(<span class="fu">paste</span>(<span class="st">"Factor loadings on state"</span>, i), <span class="at">side =</span> <span class="dv">3</span>, <span class="at">line =</span> <span class="fl">0.5</span>)</span>
-<span id="cb63-443"><a href="#cb63-443" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb63-413"><a href="#cb63-413" aria-hidden="true" tabindex="-1"></a><span class="in">## plot the processes</span></span>
+<span id="cb63-414"><a href="#cb63-414" aria-hidden="true" tabindex="-1"></a><span class="in">for(i in 1:m) {</span></span>
+<span id="cb63-415"><a href="#cb63-415" aria-hidden="true" tabindex="-1"></a><span class="in">  ylm &lt;- c(-1, 1) * max(abs(proc_rot[i,]))</span></span>
+<span id="cb63-416"><a href="#cb63-416" aria-hidden="true" tabindex="-1"></a><span class="in">  ## set up plot area</span></span>
+<span id="cb63-417"><a href="#cb63-417" aria-hidden="true" tabindex="-1"></a><span class="in">  plot(w_ts,proc_rot[i,], type = "n", bty = "L",</span></span>
+<span id="cb63-418"><a href="#cb63-418" aria-hidden="true" tabindex="-1"></a><span class="in">       ylim = ylm, xlab = "", ylab = "", xaxt = "n")</span></span>
+<span id="cb63-419"><a href="#cb63-419" aria-hidden="true" tabindex="-1"></a><span class="in">  ## draw zero-line</span></span>
+<span id="cb63-420"><a href="#cb63-420" aria-hidden="true" tabindex="-1"></a><span class="in">  abline(h = 0, col = "gray")</span></span>
+<span id="cb63-421"><a href="#cb63-421" aria-hidden="true" tabindex="-1"></a><span class="in">  ## plot trend line</span></span>
+<span id="cb63-422"><a href="#cb63-422" aria-hidden="true" tabindex="-1"></a><span class="in">  lines(w_ts, proc_rot[i,], lwd = 2)</span></span>
+<span id="cb63-423"><a href="#cb63-423" aria-hidden="true" tabindex="-1"></a><span class="in">  lines(w_ts, proc_rot[i,], lwd = 2)</span></span>
+<span id="cb63-424"><a href="#cb63-424" aria-hidden="true" tabindex="-1"></a><span class="in">  ## add panel labels</span></span>
+<span id="cb63-425"><a href="#cb63-425" aria-hidden="true" tabindex="-1"></a><span class="in">  mtext(paste("State",i), side = 3, line = 0.5)</span></span>
+<span id="cb63-426"><a href="#cb63-426" aria-hidden="true" tabindex="-1"></a><span class="in">  axis(1, 12 * (0:mm) + 1, yr_frst + 0:mm)</span></span>
+<span id="cb63-427"><a href="#cb63-427" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
+<span id="cb63-428"><a href="#cb63-428" aria-hidden="true" tabindex="-1"></a><span class="in">## plot the loadings</span></span>
+<span id="cb63-429"><a href="#cb63-429" aria-hidden="true" tabindex="-1"></a><span class="in">minZ &lt;- 0</span></span>
+<span id="cb63-430"><a href="#cb63-430" aria-hidden="true" tabindex="-1"></a><span class="in">ylm &lt;- c(-1, 1) * max(abs(Z_rot))</span></span>
+<span id="cb63-431"><a href="#cb63-431" aria-hidden="true" tabindex="-1"></a><span class="in">for(i in 1:m) {</span></span>
+<span id="cb63-432"><a href="#cb63-432" aria-hidden="true" tabindex="-1"></a><span class="in">  plot(x = c(1:N_ts)[abs(Z_rot[,i])&gt;minZ],</span></span>
+<span id="cb63-433"><a href="#cb63-433" aria-hidden="true" tabindex="-1"></a><span class="in">       y = as.vector(Z_rot[abs(Z_rot[,i])&gt;minZ,i]),</span></span>
+<span id="cb63-434"><a href="#cb63-434" aria-hidden="true" tabindex="-1"></a><span class="in">       type = "h",</span></span>
+<span id="cb63-435"><a href="#cb63-435" aria-hidden="true" tabindex="-1"></a><span class="in">       lwd = 2, xlab = "", ylab = "", xaxt = "n", ylim = ylm,</span></span>
+<span id="cb63-436"><a href="#cb63-436" aria-hidden="true" tabindex="-1"></a><span class="in">       xlim = c(0.5, N_ts + 0.5), col = clr)</span></span>
+<span id="cb63-437"><a href="#cb63-437" aria-hidden="true" tabindex="-1"></a><span class="in">  for(j in 1:N_ts) {</span></span>
+<span id="cb63-438"><a href="#cb63-438" aria-hidden="true" tabindex="-1"></a><span class="in">    if(Z_rot[j,i] &gt; minZ) {text(j, -0.03, ylbl[j], srt = 90, adj = 1, cex = 1.2, col = clr[j])}</span></span>
+<span id="cb63-439"><a href="#cb63-439" aria-hidden="true" tabindex="-1"></a><span class="in">    if(Z_rot[j,i] &lt; -minZ) {text(j, 0.03, ylbl[j], srt = 90, adj = 0, cex = 1.2, col = clr[j])}</span></span>
+<span id="cb63-440"><a href="#cb63-440" aria-hidden="true" tabindex="-1"></a><span class="in">    abline(h = 0, lwd = 1.5, col = "gray")</span></span>
+<span id="cb63-441"><a href="#cb63-441" aria-hidden="true" tabindex="-1"></a><span class="in">  } </span></span>
+<span id="cb63-442"><a href="#cb63-442" aria-hidden="true" tabindex="-1"></a><span class="in">  mtext(paste("Factor loadings on state", i), side = 3, line = 0.5)</span></span>
+<span id="cb63-443"><a href="#cb63-443" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
 <span id="cb63-444"><a href="#cb63-444" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-445"><a href="#cb63-445" aria-hidden="true" tabindex="-1"></a><span class="do">## plot CCF's</span></span>
-<span id="cb63-446"><a href="#cb63-446" aria-hidden="true" tabindex="-1"></a><span class="fu">ccf</span>(proc_rot[<span class="dv">1</span>,],proc_rot[<span class="dv">2</span>,], <span class="at">lag.max =</span> <span class="dv">15</span>, <span class="at">main=</span><span class="st">""</span>)</span>
-<span id="cb63-447"><a href="#cb63-447" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span>(<span class="at">main =</span> <span class="st">"State 1 vs 2"</span>)</span>
+<span id="cb63-445"><a href="#cb63-445" aria-hidden="true" tabindex="-1"></a><span class="in">## plot CCF's</span></span>
+<span id="cb63-446"><a href="#cb63-446" aria-hidden="true" tabindex="-1"></a><span class="in">ccf(proc_rot[1,],proc_rot[2,], lag.max = 15, main="")</span></span>
+<span id="cb63-447"><a href="#cb63-447" aria-hidden="true" tabindex="-1"></a><span class="in">title(main = "State 1 vs 2")</span></span>
 <span id="cb63-448"><a href="#cb63-448" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb63-449"><a href="#cb63-449" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb63-450"><a href="#cb63-450" aria-hidden="true" tabindex="-1"></a>This model seems to explain primary producer and grazer dynamics best in</span>
@@ -2360,7 +2743,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb63-453"><a href="#cb63-453" aria-hidden="true" tabindex="-1"></a>postive in both states 1 and 2.</span>
 <span id="cb63-454"><a href="#cb63-454" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb63-455"><a href="#cb63-455" aria-hidden="true" tabindex="-1"></a><span class="in">```{r Continued Diagnostics}</span></span>
-<span id="cb63-456"><a href="#cb63-456" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(best_fit) </span>
+<span id="cb63-456"><a href="#cb63-456" aria-hidden="true" tabindex="-1"></a><span class="in">autoplot(best_fit) </span></span>
 <span id="cb63-457"><a href="#cb63-457" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb63-458"><a href="#cb63-458" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb63-459"><a href="#cb63-459" aria-hidden="true" tabindex="-1"></a>The diagnostic plots show relatively good fits for three of the species,</span>
@@ -2453,72 +2836,72 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb63-548"><a href="#cb63-548" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb63-549"><a href="#cb63-549" aria-hidden="true" tabindex="-1"></a><span class="in">```{r Seasonal exploration, cache = TRUE}</span></span>
 <span id="cb63-550"><a href="#cb63-550" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-551"><a href="#cb63-551" aria-hidden="true" tabindex="-1"></a>TT <span class="ot">&lt;-</span> <span class="fu">dim</span>(plank_dat)[<span class="dv">2</span>]</span>
+<span id="cb63-551"><a href="#cb63-551" aria-hidden="true" tabindex="-1"></a><span class="in">TT &lt;- dim(plank_dat)[2]</span></span>
 <span id="cb63-552"><a href="#cb63-552" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-553"><a href="#cb63-553" aria-hidden="true" tabindex="-1"></a>fits_season <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb63-553"><a href="#cb63-553" aria-hidden="true" tabindex="-1"></a><span class="in">fits_season &lt;- list()</span></span>
 <span id="cb63-554"><a href="#cb63-554" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-555"><a href="#cb63-555" aria-hidden="true" tabindex="-1"></a>out.tab.season <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb63-555"><a href="#cb63-555" aria-hidden="true" tabindex="-1"></a><span class="in">out.tab.season &lt;- NULL</span></span>
 <span id="cb63-556"><a href="#cb63-556" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-557"><a href="#cb63-557" aria-hidden="true" tabindex="-1"></a>model.states <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb63-558"><a href="#cb63-558" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(model.states) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"two_states"</span>)</span>
+<span id="cb63-557"><a href="#cb63-557" aria-hidden="true" tabindex="-1"></a><span class="in">model.states &lt;- 1</span></span>
+<span id="cb63-558"><a href="#cb63-558" aria-hidden="true" tabindex="-1"></a><span class="in">names(model.states) &lt;- c("two_states")</span></span>
 <span id="cb63-559"><a href="#cb63-559" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-560"><a href="#cb63-560" aria-hidden="true" tabindex="-1"></a>R.models <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"diagonal and unequal"</span>)</span>
+<span id="cb63-560"><a href="#cb63-560" aria-hidden="true" tabindex="-1"></a><span class="in">R.models &lt;- c("diagonal and unequal")</span></span>
 <span id="cb63-561"><a href="#cb63-561" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-562"><a href="#cb63-562" aria-hidden="true" tabindex="-1"></a><span class="co"># 12 month period </span></span>
-<span id="cb63-563"><a href="#cb63-563" aria-hidden="true" tabindex="-1"></a>  cos<span class="fl">.12</span> <span class="ot">&lt;-</span> <span class="fu">cos</span>(<span class="dv">2</span> <span class="sc">*</span> pi <span class="sc">*</span> <span class="fu">seq</span>(TT)<span class="sc">/</span><span class="dv">12</span>)</span>
-<span id="cb63-564"><a href="#cb63-564" aria-hidden="true" tabindex="-1"></a>  sin<span class="fl">.12</span> <span class="ot">&lt;-</span> <span class="fu">sin</span>(<span class="dv">2</span> <span class="sc">*</span> pi <span class="sc">*</span> <span class="fu">seq</span>(TT)<span class="sc">/</span><span class="dv">12</span>)</span>
-<span id="cb63-565"><a href="#cb63-565" aria-hidden="true" tabindex="-1"></a>  c.Four_12 <span class="ot">&lt;-</span> <span class="fu">rbind</span>(cos<span class="fl">.12</span>, sin<span class="fl">.12</span>)</span>
-<span id="cb63-566"><a href="#cb63-566" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb63-567"><a href="#cb63-567" aria-hidden="true" tabindex="-1"></a><span class="co"># 6 month period </span></span>
-<span id="cb63-568"><a href="#cb63-568" aria-hidden="true" tabindex="-1"></a>  cos<span class="fl">.6</span> <span class="ot">&lt;-</span> <span class="fu">cos</span>(<span class="dv">2</span> <span class="sc">*</span> pi <span class="sc">*</span> <span class="fu">seq</span>(TT)<span class="sc">/</span><span class="dv">6</span>)</span>
-<span id="cb63-569"><a href="#cb63-569" aria-hidden="true" tabindex="-1"></a>  sin<span class="fl">.6</span> <span class="ot">&lt;-</span> <span class="fu">sin</span>(<span class="dv">2</span> <span class="sc">*</span> pi <span class="sc">*</span> <span class="fu">seq</span>(TT)<span class="sc">/</span><span class="dv">6</span>)</span>
-<span id="cb63-570"><a href="#cb63-570" aria-hidden="true" tabindex="-1"></a>  c.Four_6 <span class="ot">&lt;-</span> <span class="fu">rbind</span>(cos<span class="fl">.6</span>, sin<span class="fl">.6</span>)</span>
-<span id="cb63-571"><a href="#cb63-571" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb63-572"><a href="#cb63-572" aria-hidden="true" tabindex="-1"></a><span class="co"># 3 month period </span></span>
-<span id="cb63-573"><a href="#cb63-573" aria-hidden="true" tabindex="-1"></a>  cos<span class="fl">.3</span> <span class="ot">&lt;-</span> <span class="fu">cos</span>(<span class="dv">2</span> <span class="sc">*</span> pi <span class="sc">*</span> <span class="fu">seq</span>(TT)<span class="sc">/</span><span class="dv">3</span>)</span>
-<span id="cb63-574"><a href="#cb63-574" aria-hidden="true" tabindex="-1"></a>  sin<span class="fl">.3</span> <span class="ot">&lt;-</span> <span class="fu">sin</span>(<span class="dv">2</span> <span class="sc">*</span> pi <span class="sc">*</span> <span class="fu">seq</span>(TT)<span class="sc">/</span><span class="dv">3</span>)</span>
-<span id="cb63-575"><a href="#cb63-575" aria-hidden="true" tabindex="-1"></a>  c.Four_3 <span class="ot">&lt;-</span> <span class="fu">rbind</span>(cos<span class="fl">.3</span>, sin<span class="fl">.3</span>)</span>
+<span id="cb63-562"><a href="#cb63-562" aria-hidden="true" tabindex="-1"></a><span class="in"># 12 month period </span></span>
+<span id="cb63-563"><a href="#cb63-563" aria-hidden="true" tabindex="-1"></a><span class="in">  cos.12 &lt;- cos(2 * pi * seq(TT)/12)</span></span>
+<span id="cb63-564"><a href="#cb63-564" aria-hidden="true" tabindex="-1"></a><span class="in">  sin.12 &lt;- sin(2 * pi * seq(TT)/12)</span></span>
+<span id="cb63-565"><a href="#cb63-565" aria-hidden="true" tabindex="-1"></a><span class="in">  c.Four_12 &lt;- rbind(cos.12, sin.12)</span></span>
+<span id="cb63-566"><a href="#cb63-566" aria-hidden="true" tabindex="-1"></a><span class="in">  </span></span>
+<span id="cb63-567"><a href="#cb63-567" aria-hidden="true" tabindex="-1"></a><span class="in"># 6 month period </span></span>
+<span id="cb63-568"><a href="#cb63-568" aria-hidden="true" tabindex="-1"></a><span class="in">  cos.6 &lt;- cos(2 * pi * seq(TT)/6)</span></span>
+<span id="cb63-569"><a href="#cb63-569" aria-hidden="true" tabindex="-1"></a><span class="in">  sin.6 &lt;- sin(2 * pi * seq(TT)/6)</span></span>
+<span id="cb63-570"><a href="#cb63-570" aria-hidden="true" tabindex="-1"></a><span class="in">  c.Four_6 &lt;- rbind(cos.6, sin.6)</span></span>
+<span id="cb63-571"><a href="#cb63-571" aria-hidden="true" tabindex="-1"></a><span class="in">  </span></span>
+<span id="cb63-572"><a href="#cb63-572" aria-hidden="true" tabindex="-1"></a><span class="in"># 3 month period </span></span>
+<span id="cb63-573"><a href="#cb63-573" aria-hidden="true" tabindex="-1"></a><span class="in">  cos.3 &lt;- cos(2 * pi * seq(TT)/3)</span></span>
+<span id="cb63-574"><a href="#cb63-574" aria-hidden="true" tabindex="-1"></a><span class="in">  sin.3 &lt;- sin(2 * pi * seq(TT)/3)</span></span>
+<span id="cb63-575"><a href="#cb63-575" aria-hidden="true" tabindex="-1"></a><span class="in">  c.Four_3 &lt;- rbind(cos.3, sin.3)</span></span>
 <span id="cb63-576"><a href="#cb63-576" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-577"><a href="#cb63-577" aria-hidden="true" tabindex="-1"></a>  d10 <span class="ot">=</span> <span class="fu">zscore</span>(<span class="fu">t</span>(init_dat[,<span class="fu">c</span>(<span class="st">"Temp"</span>,<span class="st">"TP"</span>, <span class="st">"pH"</span>)]))</span>
-<span id="cb63-578"><a href="#cb63-578" aria-hidden="true" tabindex="-1"></a>  d12 <span class="ot">=</span> <span class="fu">rbind</span>(c.Four_12, d10)</span>
-<span id="cb63-579"><a href="#cb63-579" aria-hidden="true" tabindex="-1"></a>  d6 <span class="ot">=</span> <span class="fu">rbind</span>(c.Four_6, d10)</span>
-<span id="cb63-580"><a href="#cb63-580" aria-hidden="true" tabindex="-1"></a>  d3 <span class="ot">=</span> <span class="fu">rbind</span>(c.Four_3, d10)</span>
+<span id="cb63-577"><a href="#cb63-577" aria-hidden="true" tabindex="-1"></a><span class="in">  d10 = zscore(t(init_dat[,c("Temp","TP", "pH")]))</span></span>
+<span id="cb63-578"><a href="#cb63-578" aria-hidden="true" tabindex="-1"></a><span class="in">  d12 = rbind(c.Four_12, d10)</span></span>
+<span id="cb63-579"><a href="#cb63-579" aria-hidden="true" tabindex="-1"></a><span class="in">  d6 = rbind(c.Four_6, d10)</span></span>
+<span id="cb63-580"><a href="#cb63-580" aria-hidden="true" tabindex="-1"></a><span class="in">  d3 = rbind(c.Four_3, d10)</span></span>
 <span id="cb63-581"><a href="#cb63-581" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-582"><a href="#cb63-582" aria-hidden="true" tabindex="-1"></a>  d.models <span class="ot">&lt;-</span> <span class="fu">list</span>(d10, d12, d6, d3)</span>
-<span id="cb63-583"><a href="#cb63-583" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(d.models) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Temp,TP, and pH"</span>, <span class="st">"12 month"</span>, <span class="st">"6 month"</span>, <span class="st">"3 month"</span>)</span>
+<span id="cb63-582"><a href="#cb63-582" aria-hidden="true" tabindex="-1"></a><span class="in">  d.models &lt;- list(d10, d12, d6, d3)</span></span>
+<span id="cb63-583"><a href="#cb63-583" aria-hidden="true" tabindex="-1"></a><span class="in">  names(d.models) &lt;- c("Temp,TP, and pH", "12 month", "6 month", "3 month")</span></span>
 <span id="cb63-584"><a href="#cb63-584" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-585"><a href="#cb63-585" aria-hidden="true" tabindex="-1"></a>  mod.list <span class="ot">=</span> <span class="fu">list</span>(</span>
-<span id="cb63-586"><a href="#cb63-586" aria-hidden="true" tabindex="-1"></a>    <span class="at">A =</span> <span class="st">"zero"</span>,</span>
-<span id="cb63-587"><a href="#cb63-587" aria-hidden="true" tabindex="-1"></a>    <span class="at">Q =</span> <span class="st">"identity"</span>,</span>
-<span id="cb63-588"><a href="#cb63-588" aria-hidden="true" tabindex="-1"></a>    <span class="at">x0 =</span> <span class="st">"zero"</span></span>
-<span id="cb63-589"><a href="#cb63-589" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb63-585"><a href="#cb63-585" aria-hidden="true" tabindex="-1"></a><span class="in">  mod.list = list(</span></span>
+<span id="cb63-586"><a href="#cb63-586" aria-hidden="true" tabindex="-1"></a><span class="in">    A = "zero",</span></span>
+<span id="cb63-587"><a href="#cb63-587" aria-hidden="true" tabindex="-1"></a><span class="in">    Q = "identity",</span></span>
+<span id="cb63-588"><a href="#cb63-588" aria-hidden="true" tabindex="-1"></a><span class="in">    x0 = "zero"</span></span>
+<span id="cb63-589"><a href="#cb63-589" aria-hidden="true" tabindex="-1"></a><span class="in">  )</span></span>
 <span id="cb63-590"><a href="#cb63-590" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-591"><a href="#cb63-591" aria-hidden="true" tabindex="-1"></a>  start.time <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
-<span id="cb63-592"><a href="#cb63-592" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(d.models)){</span>
-<span id="cb63-593"><a href="#cb63-593" aria-hidden="true" tabindex="-1"></a>      <span class="cf">for</span>(R.model <span class="cf">in</span> R.models){</span>
-<span id="cb63-594"><a href="#cb63-594" aria-hidden="true" tabindex="-1"></a>        fit.model <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">list</span>(<span class="at">m=</span>i, <span class="at">R=</span>R.model), mod.list)</span>
-<span id="cb63-595"><a href="#cb63-595" aria-hidden="true" tabindex="-1"></a>        fit <span class="ot">&lt;-</span> <span class="fu">MARSS</span>(plank_dat, <span class="at">model=</span>fit.model, </span>
-<span id="cb63-596"><a href="#cb63-596" aria-hidden="true" tabindex="-1"></a>                     <span class="at">form =</span> <span class="st">"dfa"</span>, <span class="at">z.score =</span> <span class="cn">FALSE</span>, <span class="at">silent =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb63-597"><a href="#cb63-597" aria-hidden="true" tabindex="-1"></a>                     <span class="at">control=</span><span class="fu">list</span>(<span class="at">maxit=</span><span class="dv">800</span>, <span class="at">allow.degen=</span><span class="cn">TRUE</span>), </span>
-<span id="cb63-598"><a href="#cb63-598" aria-hidden="true" tabindex="-1"></a>                     <span class="at">covariates =</span> d.models[[j]])</span>
-<span id="cb63-599"><a href="#cb63-599" aria-hidden="true" tabindex="-1"></a>        out<span class="ot">=</span><span class="fu">data.frame</span>(<span class="at">States=</span><span class="fu">names</span>(model.states)[i<span class="dv">-1</span>],<span class="at">d=</span><span class="fu">names</span>(d.models)[j],<span class="at">R=</span>R.model, <span class="co"># </span></span>
-<span id="cb63-600"><a href="#cb63-600" aria-hidden="true" tabindex="-1"></a>                       <span class="at">logLik=</span>fit<span class="sc">$</span>logLik, <span class="at">AICc=</span>fit<span class="sc">$</span>AICc, <span class="at">num.param=</span>fit<span class="sc">$</span>num.params,</span>
-<span id="cb63-601"><a href="#cb63-601" aria-hidden="true" tabindex="-1"></a>                       <span class="at">num.iter=</span>fit<span class="sc">$</span>numIter, <span class="at">converged=</span><span class="sc">!</span>fit<span class="sc">$</span>convergence,</span>
-<span id="cb63-602"><a href="#cb63-602" aria-hidden="true" tabindex="-1"></a>                       <span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb63-603"><a href="#cb63-603" aria-hidden="true" tabindex="-1"></a>        out.tab.season<span class="ot">=</span><span class="fu">rbind</span>(out.tab.season,out)</span>
-<span id="cb63-604"><a href="#cb63-604" aria-hidden="true" tabindex="-1"></a>        fits_season<span class="ot">=</span><span class="fu">c</span>(fits,<span class="fu">list</span>(fit))</span>
-<span id="cb63-605"><a href="#cb63-605" aria-hidden="true" tabindex="-1"></a>      }</span>
-<span id="cb63-606"><a href="#cb63-606" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb63-607"><a href="#cb63-607" aria-hidden="true" tabindex="-1"></a> </span>
-<span id="cb63-608"><a href="#cb63-608" aria-hidden="true" tabindex="-1"></a>  end.time <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb63-591"><a href="#cb63-591" aria-hidden="true" tabindex="-1"></a><span class="in">  start.time &lt;- Sys.time()</span></span>
+<span id="cb63-592"><a href="#cb63-592" aria-hidden="true" tabindex="-1"></a><span class="in">    for (j in 1:length(d.models)){</span></span>
+<span id="cb63-593"><a href="#cb63-593" aria-hidden="true" tabindex="-1"></a><span class="in">      for(R.model in R.models){</span></span>
+<span id="cb63-594"><a href="#cb63-594" aria-hidden="true" tabindex="-1"></a><span class="in">        fit.model = c(list(m=i, R=R.model), mod.list)</span></span>
+<span id="cb63-595"><a href="#cb63-595" aria-hidden="true" tabindex="-1"></a><span class="in">        fit &lt;- MARSS(plank_dat, model=fit.model, </span></span>
+<span id="cb63-596"><a href="#cb63-596" aria-hidden="true" tabindex="-1"></a><span class="in">                     form = "dfa", z.score = FALSE, silent = TRUE,</span></span>
+<span id="cb63-597"><a href="#cb63-597" aria-hidden="true" tabindex="-1"></a><span class="in">                     control=list(maxit=800, allow.degen=TRUE), </span></span>
+<span id="cb63-598"><a href="#cb63-598" aria-hidden="true" tabindex="-1"></a><span class="in">                     covariates = d.models[[j]])</span></span>
+<span id="cb63-599"><a href="#cb63-599" aria-hidden="true" tabindex="-1"></a><span class="in">        out=data.frame(States=names(model.states)[i-1],d=names(d.models)[j],R=R.model, # </span></span>
+<span id="cb63-600"><a href="#cb63-600" aria-hidden="true" tabindex="-1"></a><span class="in">                       logLik=fit$logLik, AICc=fit$AICc, num.param=fit$num.params,</span></span>
+<span id="cb63-601"><a href="#cb63-601" aria-hidden="true" tabindex="-1"></a><span class="in">                       num.iter=fit$numIter, converged=!fit$convergence,</span></span>
+<span id="cb63-602"><a href="#cb63-602" aria-hidden="true" tabindex="-1"></a><span class="in">                       stringsAsFactors = FALSE)</span></span>
+<span id="cb63-603"><a href="#cb63-603" aria-hidden="true" tabindex="-1"></a><span class="in">        out.tab.season=rbind(out.tab.season,out)</span></span>
+<span id="cb63-604"><a href="#cb63-604" aria-hidden="true" tabindex="-1"></a><span class="in">        fits_season=c(fits,list(fit))</span></span>
+<span id="cb63-605"><a href="#cb63-605" aria-hidden="true" tabindex="-1"></a><span class="in">      }</span></span>
+<span id="cb63-606"><a href="#cb63-606" aria-hidden="true" tabindex="-1"></a><span class="in">    }</span></span>
+<span id="cb63-607"><a href="#cb63-607" aria-hidden="true" tabindex="-1"></a><span class="in"> </span></span>
+<span id="cb63-608"><a href="#cb63-608" aria-hidden="true" tabindex="-1"></a><span class="in">  end.time &lt;- Sys.time()</span></span>
 <span id="cb63-609"><a href="#cb63-609" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-610"><a href="#cb63-610" aria-hidden="true" tabindex="-1"></a>  elapsed.time <span class="ot">&lt;-</span> <span class="fu">round</span>((end.time <span class="sc">-</span> start.time), <span class="dv">3</span>)</span>
-<span id="cb63-611"><a href="#cb63-611" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"Elapsed time for period:"</span>, elapsed.time))</span>
+<span id="cb63-610"><a href="#cb63-610" aria-hidden="true" tabindex="-1"></a><span class="in">  elapsed.time &lt;- round((end.time - start.time), 3)</span></span>
+<span id="cb63-611"><a href="#cb63-611" aria-hidden="true" tabindex="-1"></a><span class="in">  print(paste("Elapsed time for period:", elapsed.time))</span></span>
 <span id="cb63-612"><a href="#cb63-612" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb63-613"><a href="#cb63-613" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-614"><a href="#cb63-614" aria-hidden="true" tabindex="-1"></a>min.AICc <span class="ot">&lt;-</span> <span class="fu">order</span>(out.tab.season<span class="sc">$</span>AICc)</span>
-<span id="cb63-615"><a href="#cb63-615" aria-hidden="true" tabindex="-1"></a>out.tab<span class="fl">.2</span> <span class="ot">&lt;-</span> out.tab.season[min.AICc, ]</span>
-<span id="cb63-616"><a href="#cb63-616" aria-hidden="true" tabindex="-1"></a>out.tab<span class="fl">.2</span></span>
+<span id="cb63-614"><a href="#cb63-614" aria-hidden="true" tabindex="-1"></a><span class="in">min.AICc &lt;- order(out.tab.season$AICc)</span></span>
+<span id="cb63-615"><a href="#cb63-615" aria-hidden="true" tabindex="-1"></a><span class="in">out.tab.2 &lt;- out.tab.season[min.AICc, ]</span></span>
+<span id="cb63-616"><a href="#cb63-616" aria-hidden="true" tabindex="-1"></a><span class="in">out.tab.2</span></span>
 <span id="cb63-617"><a href="#cb63-617" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb63-618"><a href="#cb63-618" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb63-619"><a href="#cb63-619" aria-hidden="true" tabindex="-1"></a></span>
@@ -2660,67 +3043,67 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb63-755"><a href="#cb63-755" aria-hidden="true" tabindex="-1"></a><span class="fu">## Plotting the Seasonal Model</span></span>
 <span id="cb63-756"><a href="#cb63-756" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb63-757"><a href="#cb63-757" aria-hidden="true" tabindex="-1"></a><span class="in">```{r factor_loadings including seasonality}</span></span>
-<span id="cb63-758"><a href="#cb63-758" aria-hidden="true" tabindex="-1"></a><span class="co"># Rotating the model, plotting the states and loadings</span></span>
-<span id="cb63-759"><a href="#cb63-759" aria-hidden="true" tabindex="-1"></a>best_fit_s <span class="ot">&lt;-</span> fits_season[[<span class="dv">3</span>]]</span>
+<span id="cb63-758"><a href="#cb63-758" aria-hidden="true" tabindex="-1"></a><span class="in"># Rotating the model, plotting the states and loadings</span></span>
+<span id="cb63-759"><a href="#cb63-759" aria-hidden="true" tabindex="-1"></a><span class="in">best_fit_s &lt;- fits_season[[3]]</span></span>
 <span id="cb63-760"><a href="#cb63-760" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-761"><a href="#cb63-761" aria-hidden="true" tabindex="-1"></a><span class="co"># Get Z Estimations and rotate the data</span></span>
-<span id="cb63-762"><a href="#cb63-762" aria-hidden="true" tabindex="-1"></a><span class="do">## get the estimated ZZ</span></span>
-<span id="cb63-763"><a href="#cb63-763" aria-hidden="true" tabindex="-1"></a>Z_est_s <span class="ot">&lt;-</span> <span class="fu">coef</span>(best_fit_s, <span class="at">type =</span> <span class="st">"matrix"</span>)<span class="sc">$</span>Z</span>
+<span id="cb63-761"><a href="#cb63-761" aria-hidden="true" tabindex="-1"></a><span class="in"># Get Z Estimations and rotate the data</span></span>
+<span id="cb63-762"><a href="#cb63-762" aria-hidden="true" tabindex="-1"></a><span class="in">## get the estimated ZZ</span></span>
+<span id="cb63-763"><a href="#cb63-763" aria-hidden="true" tabindex="-1"></a><span class="in">Z_est_s &lt;- coef(best_fit_s, type = "matrix")$Z</span></span>
 <span id="cb63-764"><a href="#cb63-764" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-765"><a href="#cb63-765" aria-hidden="true" tabindex="-1"></a><span class="do">## get the inverse of the rotation matrix</span></span>
-<span id="cb63-766"><a href="#cb63-766" aria-hidden="true" tabindex="-1"></a>H_inv_s <span class="ot">&lt;-</span> <span class="fu">varimax</span>(Z_est_s)<span class="sc">$</span>rotmat</span>
+<span id="cb63-765"><a href="#cb63-765" aria-hidden="true" tabindex="-1"></a><span class="in">## get the inverse of the rotation matrix</span></span>
+<span id="cb63-766"><a href="#cb63-766" aria-hidden="true" tabindex="-1"></a><span class="in">H_inv_s &lt;- varimax(Z_est_s)$rotmat</span></span>
 <span id="cb63-767"><a href="#cb63-767" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-768"><a href="#cb63-768" aria-hidden="true" tabindex="-1"></a><span class="do">## rotate factor loadings</span></span>
-<span id="cb63-769"><a href="#cb63-769" aria-hidden="true" tabindex="-1"></a>Z_rot_s <span class="ot">=</span> Z_est_s <span class="sc">%*%</span> H_inv_s   </span>
+<span id="cb63-768"><a href="#cb63-768" aria-hidden="true" tabindex="-1"></a><span class="in">## rotate factor loadings</span></span>
+<span id="cb63-769"><a href="#cb63-769" aria-hidden="true" tabindex="-1"></a><span class="in">Z_rot_s = Z_est_s %*% H_inv_s   </span></span>
 <span id="cb63-770"><a href="#cb63-770" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-771"><a href="#cb63-771" aria-hidden="true" tabindex="-1"></a><span class="do">## rotate processes</span></span>
-<span id="cb63-772"><a href="#cb63-772" aria-hidden="true" tabindex="-1"></a>proc_rot_s <span class="ot">=</span> <span class="fu">solve</span>(H_inv_s) <span class="sc">%*%</span> best_fit_s<span class="sc">$</span>states</span>
+<span id="cb63-771"><a href="#cb63-771" aria-hidden="true" tabindex="-1"></a><span class="in">## rotate processes</span></span>
+<span id="cb63-772"><a href="#cb63-772" aria-hidden="true" tabindex="-1"></a><span class="in">proc_rot_s = solve(H_inv_s) %*% best_fit_s$states</span></span>
 <span id="cb63-773"><a href="#cb63-773" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-774"><a href="#cb63-774" aria-hidden="true" tabindex="-1"></a>N_ts <span class="ot">&lt;-</span> <span class="fu">nrow</span>(plank_dat)</span>
-<span id="cb63-775"><a href="#cb63-775" aria-hidden="true" tabindex="-1"></a>m <span class="ot">=</span> <span class="fu">ncol</span>(Z_est)</span>
-<span id="cb63-776"><a href="#cb63-776" aria-hidden="true" tabindex="-1"></a><span class="do">## plot labels</span></span>
-<span id="cb63-777"><a href="#cb63-777" aria-hidden="true" tabindex="-1"></a>ylbl <span class="ot">&lt;-</span> plank_taxa</span>
-<span id="cb63-778"><a href="#cb63-778" aria-hidden="true" tabindex="-1"></a>w_ts <span class="ot">&lt;-</span> <span class="fu">seq</span>(mm)</span>
+<span id="cb63-774"><a href="#cb63-774" aria-hidden="true" tabindex="-1"></a><span class="in">N_ts &lt;- nrow(plank_dat)</span></span>
+<span id="cb63-775"><a href="#cb63-775" aria-hidden="true" tabindex="-1"></a><span class="in">m = ncol(Z_est)</span></span>
+<span id="cb63-776"><a href="#cb63-776" aria-hidden="true" tabindex="-1"></a><span class="in">## plot labels</span></span>
+<span id="cb63-777"><a href="#cb63-777" aria-hidden="true" tabindex="-1"></a><span class="in">ylbl &lt;- plank_taxa</span></span>
+<span id="cb63-778"><a href="#cb63-778" aria-hidden="true" tabindex="-1"></a><span class="in">w_ts &lt;- seq(mm)</span></span>
 <span id="cb63-779"><a href="#cb63-779" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-780"><a href="#cb63-780" aria-hidden="true" tabindex="-1"></a><span class="do">## set up plot area</span></span>
-<span id="cb63-781"><a href="#cb63-781" aria-hidden="true" tabindex="-1"></a><span class="fu">layout</span>(<span class="fu">matrix</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, m, <span class="dv">2</span>), <span class="at">widths =</span> <span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">2</span>))</span>
-<span id="cb63-782"><a href="#cb63-782" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mai =</span> <span class="fu">c</span>(<span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">0.1</span>), <span class="at">omi =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>))</span>
+<span id="cb63-780"><a href="#cb63-780" aria-hidden="true" tabindex="-1"></a><span class="in">## set up plot area</span></span>
+<span id="cb63-781"><a href="#cb63-781" aria-hidden="true" tabindex="-1"></a><span class="in">layout(matrix(1:4, m, 2), widths = c(3,2))</span></span>
+<span id="cb63-782"><a href="#cb63-782" aria-hidden="true" tabindex="-1"></a><span class="in">par(mai = c(0.3, 0.3, 0.3, 0.1), omi = c(0, 0, 0, 0))</span></span>
 <span id="cb63-783"><a href="#cb63-783" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-784"><a href="#cb63-784" aria-hidden="true" tabindex="-1"></a><span class="do">## plot the processes</span></span>
-<span id="cb63-785"><a href="#cb63-785" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>m) {</span>
-<span id="cb63-786"><a href="#cb63-786" aria-hidden="true" tabindex="-1"></a>  ylm <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>) <span class="sc">*</span> <span class="fu">max</span>(<span class="fu">abs</span>(proc_rot_s[i,]))</span>
-<span id="cb63-787"><a href="#cb63-787" aria-hidden="true" tabindex="-1"></a>  <span class="do">## set up plot area</span></span>
-<span id="cb63-788"><a href="#cb63-788" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(w_ts,proc_rot_s[i,], <span class="at">type =</span> <span class="st">"n"</span>, <span class="at">bty =</span> <span class="st">"L"</span>,</span>
-<span id="cb63-789"><a href="#cb63-789" aria-hidden="true" tabindex="-1"></a>       <span class="at">ylim =</span> ylm, <span class="at">xlab =</span> <span class="st">""</span>, <span class="at">ylab =</span> <span class="st">""</span>, <span class="at">xaxt =</span> <span class="st">"n"</span>)</span>
-<span id="cb63-790"><a href="#cb63-790" aria-hidden="true" tabindex="-1"></a>  <span class="do">## draw zero-line</span></span>
-<span id="cb63-791"><a href="#cb63-791" aria-hidden="true" tabindex="-1"></a>  <span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">0</span>, <span class="at">col =</span> <span class="st">"gray"</span>)</span>
-<span id="cb63-792"><a href="#cb63-792" aria-hidden="true" tabindex="-1"></a>  <span class="do">## plot trend line</span></span>
-<span id="cb63-793"><a href="#cb63-793" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lines</span>(w_ts, proc_rot_s[i,], <span class="at">lwd =</span> <span class="dv">2</span>)</span>
-<span id="cb63-794"><a href="#cb63-794" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lines</span>(w_ts, proc_rot_s[i,], <span class="at">lwd =</span> <span class="dv">2</span>)</span>
-<span id="cb63-795"><a href="#cb63-795" aria-hidden="true" tabindex="-1"></a>  <span class="do">## add panel labels</span></span>
-<span id="cb63-796"><a href="#cb63-796" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mtext</span>(<span class="fu">paste</span>(<span class="st">"State"</span>,i), <span class="at">side =</span> <span class="dv">3</span>, <span class="at">line =</span> <span class="fl">0.5</span>)</span>
-<span id="cb63-797"><a href="#cb63-797" aria-hidden="true" tabindex="-1"></a>  <span class="fu">axis</span>(<span class="dv">1</span>, <span class="dv">12</span> <span class="sc">*</span> (<span class="dv">0</span><span class="sc">:</span>mm) <span class="sc">+</span> <span class="dv">1</span>, yr_frst <span class="sc">+</span> <span class="dv">0</span><span class="sc">:</span>mm)</span>
-<span id="cb63-798"><a href="#cb63-798" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb63-799"><a href="#cb63-799" aria-hidden="true" tabindex="-1"></a><span class="do">## plot the loadings</span></span>
-<span id="cb63-800"><a href="#cb63-800" aria-hidden="true" tabindex="-1"></a>minZ <span class="ot">&lt;-</span> <span class="dv">0</span></span>
-<span id="cb63-801"><a href="#cb63-801" aria-hidden="true" tabindex="-1"></a>ylm <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>) <span class="sc">*</span> <span class="fu">max</span>(<span class="fu">abs</span>(Z_rot_s))</span>
-<span id="cb63-802"><a href="#cb63-802" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>m) {</span>
-<span id="cb63-803"><a href="#cb63-803" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span>N_ts)[<span class="fu">abs</span>(Z_rot_s[,i])<span class="sc">&gt;</span>minZ],</span>
-<span id="cb63-804"><a href="#cb63-804" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="fu">as.vector</span>(Z_rot_s[<span class="fu">abs</span>(Z_rot_s[,i])<span class="sc">&gt;</span>minZ,i]),</span>
-<span id="cb63-805"><a href="#cb63-805" aria-hidden="true" tabindex="-1"></a>       <span class="at">type =</span> <span class="st">"h"</span>,</span>
-<span id="cb63-806"><a href="#cb63-806" aria-hidden="true" tabindex="-1"></a>       <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">xlab =</span> <span class="st">""</span>, <span class="at">ylab =</span> <span class="st">""</span>, <span class="at">xaxt =</span> <span class="st">"n"</span>, <span class="at">ylim =</span> ylm,</span>
-<span id="cb63-807"><a href="#cb63-807" aria-hidden="true" tabindex="-1"></a>       <span class="at">xlim =</span> <span class="fu">c</span>(<span class="fl">0.5</span>, N_ts <span class="sc">+</span> <span class="fl">0.5</span>), <span class="at">col =</span> clr)</span>
-<span id="cb63-808"><a href="#cb63-808" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N_ts) {</span>
-<span id="cb63-809"><a href="#cb63-809" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(Z_rot_s[j,i] <span class="sc">&gt;</span> minZ) {<span class="fu">text</span>(j, <span class="sc">-</span><span class="fl">0.03</span>, ylbl[j], <span class="at">srt =</span> <span class="dv">90</span>, <span class="at">adj =</span> <span class="dv">1</span>, <span class="at">cex =</span> <span class="fl">1.2</span>, <span class="at">col =</span> clr[j])}</span>
-<span id="cb63-810"><a href="#cb63-810" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(Z_rot_s[j,i] <span class="sc">&lt;</span> <span class="sc">-</span>minZ) {<span class="fu">text</span>(j, <span class="fl">0.03</span>, ylbl[j], <span class="at">srt =</span> <span class="dv">90</span>, <span class="at">adj =</span> <span class="dv">0</span>, <span class="at">cex =</span> <span class="fl">1.2</span>, <span class="at">col =</span> clr[j])}</span>
-<span id="cb63-811"><a href="#cb63-811" aria-hidden="true" tabindex="-1"></a>    <span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">0</span>, <span class="at">lwd =</span> <span class="fl">1.5</span>, <span class="at">col =</span> <span class="st">"gray"</span>)</span>
-<span id="cb63-812"><a href="#cb63-812" aria-hidden="true" tabindex="-1"></a>  } </span>
-<span id="cb63-813"><a href="#cb63-813" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mtext</span>(<span class="fu">paste</span>(<span class="st">"Factor loadings on state with seasonality"</span>, i), <span class="at">side =</span> <span class="dv">3</span>, <span class="at">line =</span> <span class="fl">0.5</span>)</span>
-<span id="cb63-814"><a href="#cb63-814" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb63-784"><a href="#cb63-784" aria-hidden="true" tabindex="-1"></a><span class="in">## plot the processes</span></span>
+<span id="cb63-785"><a href="#cb63-785" aria-hidden="true" tabindex="-1"></a><span class="in">for(i in 1:m) {</span></span>
+<span id="cb63-786"><a href="#cb63-786" aria-hidden="true" tabindex="-1"></a><span class="in">  ylm &lt;- c(-1, 1) * max(abs(proc_rot_s[i,]))</span></span>
+<span id="cb63-787"><a href="#cb63-787" aria-hidden="true" tabindex="-1"></a><span class="in">  ## set up plot area</span></span>
+<span id="cb63-788"><a href="#cb63-788" aria-hidden="true" tabindex="-1"></a><span class="in">  plot(w_ts,proc_rot_s[i,], type = "n", bty = "L",</span></span>
+<span id="cb63-789"><a href="#cb63-789" aria-hidden="true" tabindex="-1"></a><span class="in">       ylim = ylm, xlab = "", ylab = "", xaxt = "n")</span></span>
+<span id="cb63-790"><a href="#cb63-790" aria-hidden="true" tabindex="-1"></a><span class="in">  ## draw zero-line</span></span>
+<span id="cb63-791"><a href="#cb63-791" aria-hidden="true" tabindex="-1"></a><span class="in">  abline(h = 0, col = "gray")</span></span>
+<span id="cb63-792"><a href="#cb63-792" aria-hidden="true" tabindex="-1"></a><span class="in">  ## plot trend line</span></span>
+<span id="cb63-793"><a href="#cb63-793" aria-hidden="true" tabindex="-1"></a><span class="in">  lines(w_ts, proc_rot_s[i,], lwd = 2)</span></span>
+<span id="cb63-794"><a href="#cb63-794" aria-hidden="true" tabindex="-1"></a><span class="in">  lines(w_ts, proc_rot_s[i,], lwd = 2)</span></span>
+<span id="cb63-795"><a href="#cb63-795" aria-hidden="true" tabindex="-1"></a><span class="in">  ## add panel labels</span></span>
+<span id="cb63-796"><a href="#cb63-796" aria-hidden="true" tabindex="-1"></a><span class="in">  mtext(paste("State",i), side = 3, line = 0.5)</span></span>
+<span id="cb63-797"><a href="#cb63-797" aria-hidden="true" tabindex="-1"></a><span class="in">  axis(1, 12 * (0:mm) + 1, yr_frst + 0:mm)</span></span>
+<span id="cb63-798"><a href="#cb63-798" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
+<span id="cb63-799"><a href="#cb63-799" aria-hidden="true" tabindex="-1"></a><span class="in">## plot the loadings</span></span>
+<span id="cb63-800"><a href="#cb63-800" aria-hidden="true" tabindex="-1"></a><span class="in">minZ &lt;- 0</span></span>
+<span id="cb63-801"><a href="#cb63-801" aria-hidden="true" tabindex="-1"></a><span class="in">ylm &lt;- c(-1, 1) * max(abs(Z_rot_s))</span></span>
+<span id="cb63-802"><a href="#cb63-802" aria-hidden="true" tabindex="-1"></a><span class="in">for(i in 1:m) {</span></span>
+<span id="cb63-803"><a href="#cb63-803" aria-hidden="true" tabindex="-1"></a><span class="in">  plot(x = c(1:N_ts)[abs(Z_rot_s[,i])&gt;minZ],</span></span>
+<span id="cb63-804"><a href="#cb63-804" aria-hidden="true" tabindex="-1"></a><span class="in">       y = as.vector(Z_rot_s[abs(Z_rot_s[,i])&gt;minZ,i]),</span></span>
+<span id="cb63-805"><a href="#cb63-805" aria-hidden="true" tabindex="-1"></a><span class="in">       type = "h",</span></span>
+<span id="cb63-806"><a href="#cb63-806" aria-hidden="true" tabindex="-1"></a><span class="in">       lwd = 2, xlab = "", ylab = "", xaxt = "n", ylim = ylm,</span></span>
+<span id="cb63-807"><a href="#cb63-807" aria-hidden="true" tabindex="-1"></a><span class="in">       xlim = c(0.5, N_ts + 0.5), col = clr)</span></span>
+<span id="cb63-808"><a href="#cb63-808" aria-hidden="true" tabindex="-1"></a><span class="in">  for(j in 1:N_ts) {</span></span>
+<span id="cb63-809"><a href="#cb63-809" aria-hidden="true" tabindex="-1"></a><span class="in">    if(Z_rot_s[j,i] &gt; minZ) {text(j, -0.03, ylbl[j], srt = 90, adj = 1, cex = 1.2, col = clr[j])}</span></span>
+<span id="cb63-810"><a href="#cb63-810" aria-hidden="true" tabindex="-1"></a><span class="in">    if(Z_rot_s[j,i] &lt; -minZ) {text(j, 0.03, ylbl[j], srt = 90, adj = 0, cex = 1.2, col = clr[j])}</span></span>
+<span id="cb63-811"><a href="#cb63-811" aria-hidden="true" tabindex="-1"></a><span class="in">    abline(h = 0, lwd = 1.5, col = "gray")</span></span>
+<span id="cb63-812"><a href="#cb63-812" aria-hidden="true" tabindex="-1"></a><span class="in">  } </span></span>
+<span id="cb63-813"><a href="#cb63-813" aria-hidden="true" tabindex="-1"></a><span class="in">  mtext(paste("Factor loadings on state with seasonality", i), side = 3, line = 0.5)</span></span>
+<span id="cb63-814"><a href="#cb63-814" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
 <span id="cb63-815"><a href="#cb63-815" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-816"><a href="#cb63-816" aria-hidden="true" tabindex="-1"></a><span class="do">## plot CCF's</span></span>
-<span id="cb63-817"><a href="#cb63-817" aria-hidden="true" tabindex="-1"></a><span class="fu">ccf</span>(proc_rot_s[<span class="dv">1</span>,],proc_rot_s[<span class="dv">2</span>,], <span class="at">lag.max =</span> <span class="dv">15</span>, <span class="at">main=</span><span class="st">""</span>)</span>
-<span id="cb63-818"><a href="#cb63-818" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span>(<span class="at">main =</span> <span class="st">"State 1 vs 2 with seasonality"</span>)</span>
+<span id="cb63-816"><a href="#cb63-816" aria-hidden="true" tabindex="-1"></a><span class="in">## plot CCF's</span></span>
+<span id="cb63-817"><a href="#cb63-817" aria-hidden="true" tabindex="-1"></a><span class="in">ccf(proc_rot_s[1,],proc_rot_s[2,], lag.max = 15, main="")</span></span>
+<span id="cb63-818"><a href="#cb63-818" aria-hidden="true" tabindex="-1"></a><span class="in">title(main = "State 1 vs 2 with seasonality")</span></span>
 <span id="cb63-819"><a href="#cb63-819" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb63-820"><a href="#cb63-820" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb63-821"><a href="#cb63-821" aria-hidden="true" tabindex="-1"></a>The factor loading seen in the model that is including seasonality seems</span>
@@ -2740,7 +3123,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb63-835"><a href="#cb63-835" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb63-836"><a href="#cb63-836" aria-hidden="true" tabindex="-1"></a><span class="in">```{r Seasonal Diagnostics, cache = TRUE}</span></span>
 <span id="cb63-837"><a href="#cb63-837" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-838"><a href="#cb63-838" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(best_fit_s)  </span>
+<span id="cb63-838"><a href="#cb63-838" aria-hidden="true" tabindex="-1"></a><span class="in">autoplot(best_fit_s)  </span></span>
 <span id="cb63-839"><a href="#cb63-839" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb63-840"><a href="#cb63-840" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb63-841"><a href="#cb63-841" aria-hidden="true" tabindex="-1"></a></span>
@@ -2822,10 +3205,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb63-919"><a href="#cb63-919" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb63-920"><a href="#cb63-920" aria-hidden="true" tabindex="-1"></a>All team members helped with defining the matrices for the selected</span>
 <span id="cb63-921"><a href="#cb63-921" aria-hidden="true" tabindex="-1"></a>models, interpretation of results, and writing of the report.</span>
-</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 
 
 
-</body></html>
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/atsa-es/fish550-2023/edit/main/Lab-3/Final_Write_ups/Lab-3-team-2_final.Rmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/atsa-es/fish550-2023/blob/main/Lab-3/Final_Write_ups/Lab-3-team-2_final.Rmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/atsa-es/fish550-2023/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
